@@ -7,8 +7,7 @@
 
 /// mesh file
 namespace fileinfo{
-	const std::string meshfile = "example.txt";
-	const std::string fileplace = "../gmsh_files/";
+	const std::string fileplace = "../gmsh_files/4_elements.msh";
 }
 
 //---------------------------------------------------------------------
