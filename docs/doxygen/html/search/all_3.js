@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['quardtree_20amr_20discontinuous_20galerkin_20wave_20equation',['Quardtree AMR Discontinuous Galerkin Wave equation',['../index.html',1,'']]]
+  ['main',['main',['../dg__main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'dg_main.cpp']]],
+  ['mpi',['mpi',['../namespacempi.html',1,'']]]
 ];

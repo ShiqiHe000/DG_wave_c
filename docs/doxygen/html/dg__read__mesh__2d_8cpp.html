@@ -100,18 +100,67 @@ $(document).ready(function(){initNavTree('dg__read__mesh__2d_8cpp.html','');});
 <div class="textblock"><code>#include &lt;mpi.h&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &quot;dg_param.h&quot;</code><br />
+<code>#include &quot;dg_read_mesh_2d.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_read_mesh_2d.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__read__mesh__2d_8cpp__incl.svg" width="251" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__read__mesh__2d_8cpp__incl.svg" width="706" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:abe859aac916629f39c2691317740efd8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#abe859aac916629f39c2691317740efd8">Get_single_index</a> (int row, int col, int total_col)</td></tr>
+<tr class="separator:abe859aac916629f39c2691317740efd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94c7eb3e09184e7e66d7ff37f0a363db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#a94c7eb3e09184e7e66d7ff37f0a363db">Read_mesh_2d</a> ()</td></tr>
 <tr class="separator:a94c7eb3e09184e7e66d7ff37f0a363db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="abe859aac916629f39c2691317740efd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe859aac916629f39c2691317740efd8">&#9670;&nbsp;</a></span>Get_single_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Get_single_index </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>row</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>col</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>total_col</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>convert the 2d array index into a single 1d array index </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">row</td><td>row number (start with 0) </td></tr>
+    <tr><td class="paramname">col</td><td>column number (start with 0) </td></tr>
+    <tr><td class="paramname">total_col</td><td>total number of column (start with 1) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a94c7eb3e09184e7e66d7ff37f0a363db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a94c7eb3e09184e7e66d7ff37f0a363db">&#9670;&nbsp;</a></span>Read_mesh_2d()</h2>
 
@@ -126,14 +175,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>READ .MSH FILE, RECORD THE XY COORDINATE OF EACH ELEMENT. SORTING THE NODE-ORDERING FORMAT. WARRENT EACH ELEMENT NODE IS ORDERING AS THE FORMAT: 4-----&mdash;3 </p><table class="doxtable">
-<tr>
-<th></th></tr>
-<tr>
-<td></td></tr>
-</table>
-<p>1-----&mdash;2</p>
-<p>GET ELEMENT IJ COORDINDATE. NOTE: THE ELEMENT SEQUENCE IN .MSH FILE DOES NOT MATTER. </p>
 
 </div>
 </div>
