@@ -6,8 +6,15 @@
 #include "dg_param.h"	
 #include "dg_read_mesh_2d.h"
 
-// Trim a string
-std::string Rtrim(std::string& string1);
+/// convert the 2d array index into a single 1d array index
+/// @param row row number (start with 0) 
+/// @param col column number (start with 0)
+/// @param total_col total number of column (start with 1)
+int Get_single_index(int row, int col, int total_col){
+
+	return (row * total_col + col);
+
+}
 
 void Read_mesh_2d(){
 
@@ -44,7 +51,7 @@ void Read_mesh_2d(){
 		std::string string1;
 		sss >> string1;
 
-		std::cout<< string1 << "\n";
+		// check if we are at the target position
 		if(string1 != "$Nodes"){
 			std::cout<< "Problem in .msh file. Please use Legency ASCII2 format." << "\n";
 		}
@@ -56,9 +63,13 @@ void Read_mesh_2d(){
 		int total_node;
 		ss >> total_node;
 		
+		// allocate a memory space on heap to hold the 2d array
+		const int node_size = 2 * total_node; 
 		double* ptr_node;	// pointer to node coordinate
-		prt_node = new double[2, total_node];
+		ptr_node = new double[node_size]; 	// store the node coordinates
+	
 		
+
 //		int a;
 //		for(int i = 0; i < num_of_phy_name; i++){
 //			
@@ -84,13 +95,3 @@ void Read_mesh_2d(){
 
 }
 
-// define right trim a string function
-std::string Rtrim(std::string& string1){
-	
-	const std::string targets = " ";
-
-	string1.erase(string1.find_last_not_of(targets)+1);
-
-	return string1;
-
-}

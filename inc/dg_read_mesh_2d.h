@@ -3,7 +3,6 @@
 
 void Read_mesh_2d();
 
-std::string Rtrim(std::string& string1);
 
 #endif
 
