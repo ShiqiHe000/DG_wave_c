@@ -2,6 +2,8 @@
 #include <cmath>	// pow()
 #include "dg_nodal_2d_storage.h"
 #include "dg_param.h"
+#include "dg_get_dual_coord.h"
+#include "dg_single_index.h"
 
 void Gen_dual_graph_2d(){
 	
@@ -20,13 +22,16 @@ void Gen_dual_graph_2d(){
 	double delta_y = (grid::gy_r - grid::gy_l) / (double)SortMesh::num_of_element_y;
 	//----------------------------------------------------------------
 
-	for(int i = 0; i < SortMesh::num_of_element; ++i){
-		
+	for(int k = 0; k < SortMesh::num_of_element; ++k){
+		int inode = Get_single_index(k, 0, 4);
+		int inode2 = Get_single_index(k, 0, 2);
+		int* temp = &SortMesh::dual_coord[inode2];
+		Get_dual_coord_2d(SortMesh::elem_x_position[inode], SortMesh::elem_y_position[inode], 
+					delta_x, delta_y, temp);		
 
 	}
 
 	
-
 	
 
 }
