@@ -18,11 +18,8 @@
 <!-- Node10 -->
 <g id="node2" class="node">
 <title>Node10</title>
-<g id="a_node2"><a xlink:href="$classPublicBase.html" xlink:title="PublicBase">
 <polygon fill="none" stroke="#000000" points="66.018,-88 -.006,-88 -.006,-68 66.018,-68 66.018,-88"/>
 <text text-anchor="middle" x="33.006" y="-75" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">PublicBase</text>
-</a>
-</g>
 </g>
 <!-- Node10&#45;&gt;Node9 -->
 <g id="edge1" class="edge">
@@ -33,11 +30,8 @@
 <!-- Node11 -->
 <g id="node3" class="node">
 <title>Node11</title>
-<g id="a_node3"><a xlink:href="$classTruncated.html" xlink:title="Truncated">
 <polygon fill="none" stroke="#ff0000" points="63.518,-156 2.494,-156 2.494,-136 63.518,-136 63.518,-156"/>
 <text text-anchor="middle" x="33.006" y="-143" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">Truncated</text>
-</a>
-</g>
 </g>
 <!-- Node11&#45;&gt;Node10 -->
 <g id="edge2" class="edge">
@@ -48,11 +42,8 @@
 <!-- Node13 -->
 <g id="node4" class="node">
 <title>Node13</title>
-<g id="a_node4"><a xlink:href="$classProtectedBase.html" xlink:title="ProtectedBase">
 <polygon fill="none" stroke="#000000" points="165.5861,-88 84.4259,-88 84.4259,-68 165.5861,-68 165.5861,-88"/>
 <text text-anchor="middle" x="125.006" y="-75" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">ProtectedBase</text>
-</a>
-</g>
 </g>
 <!-- Node13&#45;&gt;Node9 -->
 <g id="edge3" class="edge">
@@ -63,11 +54,8 @@
 <!-- Node14 -->
 <g id="node5" class="node">
 <title>Node14</title>
-<g id="a_node5"><a xlink:href="$classPrivateBase.html" xlink:title="PrivateBase">
 <polygon fill="none" stroke="#000000" points="253.9071,-88 184.1049,-88 184.1049,-68 253.9071,-68 253.9071,-88"/>
 <text text-anchor="middle" x="219.006" y="-75" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">PrivateBase</text>
-</a>
-</g>
 </g>
 <!-- Node14&#45;&gt;Node9 -->
 <g id="edge4" class="edge">
@@ -90,11 +78,8 @@
 <!-- Node16 -->
 <g id="node7" class="node">
 <title>Node16</title>
-<g id="a_node7"><a xlink:href="$classTempl.html" xlink:title="Templ&lt; int &gt;">
 <polygon fill="none" stroke="#000000" points="445.5753,-88 374.4367,-88 374.4367,-68 445.5753,-68 445.5753,-88"/>
 <text text-anchor="middle" x="410.006" y="-75" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">Templ&lt; int &gt;</text>
-</a>
-</g>
 </g>
 <!-- Node16&#45;&gt;Node9 -->
 <g id="edge6" class="edge">
@@ -105,11 +90,8 @@
 <!-- Node17 -->
 <g id="node8" class="node">
 <title>Node17</title>
-<g id="a_node8"><a xlink:href="$classTempl.html" xlink:title="Templ&lt; T &gt;">
 <polygon fill="none" stroke="#000000" points="443.6261,-156 376.3859,-156 376.3859,-136 443.6261,-136 443.6261,-156"/>
 <text text-anchor="middle" x="410.006" y="-143" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">Templ&lt; T &gt;</text>
-</a>
-</g>
 </g>
 <!-- Node17&#45;&gt;Node16 -->
 <g id="edge7" class="edge">
@@ -121,11 +103,8 @@
 <!-- Node18 -->
 <g id="node9" class="node">
 <title>Node18</title>
-<g id="a_node9"><a xlink:href="$classUsed.html" xlink:title="Used">
 <polygon fill="none" stroke="#000000" points="502.8445,-88 463.1675,-88 463.1675,-68 502.8445,-68 502.8445,-88"/>
 <text text-anchor="middle" x="483.006" y="-75" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">Used</text>
-</a>
-</g>
 </g>
 <!-- Node18&#45;&gt;Node9 -->
 <g id="edge8" class="edge">

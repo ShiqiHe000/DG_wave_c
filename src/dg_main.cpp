@@ -20,8 +20,7 @@
 #include <mpi.h>
 #include "dg_mpi.h"
 #include "dg_param.h"
-#include "dg_read_mesh_2d.h"
-
+#include "dg_prepare_hilbert_scheme.h"
 
 int main(int argc, char *argv[]){
 	
@@ -31,8 +30,8 @@ int main(int argc, char *argv[]){
 	// Initialize mpi
 	Start_mpi(&argc, a);
 	
-	// test read mesh	
-    	Read_mesh_2d();
+	// prepare Hilbert curve
+	Hilber_numbering();
 
 	// terminate mpi
         ierr = MPI_Finalize();	

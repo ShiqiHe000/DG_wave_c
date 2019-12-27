@@ -10,7 +10,17 @@ namespace fileinfo{
 }
 // -------------------------------------------------
 
+// Grid size ---------------------------------------
+namespace grid{
+	extern const int exp_x;
+	extern const int exp_y;
 
+	extern const double gx_l;
+	extern const double gx_r;
+	extern const double gy_l;
+	extern const double gy_r;
+};
+//--------------------------------------------------
 // mpi variables-------------------------------------
 namespace mpi{
 	extern int rank;

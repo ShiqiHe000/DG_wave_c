@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['rank',['rank',['../namespacempi.html#a81dd6f94f107660dc25a1393f0aa5290',1,'mpi']]],
-  ['read_5fmesh_5f2d',['Read_mesh_2d',['../dg__read__mesh__2d_8cpp.html#a94c7eb3e09184e7e66d7ff37f0a363db',1,'dg_read_mesh_2d.cpp']]]
+  ['main_18',['main',['../dg__main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'dg_main.cpp']]],
+  ['mpi_19',['mpi',['../namespacempi.html',1,'']]]
 ];
