@@ -28,8 +28,8 @@ void Get_standard(double &x1, double &y1,
 		double &x_max, double &x_min, 
 		double &y_max, double y_min);
 
-int Get_scores(int& x_max, int& y_max, double*& node_xy1, double*& node_xy2, 
-		const int& x_scores, const int& y_scores);
+int Get_scores(double& x_max, double& y_max, double& node_xy1, double& node_xy2, 
+		const int (&x_scores)[2], const int (&y_scores)[2]);
 
 bool AlmostEqual(double& a, double& b);
 //-------------------------------------------------------------------------------------------------
@@ -176,10 +176,10 @@ void Sort_node_ordering(int &total_node, int &total_quad, int*& quad_node, doubl
 	const int x_scores[]{2, 1};
 	const int y_scores[]{20, 10};
 
-	const int node1 = x_scores[2] + y_scores[2];
-	const int node2 = x_scores[2] + y_scores[1];
-	const int node3 = x_scores[1] + y_scores[1];
-	const int node4 = x_scores[1] + y_scores[2];
+	const int node1 = x_scores[1] + y_scores[1];
+	const int node2 = x_scores[1] + y_scores[0];
+	const int node3 = x_scores[0] + y_scores[0];
+	const int node4 = x_scores[0] + y_scores[1];
 	//----------------------------------
 	
 	//------------------------------------------
@@ -192,30 +192,60 @@ void Sort_node_ordering(int &total_node, int &total_quad, int*& quad_node, doubl
 
 		double x_max, x_min, y_max, y_min;
 		
-		int node1, node3;
+		int node11, node33;
 
-		node1 = quad_node[Get_single_index(k, 0, 4)];
-		node3 = quad_node[Get_single_index(k, 2, 4)];
-
-		Get_standard(node_xy[Get_single_index(node1, 0, 2)],
-			       node_xy[Get_single_index(node1, 1, 2)], 
-			       node_xy[Get_single_index(node3, 0, 2)], 
-			       node_xy[Get_single_index(node3, 1, 2)], 
+		node11 = quad_node[Get_single_index(k, 0, 4)] - 1;	// node id start with 0
+		node33 = quad_node[Get_single_index(k, 2, 4)] - 1;
+		
+		Get_standard(node_xy[Get_single_index(node11, 0, 2)],
+			       node_xy[Get_single_index(node11, 1, 2)], 
+			       node_xy[Get_single_index(node33, 0, 2)], 
+			       node_xy[Get_single_index(node33, 1, 2)], 
 		       		x_max, x_min, y_max, y_min);	
-	
+
 		for(int i = 0; i < 4; ++i){
 			
-			int inode = quad_node[Get_single_index(k, i, 4)];
-
+			int inode = quad_node[Get_single_index(k, i, 4)] - 1;
+			
 			int score = Get_scores(x_max, y_max, node_xy[Get_single_index(inode, 0, 2)], 
 					node_xy[Get_single_index(inode, 1, 2)], 
 					x_scores, y_scores);
 			
-		
+
+			if(score == node1){
+
+				int ii = Get_single_index(k, 0, 4);
+				SortMesh::elem_x_position[ii] = node_xy[Get_single_index(inode, 0, 2)];
+				SortMesh::elem_y_position[ii] = node_xy[Get_single_index(inode, 1, 2)];	
+
+			}
+			else if(score == node2){
+			
+				int ii = Get_single_index(k, 1, 4);
+				SortMesh::elem_x_position[ii] = node_xy[Get_single_index(inode, 0, 2)];
+				SortMesh::elem_y_position[ii] = node_xy[Get_single_index(inode, 1, 2)];	
+			}
+			else if(score == node3){
+				
+				int ii = Get_single_index(k, 2, 4);
+				SortMesh::elem_x_position[ii] = node_xy[Get_single_index(inode, 0, 2)];
+				SortMesh::elem_y_position[ii] = node_xy[Get_single_index(inode, 1, 2)];	
+			}
+			else if(score == node4){
+				
+				int ii = Get_single_index(k, 3, 4);
+				SortMesh::elem_x_position[ii] = node_xy[Get_single_index(inode, 0, 2)];
+				SortMesh::elem_y_position[ii] = node_xy[Get_single_index(inode, 1, 2)];	
+			
+			} 
+			else{
+				std::cout<< "In dg_read_2d_mesh.cpp, the element 'score' doesn not \
+					match the stardards." << "\n";
+				return;
+			}
 		}
 
 	}
-
 
 	
 }
@@ -247,10 +277,10 @@ void Get_standard(double &x1, double &y1,
 
 }
 
-int Get_scores(int& x_max, int& y_max, double*& node_xy1, double*& node_xy2, 
-		const int& x_scores, const int& y_scores){
+int Get_scores(double& x_max, double& y_max, double& node_xy1, double& node_xy2, 
+		const int (&x_scores)[2], const int (&y_scores)[2]){
 	
-	int scores = 0;
+	int score = 0;
 	bool flag1, flag2;
 
 	flag1 = AlmostEqual(node_xy1, x_max);
