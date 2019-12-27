@@ -7,6 +7,8 @@
 /// @param num_of_element_y number of element in y direction (start with 1)
 /// @param num_of_element Total number of element (originally)
 /// @param dual_coord dual graph coordinates
+/// @param x_hilbert x coordinate of element k on hilbert curve
+/// @param y_hilbert y coordinate of element k on hilbert curve
 namespace SortMesh{
 	double* elem_x_position; 
 	double* elem_y_position; 
@@ -16,6 +18,8 @@ namespace SortMesh{
 	int num_of_element;
 	
 	int* dual_coord; 
-
+	
+	double* x_hilbert;
+	double* y_hilbert;
 }
 

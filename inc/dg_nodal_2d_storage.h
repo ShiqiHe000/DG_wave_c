@@ -11,6 +11,9 @@ namespace SortMesh{
 	extern int num_of_element;
 	
 	extern int* dual_coord;
+	
+	extern double* x_hilbert;
+	extern double* y_hilbert;
 }
 
 
