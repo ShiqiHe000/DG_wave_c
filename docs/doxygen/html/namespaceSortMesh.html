@@ -110,6 +110,18 @@ Variables</h2></td></tr>
 <tr class="separator:ac541f1457f1c7767e9afdcacd0d77e74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4425fbc2bcc210da22a32c8a2fa1bdec"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#a4425fbc2bcc210da22a32c8a2fa1bdec">elem_y_position</a></td></tr>
 <tr class="separator:a4425fbc2bcc210da22a32c8a2fa1bdec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a396fa11d97629af30f744c8a0460fb4b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#a396fa11d97629af30f744c8a0460fb4b">num_of_element_x</a></td></tr>
+<tr class="separator:a396fa11d97629af30f744c8a0460fb4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6410e79cb99613a62d750eb232398a2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#ab6410e79cb99613a62d750eb232398a2">num_of_element_y</a></td></tr>
+<tr class="separator:ab6410e79cb99613a62d750eb232398a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15e99d3be1d5ac75d5d0a261b02bc88b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#a15e99d3be1d5ac75d5d0a261b02bc88b">num_of_element</a></td></tr>
+<tr class="separator:a15e99d3be1d5ac75d5d0a261b02bc88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf9de296d745986c8d318d848caebe79"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#acf9de296d745986c8d318d848caebe79">dual_coord</a></td></tr>
+<tr class="separator:acf9de296d745986c8d318d848caebe79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5af2fbf018a15a38020f9dd54396b44a"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#a5af2fbf018a15a38020f9dd54396b44a">x_hilbert</a></td></tr>
+<tr class="separator:a5af2fbf018a15a38020f9dd54396b44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45390a2b5dfdc1ae01e8ed0466a351c"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#ab45390a2b5dfdc1ae01e8ed0466a351c">y_hilbert</a></td></tr>
+<tr class="separator:ab45390a2b5dfdc1ae01e8ed0466a351c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>vairables used in sort mesh file </p>
@@ -117,10 +129,30 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">elem_x_position</td><td>kth element x coordinates in design sequence </td></tr>
     <tr><td class="paramname">elem_y_position</td><td>kth element y coordinates in design sequence </td></tr>
+    <tr><td class="paramname">num_of_element_x</td><td>number of element in x direction (start with 1) </td></tr>
+    <tr><td class="paramname">num_of_element_y</td><td>number of element in y direction (start with 1) </td></tr>
+    <tr><td class="paramname">num_of_element</td><td>Total number of element (originally) </td></tr>
+    <tr><td class="paramname">dual_coord</td><td>dual graph coordinates </td></tr>
+    <tr><td class="paramname">x_hilbert</td><td>x coordinate of element k on hilbert curve </td></tr>
+    <tr><td class="paramname">y_hilbert</td><td>y coordinate of element k on hilbert curve </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Variable Documentation</h2>
+<a id="acf9de296d745986c8d318d848caebe79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf9de296d745986c8d318d848caebe79">&#9670;&nbsp;</a></span>dual_coord</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* SortMesh::dual_coord</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac541f1457f1c7767e9afdcacd0d77e74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac541f1457f1c7767e9afdcacd0d77e74">&#9670;&nbsp;</a></span>elem_x_position</h2>
 
@@ -143,6 +175,76 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">double* SortMesh::elem_y_position</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a15e99d3be1d5ac75d5d0a261b02bc88b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15e99d3be1d5ac75d5d0a261b02bc88b">&#9670;&nbsp;</a></span>num_of_element</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SortMesh::num_of_element</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a396fa11d97629af30f744c8a0460fb4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a396fa11d97629af30f744c8a0460fb4b">&#9670;&nbsp;</a></span>num_of_element_x</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SortMesh::num_of_element_x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab6410e79cb99613a62d750eb232398a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6410e79cb99613a62d750eb232398a2">&#9670;&nbsp;</a></span>num_of_element_y</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SortMesh::num_of_element_y</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5af2fbf018a15a38020f9dd54396b44a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5af2fbf018a15a38020f9dd54396b44a">&#9670;&nbsp;</a></span>x_hilbert</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double* SortMesh::x_hilbert</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab45390a2b5dfdc1ae01e8ed0466a351c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab45390a2b5dfdc1ae01e8ed0466a351c">&#9670;&nbsp;</a></span>y_hilbert</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double* SortMesh::y_hilbert</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -110,6 +110,14 @@ Variables</h2></td></tr>
 <tr class="separator:a6199c4fb8cb6f6fe49c08387dd95cb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ba338f6a49bfc06e9e932e4fc8eab94"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a8ba338f6a49bfc06e9e932e4fc8eab94">exp_y</a> = 1</td></tr>
 <tr class="separator:a8ba338f6a49bfc06e9e932e4fc8eab94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd14a32e98f7236ee46107ffb768a1b2"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#acd14a32e98f7236ee46107ffb768a1b2">gx_l</a> = 0.0</td></tr>
+<tr class="separator:acd14a32e98f7236ee46107ffb768a1b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae038523f31c47671a508a44e00247c8c"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#ae038523f31c47671a508a44e00247c8c">gx_r</a> = 1.0</td></tr>
+<tr class="separator:ae038523f31c47671a508a44e00247c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cf68479539d1ff3ebffe29f269bc771"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a5cf68479539d1ff3ebffe29f269bc771">gy_l</a> = 0.0</td></tr>
+<tr class="separator:a5cf68479539d1ff3ebffe29f269bc771"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20a46e735d88ce8c4b1fc9df3aaa8316"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a20a46e735d88ce8c4b1fc9df3aaa8316">gy_r</a> = 1.0</td></tr>
+<tr class="separator:a20a46e735d88ce8c4b1fc9df3aaa8316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Domain size. </p>
@@ -117,6 +125,11 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">exp_x</td><td>element number in x direction(exponential order), i.e. 2^(exp_x) </td></tr>
     <tr><td class="paramname">exp_y</td><td>element number in y direction(exponential order), i.e. 2^(exp_y) </td></tr>
+    <tr><td class="paramname">gx_l</td><td>domain left boundary (x direction, must &gt;= 0) </td></tr>
+    <tr><td class="paramname">gx_r</td><td>domain right boundary (x direction, must &gt;= 0) </td></tr>
+    <tr><td class="paramname">gy_l</td><td>domain left boundary (y direction, must &gt;= 0) </td></tr>
+    <tr><td class="paramname">gy_r</td><td>domain right boundary (y direction, must &gt;= 0) <br  />
+ </td></tr>
   </table>
   </dd>
 </dl>
@@ -143,6 +156,62 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const int grid::exp_y = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd14a32e98f7236ee46107ffb768a1b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd14a32e98f7236ee46107ffb768a1b2">&#9670;&nbsp;</a></span>gx_l</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double grid::gx_l = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae038523f31c47671a508a44e00247c8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae038523f31c47671a508a44e00247c8c">&#9670;&nbsp;</a></span>gx_r</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double grid::gx_r = 1.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5cf68479539d1ff3ebffe29f269bc771"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cf68479539d1ff3ebffe29f269bc771">&#9670;&nbsp;</a></span>gy_l</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double grid::gy_l = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a20a46e735d88ce8c4b1fc9df3aaa8316"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20a46e735d88ce8c4b1fc9df3aaa8316">&#9670;&nbsp;</a></span>gy_r</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double grid::gy_r = 1.0</td>
         </tr>
       </table>
 </div><div class="memdoc">

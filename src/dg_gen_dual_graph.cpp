@@ -5,6 +5,9 @@
 #include "dg_get_dual_coord.h"
 #include "dg_single_index.h"
 
+/// @brief
+/// Generate the dual graph coordinates of the mesh file. n(i, j).
+/// Coordinate expansion: 0 <= i <= EXP_X - 1, 0 <= j <= EXP_Y - 1
 void Gen_dual_graph_2d(){
 	
 	// compute the domain size----------------------------------------------------------

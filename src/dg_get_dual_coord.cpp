@@ -2,6 +2,7 @@
 #include <cmath>
 
 /// @brief Generate the dual coordinate of the current element.
+/// @note Constraint: physical domain should be in first quadrant in Cartesian plane.
 /// @param x element k's node 1 x coordinate
 /// @param y element k's node 1 y coordinate
 /// @param delta_x current element size

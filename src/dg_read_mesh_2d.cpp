@@ -24,6 +24,8 @@ int Get_scores(double& x_max, double& y_max, double& node_xy1, double& node_xy2,
 bool AlmostEqual(double& a, double& b);
 //-------------------------------------------------------------------------------------------------
 
+
+/// @brief
 /// Read .msh file, record the xy coordinates of each elements. 
 /// Sorting the node-ordering format. Warrent each element is ordering 
 ///  as: 
@@ -35,7 +37,7 @@ bool AlmostEqual(double& a, double& b);
 ///  2--------1
 /// \endverbatim
 /// Get the ij coordinate.\n
-/// @note The element sequence in .msh file does not matter. 
+/// @note the .msh file has to be in version 2 ASII format. 
 void Read_mesh_2d(){
 
 	if(mpi::rank == 0){
@@ -297,6 +299,8 @@ int Get_scores(double& x_max, double& y_max, double& node_xy1, double& node_xy2,
 
 }
 
+
+/// @brief
 /// If the two double precision number a and b are equal (|a - b| <= 1.0e-11),
 /// then return true.
 bool AlmostEqual(double& a, double& b){

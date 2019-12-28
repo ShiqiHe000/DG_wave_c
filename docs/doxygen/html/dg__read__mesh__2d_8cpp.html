@@ -109,16 +109,15 @@ $(document).ready(function(){initNavTree('dg__read__mesh__2d_8cpp.html',''); ini
 <code>#include &quot;dg_param.h&quot;</code><br />
 <code>#include &quot;dg_read_mesh_2d.h&quot;</code><br />
 <code>#include &quot;dg_nodal_2d_storage.h&quot;</code><br />
+<code>#include &quot;dg_single_index.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_read_mesh_2d.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__read__mesh__2d_8cpp__incl.svg" width="972" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__read__mesh__2d_8cpp__incl.svg" width="1126" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abe859aac916629f39c2691317740efd8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#abe859aac916629f39c2691317740efd8">Get_single_index</a> (int row, int col, int total_col)</td></tr>
-<tr class="separator:abe859aac916629f39c2691317740efd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a2915bf00348950eac067b1d46fe4c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#a0a2915bf00348950eac067b1d46fe4c9">Sort_node_ordering</a> (int &amp;total_node, int &amp;total_quad, int *&amp;quad_node, double *&amp;node_xy)</td></tr>
 <tr class="separator:a0a2915bf00348950eac067b1d46fe4c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab22d42d58cf3072490ec9fdfc1b0a6cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#ab22d42d58cf3072490ec9fdfc1b0a6cb">Get_standard</a> (double &amp;x1, double &amp;y1, double &amp;x2, double &amp;y2, double &amp;x_max, double &amp;x_min, double &amp;y_max, double y_min)</td></tr>
@@ -126,8 +125,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ac10ab05ddf670d9f9e5d9ef25c294873"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#ac10ab05ddf670d9f9e5d9ef25c294873">Get_scores</a> (double &amp;x_max, double &amp;y_max, double &amp;node_xy1, double &amp;node_xy2, const int(&amp;x_scores)[2], const int(&amp;y_scores)[2])</td></tr>
 <tr class="separator:ac10ab05ddf670d9f9e5d9ef25c294873"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8afafb1bb9a484608f5aeb3bacc7249a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#a8afafb1bb9a484608f5aeb3bacc7249a">AlmostEqual</a> (double &amp;a, double &amp;b)</td></tr>
+<tr class="memdesc:a8afafb1bb9a484608f5aeb3bacc7249a"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the two double precision number a and b are equal (|a - b| &lt;= 1.0e-11), then return true.  <a href="dg__read__mesh__2d_8cpp.html#a8afafb1bb9a484608f5aeb3bacc7249a">More...</a><br /></td></tr>
 <tr class="separator:a8afafb1bb9a484608f5aeb3bacc7249a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94c7eb3e09184e7e66d7ff37f0a363db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__read__mesh__2d_8cpp.html#a94c7eb3e09184e7e66d7ff37f0a363db">Read_mesh_2d</a> ()</td></tr>
+<tr class="memdesc:a94c7eb3e09184e7e66d7ff37f0a363db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read .msh file, record the xy coordinates of each elements. Sorting the node-ordering format. Warrent each element is ordering as:  <a href="dg__read__mesh__2d_8cpp.html#a94c7eb3e09184e7e66d7ff37f0a363db">More...</a><br /></td></tr>
 <tr class="separator:a94c7eb3e09184e7e66d7ff37f0a363db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -156,6 +157,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>If the two double precision number a and b are equal (|a - b| &lt;= 1.0e-11), then return true. </p>
 
 </div>
@@ -209,48 +211,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="abe859aac916629f39c2691317740efd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe859aac916629f39c2691317740efd8">&#9670;&nbsp;</a></span>Get_single_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Get_single_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>row</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>col</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>total_col</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>convert the 2d array index into a single 1d array index </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">row</td><td>row number (start with 0) </td></tr>
-    <tr><td class="paramname">col</td><td>column number (start with 0) </td></tr>
-    <tr><td class="paramname">total_col</td><td>total number of column (start with 1) </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -332,13 +292,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read .msh file, record the xy coordinates of each elements. Sorting the node-ordering format. Warrent each element is ordering as: </p><pre class="fragment">///  4--------3  
+
+<p>Read .msh file, record the xy coordinates of each elements. Sorting the node-ordering format. Warrent each element is ordering as: </p>
+<pre class="fragment">///  4--------3  
 ///  |        | 
 ///  |        | 
 ///  |        |  
 ///  2--------1
 /// </pre><p> Get the ij coordinate.<br  />
- </p><dl class="section note"><dt>Note</dt><dd>The element sequence in .msh file does not matter. <br  />
+ </p><dl class="section note"><dt>Note</dt><dd>the .msh file has to be in version 2 ASII format. <br  />
  </dd></dl>
 
 </div>

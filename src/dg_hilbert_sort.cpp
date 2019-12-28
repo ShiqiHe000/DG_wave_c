@@ -5,6 +5,8 @@
 #include "dg_hilbert_curve.h"
 #include "dg_single_index.h"
 
+/// @brief
+/// Re-numbering elements using Hilbert curve
 void Hilbert_sort_2d(){
 
 	// economic storage (only store the 2 diagonal nodes)
