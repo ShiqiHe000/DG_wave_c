@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include "dg_nodal_2d_storage.h"
 
 /// @brief vairables used in sort mesh file
 /// @param elem_x_position kth element x coordinates in design sequence

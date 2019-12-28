@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <cmath>
+#include "dg_get_dual_coord.h"
 
 /// @brief Generate the dual coordinate of the current element.
 /// @note Constraint: physical domain should be in first quadrant in Cartesian plane.

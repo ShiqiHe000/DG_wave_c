@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include "dg_single_index.h"
 
 
 /// @brief convert the 2d array index into a single 1d array index

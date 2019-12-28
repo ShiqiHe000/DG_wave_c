@@ -4,6 +4,7 @@
 #include "dg_param.h"
 #include "dg_hilbert_curve.h"
 #include "dg_single_index.h"
+#include "dg_hilbert_sort.h"
 
 /// @brief
 /// Re-numbering elements using Hilbert curve

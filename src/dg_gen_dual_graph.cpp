@@ -4,6 +4,7 @@
 #include "dg_param.h"
 #include "dg_get_dual_coord.h"
 #include "dg_single_index.h"
+#include "dg_gen_dual_graph.h"
 
 /// @brief
 /// Generate the dual graph coordinates of the mesh file. n(i, j).
