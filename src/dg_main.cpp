@@ -21,18 +21,21 @@
 #include "dg_mpi.h"
 #include "dg_param.h"
 #include "dg_prepare_hilbert_scheme.h"
+#include "dg_start_parallel.h"
 
 int main(int argc, char *argv[]){
 	
-	int ierr;
 	char** a = argv;	
 	
-	// Initialize mpi
+	// initialize mpi
 	Start_mpi(&argc, a);
 	
 	// prepare Hilbert curve
 	Hilber_numbering();
 
+	// start parallel process
+	Start_parallel();
+
 	// terminate mpi
-        ierr = MPI_Finalize();	
+        int ierr = MPI_Finalize();	
 }

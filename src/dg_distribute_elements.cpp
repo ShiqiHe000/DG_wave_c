@@ -4,6 +4,7 @@
 #include "dg_nodal_2d_storage.h"
 #include "dg_local_storage.h"
 #include "dg_distribute_elements.h"
+#include <iostream> 	// just for test
 
 /// @brief
 /// After reading the mesh file, we spread the elements between processors 
@@ -59,8 +60,8 @@ void Distribute_elem(){
 			std::fill_n(sendcouts, mpi::num_proc - 1, average);
 
 			sendcouts[mpi::num_proc -1 ] = last; 
-		}
 
+		}
 
 	}
 }
