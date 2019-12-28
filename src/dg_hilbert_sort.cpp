@@ -1,3 +1,4 @@
+#include <iostream>
 #include <mpi.h>
 #include "dg_nodal_2d_storage.h"
 #include "dg_param.h"
@@ -26,5 +27,18 @@ void Hilbert_sort_2d(){
 		SortMesh::y_hilbert[node2] = SortMesh::elem_y_position[Get_single_index(k, 2, 4)]; 
 
 	}
+	
+	// free memory--------------------------------------
+	delete[] SortMesh::elem_x_position;
+	delete[] SortMesh::elem_y_position;
+	delete[] SortMesh::dual_coord;
 
+	SortMesh::elem_x_position = nullptr;
+	SortMesh::elem_y_position = nullptr;
+	SortMesh::dual_coord = nullptr;
+	//--------------------------------------------------
+
+	std::cout<< "-----------------------------------------" << "\n";
+	std::cout<< "Finished read mesh file and sorting." << "\n";
+	std::cout<< "-----------------------------------------" << "\n";
 }
