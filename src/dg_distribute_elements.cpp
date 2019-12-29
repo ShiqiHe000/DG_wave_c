@@ -42,7 +42,7 @@ void Distribute_elem(){
 			
 			for(int ii = 0; ii < SortMesh::num_of_element; ++ii){
 				local_elem_number[ii] = 1;
-				sendcouts[ii] = 1;
+				sendcouts[ii] = 1 * 2;	// for each element we record two diagnoal points
 	
 			}
 				local::elem_range[1] = 0;
@@ -57,11 +57,46 @@ void Distribute_elem(){
 			
 			local_elem_number[mpi::num_proc - 1] = last;
 
-			std::fill_n(sendcouts, mpi::num_proc - 1, average);
+			std::fill_n(sendcouts, mpi::num_proc - 1, average * 2);
 
-			sendcouts[mpi::num_proc -1 ] = last; 
+			sendcouts[mpi::num_proc -1 ] = last * 2; 
 
 		}
 
+		for(int i = 1; i < mpi::num_proc; ++i ){
+			
+			displs[i] = local_elem_number[i-1] * 2 + displs[i-1];
+			local::elem_range[i+1] = local::elem_range[i] + local_elem_number[i];
+		}
+
+
 	}
+	
+	// scatter local element number
+	MPI_Scatter(&local_elem_number[0], 1, MPI_INT, &local::local_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);	
+	
+	// broadcast total element numebr
+	MPI_Bcast(&local::original_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	// allocate local storage
+	local::x_local = new double[2 * local::local_elem_num ];
+	local::y_local = new double[2 * local::local_elem_num ];
+
+	// scatter data
+	MPI_Scatterv(SortMesh::x_hilbert, sendcouts, displs, MPI_DOUBLE, local::x_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Scatterv(SortMesh::y_hilbert, sendcouts, displs, MPI_DOUBLE, local::y_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(local::elem_range, mpi::num_proc + 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	
+	// deallocate
+	if(mpi::rank == 0){
+		delete[] SortMesh::x_hilbert;
+		delete[] SortMesh::y_hilbert;
+
+		SortMesh::x_hilbert = nullptr;
+		SortMesh::y_hilbert = nullptr;
+		
+	}
+
+
 }

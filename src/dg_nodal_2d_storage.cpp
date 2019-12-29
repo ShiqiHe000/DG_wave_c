@@ -11,8 +11,8 @@
 /// @param x_hilbert x coordinate of element k on hilbert curve
 /// @param y_hilbert y coordinate of element k on hilbert curve
 namespace SortMesh{
-	double* elem_x_position; 
-	double* elem_y_position; 
+	double* elem_x_position = nullptr; 
+	double* elem_y_position = nullptr; 
 
 	int num_of_element_x;	
 	int num_of_element_y;	
@@ -20,7 +20,7 @@ namespace SortMesh{
 	
 	int* dual_coord; 
 	
-	double* x_hilbert;
-	double* y_hilbert;
+	double* x_hilbert = nullptr;
+	double* y_hilbert = nullptr;
 }
 

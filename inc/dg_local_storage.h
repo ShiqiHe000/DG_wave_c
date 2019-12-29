@@ -8,7 +8,9 @@ namespace local{
         extern int original_elem_num;
  
         extern int* elem_range;
- 
+	
+	extern double* x_local; 
+	extern double* y_local; 
 };
 
 
