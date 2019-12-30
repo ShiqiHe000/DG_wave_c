@@ -26,6 +26,8 @@ void Construct_basis_storage(){
 /// @param gl_weight GL weights
 /// @param first_der first order derivative matrix
 void Get_nodal_2d_storage_basis(int n, double* gl_p, double* gl_weight, double* first_der){
+
+
 	
 	GL(n, gl_p, gl_weight);
 	

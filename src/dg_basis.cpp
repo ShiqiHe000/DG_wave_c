@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits>	// epsilon
 #include <cmath>	// sqrt
+#include "dg_single_index.h"
+
 
 const double pi = 4.0 * atan(1.0); 
 
@@ -75,7 +77,7 @@ void Legendre_polynomial_and_derivative(int n, double& x, double& q, double& dq)
 
 
 /// @brief
-/// Compute the Gauss Legendre nodes and weights
+/// Compute the Gauss Legendre nodes and weights. Algprithm 23
 /// @param n polynomial order
 /// @param gl_p GL points
 /// @param gl_w GL weigths
@@ -141,5 +143,104 @@ void GL(int n, double* gl_p, double* gl_w){
 
 }
 
+/// @brief 
+/// Barycentric weights for Lagrange Iterpolation. Algorithm 30.
+/// @param n polynomial order
+/// @param x spectral points
+/// @param bary barycentric weights
+void BAWR(int n, double* x, double* bary){
+	
+	for(int i = 0; i <= n; ++i){
+		bary[i] = 1.0;
+	}
+
+	for(int j = 1; j <= n; ++j){
+		for(int k = 0; k <= j-1; ++k){
+			bary[k] = bary[k] * (x[k] - x[j]);
+			bary[j] = bary[j] * (x[j] - x[k]);
+
+		}
+
+	}
+
+	for(int j = 0, j <= n; ++j){
+
+		bary[j] = 1.0 / bary[j];
+
+	}
 
 
+}
+
+
+
+/// @brief
+/// M-th order derivative matrix. Algorithm 36-37
+/// @param n polynomial order
+/// @param mth_der m-th order polynomial derivative
+/// @param x spectral points
+/// @param der m-th order derivative matrix
+void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, double* der){
+	
+	double* bary = new double[n+1];
+
+	BARW(n, x, bary);
+
+	// mth-order == 1
+	for(int i = 0; i <= n; ++i){
+		int inode = Get_single_index(i, i, n+1);
+		der[inode] = 0.0;
+		
+		for(int j = 0; j <= n; ++j){
+			if(j != i){
+				int node1 = Get_single_index(i, j, n+1);
+				int node2 = Get_single_index(i, i, n+1);
+
+				der[node1] = bary[j] / bary[i] / (x[i] - x[j]);
+				der[node2] = der[node2] - der[node1];
+
+			}
+
+		}
+
+	}	
+	
+
+	if(mth_der == 1){
+		return;
+	}
+
+
+	// mth_order > 1
+	//------------
+	aux = der
+	//------------
+	for(int k = 2; k <= mth_der; ++k){
+		for(int i = 0; i <= n;, ++i){
+			
+			int inode = Get_single_index(i, i, n+1);
+			der[inode] = 0.0;
+
+			for(int j = 0; j <= n; ++j){
+				if(j != i){
+					
+					int node1 = Get_single_index(i, j, n+1);
+					int node2 = Get_single_index(i, i, n+1);
+
+					der[node1] = (double)(k) / (x[i] - x[j]) * 
+							(bary[j] / bary[i] * aux[node2] - aux[node1]);
+
+					der[node2] = der[node2] - der[node1];
+				}
+
+			}
+
+
+		}
+
+	}
+	
+
+
+
+}

@@ -11,6 +11,10 @@ include_directories(inc)
 # source file
 file(GLOB SOURCES "src/*.cpp")
 
+# add external library
+#target_link_libraries(SOURCE -I/)
+
+
 add_executable(main ${SOURCES})
 
 target_link_libraries(main PUBLIC MPI::MPI_CXX)
