@@ -22,6 +22,7 @@
 #include "dg_param.h"
 #include "dg_prepare_hilbert_scheme.h"
 #include "dg_start_parallel.h"
+#include "dg_basis.h"	// for testing
 
 int main(int argc, char *argv[]){
 	
@@ -36,6 +37,13 @@ int main(int argc, char *argv[]){
 	// start parallel process
 	Start_parallel();
 
+	// testing
+//	double* gl_p = nullptr;
+//	double* gl_w = nullptr;
+//	GL(2, gl_p, gl_w);
+
 	// terminate mpi
         int ierr = MPI_Finalize();	
+
 }
+

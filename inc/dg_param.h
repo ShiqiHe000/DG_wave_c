@@ -19,6 +19,11 @@ namespace grid{
 	extern const double gx_r;
 	extern const double gy_l;
 	extern const double gy_r;
+	
+	extern const int nmin;
+	extern const int mmin;
+	extern const int nmax;
+	extern const int mmax;
 };
 //--------------------------------------------------
 // mpi variables-------------------------------------
