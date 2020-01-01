@@ -106,22 +106,19 @@ void GL(int n, double* gl_p, double* gl_w){
 		for(int j = 0; j <= ((n+1)/2)-1; ++j ){
 			// initial guess
 			gl_p[j] = - cos(pi * (double)(2 * j + 1)/(double)(2 * n + 2));
-		int num = 0;	
 
 			// iterative method
 			delta = 10000000.0;
 			while(true){
-			num += 1;
 				
 				Legendre_polynomial_and_derivative(n+1, gl_p[j], q, dq);
 
 				delta = - q / dq;
 				gl_p[j] = gl_p[j] + delta;
-std::cout<< std::abs(delta) << " "<<tol*std::abs(gl_p[j]) << "\n";
+				
 				if(std::abs(delta) <= (tol*std::abs(gl_p[j])))
 					break;
 			}
-std::cout<< num << "\n";
 
 			Legendre_polynomial_and_derivative(n+1, gl_p[j], q, dq);
 				
