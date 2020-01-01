@@ -8,7 +8,10 @@
 /// polynomials at the boundaries, first order derivative matrices and 
 /// modified them.
 void Construct_basis(){
-
-
-
+	
+	// initialize element poly level (start form 0)
+	local::plevel_x = new int[local::local_elem_num]{};
+	local::plevel_y = new int[local::local_elem_num]{};
+	
+	
 }
