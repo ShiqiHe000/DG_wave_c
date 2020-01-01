@@ -38,9 +38,17 @@ int main(int argc, char *argv[]){
 	Start_parallel();
 
 	// testing
-//	double* gl_p = nullptr;
-//	double* gl_w = nullptr;
-//	GL(2, gl_p, gl_w);
+	int n = 6;
+	double gl_p[n+1]{};
+	double gl_w[n+1]{};
+	std::cout.precision(16);
+	GL(n, gl_p, gl_w);
+if(mpi::rank == 0){
+	for(int i = 0; i<=n; ++i){
+		std::cout<< std::fixed <<gl_p[i] << " "<< gl_w[i] << "\n";
+
+	}	
+}
 
 	// terminate mpi
         int ierr = MPI_Finalize();	
