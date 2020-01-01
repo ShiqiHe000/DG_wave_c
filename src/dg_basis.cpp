@@ -117,8 +117,8 @@ void GL(int n, double* gl_p, double* gl_w){
 
 				delta = - q / dq;
 				gl_p[j] = gl_p[j] + delta;
-//std::cout<< delta << " "<<tol*gl_p[j] << "\n";
-				if(abs(delta) <= tol*abs(gl_p[j]))
+std::cout<< std::abs(delta) << " "<<tol*std::abs(gl_p[j]) << "\n";
+				if(std::abs(delta) <= (tol*std::abs(gl_p[j])))
 					break;
 			}
 std::cout<< num << "\n";
