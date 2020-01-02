@@ -12,8 +12,8 @@ namespace local{
 	extern double* x_local; 
 	extern double* y_local; 
 	
-	extern double* pl_p[];
-	extern double* pl_w[];
+	extern int* plevel_x;
+	extern int* plevel_y; 
 };
 
 

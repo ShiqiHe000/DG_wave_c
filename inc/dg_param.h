@@ -21,9 +21,9 @@ namespace grid{
 	extern const double gy_r;
 	
 	extern const int nmin;
-	extern const int mmin;
+//	extern const int mmin;
 	extern const int nmax;
-	extern const int mmax;
+//	extern const int mmax;
 };
 //--------------------------------------------------
 // mpi variables-------------------------------------

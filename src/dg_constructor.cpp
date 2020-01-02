@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include "dg_nodal_2d_storage.h"
 #include "dg_local_storage.h"
+#include "dg_basis_storage.h"
 
 /// @brief 
 /// A nodal DG 2D constructor.
@@ -13,5 +14,7 @@ void Construct_basis(){
 	local::plevel_x = new int[local::local_elem_num]{};
 	local::plevel_y = new int[local::local_elem_num]{};
 	
+	// construct DG basis
+	Construct_basis_storage();	
 	
 }

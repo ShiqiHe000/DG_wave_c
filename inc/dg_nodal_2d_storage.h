@@ -16,5 +16,12 @@ namespace SortMesh{
 	extern double* y_hilbert;
 }
 
+namespace nodal{
+
+	extern double* gl_p[];
+	extern double* gl_w[];
+	
+	extern double* first_der[];
+}
 
 #endif

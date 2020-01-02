@@ -6,6 +6,9 @@
 
 const double pi = 4.0 * atan(1.0); 
 
+// forward declaration
+bool Almost_equal(double a, double b);
+
 /// @brief 
 /// compute matrix vector multiplication.
 /// d * f = der. Algorithm 19.
@@ -172,7 +175,44 @@ void BARW(int n, double* x, double* bary){
 
 }
 
+/// @brief
+/// Lagrange interpolating polynoimial value at target point. Algorithm 34.
+/// @param n polynomial order
+/// @param target_p target point 
+/// @param x GL points
+/// @param bary barycentric points
+/// @param lag lagrange interpolating values at target point. 
+void Lagrange_interpolating_polynomial(int n, int target_p, double* x, double* bary, double* lag ){
 
+	double s = 0.0;
+	bool match = false;
+
+	for(int j = 0; j <= n; ++j){
+		lag[j] = 0.0;
+			
+		bool flag = Almost_
+		}	
+	}
+
+	if(match){
+		return;	
+	}
+
+
+	for(int j = 0; j <= n; ++j){
+		double t = bary[j] / (target_p - x[j]);
+		lag[j] = t;
+		s += t;
+	}
+
+
+	for(int j = 0; j <= n; ++j){
+		lag[j] = lag[j] / s;
+
+	}
+	
+
+}
 
 /// @brief
 /// M-th order derivative matrix. Algorithm 36-37
@@ -240,7 +280,39 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, doubl
 //
 //	}
 	
+	// free memory
+	delete[] bary;
 
+}
 
+/// @brief
+/// Testing equality of two floating point numbers. Algorithm 139
+/// @param a number 1.
+/// @param b number 2.
+bool Almost_equal(double a, double b){
+	
+	if((a == 0.0) || (b == 0.0)){
+ 		double tol  = 2.0 * std::numeric_limits<double>::epsilon();
+		if(std::abs(a - b) <= tol ){
+			return true;
+
+		}
+		else{
+			return false;
+		}
+	}
+	else{
+		double tol1 = std::abs(a) * std::numeric_limits<double>::epsilon();
+		double tol2 = std::abs(b) * std::numeric_limits<double>::epsilon();
+		if(((std::abs(a - b)) <= tol1) && ((std::abs(a - b)) <= tol2)){
+			return true;
+
+		}
+		else{
+
+			return false;
+		}
+
+	}
 
 }

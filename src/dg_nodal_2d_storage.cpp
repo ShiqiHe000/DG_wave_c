@@ -24,3 +24,15 @@ namespace SortMesh{
 	double* y_hilbert = nullptr;
 }
 
+/// @brief 
+/// 2d nodal data storage
+/// @param gl_p arrau of pointer, each pointer points to an array of GL points of corresponding poly order.
+/// @param gl_w arrau of pointer, each pointer points to an array of GL weights of corresponding poly order.
+/// @param first_der first derivative matrix.
+namespace nodal{
+
+	double* gl_p[]{};
+	double* gl_w[]{};
+
+	double* first_der[]{};
+}

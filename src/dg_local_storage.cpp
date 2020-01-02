@@ -7,8 +7,6 @@
 /// @param elem_range the range of element stores on each processor.  Stored the last element numebr (start with 0, global index). 
 /// @param x_local coordinate, start with 0.
 /// @param y_local y coordinate, start with 0.
-/// @param gl_p array of pointers, each pointer points to array of GL points with different polynomial order.
-/// @param gl_w array of pointers, each pointer points to array of GL weights with different polynomial weight.
 /// @param plevel_x polynomial level in x direction (start with 0)
 /// @param plevel_y polynomial level in y direction (start with 0)
 namespace local{
@@ -22,8 +20,6 @@ namespace local{
 	double* x_local = nullptr;
 	double* y_local = nullptr;
 	
-	double* gl_p[] = nullptr;	// array of pointers (points to different gl points of different orders)
-	double* gl_w[] = nullptr;
 	
 	int* plevel_x = nullptr;
 	int* plevel_y = nullptr;
