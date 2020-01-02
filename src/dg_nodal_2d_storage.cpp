@@ -33,11 +33,11 @@ namespace SortMesh{
 /// @param lagrange_r Lagrange interpolating polynomial on the right boundary
 namespace nodal{
 
-	double* gl_p[]{};
-	double* gl_w[]{};
+	double** gl_p{};
+	double** gl_w{};
 
-	double* first_der[]{};
+	double** first_der{};
 		
-	double* lagrange_l[]{};
-	double* lagrange_r[]{};
+	double** lagrange_l{};
+	double** lagrange_r{};
 }

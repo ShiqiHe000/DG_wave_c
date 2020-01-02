@@ -85,7 +85,7 @@ void Legendre_polynomial_and_derivative(int n, double& x, double& q, double& dq)
 /// @param n polynomial order
 /// @param gl_p GL points
 /// @param gl_w GL weigths
-void GL(int n, double* gl_p, double* gl_w){
+void GL(int n, double** gl_p, double** gl_w){
 
 	double delta;
 	double q, dq, tol;
@@ -183,7 +183,7 @@ void BARW(int n, double* x, double* bary){
 /// @param x GL points
 /// @param bary barycentric points
 /// @param lag lagrange interpolating values at target point. 
-void Lagrange_interpolating_polynomial(int n, int target_p, double* x, double* bary, double* lag ){
+void Lagrange_interpolating_polynomial(int n, double target_p, double* x, double* bary, double* lag ){
 
 	double s = 0.0;
 	bool match = false;
@@ -196,8 +196,8 @@ void Lagrange_interpolating_polynomial(int n, int target_p, double* x, double* b
 			lag[j] = 1.0;
 			match = true;
 		}
-		}	
-	}
+	}	
+	
 
 	if(match){
 		return;	

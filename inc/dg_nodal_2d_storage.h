@@ -18,13 +18,13 @@ namespace SortMesh{
 
 namespace nodal{
 
-	extern double* gl_p[];
-	extern double* gl_w[];
+	extern double** gl_p;
+	extern double** gl_w;
 	
-	extern double* first_der[];
+	extern double** first_der;
 
-	extern double* lagrange_l[];
-	extern double* lagrange_r[];
+	extern double** lagrange_l;
+	extern double** lagrange_r;
 
 }
 
