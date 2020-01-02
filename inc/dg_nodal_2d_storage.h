@@ -22,6 +22,10 @@ namespace nodal{
 	extern double* gl_w[];
 	
 	extern double* first_der[];
+
+	extern double* lagrange_l[];
+	extern double* lagrange_r[];
+
 }
 
 #endif

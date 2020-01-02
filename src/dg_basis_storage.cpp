@@ -5,6 +5,13 @@
 #include "dg_poly_level_and_order.h"
 #include "dg_basis_storage.h"
 
+// forward declaration----------------------------------------------------------------------------
+void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double* gl_p);
+
+void Get_nodal_2d_storage_basis(int n, double* gl_p, double* gl_weight, double* first_der);
+
+//------------------------------------------------------------------------------------------------
+
 /// @brief
 /// Processor's local storages.
 /// Generate the basis information (GL PIOINTS, WEIGHTS, DERIVATIVE 
@@ -24,7 +31,8 @@ void Construct_basis_storage(){
 //	int der_size = (grid::nmax + 1) * (grid::nmax + 1);
 	nodal::first_der[level_max + 1];
 
-
+	// lagrange interpolating polynomial
+	nodal::lagrange_l[level_max + 1];
 
 	// generate the 2d storages
 	for(int k = 0; k <= leve_max; ++k ){
@@ -33,6 +41,7 @@ void Construct_basis_storage(){
 
 		Get_nodal_2d_storage_basis(porder, nodal::gl_p[k], nodal::gl_w[k], nodal::first_der[k]);
 
+		Get_nodal_2d_storage_extends(porder, nodal::lagrange_l[k], nodal::lagrange_r[k], gl_p[k]);
 
 	}
 	
@@ -73,18 +82,23 @@ void Get_nodal_2d_storage_basis(int n, double* gl_p, double* gl_weight, double* 
 /// @param lag_l Lagrange interpolates on the left boundary.
 /// @param lag_r Lagrange interpolates on the right boundary.
 /// @param gl_p GL points.
-void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double* gl_p){
+void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double** gl_p){
 
 	double* bary = new double[n + 1];
 
 	BARW(n, gl_p, bary);
-	/// -------------------------------
-	/// lagrange_interpolates to boundary
-	/// -------------------------------
+
+	double* lag_l_now = new double[n + 1];
+	double* lag_r_now = new double[n + 1];
+
+	Lagrange_interpoltating_polynomial(n, -1.0, gl_p, bary, lag_l_now);
+	Lagrange_interpoltating_polynomial(n,  1.0, gl_p, bary, lag_r_now);
+	
+
+	lag_l = &lag_l_now[0];
+	lag_r = &lag_r_now[0];
 
 
 	delete[] bary;
-	
-
 
 }

@@ -6,8 +6,9 @@
 
 const double pi = 4.0 * atan(1.0); 
 
-// forward declaration
+// forward declaration----------------------------
 bool Almost_equal(double a, double b);
+//------------------------------------------------
 
 /// @brief 
 /// compute matrix vector multiplication.
@@ -190,7 +191,11 @@ void Lagrange_interpolating_polynomial(int n, int target_p, double* x, double* b
 	for(int j = 0; j <= n; ++j){
 		lag[j] = 0.0;
 			
-		bool flag = Almost_
+		bool flag = Almost_equal(target_p, x[j]);
+		if(flag){
+			lag[j] = 1.0;
+			match = true;
+		}
 		}	
 	}
 
@@ -205,11 +210,12 @@ void Lagrange_interpolating_polynomial(int n, int target_p, double* x, double* b
 		s += t;
 	}
 
-
+	// maybe use blas dscal
 	for(int j = 0; j <= n; ++j){
 		lag[j] = lag[j] / s;
 
 	}
+
 	
 
 }
@@ -247,6 +253,7 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, doubl
 	
 
 	if(mth_der == 1){
+		delete[] bary;
 		return;
 	}
 

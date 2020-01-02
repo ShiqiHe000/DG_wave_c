@@ -29,10 +29,15 @@ namespace SortMesh{
 /// @param gl_p arrau of pointer, each pointer points to an array of GL points of corresponding poly order.
 /// @param gl_w arrau of pointer, each pointer points to an array of GL weights of corresponding poly order.
 /// @param first_der first derivative matrix.
+/// @param lagrange_l Lagrange interpolating polynomial on the left boundary
+/// @param lagrange_r Lagrange interpolating polynomial on the right boundary
 namespace nodal{
 
 	double* gl_p[]{};
 	double* gl_w[]{};
 
 	double* first_der[]{};
+		
+	double* lagrange_l[]{};
+	double* lagrange_r[]{};
 }
