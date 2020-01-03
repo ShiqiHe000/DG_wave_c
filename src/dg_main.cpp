@@ -26,7 +26,7 @@
 #include "dg_constructor.h" 	// testing
 #include "dg_poly_level_and_order.h"	// test
 #include "dg_nodal_2d_storage.h"	//test
-
+#include "dg_single_index.h"	//test
 int main(int argc, char *argv[]){
 	
 	char** a = argv;	
@@ -50,8 +50,11 @@ int main(int argc, char *argv[]){
 //std::cout<< porder << "\n";
 		
 		for(int j = 0; j <= porder; ++j ){
-			std::cout << i << " " << j << " " << nodal::gl_w[i][j] << "\n";
+			for(int k = 0; k <= porder; ++k){
 
+				int nodei = Get_single_index(j, k, porder+1);
+				std::cout << j << " " << k << " " << nodal::first_der[i][nodei] << "\n";
+			}
 		}
 
 	}
