@@ -5,7 +5,7 @@
 A detailed documentation an be found at 
 
 ## Documentation from the source code
-
+[Source code documentation]( https://github.com/ShiqiHe000/DG_wave_c.git/docs/doxygen/html/index.html)
 
 ## Approximation of wave equation
 The basic model of wave propgation is the wave equation:
