@@ -1,6 +1,6 @@
 # Discontinuous Galerkin Wave Equation Slover
 
-![build status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)
+[![Build Status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)](https://travis-ci.com/ShiqiHe000/DG_wave_c)
 
 ## Documentation
 A detailed documentation an be found at 
