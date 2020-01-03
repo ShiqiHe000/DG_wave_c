@@ -2,6 +2,7 @@
 #include "dg_nodal_2d_storage.h"
 #include "dg_local_storage.h"
 #include "dg_basis_storage.h"
+#include "dg_constructor.h"
 
 /// @brief 
 /// A nodal DG 2D constructor.

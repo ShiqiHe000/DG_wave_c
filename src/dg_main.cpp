@@ -23,6 +23,9 @@
 #include "dg_prepare_hilbert_scheme.h"
 #include "dg_start_parallel.h"
 #include "dg_basis.h"	// for testing
+#include "dg_constructor.h" 	// testing
+#include "dg_poly_level_and_order.h"	// test
+#include "dg_nodal_2d_storage.h"	//test
 
 int main(int argc, char *argv[]){
 	
@@ -38,17 +41,20 @@ int main(int argc, char *argv[]){
 	Start_parallel();
 
 	// testing
-	int n = 6;
-	double gl_p[n+1]{};
-	double gl_w[n+1]{};
-	std::cout.precision(16);
-	GL(n, gl_p, gl_w);
-if(mpi::rank == 0){
-	for(int i = 0; i<=n; ++i){
-		std::cout<< std::fixed <<gl_p[i] << " "<< gl_w[i] << "\n";
+	Construct_basis();
+	int level_max = Poly_order_to_level(grid::nmin, grid::nmax);
+//	std::cout<< level_max << "\n";
+	for(int i = 0; i < level_max + 1; ++i){
+		
+		int porder = Poly_level_to_order(grid::nmin, i);
+//std::cout<< porder << "\n";
+		
+		for(int j = 0; j <= porder; ++j ){
+			std::cout << i << " " << j << " " << nodal::gl_w[i][j] << "\n";
 
-	}	
-}
+		}
+
+	}
 
 	// terminate mpi
         int ierr = MPI_Finalize();	

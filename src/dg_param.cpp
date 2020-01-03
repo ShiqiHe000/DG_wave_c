@@ -21,10 +21,8 @@ namespace fileinfo{
 /// @param gx_r domain right boundary (x direction, must >= 0) 
 /// @param gy_l domain left boundary (y direction, must >= 0) 
 /// @param gy_r domain right boundary (y direction, must >= 0) 
-/// @param nmin minimum polynomial degree in x direction
-/// @param mmin minimum polynomial degree in y direction
-/// @param nmax maximum polynomial degree in a direction
-/// @param mmax maximum polynomial degree in y direction
+/// @param nmin minimum polynomial degree in x and y direction
+/// @param nmax maximum polynomial degree in x and y direction
 namespace grid{
 	const int exp_x = 1; 
 	const int exp_y = 1; 
@@ -34,10 +32,8 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 4;	// x direction
-//	const int mmin = 4;	// y direction
-	const int nmax = 10;
-//	const int mmax = 10;
+	const int nmin = 6;	// x direction
+	const int nmax = 6;
 
 };
 //---------------------------------------------------------------------

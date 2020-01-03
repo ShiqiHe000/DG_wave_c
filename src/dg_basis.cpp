@@ -85,7 +85,7 @@ void Legendre_polynomial_and_derivative(int n, double& x, double& q, double& dq)
 /// @param n polynomial order
 /// @param gl_p GL points
 /// @param gl_w GL weigths
-void GL(int n, double** gl_p, double** gl_w){
+void GL(int n, double* gl_p, double* gl_w){
 
 	double delta;
 	double q, dq, tol;

@@ -4,9 +4,9 @@
 #include "dg_basis.h"
 #include "dg_poly_level_and_order.h"
 #include "dg_basis_storage.h"
-
+#include <iostream>	//test
 // forward declaration----------------------------------------------------------------------------
-void Get_nodal_2d_storage_basis(int n, double* gl_p, double* gl_weight, double* first_der);
+void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der);
 
 void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double* gl_p);
 //------------------------------------------------------------------------------------------------
@@ -31,23 +31,14 @@ void Construct_basis_storage(){
 	nodal::first_der = new double*[level_max + 1]{};
 
 	// lagrange interpolating polynomial
-	nodal::lagrange_l = new double*[level_max + 1];
+	nodal::lagrange_l = new double*[level_max + 1]{};
 
 	// generate the 2d storages
 	for(int k = 0; k <= level_max; ++k ){
 		
 		int porder = Poly_level_to_order(grid::nmin, k);
 		
-		gl_p[k] = new double[porder + 1];
-		gl_w[k] = new double[porder + 1];
-		
-		int der_size = (poder + 1) * (porder + 1);
-		first_der[k] = new double[der_size];
-
-		lagrange_l[k] = new double[porder + 1];
-		lagrange_r[k] = new double[porder + 1];
-
-//		Get_nodal_2d_storage_basis(porder, nodal::gl_p[k], nodal::gl_w[k], nodal::first_der[k]);
+		Get_nodal_2d_storage_basis(porder, k, nodal::gl_p, nodal::gl_w, nodal::first_der);
 //
 //		Get_nodal_2d_storage_extends(porder, nodal::lagrange_l[k], nodal::lagrange_r[k], gl_p[k]);
 
@@ -59,20 +50,35 @@ void Construct_basis_storage(){
 /// @brief
 /// GL points and weights, first order derivative matrix
 /// @param n polynomial order
+/// @param k polynomial level
 /// @param gl_p GL points
 /// @param gl_weight GL weights
 /// @param first_der first order derivative matrix
-void Get_nodal_2d_storage_basis(int n, double** gl_p, double** gl_weight, double** first_der){
+void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der){
+	
+	gl_p[k] = new double[n + 1];
+	gl_weight[k] = new double[n + 1];
+	int der_size = (n + 1) * (n + 1);
+	first_der[k] = new double[der_size];
 	
 	// generate current gl_p, gl_w, and first_der-----------------
-	GL(n, gl_p, gl_weight);
+	GL(n, gl_p[k], gl_weight[k]);
 
-	Mth_order_polynomial_derivative_matrix(n, 1, gl_p_now, first_der_now);
+	Mth_order_polynomial_derivative_matrix(n, 1, gl_p[k], first_der[k]);
 	//--------------------------------------------------------------	
-
+//for(int i = 0; i <= n ; ++i){
+//	std::cout<< gl_p_now[i] << " " << gl_w_now[i]<<"\n";
+//
+//}
 	// assign the address of the fist element to the input pointers
+	//gl_p = &gl_p_now[0];
+	//gl_weight = &gl_w_now[0];
+	//first_der = &first_der_now[0];
 
-
+//for(int i = 0; i <= n ; ++i){
+//	std::cout<< gl_p[i] << " " << gl_weight[i]<<"\n";
+//
+//}
 }
 
 /// @brief
