@@ -1,4 +1,21 @@
-language: c++
+
+## configure travis to use the right compiler
+dist: trusty
+sudo: require
+
+
+language: cpp
+compiler: gcc
+
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake-data
+      - cmake
+
 
 script:
  - mkdir build
