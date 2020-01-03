@@ -8,7 +8,7 @@
 // forward declaration----------------------------------------------------------------------------
 void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der);
 
-void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double* gl_p);
+void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** lag_r, double** gl_p);
 //------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -27,11 +27,11 @@ void Construct_basis_storage(){
 	nodal::gl_w = new double*[level_max + 1]{};
 
 	// first derivative matrix
-//	int der_size = (grid::nmax + 1) * (grid::nmax + 1);
 	nodal::first_der = new double*[level_max + 1]{};
 
 	// lagrange interpolating polynomial
 	nodal::lagrange_l = new double*[level_max + 1]{};
+	nodal::lagrange_r = new double*[level_max + 1]{};
 
 	// generate the 2d storages
 	for(int k = 0; k <= level_max; ++k ){
@@ -39,8 +39,9 @@ void Construct_basis_storage(){
 		int porder = Poly_level_to_order(grid::nmin, k);
 		
 		Get_nodal_2d_storage_basis(porder, k, nodal::gl_p, nodal::gl_w, nodal::first_der);
-//
-//		Get_nodal_2d_storage_extends(porder, nodal::lagrange_l[k], nodal::lagrange_r[k], gl_p[k]);
+
+		Get_nodal_2d_storage_extends(porder, k, nodal::lagrange_l, nodal::lagrange_r, nodal::gl_p);
+
 
 	}
 	
@@ -84,27 +85,23 @@ void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight,
 /// @brief
 /// Lagrange interpolates on the boundaries. Alorithm 89.
 /// @param n polynomial order
+/// @param plevel polynomial level.
 /// @param lag_l Lagrange interpolates on the left boundary.
 /// @param lag_r Lagrange interpolates on the right boundary.
 /// @param gl_p GL points.
-void Get_nodal_2d_storage_extends(int n, double* lag_l, double* lag_r, double* gl_p){
+void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** lag_r, double** gl_p){
 
 	double* bary = new double[n + 1];
 
-	BARW(n, gl_p, bary);
+	BARW(n, gl_p[plevel], bary);
 
-	double* lag_l_now = new double[n + 1];
-	double* lag_r_now = new double[n + 1];
+	lag_l[plevel] = new double[n + 1];
+	lag_r[plevel] = new double[n + 1];
 
 
-	Lagrange_interpolating_polynomial(n, -1.0, gl_p, bary, lag_l_now);
-	Lagrange_interpolating_polynomial(n,  1.0, gl_p, bary, lag_r_now);
+	Lagrange_interpolating_polynomial(n, -1.0, gl_p[plevel], bary, lag_l[plevel]);
+	Lagrange_interpolating_polynomial(n,  1.0, gl_p[plevel], bary, lag_r[plevel]);
 	
-
-	lag_l = &lag_l_now[0];
-	lag_r = &lag_r_now[0];
-
-
 	delete[] bary;
-
+//std::cout<< lag_l[0][0] << "\n";
 }
