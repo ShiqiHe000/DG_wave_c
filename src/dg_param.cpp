@@ -38,6 +38,19 @@ namespace grid{
 };
 //---------------------------------------------------------------------
 
+/// @brief
+/// Time related variables
+/// @param t_total total time integal
+/// @param nt time step number
+namespace time{
+	const double t_total = 1.0;
+
+	const int nt = 10000;
+
+}
+
+
+
 
 // variables you do not need to change----------------------------------
 

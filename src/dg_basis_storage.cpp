@@ -4,7 +4,8 @@
 #include "dg_basis.h"
 #include "dg_poly_level_and_order.h"
 #include "dg_basis_storage.h"
-#include <iostream>	//test
+
+
 // forward declaration----------------------------------------------------------------------------
 void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der);
 
@@ -67,19 +68,6 @@ void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight,
 
 	Mth_order_polynomial_derivative_matrix(n, 1, gl_p[k], first_der[k]);
 	//--------------------------------------------------------------	
-//for(int i = 0; i <= n ; ++i){
-//	std::cout<< gl_p_now[i] << " " << gl_w_now[i]<<"\n";
-//
-//}
-	// assign the address of the fist element to the input pointers
-	//gl_p = &gl_p_now[0];
-	//gl_weight = &gl_w_now[0];
-	//first_der = &first_der_now[0];
-
-//for(int i = 0; i <= n ; ++i){
-//	std::cout<< gl_p[i] << " " << gl_weight[i]<<"\n";
-//
-//}
 }
 
 /// @brief
@@ -103,5 +91,4 @@ void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** la
 	Lagrange_interpolating_polynomial(n,  1.0, gl_p[plevel], bary, lag_r[plevel]);
 	
 	delete[] bary;
-//std::cout<< lag_l[0][0] << "\n";
 }

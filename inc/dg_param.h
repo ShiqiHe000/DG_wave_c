@@ -21,11 +21,19 @@ namespace grid{
 	extern const double gy_r;
 	
 	extern const int nmin;
-//	extern const int mmin;
 	extern const int nmax;
-//	extern const int mmax;
 };
 //--------------------------------------------------
+
+// time---------------------------------------------
+namespace time{
+
+	extern const double t_total;
+	extern const int nt;
+
+}
+//--------------------------------------------------
+
 // mpi variables-------------------------------------
 namespace mpi{
 	extern int rank;
