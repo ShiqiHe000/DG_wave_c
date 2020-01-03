@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['num_5fof_5felement_40',['num_of_element',['../namespaceSortMesh.html#a15e99d3be1d5ac75d5d0a261b02bc88b',1,'SortMesh']]],
-  ['num_5fof_5felement_5fx_41',['num_of_element_x',['../namespaceSortMesh.html#a396fa11d97629af30f744c8a0460fb4b',1,'SortMesh']]],
-  ['num_5fof_5felement_5fy_42',['num_of_element_y',['../namespaceSortMesh.html#ab6410e79cb99613a62d750eb232398a2',1,'SortMesh']]],
-  ['num_5fproc_43',['num_proc',['../namespacempi.html#ac2b08cc1b7cb549659d862cfefd6649d',1,'mpi']]]
+  ['lagrange_5finterpolating_5fpolynomial_54',['Lagrange_interpolating_polynomial',['../dg__basis_8cpp.html#a3cae629757bd44004fb7e3b4c870c746',1,'dg_basis.cpp']]],
+  ['lagrange_5fl_55',['lagrange_l',['../namespacenodal.html#a5751165a99072bcdb03904b5cc117279',1,'nodal']]],
+  ['lagrange_5fr_56',['lagrange_r',['../namespacenodal.html#a49b3d6d0883d69da6bf00a8477099e27',1,'nodal']]],
+  ['legendre_5fpolynomial_5fand_5fderivative_57',['Legendre_polynomial_and_derivative',['../dg__basis_8cpp.html#a92cd3b57bad77956d7908c12b63d1ea6',1,'dg_basis.cpp']]],
+  ['local_58',['local',['../namespacelocal.html',1,'']]],
+  ['local_5felem_5fnum_59',['local_elem_num',['../namespacelocal.html#a7fc27739a7899a7b7fe6cc9a58af3829',1,'local']]]
 ];

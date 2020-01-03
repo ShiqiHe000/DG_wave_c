@@ -7,6 +7,8 @@ var dg__param_8cpp =
     [ "gx_r", "dg__param_8cpp.html#ae038523f31c47671a508a44e00247c8c", null ],
     [ "gy_l", "dg__param_8cpp.html#a5cf68479539d1ff3ebffe29f269bc771", null ],
     [ "gy_r", "dg__param_8cpp.html#a20a46e735d88ce8c4b1fc9df3aaa8316", null ],
+    [ "nmax", "dg__param_8cpp.html#a75632badf0a07c651e5781cd959379f5", null ],
+    [ "nmin", "dg__param_8cpp.html#aa8e3d786fa0eed216c7335ccb518e4ca", null ],
     [ "num_proc", "dg__param_8cpp.html#ac2b08cc1b7cb549659d862cfefd6649d", null ],
     [ "rank", "dg__param_8cpp.html#a81dd6f94f107660dc25a1393f0aa5290", null ]
 ];

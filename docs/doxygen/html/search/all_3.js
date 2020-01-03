@@ -1,5 +1,26 @@
 var searchData=
 [
-  ['fileinfo_22',['fileinfo',['../namespacefileinfo.html',1,'']]],
-  ['fileplace_23',['fileplace',['../namespacefileinfo.html#a75d0cb370b1631832c02866293a1c3a9',1,'fileinfo']]]
+  ['d2xy_5',['d2xy',['../dg__hilbert__curve_8cpp.html#a55016d02e21d294a83d36d1fcbaf76a9',1,'dg_hilbert_curve.cpp']]],
+  ['dg_5fadvection_5fdiffusion_5fdriver_2ecpp_6',['dg_advection_diffusion_driver.cpp',['../dg__advection__diffusion__driver_8cpp.html',1,'']]],
+  ['dg_5fbasis_2ecpp_7',['dg_basis.cpp',['../dg__basis_8cpp.html',1,'']]],
+  ['dg_5fbasis_5fstorage_2ecpp_8',['dg_basis_storage.cpp',['../dg__basis__storage_8cpp.html',1,'']]],
+  ['dg_5fconstructor_2ecpp_9',['dg_constructor.cpp',['../dg__constructor_8cpp.html',1,'']]],
+  ['dg_5fdistribute_5felements_2ecpp_10',['dg_distribute_elements.cpp',['../dg__distribute__elements_8cpp.html',1,'']]],
+  ['dg_5fgen_5fdual_5fgraph_2ecpp_11',['dg_gen_dual_graph.cpp',['../dg__gen__dual__graph_8cpp.html',1,'']]],
+  ['dg_5fget_5fdual_5fcoord_2ecpp_12',['dg_get_dual_coord.cpp',['../dg__get__dual__coord_8cpp.html',1,'']]],
+  ['dg_5fhilbert_5fcurve_2ecpp_13',['dg_hilbert_curve.cpp',['../dg__hilbert__curve_8cpp.html',1,'']]],
+  ['dg_5fhilbert_5fsort_2ecpp_14',['dg_hilbert_sort.cpp',['../dg__hilbert__sort_8cpp.html',1,'']]],
+  ['dg_5flocal_5fstorage_2ecpp_15',['dg_local_storage.cpp',['../dg__local__storage_8cpp.html',1,'']]],
+  ['dg_5fmain_2ecpp_16',['dg_main.cpp',['../dg__main_8cpp.html',1,'']]],
+  ['dg_5fmpi_2ecpp_17',['dg_mpi.cpp',['../dg__mpi_8cpp.html',1,'']]],
+  ['dg_5fnodal_5f2d_5fstorage_2ecpp_18',['dg_nodal_2d_storage.cpp',['../dg__nodal__2d__storage_8cpp.html',1,'']]],
+  ['dg_5fparam_2ecpp_19',['dg_param.cpp',['../dg__param_8cpp.html',1,'']]],
+  ['dg_5fpoly_5flevel_5fand_5forder_2ecpp_20',['dg_poly_level_and_order.cpp',['../dg__poly__level__and__order_8cpp.html',1,'']]],
+  ['dg_5fprepare_5fhilbert_5fscheme_2ecpp_21',['dg_prepare_hilbert_scheme.cpp',['../dg__prepare__hilbert__scheme_8cpp.html',1,'']]],
+  ['dg_5fread_5fmesh_5f2d_2ecpp_22',['dg_read_mesh_2d.cpp',['../dg__read__mesh__2d_8cpp.html',1,'']]],
+  ['dg_5fsingle_5findex_2ecpp_23',['dg_single_index.cpp',['../dg__single__index_8cpp.html',1,'']]],
+  ['dg_5fstart_5fparallel_2ecpp_24',['dg_start_parallel.cpp',['../dg__start__parallel_8cpp.html',1,'']]],
+  ['distribute_5felem_25',['Distribute_elem',['../dg__distribute__elements_8cpp.html#a1d3a3a78b68393d56c486d683baa9219',1,'dg_distribute_elements.cpp']]],
+  ['driver_5ffor_5fdg_5fapproximation_26',['Driver_for_DG_approximation',['../dg__advection__diffusion__driver_8cpp.html#a297b6754505152d469b028ca0c3540fc',1,'dg_advection_diffusion_driver.cpp']]],
+  ['dual_5fcoord_27',['dual_coord',['../namespaceSortMesh.html#acf9de296d745986c8d318d848caebe79',1,'SortMesh']]]
 ];
