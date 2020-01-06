@@ -1,7 +1,9 @@
 #include "dg_unit.h"
+#include "dg_param.h"
 
 // constructor (default)
-Unit::Unit() = default; 	// everything is zero
+Unit::Unit() : level(0), n(grid::nmin), m(grid::nmin)
+{}
 
 
 //

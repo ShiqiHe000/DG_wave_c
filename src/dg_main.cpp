@@ -22,6 +22,7 @@
 #include "dg_param.h"
 #include "dg_prepare_hilbert_scheme.h"
 #include "dg_start_parallel.h"
+#include "dg_advection_diffusion_driver.h"
 #include "dg_basis.h"	// for testing
 #include "dg_constructor.h" 	// testing
 #include "dg_poly_level_and_order.h"	// test
@@ -40,6 +41,8 @@ int main(int argc, char *argv[]){
 	// start parallel process
 	Start_parallel();
 
+	// start the game
+	Driver_for_DG_approximation();
 	// testing
 //	Construct_basis();
 //	int level_max = Poly_order_to_level(grid::nmin, grid::nmax);

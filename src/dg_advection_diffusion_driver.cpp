@@ -2,6 +2,8 @@
 #include "dg_param.h"
 #include "dg_nodal_2d_storage.h"
 #include "dg_constructor.h"
+#include "dg_create_hash.h"
+
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
 /// First, get DG basis parameters, such as collocation points and weights.
@@ -10,6 +12,10 @@ void Driver_for_DG_approximation(){
 
 	// construct basis
 	Construct_basis();
+
+	// create hash table
+	Create_hash();
+
 
 	// time step
 	double delta_t = dg_time::t_total / dg_time::nt;
