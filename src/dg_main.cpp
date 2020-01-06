@@ -41,21 +41,21 @@ int main(int argc, char *argv[]){
 	Start_parallel();
 
 	// testing
-	Construct_basis();
-	int level_max = Poly_order_to_level(grid::nmin, grid::nmax);
-	for(int i = 0; i < level_max + 1; ++i){
-//		
-		int porder = Poly_level_to_order(grid::nmin, i);
-//		
-		for(int j = 0; j <= porder; ++j ){
-//			for(int k = 0; k <= porder; ++k){
-//
-//				int nodei = Get_single_index(j, k, porder+1);
-				std::cout << j << " "  << " " << nodal::lagrange_l[i][j] << "\n";
-//			}
-		}
-//
-	}
+//	Construct_basis();
+//	int level_max = Poly_order_to_level(grid::nmin, grid::nmax);
+//	for(int i = 0; i < level_max + 1; ++i){
+////		
+//		int porder = Poly_level_to_order(grid::nmin, i);
+////		
+//		for(int j = 0; j <= porder; ++j ){
+////			for(int k = 0; k <= porder; ++k){
+////
+////				int nodei = Get_single_index(j, k, porder+1);
+//				std::cout << j << " "  << " " << nodal::lagrange_l[i][j] << "\n";
+////			}
+//		}
+////
+//	}
 
 	// terminate mpi
         int ierr = MPI_Finalize();	

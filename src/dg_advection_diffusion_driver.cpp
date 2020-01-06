@@ -12,10 +12,10 @@ void Driver_for_DG_approximation(){
 	Construct_basis();
 
 	// time step
-	double delta_t = time::t_total / time::nt;
+	double delta_t = dg_time::t_total / dg_time::nt;
 
 	// current time
-	double tn{};
+//	double tn{};
 
 	
 

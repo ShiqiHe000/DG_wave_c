@@ -26,19 +26,19 @@ namespace grid{
 //--------------------------------------------------
 
 // time---------------------------------------------
-namespace time{
+namespace dg_time{
 
 	extern const double t_total;
 	extern const int nt;
 
-}
+};
 //--------------------------------------------------
 
 // mpi variables-------------------------------------
 namespace mpi{
 	extern int rank;
 	extern int num_proc;
-}
+};
 //---------------------------------------------------
 
 
