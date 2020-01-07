@@ -20,5 +20,5 @@ addons:
 script:
  - mkdir build
  - cd build
- - cmake ..
- - make 
+# - cmake ..
+# - make 
