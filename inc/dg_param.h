@@ -1,7 +1,6 @@
 #ifndef DG_PARAM_H
 #define DG_PARAM_H
 
-#include <iostream>
 #include <string>
 
 // mesh file----------------------------------------
