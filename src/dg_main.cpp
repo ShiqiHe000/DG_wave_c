@@ -28,6 +28,8 @@
 #include "dg_poly_level_and_order.h"	// test
 #include "dg_nodal_2d_storage.h"	//test
 #include "dg_single_index.h"	//test
+#include "dg_status_table.h"	//test
+#include <array>	//test
 int main(int argc, char *argv[]){
 	
 	char** a = argv;	
@@ -60,6 +62,9 @@ int main(int argc, char *argv[]){
 ////
 //	}
 
+	char p = Status_table('H', 3);
+	std::cout<< p << "\n";
+	
 	// terminate mpi
         int ierr = MPI_Finalize();	
 
