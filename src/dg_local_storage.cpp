@@ -9,6 +9,7 @@
 /// @param y_local y coordinate, start with 0.
 /// @param plevel_x polynomial level in x direction (start with 0)
 /// @param plevel_y polynomial level in y direction (start with 0)
+/// @param status element Hilbert status. 
 namespace local{
 	
 	int local_elem_num;
@@ -23,4 +24,6 @@ namespace local{
 	
 	int* plevel_x = nullptr;
 	int* plevel_y = nullptr;
+
+	char* status;
 };

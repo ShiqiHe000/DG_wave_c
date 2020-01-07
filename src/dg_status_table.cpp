@@ -10,7 +10,7 @@
 /// @param i column number. 
 char Status_table( char input, int i){
 	
-	// static hash table for status
+	// static hash table for status (gets allocated for the lifetime of the program)
 	// key: current status
 	// mapped_value: array of 4 element status. 	
 	static std::unordered_map<char, std::array<char, 5>> status_lookup = 
