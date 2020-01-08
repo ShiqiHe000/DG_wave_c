@@ -12,11 +12,13 @@
 void Distribute_elem(){
 	
 	// Integer array (of length group size) specifying the number of elements to send to each processor.
-	int sendcouts[mpi::num_proc]{};
+	int sendcouts[mpi::num_proc]{};	// each element 2 x/y coordinates (diagonal). 
+	int sendcouts_status[mpi::num_proc]{};	// each element 1 status
 	
 	// Integer array (of length group size). 
 	//Entry i specifies the displacement (relative to sendbuf) from which to take the outgoing data to process i. 
 	int displs[mpi::num_proc]{};
+	int displs_status[mpi::num_proc]{};
 	
 	// allocate one more unit for the offset
 	local::elem_range = new int[mpi::num_proc + 1]{};
@@ -42,7 +44,7 @@ void Distribute_elem(){
 			for(int ii = 0; ii < SortMesh::num_of_element; ++ii){
 				local_elem_number[ii] = 1;
 				sendcouts[ii] = 1 * 2;	// for each element we record two diagnoal points
-	
+				sendcouts_status[ii] = 1;	
 			}
 				local::elem_range[1] = 0;
 		}
@@ -52,19 +54,22 @@ void Distribute_elem(){
 
 			local::elem_range[1] = average - 1;	// element numbering start with 0
 			
-			std::fill_n(local_elem_number, mpi::num_proc - 1, average);
-			
+			std::fill_n(local_elem_number, mpi::num_proc - 1, average);		
+	
 			local_elem_number[mpi::num_proc - 1] = last;
 
 			std::fill_n(sendcouts, mpi::num_proc - 1, average * 2);
+			std::fill_n(sendcouts_status, mpi::num_proc - 1, average);
 
 			sendcouts[mpi::num_proc -1 ] = last * 2; 
+			sendcouts_status[mpi::num_proc -1 ] = last; 
 
 		}
 
 		for(int i = 1; i < mpi::num_proc; ++i ){
 			
 			displs[i] = local_elem_number[i-1] * 2 + displs[i-1];
+			displs_status[i] = local_elem_number[i-1] + displs_status[i-1];
 			local::elem_range[i+1] = local::elem_range[i] + local_elem_number[i];
 		}
 
