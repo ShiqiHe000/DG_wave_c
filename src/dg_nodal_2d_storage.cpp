@@ -10,6 +10,7 @@
 /// @param dual_coord dual graph coordinates
 /// @param x_hilbert x coordinate of element k on hilbert curve
 /// @param y_hilbert y coordinate of element k on hilbert curve
+/// @param status element status
 namespace SortMesh{
 	double* elem_x_position = nullptr; 
 	double* elem_y_position = nullptr; 
@@ -22,6 +23,8 @@ namespace SortMesh{
 	
 	double* x_hilbert = nullptr;
 	double* y_hilbert = nullptr;
+
+	char* status = nullptr;
 }
 
 /// @brief 
