@@ -14,6 +14,8 @@ namespace SortMesh{
 	
 	extern double* x_hilbert;
 	extern double* y_hilbert;
+
+	extern char* status;
 }
 
 namespace nodal{

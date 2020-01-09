@@ -18,13 +18,17 @@ public:
 	double ycoords[2]{0.0, 0.0};	// y coordinates
 
 	double* solution = nullptr;	// dymanic solution 
-	
+
+	Unit* next = nullptr;	// pointer to the next Unit
 	
 	// constructor (default)
 	Unit();
-
+	
+	// key function
+//	int GetKey();
+//
+//	int Cantor_pairing(int x, int y);
 };
-
 
 
 #endif

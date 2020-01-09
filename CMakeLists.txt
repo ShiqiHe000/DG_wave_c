@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(2d_wave)
+# name of the project + language
+project(2d_wave CXX)
+
+# set cpp standard
+set(CMAKE_CXX_STANDARD 11)  # C++ 11
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)	# initialize the POSITION_INDEPENDENT_CODE property on all target/libraries. 
+
+# have unit tets
+enable_testing()
 
 # Bring the headers
 include_directories(inc)

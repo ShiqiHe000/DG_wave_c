@@ -16,6 +16,9 @@ addons:
       - cmake-data
       - cmake
 
+# MPI project
+#before_install:
+	
 
 script:
  - mkdir build

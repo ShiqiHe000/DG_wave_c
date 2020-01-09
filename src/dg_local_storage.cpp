@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include "dg_local_storage.h"
+#include "dg_unit.h"	// head pointer
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -10,6 +11,7 @@
 /// @param plevel_x polynomial level in x direction (start with 0)
 /// @param plevel_y polynomial level in y direction (start with 0)
 /// @param status element Hilbert status. 
+/// @param head head pointer points to the first Unit. 
 namespace local{
 	
 	int local_elem_num;
@@ -22,8 +24,11 @@ namespace local{
 	double* y_local = nullptr;
 	
 	
-	int* plevel_x = nullptr;
-	int* plevel_y = nullptr;
+//	int* plevel_x = nullptr;
+//	int* plevel_y = nullptr;
 
 	char* status;
+
+	Unit* head = nullptr; // head ptr points to the first element
+
 };
