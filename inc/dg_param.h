@@ -33,6 +33,18 @@ namespace dg_time{
 };
 //--------------------------------------------------
 
+
+// dg function related parameters--------------------
+namespace dg_fun{
+
+	extern const int num_of_equation;
+
+};
+
+//---------------------------------------------------
+
+
+
 // mpi variables-------------------------------------
 namespace mpi{
 	extern int rank;

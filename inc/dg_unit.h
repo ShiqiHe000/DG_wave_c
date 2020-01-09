@@ -12,7 +12,7 @@ public:
 
 	char status; 	// Hilbert status
 	
-	bool mpi_f[4]{false, false, false, false};	// mpi-boundary flag (true: on the mpi boundary)
+	unsigned short mpi_b[4]{0, 0, 0, 0};	// mpi-boundary circumstance (number indicates the number of unit on the other side)
 
 	double xcoords[2]{0.0, 0.0};	// x coordinates
 	double ycoords[2]{0.0, 0.0};	// y coordinates

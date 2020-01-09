@@ -14,9 +14,6 @@ namespace local{
 	extern double* x_local; 
 	extern double* y_local; 
 	
-	extern int* plevel_x;
-	extern int* plevel_y; 
-
 	extern char* status;
 
 	extern Unit* head;
