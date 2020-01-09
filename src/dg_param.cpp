@@ -38,6 +38,9 @@ namespace grid{
 };
 //---------------------------------------------------------------------
 
+
+// variables you could change------------------------------------------
+
 /// @brief
 /// Time related variables
 /// @param t_total total time integal
@@ -49,8 +52,15 @@ namespace dg_time{
 
 };
 
+/// @brief
+/// Function related parameters
+namespace dg_fun{
 
+	const int num_of_equation = 3;
 
+};
+
+//----------------------------------------------------------------------
 
 // variables you do not need to change----------------------------------
 

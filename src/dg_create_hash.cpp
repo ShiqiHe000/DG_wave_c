@@ -19,6 +19,7 @@ void Create_hash(){
 	std::unordered_map<int, Unit*> Hash_elem;
 
 	int key_pre{};
+	int solution_num = dg_fun::num_of_equation * (grid::nmin + 1) * (grid::nmin + 1);
 
 	// build each unit
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -29,10 +30,9 @@ void Create_hash(){
 		d2xy(grid::exp_x, g_index, jj, ii );
 
 		int key = Get_key_fun(ii, jj, 0);
-//std::cout<< mpi::rank<< " " << ii <<" "<< jj<< " " << key << "\n";
+		
 		// create a unit
 		Hash_elem[key] = new Unit();
-//		std::cout<< Hash_elem[k]->level <<" " <<Hash_elem[k] -> n<< "\n";
 		
 		// if first element, set head ptr
 		if(k == 0){
@@ -46,14 +46,17 @@ void Create_hash(){
 
 		// status
 		Hash_elem[key] -> status = local::status[k];
-//std::cout << mpi::rank << " " << k << " " << Hash_elem[key]->index[1] <<" " << Hash_elem[key] -> status << "\n";
+		
 		// coordinates
 		for(int i = 0; i < 2; ++i){
 			int nodei = Get_single_index(k, i, 2);
 			Hash_elem[key] -> xcoords[i] = local::x_local[nodei];
 			Hash_elem[key] -> ycoords[i] = local::y_local[nodei];
-//			std::cout<< mpi::rank << " "<<Hash_elem[k]->xcoords[i] << " " << Hash_elem[k]->ycoords[i] << "\n";
 		}
+
+
+		// solution
+		Hash_elem[key] -> solution = new double[solution_num]{};
 	
 		// previous unit should point to current unit
 		if(k > 0){

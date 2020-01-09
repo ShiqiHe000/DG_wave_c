@@ -23,9 +23,6 @@ namespace local{
 	double* x_local = nullptr;
 	double* y_local = nullptr;
 	
-	
-//	int* plevel_x = nullptr;
-//	int* plevel_y = nullptr;
 
 	char* status;
 
