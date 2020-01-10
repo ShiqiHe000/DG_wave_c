@@ -12,7 +12,7 @@ public:
 
 	char status; 	// Hilbert status
 	
-	unsigned short mpi_b[4]{0, 0, 0, 0};	// mpi-boundary circumstance (number indicates the number of unit on the other side)
+	short faces[4]{0, 0, 0, 0};	// remote element number (positive). Negtive means its on the physical boundary. 
 
 	double xcoords[2]{0.0, 0.0};	// x coordinates
 	double ycoords[2]{0.0, 0.0};	// y coordinates

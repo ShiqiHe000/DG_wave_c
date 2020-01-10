@@ -2,6 +2,7 @@
 #define DG_LOCAL_STORAGE_H
 
 #include "dg_unit.h"
+#include <unordered_map>
 
 namespace local{
  
@@ -17,6 +18,8 @@ namespace local{
 	extern char* status;
 
 	extern Unit* head;
+	
+	extern std::unordered_map<int, Unit*> Hash_elem;
 };
 
 
