@@ -1,9 +1,26 @@
-#include "dg_constrcut_mpi_boundary.h"
+#include "dg_construct_mpi_boundary.h"
 #include "dg_local_storage.h"
 #include "dg_unit.h"
 #include "dg_cantor_pairing.h"
 #include "dg_nodal_2d_storage.h"
+#include <unordered_map>
+#include <iostream>	// test
+#include "dg_param.h"	//test
 
+/// @brief
+/// Construct MPI boundaries and physical boundaries. 
+/// Each element has 4 faces
+/// \verbatim
+///   ---f2----
+///   |       |
+/// f3|       |f4
+///   |       |
+///   ---f1----
+/// \endverbatim
+/// Boundaries circumstances are stored in short face[4]. 
+/// positive value means the number of element on the other side of the MPI boundary.
+/// negative value means the face in on the physical boundary and the magnitude of 
+/// the value represents the face number as shown above. 
 void MPI_boundary_construct(){
 	
 	// start by the first element
@@ -21,15 +38,15 @@ void MPI_boundary_construct(){
 			int nj = temp -> index[1];
 			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 
-			std::unordered_map<int, Unit*>::const_iterator got = Hash_elem.find(nkey);
+			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
-			if(got = Hash_elem.end()){
+			if(got == local::Hash_elem.end()){
 				temp -> faces[0] = 1;
 			}
 		}
 
 		// on the north physical boundary?
-		if(temp -> index[0] == SortMesh::num_of_element_x - 1){
+		if(temp -> index[0] == (SortMesh::num_of_element_x - 1)){
 			temp -> faces[1] = -2;	// yes
 
 		}
@@ -38,9 +55,9 @@ void MPI_boundary_construct(){
 			int nj = temp -> index[1];
 			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = Hash_elem.find(nkey);
+			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
-			if(got = Hash_elem.end()){
+			if(got == local::Hash_elem.end()){
 				temp -> faces[0] = 1;
 			}
 			
@@ -56,9 +73,9 @@ void MPI_boundary_construct(){
 			int nj = temp -> index[1] - 1;
 			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = Hash_elem.find(nkey);
+			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
-			if(got = Hash_elem.end()){
+			if(got == local::Hash_elem.end()){
 				temp -> faces[2] = 1;
 			}
 			
@@ -74,16 +91,16 @@ void MPI_boundary_construct(){
 			int nj = temp -> index[1] + 1;
 			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = Hash_elem.find(nkey);
+			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
-			if(got = Hash_elem.end()){
+			if(got == local::Hash_elem.end()){
 				temp -> faces[3] = 1;
 			}
 			
 		}
-
-
+		
 		// pointer move to next element
 		temp = temp -> next;
 	}
+
 }

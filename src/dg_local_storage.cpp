@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include "dg_local_storage.h"
 #include "dg_unit.h"	// head pointer
+#include <unordered_map>
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -28,4 +29,5 @@ namespace local{
 
 	Unit* head = nullptr; // head ptr points to the first element
 
+	std::unordered_map<int, Unit*> Hash_elem;
 };

@@ -3,6 +3,7 @@
 #include "dg_nodal_2d_storage.h"
 #include "dg_constructor.h"
 #include "dg_create_hash.h"
+#include "dg_construct_mpi_boundary.h"
 
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
@@ -16,6 +17,8 @@ void Driver_for_DG_approximation(){
 	// create hash table
 	Create_hash();
 
+	// construct mpi boundaries and physical boundaries
+	MPI_boundary_construct();
 
 	// time step
 	double delta_t = dg_time::t_total / dg_time::nt;
