@@ -54,10 +54,13 @@ namespace dg_time{
 
 /// @brief
 /// Function related parameters
+/// @param num_of_equation  number of equations
+/// @param C wave speed
 namespace dg_fun{
 
 	const int num_of_equation = 3;
 
+	const double C = 1.0;
 };
 
 //----------------------------------------------------------------------

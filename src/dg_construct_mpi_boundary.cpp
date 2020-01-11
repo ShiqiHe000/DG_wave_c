@@ -4,8 +4,6 @@
 #include "dg_cantor_pairing.h"
 #include "dg_nodal_2d_storage.h"
 #include <unordered_map>
-#include <iostream>	// test
-#include "dg_param.h"	//test
 
 /// @brief
 /// Construct MPI boundaries and physical boundaries. 

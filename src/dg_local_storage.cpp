@@ -29,5 +29,17 @@ namespace local{
 
 	Unit* head = nullptr; // head ptr points to the first element
 
-	std::unordered_map<int, Unit*> Hash_elem;
+	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
+};
+
+/// @brief
+/// Variables for results verification
+namespace result{
+	
+	double* exact = nullptr;
+
+	double* error = nullptr;
+
+	double* L2_norm = nullptr;
+
 };

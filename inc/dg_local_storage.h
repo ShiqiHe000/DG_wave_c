@@ -22,5 +22,14 @@ namespace local{
 	extern std::unordered_map<int, Unit*> Hash_elem;
 };
 
+namespace result{
+
+	extern double* exact;
+	
+	extern double* error;
+
+	extern double* L2_norm;
+
+};
 
 #endif
