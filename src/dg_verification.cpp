@@ -4,6 +4,7 @@
 #include "dg_user_defined.h"
 #include <cmath>	// std::abs
 #include "dg_verification.h"
+#include <iostream>	// test
 
 /// @brief
 /// Verfies your results. Now assume uniform grids. 
@@ -20,7 +21,7 @@ void Get_error(){
 	Unit* temp = local::head;
 
 	// traverse the linked list
-	for(int k = 0; k < local::local_elem_number; ++k){
+	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		// element size
 		double del_x = (temp -> xcoords[1]) - (temp -> xcoords[0]); 
@@ -41,16 +42,15 @@ void Get_error(){
 				result::L2_norm[normi] += result::error[nodei] * result::error[nodei];
 				
 				++nodei;
-	
 			}
 
 			++normi;
 		}
 
-		
+		temp = temp -> next;	
 
 	}
-
+//std::cout<< result::error[0] << " " << result::error[1]<< " "<< result::error[2]<< "\n" ;
 	// to do mpi_reduce
 
 }

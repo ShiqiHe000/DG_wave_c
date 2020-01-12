@@ -10,8 +10,8 @@
 const double kx = sqrt(2.0) / 2.0; 
 const double ky = sqrt(2.0) / 2.0; 
 const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-const double x0 = 0.0;
-const double y0 = 0.0; 
+const double xx0 = 0.0;
+const double yy0 = 0.0; 
 
 
 /// @brief
@@ -32,7 +32,7 @@ void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 	// get poly level
 	int level_x = Poly_order_to_level(grid::nmin, n);
 	int level_y = Poly_order_to_level(grid::nmin, m);
-
+	
 	for(int j = 0; j <= m; ++j ){
 
 		double y = Affine_mapping(nodal::gl_p[level_y][j], y_d, del_y);
@@ -41,8 +41,8 @@ void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 
 			double x = Affine_mapping(nodal::gl_p[level_x][i], x_l, del_x);
 
-			double inter = exp( - pow((kx * (x - x0) + 
-						ky * (y - y0) - dg_fun::C * t), 2) / (D * D) );
+			double inter = exp( - pow((kx * (x - xx0) + 
+						ky * (y - yy0) - dg_fun::C * t), 2) / (D * D) );
 		
 			int nodei[dg_fun::num_of_equation]{};	
 			for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
@@ -50,9 +50,9 @@ void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 
 			}		
 			
-			e[node[0]] = inter;
-			e[node[1]] = kx / dg_fun::C *inter;
-			e[node[2]] = ky / dg_fun::C *inter;
+			e[nodei[0]] = inter;
+			e[nodei[1]] = kx / dg_fun::C *inter;
+			e[nodei[2]] = ky / dg_fun::C *inter;
 		}
 
 	}

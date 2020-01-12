@@ -23,6 +23,7 @@
 #include "dg_prepare_hilbert_scheme.h"
 #include "dg_start_parallel.h"
 #include "dg_advection_diffusion_driver.h"
+#include "dg_verification.h"
 
 int main(int argc, char *argv[]){
 	
@@ -43,6 +44,8 @@ int main(int argc, char *argv[]){
 	
 	// terminate mpi
         int ierr = MPI_Finalize();	
-
+	
+	// verification
+	Get_error();
 }
 

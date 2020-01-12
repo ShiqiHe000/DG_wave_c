@@ -34,8 +34,8 @@ void DG_init(){
 			// map reference location to physical localtion
 			double gl_p_y = nodal::gl_p[0][j];
 			double y = Affine_mapping(gl_p_y, temp->ycoords[0], del_y);
-
-			for(int i; i <= grid::nmin; ++i){
+			
+			for(int i = 0; i <= grid::nmin; ++i){
 	
 				double gl_p_x = nodal::gl_p[0][i];
 				double x = Affine_mapping(gl_p_x, temp->xcoords[0], del_x);
@@ -55,7 +55,8 @@ void DG_init(){
 				temp -> solution[nodei[2]] = ky / dg_fun::C * inter;
 			}
 		}
-		
+	
+		temp = temp -> next;		
 
 	}
 
