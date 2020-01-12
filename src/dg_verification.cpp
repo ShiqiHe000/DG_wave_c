@@ -4,6 +4,7 @@
 #include "dg_user_defined.h"
 #include <cmath>	// std::abs
 #include "dg_verification.h"
+#include <mpi.h>
 #include <iostream>	// test
 
 /// @brief
@@ -50,8 +51,19 @@ void Get_error(){
 		temp = temp -> next;	
 
 	}
-//std::cout<< result::error[0] << " " << result::error[1]<< " "<< result::error[2]<< "\n" ;
-	// to do mpi_reduce
 
+	MPI_Reduce(result::L2_norm, L2_recv, dg_fun::num_of_equation, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+	
+	if(mpi::rank == 0){
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+			result::L2_norm[equ] = sqrt(L2_recv[equ]);
+			std::cout<< L2_norm[equ] << "\n";
+		}
+	}
+
+
+	delete[] result::error;
+	delete[] result::exact;
+	delete[] result::L2_norm;
 }
 

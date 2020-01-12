@@ -42,10 +42,11 @@ int main(int argc, char *argv[]){
 	Driver_for_DG_approximation();
 	// testing
 	
+	// verification
+	Get_error();
+
 	// terminate mpi
         int ierr = MPI_Finalize();	
 	
-	// verification
-	Get_error();
 }
 
