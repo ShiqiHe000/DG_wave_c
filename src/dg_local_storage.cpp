@@ -1,7 +1,7 @@
-#include <mpi.h>
 #include "dg_local_storage.h"
 #include "dg_unit.h"	// head pointer
 #include <unordered_map>
+#include <vector>
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -13,6 +13,8 @@
 /// @param plevel_y polynomial level in y direction (start with 0)
 /// @param status element Hilbert status. 
 /// @param head head pointer points to the first Unit. 
+/// @param solution_int_l interior solution on the left boundary.
+/// @param solution_int_r interior solution on the left boundary.
 namespace local{
 	
 	int local_elem_num;
@@ -30,6 +32,12 @@ namespace local{
 	Unit* head = nullptr; // head ptr points to the first element
 
 	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
+
+//	double** solution_int_l{};
+//	double** solution_int_r{};
+
+	std::vector<std::vector<double>> solution_int_l{};
+	std::vector<std::vector<double>> solution_int_r{};
 };
 
 /// @brief

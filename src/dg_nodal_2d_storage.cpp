@@ -1,4 +1,3 @@
-#include <mpi.h>
 #include "dg_nodal_2d_storage.h"
 
 /// @brief vairables used in sort mesh file
@@ -43,4 +42,6 @@ namespace nodal{
 		
 	double** lagrange_l{};
 	double** lagrange_r{};
+
+
 }

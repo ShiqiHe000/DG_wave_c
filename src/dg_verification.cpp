@@ -52,12 +52,14 @@ void Get_error(){
 
 	}
 
+	// sum up L2_norm on processor 0
+	double L2_recv[dg_fun::num_of_equation]{};
 	MPI_Reduce(result::L2_norm, L2_recv, dg_fun::num_of_equation, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
 	if(mpi::rank == 0){
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 			result::L2_norm[equ] = sqrt(L2_recv[equ]);
-			std::cout<< L2_norm[equ] << "\n";
+			std::cout<< result::L2_norm[equ] << "\n";
 		}
 	}
 

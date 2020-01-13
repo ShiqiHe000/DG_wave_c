@@ -24,6 +24,7 @@
 #include "dg_start_parallel.h"
 #include "dg_advection_diffusion_driver.h"
 #include "dg_verification.h"
+#include "dg_end_game.h"
 
 int main(int argc, char *argv[]){
 	
@@ -44,6 +45,9 @@ int main(int argc, char *argv[]){
 	
 	// verification
 	Get_error();
+
+	// Free memory on the heap
+	Free_local();
 
 	// terminate mpi
         int ierr = MPI_Finalize();	

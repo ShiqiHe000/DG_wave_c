@@ -29,7 +29,12 @@ void Driver_for_DG_approximation(){
 	// Initialization
 	DG_init();	
 	
+	// time integration
+	for(int k = 0; k < dg_time::nt; ++k){
+	
+		
 
+	}
 
 
 }

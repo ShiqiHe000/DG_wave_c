@@ -7,11 +7,11 @@
 #include "dg_single_index.h"
 
 // Global variables
-const double kx = sqrt(2.0) / 2.0; 
-const double ky = sqrt(2.0) / 2.0; 
-const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-const double xx0 = 0.0;
-const double yy0 = 0.0; 
+static const double kx = sqrt(2.0) / 2.0; 
+static const double ky = sqrt(2.0) / 2.0; 
+static const double D = 0.2 / (2.0 * sqrt(log(2.0)));
+static const double xx0 = 0.0;
+static const double yy0 = 0.0; 
 
 
 /// @brief
