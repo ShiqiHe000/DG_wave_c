@@ -46,9 +46,9 @@ namespace grid{
 /// @param t_total total time integal
 /// @param nt time step number
 namespace dg_time{
-	const double t_total = 0.0;
+	const double t_total = 1.0;
 
-	const int nt = 10000;
+	const int nt = 2;
 
 };
 

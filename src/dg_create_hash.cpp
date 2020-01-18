@@ -43,6 +43,9 @@ void Create_hash(){
 		local::Hash_elem[key] -> index[0] = ii;
 		local::Hash_elem[key] -> index[1] = jj;
 
+		// local index
+		local::Hash_elem[key] -> local_index = k;
+
 		// status
 		local::Hash_elem[key] -> status = local::status[k];
 		

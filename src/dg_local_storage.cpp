@@ -19,7 +19,7 @@ namespace local{
 	
 	int local_elem_num;
 
-	int original_elem_num;
+	int original_elem_num;	// no use?
 
 	int* elem_range;
 

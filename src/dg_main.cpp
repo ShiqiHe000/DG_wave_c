@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 	// testing
 	
 	// verification
-	Get_error();
+//	Get_error();
 
 	// Free memory on the heap
 	Free_local();
