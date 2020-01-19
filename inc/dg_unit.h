@@ -9,6 +9,8 @@ public:
 	int n, m; 	// polynomial orders (x, y)	
 
 	int index[3]{0, 0, 0}; 	// element index[i, j, k]
+ 
+	int local_index{};	// element local index
 
 	char status; 	// Hilbert status
 	
