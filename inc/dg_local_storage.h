@@ -25,6 +25,7 @@ namespace local{
 	extern std::vector<std::vector<double>> solution_int_l;
 	extern std::vector<std::vector<double>> solution_int_r;
 	
+	extern std::vector<std::vector<double>> ghost;
 };
 
 namespace result{

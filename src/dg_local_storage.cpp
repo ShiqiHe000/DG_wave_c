@@ -15,6 +15,7 @@
 /// @param head head pointer points to the first Unit. 
 /// @param solution_int_l interior solution on the left boundary.
 /// @param solution_int_r interior solution on the left boundary.
+/// @param ghost ghost layer for MPI boundary information exchange. 
 namespace local{
 	
 	int local_elem_num;
@@ -33,11 +34,11 @@ namespace local{
 
 	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
 
-//	double** solution_int_l{};
-//	double** solution_int_r{};
-
 	std::vector<std::vector<double>> solution_int_l{};
 	std::vector<std::vector<double>> solution_int_r{};
+
+	std::vector<std::vector<double>> ghost{};	// ghost layer for mpi boudary exchange
+		
 };
 
 /// @brief

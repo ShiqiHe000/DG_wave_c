@@ -10,6 +10,6 @@ void Lagrange_interpolating_polynomial(int n, double target_p, double* x, double
 
 void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, double* der);
 
-
+double Interpolate_to_boundary_blas(int n, double* q, double* lag);
 
 #endif

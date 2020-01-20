@@ -2,6 +2,7 @@
 #include <limits>	// epsilon
 #include <cmath>	// sqrt
 #include "dg_single_index.h"
+#include <cblas.h>
 
 
 const double pi = 4.0 * atan(1.0); 
@@ -291,6 +292,21 @@ std::cout << "please implement mth_order_derivative_matrix function"	<< "\n";
 	delete[] bary;
 
 }
+
+
+
+/// @brief
+/// Interpolate the solution array to the boundaries using Lagrange 
+/// Interpolating polynomial. Algorithm 61. 
+/// @param 
+double Interpolate_to_boundary_blas(int n, double* q, double* lag){
+
+	double inter = cblas_ddot(n+1, lag, 1, q, 1);
+	
+	return inter;
+}
+
+
 
 /// @brief
 /// Testing equality of two floating point numbers. Algorithm 139
