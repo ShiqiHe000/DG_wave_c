@@ -30,6 +30,10 @@ void MPI_boundary_construct(){
 		// on the south physical boundary?
 		if(temp -> index[0] == 0){
 			temp -> faces[0] = -1;	// Yes
+
+			temp -> facen[0].push_back(Unit::Face());
+
+			temp -> facen[0].face_type = "B"; // Yes
 		}
 		else{	// No, search south neighbour
 			int ni = temp -> index[0] - 1;

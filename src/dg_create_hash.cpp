@@ -7,6 +7,7 @@
 #include "dg_cantor_pairing.h"
 #include "dg_param.h"
 #include "dg_index_local_global.h"
+#include <vector>
 
 /// @brief
 /// Create the hash table <key, unit_elem>.
@@ -46,6 +47,7 @@ void Create_hash(){
 		// local index
 		local::Hash_elem[key] -> local_index = k;
 
+
 		// status
 		local::Hash_elem[key] -> status = local::status[k];
 		
@@ -71,4 +73,5 @@ void Create_hash(){
 	// free memory
 	delete[] local::x_local;
 	delete[] local::y_local;
+	delete[] local::status;
 }

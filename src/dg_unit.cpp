@@ -1,5 +1,6 @@
 #include "dg_unit.h"
 #include "dg_param.h"
+#include <vector>
 
 //int Cantor_pairing(int x, int y){
 //	
@@ -13,7 +14,9 @@
 /// index = {0, 0, 0}, mpi_f = false, x/ycoords = {0.0, 0.0}
 /// solution = nullptr. 
 Unit::Unit() : level(0), n(grid::nmin), m(grid::nmin)
-{}
+{
+	facen = std::vector<std::vector<Face>>(4);
+}
 
 /// @brief
 /// Get the unique key based on the element index (i, j, k).
