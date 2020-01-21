@@ -21,6 +21,8 @@ namespace grid{
 	
 	extern const int nmin;
 	extern const int nmax;
+
+	extern const int hlevel_max;
 };
 //--------------------------------------------------
 

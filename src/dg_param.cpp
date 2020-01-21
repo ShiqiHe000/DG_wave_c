@@ -23,6 +23,7 @@ namespace fileinfo{
 /// @param gy_r domain right boundary (y direction, must >= 0) 
 /// @param nmin minimum polynomial degree in x and y direction
 /// @param nmax maximum polynomial degree in x and y direction
+/// @param hlevel_max maximum h-refinement level. 
 namespace grid{
 	const int exp_x = 1; 
 	const int exp_y = 1; 
@@ -35,6 +36,7 @@ namespace grid{
 	const int nmin = 2;	// x direction
 	const int nmax = 2;
 
+	const int hlevel_max = 2;	
 };
 //---------------------------------------------------------------------
 
