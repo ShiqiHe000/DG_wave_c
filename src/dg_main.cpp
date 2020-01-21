@@ -25,6 +25,7 @@
 #include "dg_advection_diffusion_driver.h"
 #include "dg_verification.h"
 #include "dg_end_game.h"
+#include "dg_test.h"	//test
 
 int main(int argc, char *argv[]){
 	
@@ -41,8 +42,10 @@ int main(int argc, char *argv[]){
 
 	// start the game
 	Driver_for_DG_approximation();
-	// testing
-	
+
+	// testing	
+	Test();
+
 	// verification
 //	Get_error();
 

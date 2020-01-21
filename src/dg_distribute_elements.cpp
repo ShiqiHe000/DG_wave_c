@@ -5,7 +5,6 @@
 #include "dg_local_storage.h"
 #include "dg_distribute_elements.h"
 #include <cmath>	// pow
-#include <iostream>	// test
 
 /// @brief
 /// After reading the mesh file, we spread the elements between processors 
@@ -105,15 +104,6 @@ void Distribute_elem(){
 	MPI_Bcast(local::elem_range, mpi::num_proc + 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(local::rank_indicator, mpi::num_proc, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// adjust elem_range store the last element Hilbert index as the deepest refinement element Hilbert index
-	// one element split into 4, pow(double, double), need type cast
-//	int adapt = (int)(pow(4, grid::hlevel_max) + 0.5);	
-//	local::rank_indicator[0] = (local::elem_range[1] + 1) * adapt - 1;
-//		std::cout<< mpi::rank << " " << local::rank_indicator[0] << "\n";
-	for(int i = 0; i < mpi::num_proc; ++i ){
-
-		std::cout<< mpi::rank << " " << local::rank_indicator[i] << "\n";
-	}
 	
 	// deallocate
 	if(mpi::rank == 0){
