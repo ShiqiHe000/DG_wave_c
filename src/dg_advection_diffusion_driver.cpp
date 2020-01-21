@@ -5,6 +5,7 @@
 #include "dg_construct_mpi_boundary.h"
 #include "dg_init.h"
 #include "dg_io.h"
+#include "dg_adapt.h"
 
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
@@ -30,14 +31,18 @@ void Driver_for_DG_approximation(){
 	// Initialization
 	DG_init();	
 	
-	// time integration
-	for(int k = 0; k < dg_time::nt; ++k){
+	// h-refinement
+	h_refinement();
 	
-		Serial_io(tn);		
 
-		tn = (k + 1) * delta_t;
-
-	}
+	// time integration
+//	for(int k = 0; k < dg_time::nt; ++k){
+//	
+//		Serial_io(tn);		
+//
+//		tn = (k + 1) * delta_t;
+//
+//	}
 
 
 }

@@ -19,7 +19,7 @@ char Status_table( char input, int i){
 				 {'R', {'B', 'R', 'R', 'A', '\0'}},
 				 {'B', {'R', 'B', 'B', 'H', '\0'}}};
 	
-	// check i
+	// check 
 	assert( i >= 0 && i <= 3 && "column number should between 0~3." );
 	
 	std::array<char, 5> m = status_lookup[input];
@@ -27,4 +27,36 @@ char Status_table( char input, int i){
 
 	return out;	
 	
+}
+
+
+/// @brief
+/// Hilbert curve generation table. Input element status, output ith sibling position.
+/// \verbatim
+///  Sibling positions
+///	--------------    
+///     |      |      |
+///     |   1  |  2   |
+///     |------|------|
+///     |      |      |
+///     |   0  |  3   |
+///	--------------    
+/// \endverbatim
+int Sibling_position(char input, int i){
+
+	static std::unordered_map<char, std::array<int, 4>> Sib_lookup = 
+				{{'H', {0, 1, 2, 3}},
+				 {'A', {0, 3, 2, 1}},
+				 {'R', {2, 3, 0, 1}},
+				 {'B', {2, 1, 0, 3}}
+				};
+
+	// check 
+	assert( i >= 0 && i <= 3 && "column number should between 0~3." );
+
+	std::array<int, 4> a = Sib_lookup[input];
+	int out = a[i];
+
+	return out;
+
 }

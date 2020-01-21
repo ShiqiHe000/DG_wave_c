@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 	Driver_for_DG_approximation();
 
 	// testing	
-	Test();
+//	Test();
 
 	// verification
 //	Get_error();

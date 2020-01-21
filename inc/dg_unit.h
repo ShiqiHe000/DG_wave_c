@@ -3,10 +3,14 @@
 
 #include <vector>
 
+
+/// @brief
+/// Element unit. All the needed information is stored as a unit.
+/// @param child_position ith-child
 class Unit{
 
 public:
-	int level;	// h-refinement level
+	int level;	// h-refinement level !!Redundent? since we have index!!
 
 	int n, m; 	// polynomial orders (x, y)	
 
@@ -15,6 +19,8 @@ public:
 	int local_index{};	// element local index
 
 	char status; 	// Hilbert status
+
+	int child_position{};	// ith-child
 	
 	short faces[4]{0, 0, 0, 0};	// remote element number (positive). Negtive means its on the physical boundary. 
 
