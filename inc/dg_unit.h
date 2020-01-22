@@ -16,7 +16,7 @@ public:
 
 	int index[3]{0, 0, 0}; 	// element index[i, j, k]
  
-	int local_index{};	// element local index
+	int local_index{};	// element local index	!! redundent?
 
 	char status; 	// Hilbert status
 

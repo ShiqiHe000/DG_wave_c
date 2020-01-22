@@ -4,6 +4,8 @@
 #include <cstdlib>	// random number
 #include "dg_cantor_pairing.h"	// for the key
 #include <cassert>
+#include <unordered_map>
+#include "dg_status_table.h"
 
 /// global variable
 double xcoord_new[3]{};
@@ -57,7 +59,7 @@ void h_refinement(){
 					local::head = local::Hash_elem[new_key];
 					
 				}
-				else if(i == 0){
+				else if(i == 0 && k != 0){
 					temp2 -> next = local::Hash_elem[new_key];
 
 				}
@@ -95,13 +97,18 @@ void h_refinement(){
 				}
 
 				pre_key = new_key;
-
+				
+				temp2 = local::Hash_elem[new_key];
+				
 			}	
 			
+			temp2 -> next = temp -> next;
+
+			// erase the parent
+			local::Hash_elem.erase(old_key);
+			temp = temp2;
 		}
-
 		temp2 = temp;
-
 		temp = temp -> next;
 	}
 

@@ -32,17 +32,18 @@ void Driver_for_DG_approximation(){
 	DG_init();	
 	
 	// h-refinement
-	h_refinement();
 	
+	Serial_io(tn);		
 
 	// time integration
-//	for(int k = 0; k < dg_time::nt; ++k){
-//	
-//		Serial_io(tn);		
-//
-//		tn = (k + 1) * delta_t;
-//
-//	}
+	for(int k = 0; k < dg_time::nt; ++k){
+	
+		h_refinement();
+		
+      		Serial_io(tn);		
+		tn = (k + 1) * delta_t;
+
+	}
 
 
 }

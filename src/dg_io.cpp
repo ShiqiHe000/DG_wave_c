@@ -63,34 +63,33 @@ void Write_mesh(){
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
 		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\" \n";
-		
-
-		// write solutions
-		int elem = 1;
-
-		for(int iel = 0; iel < local::local_elem_num; ++iel){
-
-			myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"" << "  " 
-				<<"I=2, J=2"<< "  " << "DATAPACKING = POINT"<< "\n";
-			
-			++elem;
-			
-			myfile << std::fixed;
-			myfile << std::setprecision(5);
-			myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
-			myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
-			myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
-			myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
-		
-			temp = temp -> next;
-		}
-
 
 	}
 	else{
 
 		myfile.open(filename, std::ios::app);	// All output operations are performed at the end of the file
 	}
+
+	// write solutions
+	int elem = 1;
+
+	for(int iel = 0; iel < local::local_elem_num; ++iel){
+
+		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"" << "  " 
+			<<"I=2, J=2"<< "  " << "DATAPACKING = POINT"<< "\n";
+		
+		++elem;
+		
+		myfile << std::fixed;
+		myfile << std::setprecision(5);
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
+	
+		temp = temp -> next;
+	}
+
 
 	// close the file
 	myfile.close();
