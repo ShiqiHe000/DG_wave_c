@@ -6,6 +6,7 @@
 #include "dg_init.h"
 #include "dg_io.h"
 #include "dg_adapt.h"
+#include "dg_test.h"
 
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
@@ -45,5 +46,6 @@ void Driver_for_DG_approximation(){
 
 	}
 
+	//Test();
 
 }

@@ -9,9 +9,8 @@
 #include <fstream>	// read and write to file
 #include "dg_unit.h"
 
-
 // forward declaration
-void Write_mesh();
+void Write_mesh(double t);
 
 /// @brief
 /// Output data in serial order.
@@ -21,7 +20,7 @@ void Serial_io(double t){
 	for(int k = 0; k < mpi::num_proc; ++k){
 
 		if(mpi::rank == k){
-			Write_mesh();
+			Write_mesh(t);
 
 		}
 		else{
@@ -43,8 +42,8 @@ int file_num = 1;
 /// @brief
 /// Processor 1 create the file. All the processor write the data in order.
 /// In the end processor 1 close the file.
-/// 
-void Write_mesh(){
+/// @param t current time step
+void Write_mesh(double t){
 
 	// generate the file name
 	std::stringstream ss;
@@ -75,18 +74,22 @@ void Write_mesh(){
 
 	for(int iel = 0; iel < local::local_elem_num; ++iel){
 
-		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"" << "  " 
-			<<"I=2, J=2"<< "  " << "DATAPACKING = POINT"<< "\n";
+		myfile << std::fixed;
+		myfile << std::setprecision(5);
+//		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"" << "  " 
+//			<<"I=2, J=2"<< "  " << "DATAPACKING = POINT"<< "\n";
+		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"," << "  " 
+			<<"I=2, J=2, "<< "SOLUTIONTIME=" << t <<", DATAPACKING = POINT" << "\n";
 		
 		++elem;
 		
-		myfile << std::fixed;
-		myfile << std::setprecision(5);
+	//	myfile << std::fixed;
+	//	myfile << std::setprecision(5);
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
-	
+		
 		temp = temp -> next;
 	}
 

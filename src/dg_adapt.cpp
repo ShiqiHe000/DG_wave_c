@@ -6,6 +6,8 @@
 #include <cassert>
 #include <unordered_map>
 #include "dg_status_table.h"
+#include "dg_param.h"
+#include <iostream>	//test
 
 /// global variable
 double xcoord_new[3]{};
@@ -21,13 +23,19 @@ void h_refinement(){
 
 	Unit* temp = local::head;
 	Unit* temp2 = temp;
+
+	int increment{};
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
 
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 
-		if(rand_num <= 3){	// refine
+		bool check = ((temp -> index[2]) <= grid::hlevel_max ) ? true : false;
+
+		if(rand_num <= 3 && check){	// refine
+			
+			increment += 3; 
 			
 			// new coordinates
 			xcoord_new[0] = temp -> xcoords[0]; xcoord_new[2] = temp -> xcoords[1];
@@ -111,6 +119,8 @@ void h_refinement(){
 		temp2 = temp;
 		temp = temp -> next;
 	}
+
+	local::local_elem_num += increment;
 
 }
 

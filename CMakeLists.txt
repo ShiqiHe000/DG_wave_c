@@ -27,6 +27,14 @@ if(BLAS_NOTFOUND)
 endif(BLAS_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
 
+# silo
+include_directories(/home/shiqihe/local/silo/silo-4.10.2/include)
+find_library(SILO NAMES silo HINTS /home/shiqihe/local/silo/silo-4.10.2/lib)
+if(SILO_NOTFOUND)
+	message(ERROR "silo not found.")
+endif(SILO_NOTFOUND)
+
+
 # MPI---------------------------------------------------------------------------------------
 
 # find MPI package
