@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include "dg_status_table.h"
 #include "dg_param.h"
-#include <iostream>	//test
 
 /// global variable
 double xcoord_new[3]{};
@@ -27,11 +26,11 @@ void h_refinement(){
 	int increment{};
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
-
+		
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 
-		bool check = ((temp -> index[2]) <= grid::hlevel_max ) ? true : false;
+		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 
 		if(rand_num <= 3 && check){	// refine
 			
@@ -137,20 +136,20 @@ void Gen_index(int ith, int* index, int* index_new){
 
 		index_new[0] = 2 * index[0];
 		index_new[1] = 2 * index[1];
-		index_new[2] = ++index[2];
+		index_new[2] = index[2] + 1;
 	}
 	else if(ith == 1){
 
 		index_new[0] = 2 * index[0] + 1;
 		index_new[1] = 2 * index[1];
-		index_new[2] = ++index[2];
+		index_new[2] = index[2] + 1;
 
 	}
 	else if(ith == 2){
 
 		index_new[0] = 2 * index[0] + 1;
 		index_new[1] = 2 * index[1] + 1;
-		index_new[2] = ++index[2];
+		index_new[2] = index[2] + 1;
 
 	}
 	else{
@@ -158,7 +157,7 @@ void Gen_index(int ith, int* index, int* index_new){
 
 		index_new[0] = 2 * index[0];
 		index_new[1] = 2 * index[1] + 1;
-		index_new[2] = ++index[2];
+		index_new[2] = index[2] + 1;
 
 	}
 

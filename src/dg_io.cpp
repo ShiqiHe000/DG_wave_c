@@ -10,17 +10,21 @@
 #include "dg_unit.h"
 
 // forward declaration
-void Write_mesh(double t);
+void Write_mesh(double t, int pre_elem);
 
 /// @brief
 /// Output data in serial order.
 /// @param t current time.
 void Serial_io(double t){
 
+	int pre_elem{};
+
+	MPI_Exscan(&local::local_elem_num, &pre_elem, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
 	for(int k = 0; k < mpi::num_proc; ++k){
 
 		if(mpi::rank == k){
-			Write_mesh(t);
+			Write_mesh(t, pre_elem);
 
 		}
 		else{
@@ -38,12 +42,11 @@ void Serial_io(double t){
 // global file number
 int file_num = 1;
 
-
 /// @brief
 /// Processor 1 create the file. All the processor write the data in order.
 /// In the end processor 1 close the file.
 /// @param t current time step
-void Write_mesh(double t){
+void Write_mesh(double t, int pre_elem){
 
 	// generate the file name
 	std::stringstream ss;
@@ -53,6 +56,7 @@ void Write_mesh(double t){
 
 	// traverse the linked-list
 	Unit* temp = local::head;
+	int elem = pre_elem;
 
 	// processor open file
 	if(mpi::rank == 0){
@@ -61,8 +65,8 @@ void Write_mesh(double t){
 
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
-		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\" \n";
-
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\" \n";
+		
 	}
 	else{
 
@@ -70,8 +74,6 @@ void Write_mesh(double t){
 	}
 
 	// write solutions
-	int elem = 1;
-
 	for(int iel = 0; iel < local::local_elem_num; ++iel){
 
 		myfile << std::fixed;
@@ -85,10 +87,14 @@ void Write_mesh(double t){
 		
 	//	myfile << std::fixed;
 	//	myfile << std::setprecision(5);
-		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
-		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
-		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] << "  " << mpi::rank << "\n";
-		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] << "  " << mpi::rank << "\n";
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
 		
 		temp = temp -> next;
 	}

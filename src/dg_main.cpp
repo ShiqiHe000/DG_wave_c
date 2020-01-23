@@ -25,15 +25,19 @@
 #include "dg_advection_diffusion_driver.h"
 #include "dg_verification.h"
 #include "dg_end_game.h"
+#include <ctime>        // time()
+#include <cstdlib>      // random numbe
 #include "dg_test.h"	//test
 
 int main(int argc, char *argv[]){
-	
+
 	char** a = argv;	
 	
 	// initialize mpi
 	Start_mpi(&argc, a);
 	
+	srand(time(NULL));
+
 	// prepare Hilbert curve
 	Hilber_numbering();
 
