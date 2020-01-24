@@ -5,6 +5,7 @@
 #include "dg_nodal_2d_storage.h"
 #include <unordered_map>
 #include "dg_param.h"
+#include "dg_search_rank.h"
 
 /// @brief
 /// Construct MPI boundaries and physical boundaries. 
@@ -51,6 +52,11 @@ void MPI_boundary_construct(){
 				temp -> facen[0][0].face_type = 'M';
 				temp -> facen[0][0].porder = grid::nmin;	// for uniform mesh, we can record
 				temp -> facen[0][0].key = nkey;		// hlevel initially 0
+
+				int target_rank = Target_rank(ni, nj);
+
+				temp -> facen[0][0].rank = target_rank;
+				
 			}
 			else{	// if found, record info
 
@@ -83,6 +89,9 @@ void MPI_boundary_construct(){
 				temp -> facen[1][0].face_type = 'M';
 				temp -> facen[1][0].porder = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
+				int target_rank = Target_rank(ni, nj);
+
+				temp -> facen[1][0].rank = target_rank;
 			}
 			else{
 
@@ -115,6 +124,9 @@ void MPI_boundary_construct(){
 				temp -> facen[2][0].face_type = 'M';
 				temp -> facen[2][0].porder = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
+				int target_rank = Target_rank(ni, nj);
+
+				temp -> facen[2][0].rank = target_rank;
 			}
 			else{
 				
@@ -146,6 +158,10 @@ void MPI_boundary_construct(){
 				temp -> facen[3][0].face_type = 'M';
 				temp -> facen[3][0].porder = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
+
+				int target_rank = Target_rank(ni, nj);
+
+				temp -> facen[3][0].rank = target_rank;
 			}
 			else{
 

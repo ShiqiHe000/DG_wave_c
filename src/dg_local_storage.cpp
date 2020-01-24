@@ -23,7 +23,7 @@ namespace local{
 	int original_elem_num;	// no use?
 
 	int* elem_range;
-	int* rank_indicator; 
+	int* rank_indicator; // no use?
 
 	double* x_local = nullptr;
 	double* y_local = nullptr;

@@ -53,7 +53,7 @@ struct Unit::Face{
 	
 	int key{};
 	
-
+	int rank{};
 };
 
 
