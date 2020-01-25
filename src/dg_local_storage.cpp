@@ -35,11 +35,15 @@ namespace local{
 
 	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
 
-//	double** solution_int_l{};
-//	double** solution_int_r{};
-
 	std::vector<std::vector<double>> solution_int_l{};
 	std::vector<std::vector<double>> solution_int_r{};
+
+	// testing -----------------------------------------
+
+//	std::vector<int> n_interface{};
+//	std::vector<int> s_interface{};
+
+	//--------------------------------------------------
 };
 
 /// @brief

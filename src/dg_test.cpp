@@ -6,23 +6,28 @@
 
 void Test(){
 
-	Unit* temp = local::head;
-	if(mpi::rank == 0){
-		for(int k = 0; k < local::local_elem_num; ++k){
-			
-	
-			for(int i=0; i < 4; ++i){
-	
-				std::cout<<"elem" << k << "\n";
-				std::cout<< i << " " <<temp -> facen[i][0].face_type << "\n";
-				std::cout<< i << " " <<temp -> facen[i][0].hlevel << "\n";
-				std::cout<< i << " " <<temp -> facen[i][0].porder << "\n";
-				std::cout<< i << " " <<temp -> facen[i][0].key << "\n";
-				std::cout<< i << " " << temp -> facen[i][0].rank << "\n";
-			}
-			temp = temp -> next;
-		}
-	}
+//	Unit* temp = local::head;
+//	if(mpi::rank == 0){
+//		for(int k = 0; k < local::local_elem_num; ++k){
+//			
+//	
+//			for(int i=0; i < 4; ++i){
+//	
+//				std::cout<<"elem" << k << "\n";
+//				std::cout<< i << " " <<temp -> facen[i][0].face_type << "\n";
+//				std::cout<< i << " " <<temp -> facen[i][0].hlevel << "\n";
+//				std::cout<< i << " " <<temp -> facen[i][0].porder << "\n";
+//				std::cout<< i << " " <<temp -> facen[i][0].key << "\n";
+//				std::cout<< i << " " << temp -> facen[i][0].rank << "\n";
+//			}
+//			temp = temp -> next;
+//		}
+//	}
 
+//	for(int i = 0; i <= mpi::num_proc; ++i){
+//
+//		std::cout<< mpi::rank << " " << local::elem_range[i] << "\n";
+//
+//	}
 
 }

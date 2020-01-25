@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "dg_param.h"
 #include "dg_search_rank.h"
+#include <iostream>	//test
 
 /// @brief
 /// Construct MPI boundaries and physical boundaries. 
@@ -74,7 +75,6 @@ void MPI_boundary_construct(){
 			temp -> faces[1] = -2;	// yes
 			
 			temp -> facen[1][0].face_type = 'B';
-
 		}
 		else{	// no
 			int ni = temp -> index[0] + 1;

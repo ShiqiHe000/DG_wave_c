@@ -34,6 +34,12 @@ public:
 
 	Unit* next = nullptr;	// pointer to the next Unit
 	
+
+	// for testing-----------------------------------------
+	int var{};
+	//-----------------------------------------------------
+
+
 	// constructor (default)
 	Unit();
 	
