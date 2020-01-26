@@ -13,12 +13,21 @@ struct table_elem{
 	int target_rank;
 
 	int coord;
+
+	int hlevel;
 };
 
 /// @brief
 /// Sorting function. element in coord ascending sequence.
 bool compare_coord(table_elem left, table_elem right) {return left.coord < right.coord;}
 
+struct accum_elem{
+
+	int rank;
+	
+	int sum{};
+
+};
 
 #endif
 
