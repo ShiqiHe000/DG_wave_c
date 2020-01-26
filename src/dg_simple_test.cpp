@@ -188,21 +188,50 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 /// @param table MPI direction table.
 /// @param facei element ith face to be updates
 /// @param num recieved element number.
-/// @param it MPIdirection table iterator.
+/// @param it MPI direction table iterator.
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
 			int facei, int num, std::vector<table_elem>& it){
 	
-	for(int k = 0; k < num; ++k){	// not table but number of recv elem
 			
-		// now update the facei neighbour
-		for(auto& here : local::Hash_elem[v.local_key].facen[facei]){
-			// erase old neightbours
-			if(here.face_type == 'M' && here.rank == it -> target_rank)
-			local::Hash_elem[it -> local_key].facen[1].erase();	
+	// now update the facei neighbour
+	auto it_hash = local::Hash_elem[it -> local_key].facen[facei].begin();
+	int target_rank = it -> target_rank;
+	for(; it_hash != local::Hash_elem[it -> local_key].facen[facei].end(); ){
+		// erase the old info	
+		if(it_hash -> face_type == 'M' && (it_hash -> rank == target_rank)){
+			
+			it_hash = local::Hash_elem[it -> local_key].facen[facei].erase(it_hash);
 
+			if(it_hash -> rank != target_rank){break;}
 
 		}
+		else{
+			++it_hash;
+		}
+	}
+	
 
+	int l_tot{};
+	for(int k = 0; k < num; ++k){	// not table but number of recv elem
+
+		int l_local = Elem_length(it -> hlevel);
+		l_tot += Elem_length(recv_info[2 * k + 1]);
+		
+		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, recv_info[2 * k], target_rank}	// now we do not have porder info
+		
+		auto it_hash2 = it_hash;
+		local::Hash_elem[it -> local_key].facen[facei].insert(it_hash2, obj);	// it_hash2 becomes invalid 
+
+		++it_hash;
+
+		if(l_local <= l_tot){	// if neightbour is same size or larger
+			++it;
+			l_tot = 0;
+		}
+		else if(k == num - 1){
+
+			++it;
+		}
 
 	}	
 
