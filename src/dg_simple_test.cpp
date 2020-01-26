@@ -117,48 +117,60 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 
 	int s = south_accum.size();
 	int n = north_accum.size();
+	
+	// south send -----------------------------------------------------------------------------------------------------------------
+	if(s > 0){	// there is thing to send
+		MPI_Request s_request1[s], s_request2[s];	// for mpi_waitall
+		MPI_Status s_status1[s], s_status2[s];		// mpi_waitall
 
-	MPI_Request s_request1[s], s_request2[s];	// for mpi_waitall
-	MPI_Status s_status1[s], s_status2[s];		// mpi_waitall
-	MPI_Status status;		// dummy
-
-	// first south send north receive
-	int i{};
-	int j{};
-	for(auto& v : south_accum){	// south send
-		MPI_Isend(&v.sum, 1, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request1[i]);	// tag = local rank
-		
-		std::vector<int> send_info(v.sum * 2);
-		
-		// serialization the struct
-		for(int k = 0; k < v.sum; ++k){
+		// first south send north receive
+		int i{};
+		int j{};
+		for(auto& v : south_accum){	// south send
+			MPI_Isend(&v.sum, 1, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request1[i]);	// tag = local rank
 			
-			send_info[2 * k] = south[j].local_key;	// key
-			send_info[2 * k + 1] = south[j].hlevel;	// hlevel
-			++j;
-
+			std::vector<int> send_info(v.sum * 2);
+			
+			// serialization the struct
+			for(int k = 0; k < v.sum; ++k){
+				
+				send_info[2 * k] = south[j].local_key;	// key
+				send_info[2 * k + 1] = south[j].hlevel;	// hlevel
+				++j;
+	
+			}
+	
+			MPI_Isend(&send_info, v.sum * 2, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]);
+	
+			++i;
+			
 		}
+	
+		MPI_Waitall(s, s_request1, s_status1);	// ensure all info recved
+		MPI_Waitall(s, s_request2, s_status2);
 
-		MPI_Isend(&send_info, v.sum * 2, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]);
-
-		++i;
-		
 	}
+	//-----------------------------------------------------------------------------------------------------------------------
+	
 
-	MPI_Waitall(s, s_request1, s_status1);	// ensure all info recved
-	MPI_Waitall(s, s_request2, s_status2);
-
-	std::vector<int> recv_info;	// recv: key, hlevel
-
-	for(auto& v : north_accum){
-		int num;	// number of elem on the other side
-		MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status);
-
-		recv_info = std::vector<int>(num * 2);
-
-		MPI_Recv(&recv_info, num * 2, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &status);
-		
+	// north recv ------------------------------------------------------------------------------------------------------------
+	if(n > 0){
+		MPI_Status status;		// dummy
+		std::vector<int> recv_info;	// recv: key, hlevel
+		std::vector<table_elem>::iterator it;	// declare an iterator
+		it = north.begin();	// put the iterator at the begin of the north table
+	
+		for(auto& v : north_accum){
+			int num;	// number of elem on the other side
+			MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status);
+	
+			recv_info = std::vector<int>(num * 2);
+	
+			MPI_Recv(&recv_info, num * 2, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &status);
+			
+		}
 	}
+	//-------------------------------------------------------------------------------------------------------------------------
 //
 //MPI_Waitall(int count, MPI_Request array_of_requests[],
 //    MPI_Status *array_of_statuses)
@@ -169,6 +181,33 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 //int MPI_Isend(const void *buf, int count, MPI_Datatype datatype, int dest,
 //    int tag, MPI_Comm comm, MPI_Request *request)
 }
+
+/// @brief
+/// Update facen in hash table.
+/// @param recv_info recieved information vector.
+/// @param table MPI direction table.
+/// @param facei element ith face to be updates
+/// @param num recieved element number.
+/// @param it MPIdirection table iterator.
+void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
+			int facei, int num, std::vector<table_elem>& it){
+	
+	for(int k = 0; k < num; ++k){	// not table but number of recv elem
+			
+		// now update the facei neighbour
+		for(auto& here : local::Hash_elem[v.local_key].facen[facei]){
+			// erase old neightbours
+			if(here.face_type == 'M' && here.rank == it -> target_rank)
+			local::Hash_elem[it -> local_key].facen[1].erase();	
+
+
+		}
+
+
+	}	
+
+}
+
 
 
 void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum){
