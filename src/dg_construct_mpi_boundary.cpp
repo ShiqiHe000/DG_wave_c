@@ -51,6 +51,7 @@ void MPI_boundary_construct(){
 				temp -> faces[0] = 1;
 			
 				temp -> facen[0][0].face_type = 'M';
+				temp -> facen[0][0].hlevel = 0;
 				temp -> facen[0][0].porder = grid::nmin;	// for uniform mesh, we can record
 				temp -> facen[0][0].key = nkey;		// hlevel initially 0
 
@@ -62,6 +63,7 @@ void MPI_boundary_construct(){
 			else{	// if found, record info
 
 				temp -> facen[0][0].face_type = 'L';
+				temp -> facen[0][0].hlevel = 0;
 				temp -> facen[0][0].porder = grid::nmin;	
 				temp -> facen[0][0].key = nkey;	
 			
@@ -87,6 +89,7 @@ void MPI_boundary_construct(){
 				temp -> faces[1] = 1;
 
 				temp -> facen[1][0].face_type = 'M';
+				temp -> facen[1][0].hlevel = 0;
 				temp -> facen[1][0].porder = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
 				int target_rank = Target_rank(ni, nj);
@@ -96,6 +99,7 @@ void MPI_boundary_construct(){
 			else{
 
 				temp -> facen[1][0].face_type = 'L';
+				temp -> facen[1][0].hlevel = 0;
 				temp -> facen[1][0].porder = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
 
@@ -122,15 +126,17 @@ void MPI_boundary_construct(){
 				temp -> faces[2] = 1;
 				
 				temp -> facen[2][0].face_type = 'M';
+				temp -> facen[2][0].hlevel = 0;
 				temp -> facen[2][0].porder = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
 				int target_rank = Target_rank(ni, nj);
 
 				temp -> facen[2][0].rank = target_rank;
 			}
-			else{
+			else{	// locally
 				
 				temp -> facen[2][0].face_type = 'L';
+				temp -> facen[2][0].hlevel = 0;
 				temp -> facen[2][0].porder = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
 
@@ -156,6 +162,7 @@ void MPI_boundary_construct(){
 				temp -> faces[3] = 1;
 				
 				temp -> facen[3][0].face_type = 'M';
+				temp -> facen[3][0].hlevel = 0;
 				temp -> facen[3][0].porder = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
 
@@ -166,6 +173,7 @@ void MPI_boundary_construct(){
 			else{
 
 				temp -> facen[3][0].face_type = 'L';
+				temp -> facen[3][0].hlevel = 0;
 				temp -> facen[3][0].porder = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
 				

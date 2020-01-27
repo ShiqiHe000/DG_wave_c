@@ -92,7 +92,7 @@ void h_refinement(){
 				local::Hash_elem[new_key] -> m = temp -> m;
 				
 				// faces
-
+				
 
 				// interpolate solutions
 
@@ -120,6 +120,39 @@ void h_refinement(){
 	}
 
 	local::local_elem_num += increment;
+
+}
+
+/// @brief
+/// Form the element face vector
+/// @param position Relative position of 4 children.
+/// @param new_key child's key.
+/// @param old_key parent's key.
+void Get_facen(int position, int new_key, int old_key){
+
+	assert(position >=0 && position <= 3 && "Error: The ith child's position is out of range.");
+
+
+	if(position == 0){
+
+//		for()
+//		local::Hash_elem[new_key] -> facen[]		
+
+
+	}
+	else if(position == 1){
+
+
+	}
+	else if(position ==2){
+
+
+	}
+	else{
+
+
+
+	}
 
 }
 

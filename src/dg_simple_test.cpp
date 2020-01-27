@@ -10,11 +10,19 @@
 #include  <iostream>	// test
 #include "dg_param.h"	//test
 
-// forward declaration
+// forward declaration-----------------------------------------------------------------------------
 void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>& south);
+
 void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_elem>& south);
+
 void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum);
 
+void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
+			int facei, int num, std::vector<table_elem>::iterator& it);
+
+void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vector<accum_elem>& north_accum, 
+			std::vector<table_elem>& south, std::vector<table_elem>& north);
+//-------------------------------------------------------------------------------------------------
 
 void Simple_test(){
 
@@ -24,7 +32,7 @@ void Simple_test(){
 	// tarverse the hash table
 	Unit* temp = local::head;
 
-	// construct interface
+	// construct interface (north to south inferfaces)
 	std::vector<int> n_interface(local::local_elem_num);
 	std::vector<int> s_interface(local::local_elem_num);
 	
@@ -44,7 +52,9 @@ void Simple_test(){
 	Construct_mpi_table(north, south);
 
 
-	// start to send info
+	// start to send info (based on the mpi table)
+	
+
 
 //	if(! north.empty()){
 //		for(auto& v : north ){
@@ -105,7 +115,10 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 }
 
 
-
+/// @brief
+/// Updates MPI boundaries
+/// @param north north MPI table
+/// @param south south MPI table
 void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_elem>& south){
 
 	// accumulates boundaries info
@@ -118,7 +131,80 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 	int s = south_accum.size();
 	int n = north_accum.size();
 	
+	// south send, north recv
+	Sender_recver(s, n, south_accum, north_accum, south, north);
+
+	// north send, south recv. 
+	Sender_recver(n, s, north_accum, south_accum, north, south);
+
 	// south send -----------------------------------------------------------------------------------------------------------------
+//	if(s > 0){	// there is thing to send
+//		MPI_Request s_request1[s], s_request2[s];	// for mpi_waitall
+//		MPI_Status s_status1[s], s_status2[s];		// mpi_waitall
+//
+//		// first south send north receive
+//		int i{};
+//		int j{};
+//		for(auto& v : south_accum){	// south send
+//			MPI_Isend(&v.sum, 1, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request1[i]);	// tag = local rank
+//			
+//			std::vector<int> send_info(v.sum * 2);
+//			
+//			// serialization the struct
+//			for(int k = 0; k < v.sum; ++k){
+//				
+//				send_info[2 * k] = south[j].local_key;	// key
+//				send_info[2 * k + 1] = south[j].hlevel;	// hlevel
+//				++j;
+//	
+//			}
+//	
+//			MPI_Isend(&send_info, v.sum * 2, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]);
+//	
+//			++i;
+//			
+//		}
+//	
+//		MPI_Waitall(s, s_request1, s_status1);	// ensure all info recved
+//		MPI_Waitall(s, s_request2, s_status2);
+//
+//	}
+//	//-----------------------------------------------------------------------------------------------------------------------
+//	
+//
+//	// north recv ------------------------------------------------------------------------------------------------------------
+//	if(n > 0){
+//		MPI_Status status;		// dummy
+//		std::vector<int> recv_info;	// recv: key, hlevel
+//		std::vector<table_elem>::iterator it;	// declare an iterator
+//		it = north.begin();	// put the iterator at the begin of the north table
+//	
+//		for(auto& v : north_accum){
+//			int num;	// number of elem on the other side
+//			MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status);
+//	
+//			recv_info = std::vector<int>(num * 2);
+//	
+//			MPI_Recv(&recv_info, num * 2, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &status);
+//			
+//			Update_hash(recv_info, north, 1, num, it);
+//		}
+//	}
+//	//-------------------------------------------------------------------------------------------------------------------------
+}
+
+/// @brief
+/// Send and recv info to update MPI boundaries. 
+/// @param s number of element to send.
+/// @param n number of element to recv.
+/// @param south_accum sender's accum table.
+/// @param north_accum recver's accum table.
+/// @param south sender's MPI table.
+/// @param north recver's MPI table.
+void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vector<accum_elem>& north_accum, 
+			std::vector<table_elem>& south, std::vector<table_elem>& north){
+
+
 	if(s > 0){	// there is thing to send
 		MPI_Request s_request1[s], s_request2[s];	// for mpi_waitall
 		MPI_Status s_status1[s], s_status2[s];		// mpi_waitall
@@ -168,19 +254,13 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 	
 			MPI_Recv(&recv_info, num * 2, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &status);
 			
+			Update_hash(recv_info, north, 1, num, it);
 		}
 	}
 	//-------------------------------------------------------------------------------------------------------------------------
-//
-//MPI_Waitall(int count, MPI_Request array_of_requests[],
-//    MPI_Status *array_of_statuses)
 
-//MPI_Recv(void *buf, int count, MPI_Datatype datatype,
-//    int source, int tag, MPI_Comm comm, MPI_Status *status)
-
-//int MPI_Isend(const void *buf, int count, MPI_Datatype datatype, int dest,
-//    int tag, MPI_Comm comm, MPI_Request *request)
 }
+
 
 /// @brief
 /// Update facen in hash table.
@@ -190,17 +270,17 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 /// @param num recieved element number.
 /// @param it MPI direction table iterator.
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
-			int facei, int num, std::vector<table_elem>& it){
+			int facei, int num, std::vector<table_elem>::iterator& it){
 	
 			
 	// now update the facei neighbour
-	auto it_hash = local::Hash_elem[it -> local_key].facen[facei].begin();
+	auto it_hash = local::Hash_elem[it -> local_key] -> facen[facei].begin();
 	int target_rank = it -> target_rank;
-	for(; it_hash != local::Hash_elem[it -> local_key].facen[facei].end(); ){
+	for(; it_hash != local::Hash_elem[it -> local_key] -> facen[facei].end(); ){
 		// erase the old info	
 		if(it_hash -> face_type == 'M' && (it_hash -> rank == target_rank)){
 			
-			it_hash = local::Hash_elem[it -> local_key].facen[facei].erase(it_hash);
+			it_hash = local::Hash_elem[it -> local_key] -> facen[facei].erase(it_hash);
 
 			if(it_hash -> rank != target_rank){break;}
 
@@ -216,11 +296,11 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 
 		int l_local = Elem_length(it -> hlevel);
 		l_tot += Elem_length(recv_info[2 * k + 1]);
+	
+		// type, helvel, porder, key, rank	
+		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, recv_info[2 * k], target_rank};	// now we do not have porder info
 		
-		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, recv_info[2 * k], target_rank}	// now we do not have porder info
-		
-		auto it_hash2 = it_hash;
-		local::Hash_elem[it -> local_key].facen[facei].insert(it_hash2, obj);	// it_hash2 becomes invalid 
+		local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_hash, obj);	// it_hash2 becomes invalid 
 
 		++it_hash;
 

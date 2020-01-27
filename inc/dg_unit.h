@@ -25,7 +25,7 @@ public:
 	short faces[4]{0, 0, 0, 0};	// remote element number (positive). Negtive means its on the physical boundary. 
 
 	struct Face;	// forward declare
-	std::vector<std::vector<Face>> facen;	// a structure for the neighbour on each face
+	std::vector<std::vector<Face>> facen;	// a structure for the neighbour on each face, initialized in dg_unit.cpp
 
 	double xcoords[2]{0.0, 0.0};	// x coordinates
 	double ycoords[2]{0.0, 0.0};	// y coordinates
@@ -53,13 +53,13 @@ struct Unit::Face{
 	
 	char face_type;
 	
-	int hlevel{};
+	int hlevel;
 	
-	int porder{};
+	int porder;
 	
-	int key{};
+	int key;
 	
-	int rank{};
+	int rank;
 };
 
 
