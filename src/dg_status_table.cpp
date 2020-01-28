@@ -60,3 +60,28 @@ int Sibling_position(char input, int i){
 	return out;
 
 }
+
+/// @brief
+/// Check ith child nth face neighbour situation. 
+/// Output boolean operator to indicate nth face adjecent to a sibling or not.
+/// @param ith ith child.
+/// @param facen nth face. 
+bool Sibling_table(int ith, int facen){
+
+	static std::unordered_map<int, std::array<bool, 4>> Face_sib_lookup = 
+				{{0, {false, true, false, true}},
+				 {1, {true, false, false, true}},
+				 {2, {true, false, true, false}},
+				 {3, {false, true, true, false}}
+				};
+
+	
+	assert( facen >= 0 && facen <= 3 && "face number should between 0~3." );
+	assert( ith >= 0 && ith <= 3 && "child number should between 0~3." );
+
+	std::array<bool, 4> a = Face_sil_lookup[ith];
+	bool out = a[facen];
+
+	return out;
+
+}

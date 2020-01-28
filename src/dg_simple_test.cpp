@@ -298,7 +298,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 		l_tot += Elem_length(recv_info[2 * k + 1]);
 	
 		// type, helvel, porder, key, rank	
-		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, recv_info[2 * k], target_rank};	// now we do not have porder info
+		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, 0, recv_info[2 * k], target_rank};	// now we do not have porder info
 		
 		local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_hash, obj);	// it_hash2 becomes invalid 
 

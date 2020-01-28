@@ -91,8 +91,9 @@ void h_refinement(){
 				local::Hash_elem[new_key] -> n = temp -> n;
 				local::Hash_elem[new_key] -> m = temp -> m;
 				
-				// faces
+				// faces(here we construct between siblings)
 				
+					
 
 				// interpolate solutions
 
@@ -122,6 +123,39 @@ void h_refinement(){
 	local::local_elem_num += increment;
 
 }
+
+/// @brief
+/// Build faces between siblngs. Each element has two faces adjecant to siblings. 
+/// @param new_key current child element's key
+/// @param position ith child. 
+void Two_siblings(int new_key, int position){
+	
+	// four faces
+	for(int i = 0; i < 4; ++i){
+
+		bool t = Sibling_table(position, i);
+
+		if(t){
+			local::Hash_elem[new_key] -> facen[i].face_type = 'L';
+			local::Hash_elem[new_key] -> facen[i].hlevel = local::Hash_elem[new_key] -> index[2];
+			local::Hash_elem[new_key] -> facen[i].porderx = local::Hash_elem[new_key] -> n;
+			local::Hash_elem[new_key] -> facen[i].pordery = local::Hash_elem[new_key] -> m;
+
+			// key
+			if(i == 0){	// south
+				
+				local::Hash_elem[new_key] -> facen[i].key = Get_key_fun(local::Hash_elem[new_key] -> index[0] - 1, 
+											local::Hash_elem[new_key] -> index[1], 
+											local::Hash_elem[new_key] -> index[2]);
+		
+
+			}
+		}
+
+	}
+
+}
+
 
 /// @brief
 /// Form the element face vector
