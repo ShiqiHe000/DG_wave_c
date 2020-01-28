@@ -79,7 +79,7 @@ bool Sibling_table(int ith, int facen){
 	assert( facen >= 0 && facen <= 3 && "face number should between 0~3." );
 	assert( ith >= 0 && ith <= 3 && "child number should between 0~3." );
 
-	std::array<bool, 4> a = Face_sil_lookup[ith];
+	std::array<bool, 4> a = Face_sib_lookup[ith];
 	bool out = a[facen];
 
 	return out;

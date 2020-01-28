@@ -52,7 +52,8 @@ void MPI_boundary_construct(){
 			
 				temp -> facen[0][0].face_type = 'M';
 				temp -> facen[0][0].hlevel = 0;
-				temp -> facen[0][0].porder = grid::nmin;	// for uniform mesh, we can record
+				temp -> facen[0][0].porderx = grid::nmin;	// for uniform mesh, we can record
+				temp -> facen[0][0].pordery = grid::nmin;	// for uniform mesh, we can record
 				temp -> facen[0][0].key = nkey;		// hlevel initially 0
 
 				int target_rank = Target_rank(ni, nj);
@@ -64,7 +65,8 @@ void MPI_boundary_construct(){
 
 				temp -> facen[0][0].face_type = 'L';
 				temp -> facen[0][0].hlevel = 0;
-				temp -> facen[0][0].porder = grid::nmin;	
+				temp -> facen[0][0].porderx = grid::nmin;	
+				temp -> facen[0][0].pordery = grid::nmin;	
 				temp -> facen[0][0].key = nkey;	
 			
 
@@ -90,7 +92,8 @@ void MPI_boundary_construct(){
 
 				temp -> facen[1][0].face_type = 'M';
 				temp -> facen[1][0].hlevel = 0;
-				temp -> facen[1][0].porder = grid::nmin;	
+				temp -> facen[1][0].porderx = grid::nmin;	
+				temp -> facen[1][0].pordery = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
 				int target_rank = Target_rank(ni, nj);
 
@@ -100,7 +103,8 @@ void MPI_boundary_construct(){
 
 				temp -> facen[1][0].face_type = 'L';
 				temp -> facen[1][0].hlevel = 0;
-				temp -> facen[1][0].porder = grid::nmin;	
+				temp -> facen[1][0].porderx = grid::nmin;	
+				temp -> facen[1][0].pordery = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
 
 			}
@@ -127,7 +131,8 @@ void MPI_boundary_construct(){
 				
 				temp -> facen[2][0].face_type = 'M';
 				temp -> facen[2][0].hlevel = 0;
-				temp -> facen[2][0].porder = grid::nmin;	
+				temp -> facen[2][0].porderx = grid::nmin;	
+				temp -> facen[2][0].pordery = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
 				int target_rank = Target_rank(ni, nj);
 
@@ -137,7 +142,8 @@ void MPI_boundary_construct(){
 				
 				temp -> facen[2][0].face_type = 'L';
 				temp -> facen[2][0].hlevel = 0;
-				temp -> facen[2][0].porder = grid::nmin;	
+				temp -> facen[2][0].porderx = grid::nmin;	
+				temp -> facen[2][0].pordery = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
 
 			}
@@ -163,7 +169,8 @@ void MPI_boundary_construct(){
 				
 				temp -> facen[3][0].face_type = 'M';
 				temp -> facen[3][0].hlevel = 0;
-				temp -> facen[3][0].porder = grid::nmin;	
+				temp -> facen[3][0].porderx = grid::nmin;	
+				temp -> facen[3][0].pordery = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
 
 				int target_rank = Target_rank(ni, nj);
@@ -174,7 +181,8 @@ void MPI_boundary_construct(){
 
 				temp -> facen[3][0].face_type = 'L';
 				temp -> facen[3][0].hlevel = 0;
-				temp -> facen[3][0].porder = grid::nmin;	
+				temp -> facen[3][0].porderx = grid::nmin;	
+				temp -> facen[3][0].pordery = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
 				
 			

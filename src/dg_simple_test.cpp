@@ -7,6 +7,7 @@
 #include "dg_cantor_pairing.h"
 #include <algorithm>	// std::sort
 #include <mpi.h>
+#include "dg_elem_length.h"
 #include  <iostream>	// test
 #include "dg_param.h"	//test
 
