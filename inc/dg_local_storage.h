@@ -4,6 +4,7 @@
 #include "dg_unit.h"
 #include <unordered_map>
 #include <vector>
+#include "dg_boundary_table.h" 
 
 namespace local{
  
@@ -27,6 +28,16 @@ namespace local{
 	extern std::vector<std::vector<double>> solution_int_r;
 	
 };
+
+
+namespace hrefinement{
+
+	
+	extern std::vector<table_elem> north;
+	extern std::vector<table_elem> south;
+
+};
+
 
 namespace result{
 

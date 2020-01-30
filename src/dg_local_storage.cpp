@@ -2,6 +2,7 @@
 #include "dg_unit.h"	// head pointer
 #include <unordered_map>
 #include <vector>
+#include "dg_boundary_table.h"
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -44,6 +45,17 @@ namespace local{
 //	std::vector<int> s_interface{};
 
 	//--------------------------------------------------
+};
+
+
+/// @brief
+/// The variables that will be used in h-refinement
+namespace hrefinement{
+
+	
+	std::vector<table_elem> north;
+	std::vector<table_elem> south;
+
 };
 
 /// @brief

@@ -1,7 +1,5 @@
 #ifndef DG_BOUNDARY_TABLE_H
 #define DG_BOUNDARY_TABLE_H
-//#include <cmath>	// pow
-#include "dg_param.h"
 
 /// @brief
 /// MPI boundary information table.
@@ -20,9 +18,7 @@ struct table_elem{
 	int hlevel;
 };
 
-/// @brief
-/// Sorting function. element in coord ascending sequence.
-bool compare_coord(table_elem left, table_elem right) {return left.coord < right.coord;}
+bool compare_coord(table_elem left, table_elem right); 
 
 struct accum_elem{
 

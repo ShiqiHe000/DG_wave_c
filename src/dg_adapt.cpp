@@ -1,4 +1,4 @@
-//#include "dg_adapt.h"
+#include "dg_adapt.h"
 #include "dg_unit.h"
 #include "dg_local_storage.h"
 #include <cstdlib>	// random number
