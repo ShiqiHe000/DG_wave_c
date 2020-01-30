@@ -20,6 +20,8 @@ void Get_coordinates(int ith, double* xcoord, double* ycoord);
 void Gen_index(int ith, int* index, int* index_new);
 void Two_siblings(int new_key, int position);
 void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children);
+void Non_sibling_interfaces(Unit* last, int parent);
+void Form_one_direction(int key1, int key2, int parent, int facen);
 
 /// @brief
 /// Random h-refinement scheme. Each element has 30% chance to split.
@@ -34,6 +36,15 @@ void h_refinement(){
 		
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
+		
+		// predefine rand_num test
+	//	if(mpi::rank == 0){
+	//		rand_num = 1;
+
+	//	}
+	//	else{
+	//		rand_num = 9;
+	//	}
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 
@@ -101,8 +112,8 @@ void h_refinement(){
 					
 
 				// interpolate solutions
-
-
+				local::Hash_elem[new_key] -> var = temp -> var;
+				
 
 				// form link
 				if(i > 0){
@@ -114,7 +125,9 @@ void h_refinement(){
 				temp2 = local::Hash_elem[new_key];
 				
 			}	
-			
+			// form then external interfaces between 4 children and updates their neighbour's faces			
+			Non_sibling_interfaces(temp2, old_key);
+
 			temp2 -> next = temp -> next;
 
 			// erase the parent
@@ -140,7 +153,16 @@ void Non_sibling_interfaces(Unit* last, int parent){
 	Four_children(last -> child_position, last -> index[0], last -> index[1], last -> index[2], children);
 
 	// south
+	Form_one_direction(children[0], children[3], parent, 0);
+	
+	// north
+	Form_one_direction(children[1], children[2], parent, 1);
 		
+	// west
+	Form_one_direction(children[0], children[1], parent, 2);
+	
+	// east
+	Form_one_direction(children[3], children[2], parent, 3);
 }
 
 /// @brief 
@@ -150,9 +172,6 @@ void Non_sibling_interfaces(Unit* last, int parent){
 /// @param parent parent's key.
 /// @param facen face direction. 
 void Form_one_direction(int key1, int key2, int parent, int facen){
-	
-	int p_level = local::Hash_elem[parent] -> index[2];	// parent's level
-	int n_level = local::Hash_elem[parent] -> facen[facen].front().hlevel;
 	
 	// if on the physical boundary, only inherit. 
 	if(local::Hash_elem[parent] -> facen[facen].front().face_type == 'B'){
@@ -165,6 +184,9 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 
 		return; 
 	}
+
+	int p_level = local::Hash_elem[parent] -> index[2];	// parent's level
+	int n_level = local::Hash_elem[parent] -> facen[facen].front().hlevel;
 
 	// not on the physical boundary
 	std::array<int, 2> two = {key1, key2};
@@ -180,26 +202,130 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 			local::Hash_elem[a] -> facen[facen].front().key = local::Hash_elem[parent] -> facen[facen].front().key;
 			local::Hash_elem[a] -> facen[facen].front().rank = local::Hash_elem[parent] -> facen[facen].front().rank;
 		}
+
+		// updates neighbour's facen table (skip 'M', only updates 'L')
+		if(local::Hash_elem[parent] -> facen[facen].front().face_type == 'L'){
+	
+			int n_key = local::Hash_elem[parent] -> facen[facen].front().key;	// neighbour's key
+			int n_dir = Opposite_dir(facen);	// neighbour face direction
+
+			// erase the parent info, and add two children info
+			for(auto it = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
+				it != local::Hash_elem[n_key] -> facen[n_dir].end(); ){
+				// loop till we find the parent info
+				if(it -> key == parent){
+					it = local::Hash_elem[n_key] -> facen[n_dir].erase(it);	// return the next vaild iterator
+
+					Unit::Face elem1 = {'L', local::Hash_elem[key1] -> index[2], 
+								local::Hash_elem[key1] -> n, 
+								local::Hash_elem[key1] -> m, 
+								key1, 0};	// 1st child
+					Unit::Face elem2 = {'L', local::Hash_elem[key2] -> index[2], 
+								local::Hash_elem[key2] -> n, 
+								local::Hash_elem[key2] -> m, 
+								key2, 0};	// 2nd child
+					
+					local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem1);
+					++it;
+					local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem2);
+					break;	// emplace two neighbours, return
+				}
+				
+				++it;
+			}
+		}
+
 	}
 	else{	// neighbour size is smaller than parent
 
 
+		// iterator for parent facen
+		auto it = local::Hash_elem[parent] -> facen[facen].begin();
+
 		for(int i = 0; i < 2; ++i){
 
-			// iterator for parent facen
-			auto it = local::Hash_elem[parent] -> facen[facen].begin();
-	
 			int c_length = Elem_length(local::Hash_elem[two[i]] -> index[2]);	// child length				
 
-			for(; it != local::Hash_elem[parent] -> facen[facen].end(); ){
+			int n_length = Elem_length(it -> hlevel);	// neighbour length
 
-				int n_length = Elem_length(it -> hlevel);	// neighbour length
-				local::Hash_elem[two[i]] -> facen[facen].emplace_back({});
+			if(n_length == c_length){	// if length matches
+				Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, it -> key,
+							it -> rank};
+				local::Hash_elem[two[i]] -> facen[facen].emplace_back(obj);
 
+				// updates neighbours
+				if(it -> face_type == 'L'){	// only updates local elements
+					int n_key = it -> key; // neighbour's key
+					int n_dir = Opposite_dir(facen);
+					for(auto it2 = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
+						it2 != local::Hash_elem[n_key] -> facen[n_dir].end(); ++it2 ){
 
+						if(it2 -> key == parent){	// find parent
+
+							it2 = local::Hash_elem[n_key] -> facen[n_dir].erase(it2);
+
+							Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
+								local::Hash_elem[two[i]] -> n, 
+								local::Hash_elem[two[i]] -> m, 
+								two[i], 0};	
+
+							local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
+
+							break;	// only emplace 1 elem
+						}
+				
+					}
+				
+				}
+				++it;
+				
+			}
+			else{	// neighbour is smaller than child
+		
+				int l_accum{};
+				
+				while((l_accum < n_length) && (it != local::Hash_elem[parent] -> facen[facen].end())){
+
+					n_length = Elem_length(it -> hlevel);	// neighbour length
+
+					Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, it -> key,
+							it -> rank};
+					local::Hash_elem[two[i]] -> facen[facen].emplace_back(obj);
+
+					l_accum += n_length;
+
+					// updates neighbours
+					if(it -> face_type == 'L'){	// only updates local elements
+						int n_key = it -> key; // neighbour's key
+						int n_dir = Opposite_dir(facen);
+						for(auto it2 = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
+							it2 != local::Hash_elem[n_key] -> facen[n_dir].end(); ++it2 ){
+
+							if(it2 -> key == parent){	// find parent
+
+								it2 = local::Hash_elem[n_key] -> facen[n_dir].erase(it2);
+
+								Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
+									local::Hash_elem[two[i]] -> n, 
+									local::Hash_elem[two[i]] -> m, 
+									two[i], 0};	
+
+								local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
+
+								break;	// only emplace 1 elem
+							}
+					
+						}
+					
+					}
+					++it;
+
+				};		
+				
 			}
 
 		}
+
 
 	}
 	
@@ -217,8 +343,6 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children){
 
 	assert((ith == 1 || ith == 3) && "Child_position must be 1 or 3");
-
-	std::array<int, 4> children;
 
 	if(ith == 1){	// 1st child
 	

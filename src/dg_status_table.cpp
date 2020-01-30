@@ -85,3 +85,21 @@ bool Sibling_table(int ith, int facen){
 	return out;
 
 }
+
+/// @brief
+/// Input the current face direction. output the opposit direction.
+/// @param dir current face direction.
+int Opposite_dir(int dir){
+
+	static std::unordered_map<int, int> Dir_table_lookup = {
+								{0, 1}, 
+								{1, 0},
+								{2, 3},
+								{3, 2}
+								};
+
+	assert(dir >= 0 && dir <=3 && "Face direction should between 0 to 3.");
+
+
+	return (Dir_table_lookup[dir]);
+}

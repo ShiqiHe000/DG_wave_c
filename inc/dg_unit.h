@@ -55,7 +55,9 @@ struct Unit::Face{
 	
 	int hlevel;
 	
-	int porder;
+	int porderx;
+
+	int pordery;
 	
 	int key;
 	

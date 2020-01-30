@@ -301,13 +301,14 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 		// type, helvel, porder, key, rank	
 		Unit::Face obj = {'M', recv_info[2 * k + 1], 0, 0, recv_info[2 * k], target_rank};	// now we do not have porder info
 		
-		local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_hash, obj);	// it_hash2 becomes invalid 
+		local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_hash, obj); 
 
 		++it_hash;
 
 		if(l_local <= l_tot){	// if neightbour is same size or larger
 			++it;
 			l_tot = 0;
+			
 		}
 		else if(k == num - 1){
 
