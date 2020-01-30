@@ -6,6 +6,8 @@
 #include "dg_init.h"
 #include "dg_io.h"
 #include "dg_adapt.h"
+#include "dg_mpi_table_construct.h"
+#include "dg_local_storage.h"
 #include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
 
@@ -41,7 +43,9 @@ void Driver_for_DG_approximation(){
 	for(int k = 0; k < dg_time::nt; ++k){
 	
 		h_refinement();
-		
+	
+		Construct_mpi_table(hrefinement::north, hrefinement::south);
+	
       		Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 
