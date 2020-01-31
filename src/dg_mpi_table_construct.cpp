@@ -20,6 +20,8 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
 			int facei, int num, std::vector<table_elem>::iterator& it);
+
+void Clear_tables();
 //---------------------------------------------------------------------------------------
 
 /// @brief 
@@ -344,4 +346,14 @@ void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_
 		}
 	}
 
+}
+
+/// @brief
+/// Remove all the elements inside the tables (MPI tables and accumlation table)
+void Clear_tables(){
+
+	hrefinement::south_accum.clear();
+	hrefinement::north_accum.clear();
+	hrefinement::south.clear();
+	hrefinement::north.clear();
 }

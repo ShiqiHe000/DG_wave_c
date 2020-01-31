@@ -35,7 +35,7 @@ void Test(){
 //	}
 
 	Unit* temp =local::head;
-	if(mpi::rank == 1){
+	if(mpi::rank == 0){
 
 		for(int k = 0; k < local::local_elem_num; ++k){
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);

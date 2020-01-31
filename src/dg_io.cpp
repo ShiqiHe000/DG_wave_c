@@ -65,7 +65,7 @@ void Write_mesh(double t, int pre_elem){
 
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
-		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\" \n";
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"VAR\", \n";
 		
 	}
 	else{
@@ -88,13 +88,13 @@ void Write_mesh(double t, int pre_elem){
 	//	myfile << std::fixed;
 	//	myfile << std::setprecision(5);
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  " <<temp -> var <<"\n";
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"\n";
 		
 		temp = temp -> next;
 	}

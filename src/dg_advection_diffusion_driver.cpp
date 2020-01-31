@@ -47,6 +47,10 @@ void Driver_for_DG_approximation(){
 		Construct_mpi_table(hrefinement::north, hrefinement::south);
 		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
 
+		Simple_test(k);
+
+		Clear_tables;
+
       		Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 

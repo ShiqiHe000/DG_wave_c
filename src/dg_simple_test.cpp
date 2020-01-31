@@ -24,10 +24,10 @@ void Simple_test(int tn){
 	// total number of info to send
 	int mpi_num{};
 	for(auto& v : hrefinement::north_accum){
-
 		mpi_num += v.sum;
 
 	}
+
 
 	MPI_Request request[mpi_num];
 	MPI_Status status[mpi_num];
@@ -36,14 +36,20 @@ void Simple_test(int tn){
 	// form interface + send info on the mpi boundary
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		temp -> n_interface = temp -> var;
+		temp -> n_interface = (double)(temp -> var);
 
 		// send if on the mpi boudary
 		for(auto& v : temp -> facen[1]){
 
 			if(v.face_type == 'M'){
 				int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]);	//
+				//tag=sender's key
+				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]); 
+//if(mpi::rank == 0){
+//	std::cout<< "local_key " << local_key << " n_interface: " << temp -> n_interface << "\n";
+//
+//}
+
 				++i;
 			}
 		}
@@ -52,6 +58,8 @@ void Simple_test(int tn){
 	}
 
 	int length_tol = Elem_length(0);
+
+	temp = local::head;
 
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
