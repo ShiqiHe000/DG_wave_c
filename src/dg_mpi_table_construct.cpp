@@ -90,15 +90,11 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 /// @param south south MPI table
 void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_elem>& south){
 
-	// accumulates boundaries info
-	std::vector<accum_elem> south_accum;
-	std::vector<accum_elem> north_accum;
+	Accum_table(south, hrefinement::south_accum);
+	Accum_table(north, hrefinement::north_accum);
 
-	Accum_table(south, south_accum);
-	Accum_table(north, north_accum);
-
-	int s = south_accum.size();
-	int n = north_accum.size();
+	int s = hrefinement::south_accum.size();
+	int n = hrefinement::north_accum.size();
 //if(mpi::rank == 1){
 //	
 //	for(auto& v : south){
@@ -115,10 +111,10 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 ////	std::cout << s << " " << n << "\n";
 //}
 	// south send, north recv
-	Sender_recver(s, n, south_accum, north_accum, south, north, 1);
+	Sender_recver(s, n, hrefinement::south_accum, hrefinement::north_accum, south, north, 1);
 
 	// north send, south recv. 
-	Sender_recver(n, s, north_accum, south_accum, north, south, 0);
+	Sender_recver(n, s, hrefinement::north_accum, hrefinement::south_accum, north, south, 0);
 
 }
 
