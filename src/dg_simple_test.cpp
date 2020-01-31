@@ -1,12 +1,7 @@
 #include "dg_simple_test.h"
 #include "dg_unit.h"
 #include <vector>
-#include "dg_boundary_table.h"
 #include "dg_local_storage.h"
-#include "dg_boundary_table.h"
-#include "dg_cantor_pairing.h"
-#include <mpi.h>
-#include "dg_elem_length.h"
 #include "dg_mpi_table_construct.h"
 #include  <iostream>	// test
 #include "dg_param.h"	//test

@@ -38,13 +38,13 @@ void h_refinement(){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-	//	if(mpi::rank == 0){
-	//		rand_num = 1;
+		if(mpi::rank == 0){
+			rand_num = 1;
 
-	//	}
-	//	else{
-	//		rand_num = 9;
-	//	}
+		}
+		else{
+			rand_num = 9;
+		}
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 

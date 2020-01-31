@@ -13,7 +13,7 @@ struct table_elem{
 
 	int target_rank;
 
-	int coord;
+	double coord;
 
 	int hlevel;
 };
