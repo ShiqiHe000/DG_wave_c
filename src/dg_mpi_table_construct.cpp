@@ -71,17 +71,6 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 				north.back().coord = temp -> ycoords[1];
 				north.back().hlevel = temp -> index[2];	
 
-//if(mpi::rank == 0){
-//
-//	if(north.back().local_key == 4){
-//
-//		std::cout<< "i j k " << temp -> index[0] << temp -> index[1] << temp -> index[2] << "\n";
-//
-//
-//	}
-//	
-//
-//}	
 			}
 
 		
@@ -97,16 +86,6 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 		std::sort(south.begin(), south.end(), compare_coord);
 		std::sort(north.begin(), north.end(), compare_coord);
 
-//	if(mpi::rank == 0){
-//		std::cout<< "-----------------------------" << "\n";
-//		for(auto& v : north){
-//
-//			std::cout<< "key: " << v.local_key << " t_rank " << v.target_rank << "\n";
-//
-//		}
-//
-//		std::cout<< "-----------------------------" << "\n";
-//	}
 
 }
 
@@ -162,7 +141,6 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 		MPI_Request s_request1[s], s_request2[s];	// for mpi_waitall
 		MPI_Status s_status1[s], s_status2[s];		// mpi_waitall
 
-		// first south send north receive
 		int i{};
 		int j{};
 		for(auto& v : south_accum){	// south send
@@ -180,7 +158,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 				++j;
 			}
 	
-			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]); //tag = local_rank
+			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]); 
 	
 			++i;
 			
@@ -203,9 +181,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			int num;	// number of elem on the other side
 
 			MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status1);
-//if(mpi::rank == 0){
+//if(mpi::rank == 1){
 //	
-//	std::cout << "rank0 " << num << "\n";
+//	std::cout << "rank1 " << num << "\n";
 //}
 			std::vector<int> recv_info;	// recv: key, hlevel
 			std::vector<table_elem>::iterator it;	// declare an iterator
@@ -214,9 +192,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			recv_info = std::vector<int>(num * 4);
 	
 			MPI_Recv(&recv_info[0], num * 4, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 0){
+//if(mpi::rank == 1){
 //	for(int i = 0; i < num; ++i){
-//		std::cout<< "key: "<< recv_info[i * 4] << "hlevel: " << recv_info[i * 4] << "\n";
+//		std::cout<< "key: "<< recv_info[i * 4] << "hlevel: " << recv_info[i * 4 + 1] << "\n";
 //
 //	}	
 //
@@ -224,7 +202,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			Update_hash(recv_info, north, update_dir, num, it);	// north recv
 		}
 	}
-	//-------------------------------------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------------
 
 }
 
@@ -277,7 +255,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 				Unit::Face obj = {'M', recv_info[4 * k + 1], recv_info[4 * k + 2], 
 							recv_info[4 * k + 3], recv_info[4 * k], it -> target_rank};
 
-				local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
+				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
 
 				l_tot += l_local;
 				
@@ -292,18 +270,16 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			// erase old face info
 			auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
 			Erase_old_face(it_face, it, facei);
-
+			
 			// it stall, recv_info loop
 			while(k < num && l_tot < l_local){
 				Unit::Face obj = {'M', recv_info[4 * k + 1], recv_info[4 * k + 2], 
 						recv_info[4 * k + 3], recv_info[4 * k], it -> target_rank};
-				
-				local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
-
+			
+				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
 				l_tot += l_n;
 
 				++it_face;
-				
 				++k;
 			}
 		}
@@ -324,7 +300,7 @@ void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<tabl
 		// erase the old info	
 		if(it_face -> face_type == 'M' && (it_face -> rank == target_rank)){
 			
-			it_face = local::Hash_elem[it -> local_key] -> facen[facei].erase(it_face); // it_hash move to the next
+			it_face = local::Hash_elem[it -> local_key] -> facen[facei].erase(it_face); // it_face move to the next
 	
 			if(it_face -> rank != target_rank){break;}
 	
@@ -380,4 +356,6 @@ void Clear_tables(){
 	hrefinement::north_accum.clear();
 	hrefinement::south.clear();
 	hrefinement::north.clear();
+
+
 }
