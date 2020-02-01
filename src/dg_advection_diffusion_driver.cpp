@@ -45,9 +45,9 @@ void Driver_for_DG_approximation(){
 		h_refinement();
 	
 		Construct_mpi_table(hrefinement::north, hrefinement::south);
-		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
-
-		Simple_test(k);
+//		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
+		
+	//	Simple_test(k);
 
 		Clear_tables;
 
@@ -57,7 +57,6 @@ void Driver_for_DG_approximation(){
 	}
 
 
-//	Simple_test();
 
 	Test();
 

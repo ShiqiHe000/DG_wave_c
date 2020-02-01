@@ -4,6 +4,7 @@
 #include "dg_local_storage.h"
 #include "dg_param.h"
 #include "dg_cantor_pairing.h"
+#include <unordered_map>
 
 void Write_faces(int key);
 
@@ -31,6 +32,20 @@ void Test(){
 //	for(int i = 0; i <= mpi::num_proc; ++i){
 //
 //		std::cout<< mpi::rank << " " << local::elem_range[i] << "\n";
+//
+//	}
+
+
+//	if(mpi::rank == 0){
+//
+//		std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(4);
+//
+//
+//		if(got == local::Hash_elem.end()){
+//
+//			std::cout<< "not find" << "\n";
+//
+//		}
 //
 //	}
 
@@ -91,7 +106,7 @@ void Write_faces(int key){
 
 			// key
 			std::cout << "key: "<< v.key << "\n";
-
+			
 			// rank
 			std::cout << "rank: " << v.rank << "\n";
 

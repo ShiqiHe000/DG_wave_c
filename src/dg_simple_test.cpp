@@ -128,6 +128,7 @@ void Simple_test(int tn){
 
 		temp -> var = (int)(temp -> s_interface);
 		
+		temp -> s_interface = 0;
 
 		temp = temp -> next;
 	}
@@ -143,11 +144,11 @@ void Boundary_condition(double& s_interface, int nt){
 
 	if((nt % 2) == 0){	// even time step
 
-		s_interface = 1;
+		s_interface = 1.0;
 
 	}
 	else{	// odd time step
-		s_interface = -1;
+		s_interface = -1.0;
 
 	}
 

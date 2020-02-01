@@ -64,12 +64,24 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 
 
 			if(face_n.face_type == 'M' && face_n.face_type != pre_rank){	// if mpi boundary, record
-			
+		
 				north.push_back(table_elem());
 				north.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				north.back().target_rank = face_n.rank;
 				north.back().coord = temp -> ycoords[1];
 				north.back().hlevel = temp -> index[2];	
+
+//if(mpi::rank == 0){
+//
+//	if(north.back().local_key == 4){
+//
+//		std::cout<< "i j k " << temp -> index[0] << temp -> index[1] << temp -> index[2] << "\n";
+//
+//
+//	}
+//	
+//
+//}	
 			}
 
 		
@@ -84,6 +96,18 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 		// sort north and south table in the end
 		std::sort(south.begin(), south.end(), compare_coord);
 		std::sort(north.begin(), north.end(), compare_coord);
+
+//	if(mpi::rank == 0){
+//		std::cout<< "-----------------------------" << "\n";
+//		for(auto& v : north){
+//
+//			std::cout<< "key: " << v.local_key << " t_rank " << v.target_rank << "\n";
+//
+//		}
+//
+//		std::cout<< "-----------------------------" << "\n";
+//	}
+
 }
 
 /// @brief
