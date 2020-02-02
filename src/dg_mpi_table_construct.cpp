@@ -148,15 +148,6 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 		int i{};
 		int j{};
 		for(auto& v : south_accum){	// south send
-		//	MPI_Isend(&v.sum, 1, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request1[i]); // tag = local rank
-			
-
-//if(mpi::rank == 3){
-//
-//	std::cout<< "rank 3 send : " << v.sum << "\n";
-//
-//
-//}
 
 			std::vector<int> send_info(v.sum * 4);	// key, hlevel, porderx, pordery
 			
@@ -171,16 +162,10 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			}
 	
 			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
-//if(mpi::rank == 2){
-//
-//	
-//
-//}	
 			++i;
 			
 		}
 	
-//		MPI_Waitall(s, s_request1, s_status1);	// ensure all info recved
 		MPI_Waitall(s, s_request, s_status);
 
 	}
@@ -201,25 +186,11 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			MPI_Get_count(&status1, MPI_INT, &num);
 
 
-		//	MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status1);
-
-
-//if(mpi::rank == 0){
-//	
-//	std::cout << "rank " << mpi::rank << " " << num << "\n";
-//}
 			std::vector<int> recv_info(num);	
 			std::vector<table_elem>::iterator it;	// declare an iterator
 			it = north.begin();	// put the iterator at the begin of the north table
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 0){
-//	for(int i = 0; i < num / 4; ++i){
-//		std::cout<< "key: "<< recv_info[i * 4] << "hlevel: " << recv_info[i * 4 + 1] << "\n";
-//
-//	}	
-//
-//}			
 			Update_hash(recv_info, north, update_dir, num, it);	// north recv
 		}
 	}
@@ -240,12 +211,6 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 	int l_tot{};
 
 	int num = num1 / 4;
-//if(mpi::rank == 0){
-//
-//
-//	std::cout<< "num = " << num << "\n";
-//
-//}
 	for(int k = 0; k < num; ){	// not table but number of recv elem
 
 
