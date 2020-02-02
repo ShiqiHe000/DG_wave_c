@@ -38,7 +38,7 @@ void h_refinement(){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-	//	if(mpi::rank == 0){
+	//	if(mpi::rank == 0 || mpi::rank == 2){
 	//		rand_num = 1;
 
 	//	}

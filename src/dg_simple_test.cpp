@@ -45,7 +45,7 @@ void Simple_test(int tn){
 				int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				//tag=sender's key
 				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]); 
-//if(mpi::rank == 0){
+//if(mpi::rank == 3){
 //	std::cout<< "local_key " << local_key << " n_interface: " << temp -> n_interface << "\n";
 //
 //}
@@ -90,10 +90,15 @@ void Simple_test(int tn){
 
 					MPI_Status status;
 				
-					int recv_info;
+					double recv_info;
 
 					MPI_Recv(&recv_info, 1, MPI_DOUBLE, v.rank, v.key, MPI_COMM_WORLD, &status); // tag = n_key
 						
+//if(mpi::rank == 2){
+//
+//	std::cout<< "recv_info " << recv_info << "\n";
+//
+//}
 					if(v.hlevel <= (temp -> index[2])){	// if remote element is larger
 
 						temp -> s_interface += recv_info;						

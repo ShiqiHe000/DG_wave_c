@@ -63,7 +63,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 		for(auto& face_n : temp -> facen[1]){
 
 
-			if(face_n.face_type == 'M' && face_n.face_type != pre_rank){	// if mpi boundary, record
+			if(face_n.face_type == 'M' && face_n.rank != pre_rank){	// if mpi boundary, record
 		
 				north.push_back(table_elem());
 				north.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
@@ -100,20 +100,24 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 
 	int s = hrefinement::south_accum.size();
 	int n = hrefinement::north_accum.size();
-//if(mpi::rank == 1){
+//if(mpi::rank == 3){
 //	
-//	for(auto& v : south){
+//	std::cout<< "----------------------------- \n";
+//	for(auto& v : north){
 //		std::cout<< "local key: " << v.local_key << " target rank: " << v.target_rank << "\n";
 //
 //	}
-//
-////	for(auto& v : south_accum){
+//	std::cout<< "----------------------------- \n";
+////
+////	std::cout<< "----------------------------- \n";
+////	for(auto& v : hrefinement::north_accum){
 ////
 ////		std::cout<< "rank: " << v.rank << "\n";
 ////		std::cout<< "sum: " << v.sum << "\n";
 ////	}
 ////
-////	std::cout << s << " " << n << "\n";
+////	std::cout<< "----------------------------- \n";
+//	//std::cout << s << " " << n << "\n";
 //}
 	// south send, north recv
 	Sender_recver(s, n, hrefinement::south_accum, hrefinement::north_accum, south, north, 1);
@@ -146,6 +150,14 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 		for(auto& v : south_accum){	// south send
 			MPI_Isend(&v.sum, 1, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request1[i]); // tag = local rank
 			
+
+//if(mpi::rank == 3){
+//
+//	std::cout<< "rank 3 send : " << v.sum << "\n";
+//
+//
+//}
+
 			std::vector<int> send_info(v.sum * 4);	// key, hlevel, porderx, pordery
 			
 			// serialization the struct
@@ -159,7 +171,11 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			}
 	
 			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &s_request2[i]); 
-	
+//if(mpi::rank == 2){
+//
+//	
+//
+//}	
 			++i;
 			
 		}
@@ -181,9 +197,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			int num;	// number of elem on the other side
 
 			MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status1);
-//if(mpi::rank == 1){
+//if(mpi::rank == 2){
 //	
-//	std::cout << "rank1 " << num << "\n";
+//	std::cout << "rank2 " << num << "\n";
 //}
 			std::vector<int> recv_info;	// recv: key, hlevel
 			std::vector<table_elem>::iterator it;	// declare an iterator
