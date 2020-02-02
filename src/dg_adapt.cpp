@@ -38,20 +38,20 @@ void h_refinement(){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-		if(mpi::rank == 0 || mpi::rank == 1){
-			rand_num = 1;
+	//	if(mpi::rank == 0 || mpi::rank == 1){
+	//		rand_num = 1;
 
-			int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+	//		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
-			if(key_now == 4){
+	//		if(key_now == 4){
 
-				rand_num = 9;
-			}
-		
-		}
-		else{
-			rand_num = 9;
-		}
+	//			rand_num = 9;
+	//		}
+	//	
+	//	}
+	//	else{
+	//		rand_num = 9;
+	//	}
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 
