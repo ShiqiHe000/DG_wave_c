@@ -57,8 +57,6 @@ void Simple_test(int tn){
 		temp = temp -> next;
 	}
 
-	int length_tol = Elem_length(0);
-
 	temp = local::head;
 
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -80,10 +78,10 @@ void Simple_test(int tn){
 
 					}
 					else{	// neighbour is smaller
-					
+						int l_self = Elem_length(temp -> index[2]);				
 						int n_length = Elem_length(v.hlevel);
 						temp -> s_interface += (local::Hash_elem[v.key] -> n_interface * 
-										(double)(n_length) / length_tol);
+										(double)(n_length) / l_self);
 					}
 				}
 				else{	// neighbour is stored remotely
@@ -106,9 +104,9 @@ void Simple_test(int tn){
 					}
 					else{	// remote element is smaller
 
-						
+						int l_self = Elem_length(temp -> index[2]);
 						int n_length = Elem_length(v.hlevel);
-						temp -> s_interface += recv_info * (double)(n_length) / length_tol;
+						temp -> s_interface += recv_info * (double)(n_length) / l_self;
 
 					}	
 
