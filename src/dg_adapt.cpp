@@ -225,9 +225,9 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 								local::Hash_elem[key2] -> m, 
 								key2, 0};	// 2nd child
 					
-					local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem1);
+					it = local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem1);
 					++it;
-					local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem2);
+					it = local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem2);
 					break;	// emplace two neighbours, return
 				}
 				
@@ -269,7 +269,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 								local::Hash_elem[two[i]] -> m, 
 								two[i], 0};	
 
-							local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
+							it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
 
 							break;	// only emplace 1 elem
 						}
@@ -310,7 +310,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 									local::Hash_elem[two[i]] -> m, 
 									two[i], 0};	
 
-								local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
+								it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
 
 								break;	// only emplace 1 elem
 							}
