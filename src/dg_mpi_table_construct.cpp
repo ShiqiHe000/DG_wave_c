@@ -100,7 +100,7 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 
 	int s = hrefinement::south_accum.size();
 	int n = hrefinement::north_accum.size();
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //	
 //	std::cout<< "----------------------------- \n";
 //	for(auto& v : north){
@@ -204,7 +204,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 		//	MPI_Recv(&num, 1, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status1);
 
 
-//if(mpi::rank == 1){
+//if(mpi::rank == 0){
 //	
 //	std::cout << "rank " << mpi::rank << " " << num << "\n";
 //}
@@ -213,8 +213,8 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			it = north.begin();	// put the iterator at the begin of the north table
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 1){
-//	for(int i = 0; i < num; ++i){
+//if(mpi::rank == 0){
+//	for(int i = 0; i < num / 4; ++i){
 //		std::cout<< "key: "<< recv_info[i * 4] << "hlevel: " << recv_info[i * 4 + 1] << "\n";
 //
 //	}	
@@ -240,7 +240,12 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 	int l_tot{};
 
 	int num = num1 / 4;
-
+//if(mpi::rank == 0){
+//
+//
+//	std::cout<< "num = " << num << "\n";
+//
+//}
 	for(int k = 0; k < num; ){	// not table but number of recv elem
 
 
@@ -305,6 +310,8 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 				++it_face;
 				++k;
 			}
+
+			++it;
 		}
 		
 	}	
