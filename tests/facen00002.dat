@@ -1,0 +1,695 @@
+---------------------------------------
+elem: 000
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+---------------------------------------
+elem: 201
+South===================
+face_type: L
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 278
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 498
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+---------------------------------------
+elem: 602
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 467
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 498
+rank: 0
+---------------------------------------
+elem: 702
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 278
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 782
+rank: 0
+---------------------------------------
+elem: 712
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 498
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 467
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1227
+rank: 0
+---------------------------------------
+elem: 612
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 782
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 278
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 822
+rank: 0
+---------------------------------------
+elem: 622
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1227
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 498
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1277
+rank: 0
+---------------------------------------
+elem: 722
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 822
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 782
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1832
+rank: 0
+---------------------------------------
+elem: 732
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1277
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1227
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+---------------------------------------
+elem: 632
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1832
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 822
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+---------------------------------------
+elem: 211
+South===================
+face_type: L
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 822
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1277
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+---------------------------------------
+elem: 221
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+---------------------------------------
+elem: 321
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1277
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1832
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 3743
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 4952
+rank: 0
+---------------------------------------
+elem: 662
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 4952
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 5052
+rank: 0
+---------------------------------------
+elem: 762
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 3743
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 6557
+rank: 0
+---------------------------------------
+elem: 772
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 5052
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 4952
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 672
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 6557
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 3743
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 231
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 3743
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 5052
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 131
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 668
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1037
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 121
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+West====================
+face_type: L
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+---------------------------------------
+elem: 021
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+West====================
+face_type: L
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 437
+rank: 0
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 668
+rank: 0
+---------------------------------------
+elem: 062
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 668
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 705
+rank: 0
+---------------------------------------
+elem: 162
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 437
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+East====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1037
+rank: 0
+---------------------------------------
+elem: 172
+South===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 705
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 668
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 072
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 1037
+rank: 0
+West====================
+face_type: L
+hlevel: 2
+porder: 2 2
+key: 437
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
