@@ -1,4 +1,5 @@
 # ignore cmake, the directory is build
 build/
 outputs/
+tests/
 

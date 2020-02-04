@@ -50,7 +50,7 @@ namespace grid{
 namespace dg_time{
 	const double t_total = 1.0;
 
-	const int nt = 20;
+	const int nt = 5;
 
 };
 

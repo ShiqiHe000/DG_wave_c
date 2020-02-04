@@ -38,6 +38,13 @@ void Simple_test(int tn){
 
 		temp -> n_interface = (double)(temp -> var);
 
+
+//int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//if(key_now == 8){
+//	std::cout<< "tn " << tn << " n_inter " << temp -> n_interface << "\n";
+//
+//}
+
 		// send if on the mpi boudary
 		for(auto& v : temp -> facen[1]){
 
@@ -45,7 +52,7 @@ void Simple_test(int tn){
 				int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				//tag=sender's key
 				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]); 
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //	std::cout<< "local_key " << local_key << " n_interface: " << temp -> n_interface << "\n";
 //
 //}
@@ -78,10 +85,21 @@ void Simple_test(int tn){
 
 					}
 					else{	// neighbour is smaller
+//int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]) ;
+
+
+
 						int l_self = Elem_length(temp -> index[2]);				
 						int n_length = Elem_length(v.hlevel);
 						temp -> s_interface += (local::Hash_elem[v.key] -> n_interface * 
 										(double)(n_length) / l_self);
+
+//if(key_now == 4){
+//
+//std::cout<< "tn "<< tn << "self_length " << l_self << " n_length " << n_length << " s_inter " << temp -> s_interface << "\n";
+
+//}
+
 					}
 				}
 				else{	// neighbour is stored remotely
@@ -151,7 +169,7 @@ void Boundary_condition(double& s_interface, int nt){
 
 	}
 	else{	// odd time step
-		s_interface = -1.0;
+		s_interface = 0.0;
 
 	}
 

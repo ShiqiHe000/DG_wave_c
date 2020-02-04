@@ -8,6 +8,7 @@
 #include <sstream>	// std::stringstream
 #include <fstream>	// read and write to file
 #include "dg_unit.h"
+#include "dg_cantor_pairing.h"
 
 // forward declaration
 void Write_mesh(double t, int pre_elem);
@@ -65,7 +66,7 @@ void Write_mesh(double t, int pre_elem){
 
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
-		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"VAR\", \n";
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"VAR\", \"KEY\", \n";
 		
 	}
 	else{
@@ -87,14 +88,15 @@ void Write_mesh(double t, int pre_elem){
 		
 	//	myfile << std::fixed;
 	//	myfile << std::setprecision(5);
+		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  " <<temp -> var <<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  " <<temp -> var <<"  "<< key_now <<"\n";
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "  "<< key_now<<"\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "  "<<key_now <<"\n";
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"  "<<key_now<<"\n";
 		
 		temp = temp -> next;
 	}

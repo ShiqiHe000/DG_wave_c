@@ -42,11 +42,13 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 	
-		h_refinement();
+		h_refinement(k);
 	
 		Construct_mpi_table(hrefinement::north, hrefinement::south);
 		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
-		
+	
+		Write_faces(k);
+	
 		Simple_test(k);
 
 		Clear_tables();
