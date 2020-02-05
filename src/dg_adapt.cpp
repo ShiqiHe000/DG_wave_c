@@ -293,7 +293,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 				++it;
 				
 			}
-			else{	// neighbour is smaller than child
+			else{	// neighbour is smaller than child-------------------------------------------------------------
 		
 				int l_accum{};
 				
@@ -335,7 +335,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 
 				}		
 				
-			}
+			} //----------------------------------------------------------------------------------------------------------
 
 		}
 

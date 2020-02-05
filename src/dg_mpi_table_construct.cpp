@@ -241,6 +241,8 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			// traverse mpi table until face matches
 			while(l_tot < l_n && it != table.end()){
 				
+				l_local = Elem_length(it -> hlevel);	// local elem length
+				
 				// erase old face info
 				auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
 				Erase_old_face(it_face, it, facei);
