@@ -10,6 +10,7 @@
 #include <array>
 #include <cassert>
 #include "dg_elem_length.h"
+#include <iostream>	// test
 
 /// global variable
 double xcoord_new[3]{};
@@ -38,14 +39,24 @@ void h_refinement(int nk){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-//	if(mpi::rank == 0){
-//	//	rand_num = 1;
+//		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+//if(nk == 0 && key_now == 1){
 //
-////		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//	}
-//	else{
-//		rand_num = 9;
-//	}
+//	rand_num = 1;
+//}
+//else if(nk == 1 && (key_now == 79 || key_now == 29)){
+//	rand_num =1;
+//
+//}
+//else if (nk == 1 && key_now == 0){
+//	rand_num = 1;
+//}
+//else{
+//	rand_num = 9;
+//}
+		
+
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 
@@ -58,7 +69,7 @@ void h_refinement(int nk){
 			ycoord_new[0] = temp -> ycoords[0]; ycoord_new[2] = temp -> ycoords[1];
 			xcoord_new[1] = ((temp -> xcoords[0]) + (temp -> xcoords[1])) / 2.0;
 			ycoord_new[1] = ((temp -> ycoords[0]) + (temp -> ycoords[1])) / 2.0;
-
+			
 			// current key
 			int old_key = Get_key_fun(temp->index[0], temp->index[1], temp->index[2]);
 		
@@ -70,12 +81,13 @@ void h_refinement(int nk){
 				
 
 				int position = Sibling_position(temp->status, i);
-
+//std::cout<< "i "<< i<<"position " << position << "\n";
 				int index_new[3]{};
 				Gen_index(position, temp->index, index_new);
-			
+				
 				int new_key = Get_key_fun(index_new[0], index_new[1], index_new[2]);
 
+//std::cout<< "new_key " << new_key << "\n";
 				// create unit
 				local::Hash_elem[new_key] = new Unit();
 
@@ -285,7 +297,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 		
 				int l_accum{};
 				
-				while((l_accum < n_length) && (it != local::Hash_elem[parent] -> facen[facen].end())){
+				while((l_accum < c_length) && (it != local::Hash_elem[parent] -> facen[facen].end())){
 
 					n_length = Elem_length(it -> hlevel);	// neighbour length
 
@@ -321,7 +333,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 					}
 					++it;
 
-				};		
+				}		
 				
 			}
 
