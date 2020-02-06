@@ -51,6 +51,12 @@ public:
 //	int Cantor_pairing(int x, int y);
 };
 
+/// @param face_type interface type of current direction.
+/// @param hlevel hlevel of neighbour element.
+/// @param porderx polynomial order of neighbour element in x direction.
+/// @param pordery polynomial order of neighbour element in y direction.
+/// @param key neighbour's key.
+/// @param rank if face_type == 'M' rank == facing process's MPI.
 struct Unit::Face{
 	
 	char face_type;
