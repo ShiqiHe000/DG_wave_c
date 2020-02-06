@@ -241,8 +241,6 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			// traverse mpi table until face matches
 			while(l_tot < l_n && it != table.end()){
 				
-				l_local = Elem_length(it -> hlevel);	// local elem length
-				
 				// erase old face info
 				auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
 				Erase_old_face(it_face, it, facei);
@@ -252,7 +250,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 
 				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
 
-				l_tot += l_local;
+				l_tot += Elem_length(it -> hlevel);
 				
 				++it;	// go to next local elem
 			}
@@ -272,7 +270,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 						recv_info[4 * k + 3], recv_info[4 * k], it -> target_rank};
 			
 				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
-				l_tot += l_n;
+				l_tot += Elem_length(recv_info[4 * k + 1]);
 
 				++it_face;
 				++k;
