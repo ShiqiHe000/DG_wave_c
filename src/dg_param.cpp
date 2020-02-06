@@ -36,7 +36,11 @@ namespace grid{
 	const int nmin = 2;	// x direction
 	const int nmax = 2;
 
+<<<<<<< HEAD
 	const int hlevel_max = 4;	
+=======
+	const int hlevel_max = 2;	
+>>>>>>> tree
 };
 //---------------------------------------------------------------------
 
