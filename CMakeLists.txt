@@ -20,19 +20,19 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(main ${SOURCES})
 
 # OpenBLAS--------------------------------------------------------------------------------------
-include_directories(/opt/OpenBLAS/include)
-find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
-if(BLAS_NOTFOUND)	
-	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
-endif(BLAS_NOTFOUND)
+#include_directories(/opt/OpenBLAS/include)
+#find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
+#if(BLAS_NOTFOUND)	
+#	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
+#endif(BLAS_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # silo
-include_directories(/home/shiqihe/local/silo/silo-4.10.2/include)
-find_library(SILO NAMES silo HINTS /home/shiqihe/local/silo/silo-4.10.2/lib)
-if(SILO_NOTFOUND)
-	message(ERROR "silo not found.")
-endif(SILO_NOTFOUND)
+#include_directories(/home/shiqihe/local/silo/silo-4.10.2/include)
+#find_library(SILO NAMES silo HINTS /home/shiqihe/local/silo/silo-4.10.2/lib)
+#if(SILO_NOTFOUND)
+#	message(ERROR "silo not found.")
+#endif(SILO_NOTFOUND)
 
 
 # MPI---------------------------------------------------------------------------------------
@@ -46,5 +46,6 @@ endif(MPI_NOFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # libraires links
-target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
+target_link_libraries(main PUBLIC MPI::MPI_CXX )
+#target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
