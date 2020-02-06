@@ -17,9 +17,9 @@ branches:
 
 
 script:
- - cmake .
  - mkdir build
  - cd build
+ - cmake .
  - cmake --build . -- -j2
 # - cmake ..
 # - make 
