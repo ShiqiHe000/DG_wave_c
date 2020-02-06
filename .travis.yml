@@ -18,7 +18,7 @@ branches:
  - static_mpi_b
 
 script:
- - cmake . 	# configuring cmake in the current build folder
  - mkdir build
  - cd build
- - cmake --build .. -- -j2  #parallel build (two virtual CPU available)
+ - cmake . 	# configuring cmake in the current build folder
+ - cmake --build . -- -j2  #parallel build (two virtual CPU available)
