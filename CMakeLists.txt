@@ -20,11 +20,11 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(main ${SOURCES})
 
 # OpenBLAS--------------------------------------------------------------------------------------
-include_directories(/opt/OpenBLAS/include)
-find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
-if(BLAS_NOTFOUND)	
-	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
-endif(BLAS_NOTFOUND)
+#include_directories(/opt/OpenBLAS/include)
+#find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
+#if(BLAS_NOTFOUND)	
+#	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
+#endif(BLAS_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # MPI---------------------------------------------------------------------------------------
@@ -38,5 +38,6 @@ endif(MPI_NOFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # libraires links
-target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
+target_link_libraries(main PUBLIC MPI::MPI_CXX)
+#target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
