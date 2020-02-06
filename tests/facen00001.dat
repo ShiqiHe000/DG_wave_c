@@ -1,0 +1,420 @@
+===============0===============================
+---------------------------------------
+elem: 001
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 4
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 7
+rank: 0
+---------------------------------------
+elem: 011
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 16
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 2
+rank: 0
+East====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 3
+rank: 3
+---------------------------------------
+elem: 111
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 7
+rank: 0
+North===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 1
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 4
+rank: 0
+East====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 3
+rank: 3
+---------------------------------------
+elem: 101
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 2
+rank: 0
+North===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 1
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 16
+rank: 0
+===============1===============================
+---------------------------------------
+elem: 201
+South===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 4
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 29
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+---------------------------------------
+elem: 301
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 79
+rank: 0
+---------------------------------------
+elem: 311
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 37
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 29
+rank: 0
+East====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 10
+rank: 2
+---------------------------------------
+elem: 211
+South===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 16
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 79
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 11
+rank: 0
+East====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 10
+rank: 2
+===============3===============================
+---------------------------------------
+elem: 131
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 56
+rank: 0
+North===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 2
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 121
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+North===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 2
+West====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+---------------------------------------
+elem: 021
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 0
+West====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 0
+rank: 0
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 56
+rank: 0
+---------------------------------------
+elem: 031
+South===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 22
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+===============2===============================
+---------------------------------------
+elem: 221
+South===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 46
+rank: 3
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+West====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 1
+rank: 1
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+---------------------------------------
+elem: 321
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: M
+hlevel: 0
+porder: 2 2
+key: 1
+rank: 1
+East====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 326
+rank: 0
+---------------------------------------
+elem: 331
+South===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 191
+rank: 0
+North===================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 172
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0
+---------------------------------------
+elem: 231
+South===================
+face_type: M
+hlevel: 1
+porder: 2 2
+key: 106
+rank: 3
+North===================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 326
+rank: 0
+West====================
+face_type: L
+hlevel: 1
+porder: 2 2
+key: 92
+rank: 0
+East====================
+face_type: B
+hlevel: 0
+porder: 0 0
+key: 0
+rank: 0

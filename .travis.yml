@@ -1,27 +1,25 @@
 
 ## configure travis to use the right compiler
 dist: trusty
-sudo: require
-
+sudo: false
 
 language: cpp
-compiler: gcc
+#compiler: gcc
 
-
-addons:
-  apt:
-    sources:
-      - george-edison55-precise-backports
-    packages:
-      - cmake-data
-      - cmake
 
 # MPI project
 #before_install:
 	
+branches:
+ only:
+ - master
+ - static_mpi_b
+
 
 script:
+ - cmake .
  - mkdir build
  - cd build
+ - cmake --build . -- -j2
 # - cmake ..
 # - make 
