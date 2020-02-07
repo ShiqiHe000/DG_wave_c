@@ -21,6 +21,8 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
 			int facei, int num1, std::vector<table_elem>::iterator& it);
 
+void Sort_mpi_table(std::vector<table_elem>& north);
+
 void Clear_tables();
 //---------------------------------------------------------------------------------------
 
@@ -83,11 +85,44 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 	}	
 
 		// sort north and south table in the end
-		std::sort(south.begin(), south.end(), compare_coord);
-		std::sort(north.begin(), north.end(), compare_coord);
-
+//		std::sort(south.begin(), south.end(), compare_coord);
+//		std::sort(north.begin(), north.end(), compare_coord);
+		Sort_mpi_table(south);
+		Sort_mpi_table(north);
+		
+//		for(auto& v : north){
+//
+//			std::cout<< "key: " << v.local_key << "\n";
+//		}		
 
 }
+
+/// @brief sort the MPI_boundary table element in ascending sequence among the same target ranks. 
+///@param north the MPI boundary table needed to be sorted. 
+void Sort_mpi_table(std::vector<table_elem>& north){
+
+	if(! north.empty()){
+	
+		std::vector<table_elem>::iterator it1, it2;	// sort the vector between two iterator
+		it1 = north.begin();
+		it2 = north.begin();
+		
+		int rank_now = it1 -> target_rank;
+	
+		for(;it2 != north.end(); ++it2){
+	
+			if(it2 -> target_rank != rank_now){
+				std::sort(it1, it2, compare_coord);
+				rank_now = it2 -> target_rank;
+				it1 = it2;
+			}
+	
+		}
+	
+		std::sort(it1, it2, compare_coord);
+	}
+}
+
 
 /// @brief
 /// Updates MPI boundaries

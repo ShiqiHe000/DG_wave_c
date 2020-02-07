@@ -40,22 +40,13 @@ void h_refinement(int nk){
 		
 		// predefine rand_num test
 //		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-
-//if(nk == 0 && key_now == 1){
-//
+//if(mpi::rank == 0){
 //	rand_num = 1;
-//}
-//else if(nk == 1 && (key_now == 79 || key_now == 29)){
-//	rand_num =1;
 //
-//}
-//else if (nk == 1 && key_now == 0){
-//	rand_num = 1;
 //}
 //else{
 //	rand_num = 9;
 //}
-		
 
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
