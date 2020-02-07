@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include "dg_boundary_table.h"
+#include "dg_load_balancing.h"
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -39,13 +40,8 @@ namespace local{
 	std::vector<std::vector<double>> solution_int_l{};
 	std::vector<std::vector<double>> solution_int_r{};
 
-	// testing -----------------------------------------
-
-//	std::vector<int> n_interface{};
-//	std::vector<int> s_interface{};
-
-	//--------------------------------------------------
 };
+
 
 
 /// @brief
@@ -59,6 +55,18 @@ namespace hrefinement{
 	// accumulates boundaries info
 	std::vector<accum_elem> south_accum;
 	std::vector<accum_elem> north_accum;
+};
+
+
+/// @brief 
+/// Variables for load balancing. 
+namespace LB{
+	
+	std::vector<double> lprefix_load{};	
+
+	std::vector<int> pmapping{};
+
+	std::vector<map> proc_mapping_table{};
 };
 
 /// @brief
