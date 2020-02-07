@@ -62,11 +62,11 @@ namespace hrefinement{
 /// Variables for load balancing. 
 namespace LB{
 	
-	std::vector<double> lprefix_load{};	
+	std::vector<double> lprefix_load;	
 
-	std::vector<int> pmapping{};
+	std::vector<int> pmapping;
 
-	std::vector<map> proc_mapping_table{};
+	std::vector<pmap> proc_mapping_table;
 };
 
 /// @brief

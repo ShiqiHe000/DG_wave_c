@@ -7,6 +7,10 @@
 #include <cassert>
 #include <iostream> // test
 
+// forward declaration -----------------------------------------
+double Elem_load(int porder);
+// ------------------------------------------------------------
+
 /// @brief Calculate the sum of the local computational load.
 void Sum_up_local_load(){
 
@@ -34,21 +38,21 @@ void Sum_up_local_load(){
 
 	// calculate for the average load
 	double load_avg{};
-	if(mpi::rank == (local::proc_num - 1)){ // last proc does the job
+	if(mpi::rank == (mpi::num_proc - 1)){ // last proc does the job
 
 		double load_tol = exscan_sum + local_load_sum;
 
-		load_avg = load_tol / local::proc_num;
+		load_avg = load_tol / mpi::num_proc;
 
 	}
 	
 	// broadcast average load
-	MPI_Bcast(&load_avg, 1, MPI_DOUBLE, local::proc_num - 1, MPI_COMM_WORLD);
+	MPI_Bcast(&load_avg, 1, MPI_DOUBLE, mpi::num_proc - 1, MPI_COMM_WORLD);
 
 	
 	// Global element number
 	int elem_accum{};
-	MPI_Exscan(local::local_elem_num, &elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+	MPI_Exscan(&local::local_elem_num, &elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
 	// form processor mapping table
 	temp = local::head;
@@ -57,13 +61,13 @@ void Sum_up_local_load(){
 		
 		LB::lprefix_load[k] += exscan_sum;
 
-		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg));
+		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg);
 
 		if(LB::pmapping[k] != proc_pre){
 
-			LB::proc_mapping_table.emplace_back(LB::pmapping[k], k + elem_accum);
+			LB::proc_mapping_table.push_back({LB::pmapping[k], k + elem_accum});
 			
-			proc_pre = LB::proc_mapping[k];
+			proc_pre = LB::pmapping[k];
 		}	
 
 		
@@ -75,6 +79,41 @@ void Sum_up_local_load(){
 	}
 	
 	// send the last element's mapping number to the next rank
+	// rank0 ~ rank_max-1 send
+	MPI_Request request;
+	if(mpi::rank != (mpi::num_proc - 1)){
+	
+		int last_rank = LB::proc_mapping_table.back().irank;
+		
+		MPI_Isend(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request);// tag == recver's rank
+
+	}
+	
+	// rank1 ~ rank_max recv
+	if(mpi::rank != 0){
+
+		int pre_rank;
+		MPI_Status status1;
+
+		MPI_Recv(&pre_rank, 1, MPI_INT, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &status1);
+
+		int first_rank = LB::proc_mapping_table.begin(),irank;
+
+		if(first_rank == pre_rank){	// if equal than erase the first column
+
+			LB::proc_mapping_table.erase(LB::proc_mapping_table.begin());
+		}
+
+	}
+	
+	// wait
+	if(mpi::rank != (mpi::num_proc - 1)){
+	
+		MPI_Status status2;
+		MPI_Wait(&request, &status2);
+	}
+
+
 	
 
 }

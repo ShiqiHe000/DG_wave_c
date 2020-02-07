@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include "dg_boundary_table.h" 
+#include "dg_load_balancing.h"
 
 namespace local{
  
@@ -40,6 +41,14 @@ namespace hrefinement{
 	extern std::vector<accum_elem> north_accum;
 };
 
+namespace LB{
+
+	extern std::vector<double> lprefix_load;
+
+	extern std::vector<int> pmapping;
+
+	extern std::vector<pmap> proc_mapping_table;
+};
 
 namespace result{
 
