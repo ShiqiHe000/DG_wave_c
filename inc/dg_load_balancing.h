@@ -16,5 +16,7 @@ struct pmap{
 
 };
 
+void Build_mapping_table();
+
 
 #endif

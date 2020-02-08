@@ -8,6 +8,7 @@
 #include "dg_adapt.h"
 #include "dg_mpi_table_construct.h"
 #include "dg_local_storage.h"
+#include "dg_load_balancing.h"
 #include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
 
@@ -47,8 +48,10 @@ void Driver_for_DG_approximation(){
 		Construct_mpi_table(hrefinement::north, hrefinement::south);
 		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
 	
-		Write_faces(k);
+//		Write_faces(k);
 	
+		Build_mapping_table();
+
 		Simple_test(k);
 
 		Clear_tables();
