@@ -5,10 +5,18 @@
 #include <cmath>
 #include <mpi.h>
 #include "dg_cantor_pairing.h"
+#include <algorithm>
+#include "dg_status_table.h"
 #include <iostream> // test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
+
+void Update_neighbours();
+
+void Neighbour_change(int facei, int n_key, int my_key, int rank);
+
+void Reallocate_elem(int elem_accum);
 // ------------------------------------------------------------
 
 // global variable----------------------------------------------
@@ -89,7 +97,25 @@ void Build_mapping_table(){
 
 		temp = temp -> next;
 	}
-	
+//if(mpi::rank == 3){
+//
+//	if(! Send.pre.empty()){
+//		for(auto& v : Send.pre){
+//
+//			std::cout<< "pre key " << v << "\n";
+//		}
+//
+//	}
+//	
+//	if(! Send.next.empty()){
+//		for(auto& v : Send.next){
+//
+//			std::cout<< "next key " << v << "\n";
+//		}
+//
+//	}
+//
+//}	
 	// send the last element's mapping number to the next rank
 	// rank0 ~ rank_max-1 send
 	MPI_Request request;
@@ -164,12 +190,126 @@ void Build_mapping_table(){
 }
 
 /// @brief
+/// Updates the element neighbours based on the Send struct.
+void Update_neighbours(){
+	
+	// first updates the Send pre list --------------------------------------------------------------------------------------------------
+	for(auto& key : Send.pre){
+
+		for(int facei = 0; facei < 4; ++facei){
+
+			auto it = local::Hash_elem[key] -> facen[facei].begin();
+
+			// traverse the face
+			for(; it != local::Hash_elem[key] -> facen[facei].end(); ++it){
+
+				// skip 'M' and 'B'
+				if(it -> face_type == 'L'){
+
+					int n_key = it -> key;	// neighbour's key
+					
+					// find n_key in pre list
+					if(std::find(Send.pre.begin(), Send.pre.end(), n_key) != Send.pre.end()){	// if not find
+
+						// find n_key in the next list
+						if(std::find(Send.next.begin(), Send.next.end(), n_key) != Send.next.end()){	// if not find
+				
+							// This element stays locally, updates
+							it -> face_type = 'M';
+							it -> rank = mpi::rank; //current rank	
+							// updates neighbour	
+							Neighbour_change(facei, n_key, key, mpi::rank - 1);
+							
+						}
+						else{	// if find
+							
+							// This element will be sent to next proc
+							it -> face_type = 'M';
+							it -> rank = mpi::rank + 1;
+						
+							// updates neighbour
+							Neighbour_change(facei, n_key, key, mpi::rank - 1);
+						}
+
+					} // if find: no updates
+						
+				}
+
+			}		
+		
+		}
+	} //-------------------------------------------------------------------------------------------------------------
+
+
+	// updates the next list-----------------------------------------------------------------------------------------
+	for(auto& key : Send.next){
+
+		for(int facei = 0; facei < 4; ++facei){
+			
+			auto it = local::Hash_elem[key] -> facen[facei].begin();
+
+			// traverse the face
+			for(; it != local::Hash_elem[key] -> facen[facei].end(); ++it){
+
+				// skip 'M' and 'B'
+				if(it -> face_type == 'L'){
+
+					int n_key = it -> key;	// neighbour's key
+
+					// find n_key in the next list
+					if(std::find(Send.next.begin(), Send.next.end(), n_key) != Send.next.end()){	// if not find
+			
+						// This element stays locally, updates
+						it -> face_type = 'M';
+						it -> rank = mpi::rank; //current rank	
+						// updates neighbour	
+						Neighbour_change(facei, n_key, key, mpi::rank + 1);
+						
+					} // if find: no updates
+
+				}
+			}		
+
+		}
+
+	}
+	// --------------------------------------------------------------------------------------------------------------
+
+}
+
+/// @brief
+/// Change neighbour's corresponding face. The neighbour element should store locally. 
+/// @param facei current face direction. 
+/// @param n_key neighbour's key. 
+/// @param my_key current element's key. 
+/// @param rank Rank number that the current element will reside on. 
+void Neighbour_change(int facei, int n_key, int my_key, int rank){
+
+	// neighbour's face direction.
+	int oface = Opposite_dir(facei);
+
+	for(auto it = local::Hash_elem[n_key] -> facen[oface].begin(); it != local::Hash_elem[n_key] -> facen[oface].end(); ++it){
+
+		if(it -> key == my_key){
+
+			it -> face_type = 'M';
+			it -> rank = rank;
+
+			break;
+		}
+
+	}
+
+}
+
+
+/// @brief
 /// After built the complete mapping table, now we decide how to reallocate the elements
 /// @param elem_accum accumulated element of former processors.
 void Reallocate_elem(int elem_accum){
 
-	int first = elem_accum; 	// first elem global number
-	int last = first + local::local_elem_number - 1;	// last elem global number
+	int start = elem_accum; 	// first elem global number
+	int last = start + local::local_elem_num - 1;	// last elem global number
 
 	if(mpi::rank == 0){	// first proc
 		
@@ -202,23 +342,23 @@ void Reallocate_elem(int elem_accum){
 	else{	// proc in between 
 
 		// with former proc
-		if(LB::proc_mapping_table[mpi::rank] < start){	// recv
+		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv
 
 
 		}
-		else if(LB::proc_mapping_table[mpi::rank] > start){	// send
+		else if(LB::proc_mapping_table[mpi::rank].gnum > start){	// send
 
-			int num_send = LB::proc_mapping_table[mpi::rank] - start;
+			int num_send = LB::proc_mapping_table[mpi::rank].gnum - start;
 
 		}
 
 		// with latter proc
-		if(LB::proc_mapping_table[mpi::rank + 1] <= last){	// send   
+		if(LB::proc_mapping_table[mpi::rank + 1].gnum <= last){	// send   
 
-			int num_send = LB::proc_mapping_table[mpi::rank + 1] - last + 1;
+			int num_send = LB::proc_mapping_table[mpi::rank + 1].gnum - last + 1;
 
 		}
-		else if(LB::proc_mapping_table[mpi::rank + 1] > (last - 1)){	// recv
+		else if(LB::proc_mapping_table[mpi::rank + 1].gnum > (last - 1)){	// recv
 
 
 		}
