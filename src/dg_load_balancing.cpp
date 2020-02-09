@@ -54,95 +54,91 @@ void Build_mapping_table(){
 	// form processor mapping table
 	temp = local::head;
 	int proc_pre = - 1;
-//	for(int k = 0; k < local::local_elem_num; ++k){
-//		
-//		LB::lprefix_load[k] += exscan_sum;
-//
-//		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg);
-//
-//		if(LB::pmapping[k] != proc_pre){
-//
-//			LB::proc_mapping_table.push_back({LB::pmapping[k], k + elem_accum});
-//			
-//			proc_pre = LB::pmapping[k];
-//		}	
-//		
-////--------test--------------------------------------------------------------------------		
-//		assert(LB::pmapping[k] > 0 && "preocessor mapping is small than 0.");
-////--------------------------------------------------------------------------------------
-//
-//		temp = temp -> next;
-//	}
+	for(int k = 0; k < local::local_elem_num; ++k){
+		
+		LB::lprefix_load[k] += exscan_sum;
+
+		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg);
+
+		if(LB::pmapping[k] != proc_pre){
+
+			LB::proc_mapping_table.push_back({LB::pmapping[k], k + elem_accum});
+			
+			proc_pre = LB::pmapping[k];
+		}	
+		
+		temp = temp -> next;
+	}
 	
-//	// send the last element's mapping number to the next rank
-//	// rank0 ~ rank_max-1 send
-//	MPI_Request request;
-//	if(mpi::rank != (mpi::num_proc - 1)){
-//	
-//		int last_rank = LB::proc_mapping_table.back().irank;
-//		
-//		MPI_Isend(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request);// tag == recver's rank
-//
-//	}
-//	
-//	// rank1 ~ rank_max recv
-//	if(mpi::rank != 0){
-//
-//		int pre_rank;
-//		MPI_Status status1;
-//
-//		MPI_Recv(&pre_rank, 1, MPI_INT, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &status1);
-//
-//		int first_rank = LB::proc_mapping_table.front().irank;
-//
-//		if(first_rank == pre_rank){	// if equal than erase the first column
-//
-//			LB::proc_mapping_table.erase(LB::proc_mapping_table.begin());
-//		}
-//
-//	}
-//	
-//	// wait
-//	if(mpi::rank != (mpi::num_proc - 1)){
-//	
-//		MPI_Status status2;
-//		MPI_Wait(&request, &status2);
-//	}
-//
-//	// call allgather to gather the size of the mapping table on each proc
-//	int sizet = LB::proc_mapping_table.size();
-//	std::vector<int> sizea(mpi::num_proc);	// vector to store the sizet
-//	MPI_Allgather(&sizet, 1, MPI_INT, &sizea[0], 1, MPI_INT, MPI_COMM_WORLD);
-//
-//	// prepare to build the whole mapping table
-//	std::vector<int> recvcounts(mpi::num_proc);
-//	std::vector<int> displs(mpi::num_proc);
-//	for(int i = 0; i < mpi::num_proc; ++i){
-//		recvcounts[i] = sizea[i] * 2;
-//		if(i > 0){
-//	
-//			displs[i] = displs[i - 1] + recvcounts[i - 1];
-//		}
-//
-//	}
-//	std::vector<int> senda(sizet * 2);	// send buffer
-//	for(int i = 0; i < sizet; ++i){
-//		senda[2 * i] = LB::proc_mapping_table[i].irank;
-//		senda[2 * i + 1] = LB::proc_mapping_table[i].gnum;
-//
-//	}
-//
-//	// form the complete mapping table
-//	std::vector<int> recv_buff(mpi::num_proc * 2);
-//	MPI_Allgatherv(&senda[0], sizet * 2, MPI_INT, &recv_buff[0], &recvcounts[0], &displs[0], MPI_INT, MPI_COMM_WORLD);
-//
-//	// rebild the mapping table
-//	LB::proc_mapping_table.clear();	// clear all the elements
-//	for(int i = 0; i < mpi::num_proc; ++i){
-//		
-//		LB::proc_mapping_table.push_back({recv_buff[2 * 1], recv_buff[2 * i + 1]});
-//
-//	}
+	// send the last element's mapping number to the next rank
+	// rank0 ~ rank_max-1 send
+	MPI_Request request;
+	if(mpi::rank != (mpi::num_proc - 1)){
+	
+		int last_rank = LB::proc_mapping_table.back().irank;
+		
+		MPI_Isend(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request);// tag == recver's rank
+
+	}
+	
+	// rank1 ~ rank_max recv
+	if(mpi::rank != 0){
+
+		int pre_rank;
+		MPI_Status status1;
+
+		MPI_Recv(&pre_rank, 1, MPI_INT, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &status1);
+
+		int first_rank = LB::proc_mapping_table.front().irank;
+
+		if(first_rank == pre_rank){	// if equal than erase the first column
+
+			LB::proc_mapping_table.erase(LB::proc_mapping_table.begin());
+		}
+
+	}
+	
+	// wait
+	if(mpi::rank != (mpi::num_proc - 1)){
+	
+		MPI_Status status2;
+		MPI_Wait(&request, &status2);
+	}
+
+	// call allgather to gather the size of the mapping table on each proc
+	int sizet = LB::proc_mapping_table.size();
+	std::vector<int> sizea(mpi::num_proc);	// vector to store the sizet
+	MPI_Allgather(&sizet, 1, MPI_INT, &sizea[0], 1, MPI_INT, MPI_COMM_WORLD);
+
+	// prepare to build the whole mapping table
+	std::vector<int> recvcounts(mpi::num_proc);
+	std::vector<int> displs(mpi::num_proc);
+	for(int i = 0; i < mpi::num_proc; ++i){
+		recvcounts[i] = sizea[i] * 2;
+		if(i > 0){
+	
+			displs[i] = displs[i - 1] + recvcounts[i - 1];
+		}
+
+	}
+	std::vector<int> senda(sizet * 2);	// send buffer
+	for(int i = 0; i < sizet; ++i){
+		senda[2 * i] = LB::proc_mapping_table[i].irank;
+		senda[2 * i + 1] = LB::proc_mapping_table[i].gnum;
+
+	}
+
+	// form the complete mapping table
+	std::vector<int> recv_buff(mpi::num_proc * 2);
+	MPI_Allgatherv(&senda[0], sizet * 2, MPI_INT, &recv_buff[0], &recvcounts[0], &displs[0], MPI_INT, MPI_COMM_WORLD);
+
+	// rebild the mapping table
+	LB::proc_mapping_table.clear();	// clear all the elements
+	for(int i = 0; i < mpi::num_proc; ++i){
+		
+		LB::proc_mapping_table.push_back({recv_buff[2 * i], recv_buff[2 * i + 1]});
+
+	}
 
 
 }

@@ -15,7 +15,7 @@ void Write_faces();
 
 void Test(){
 
-	if(mpi::rank == 0){
+	if(mpi::rank == 2){
 
 		for(auto& a : LB::proc_mapping_table){
 		
