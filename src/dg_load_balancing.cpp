@@ -4,12 +4,16 @@
 #include "dg_param.h"
 #include <cmath>
 #include <mpi.h>
-#include <cassert>
+#include "dg_cantor_pairing.h"
 #include <iostream> // test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
 // ------------------------------------------------------------
+
+// global variable----------------------------------------------
+struct sending_envelope Send;	// record what to send
+//--------------------------------------------------------------
 
 /// @brief Calculate the sum of the local computational load.
 void Build_mapping_table(){
@@ -59,7 +63,8 @@ void Build_mapping_table(){
 		LB::lprefix_load[k] += exscan_sum;
 
 		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg);
-
+		
+		// form partial mapping table
 		if(LB::pmapping[k] != proc_pre){
 
 			LB::proc_mapping_table.push_back({LB::pmapping[k], k + elem_accum});
@@ -67,6 +72,21 @@ void Build_mapping_table(){
 			proc_pre = LB::pmapping[k];
 		}	
 		
+		// form sending_envelope
+		if(LB::pmapping[k] < mpi::rank){	// need to be moved to the former proc
+
+			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+			Send.pre.push_back(key);
+		}
+		else if(LB::pmapping[k] > mpi::rank){
+
+			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+			Send.next.push_back(key);
+		}
+
+
 		temp = temp -> next;
 	}
 	
@@ -142,6 +162,73 @@ void Build_mapping_table(){
 
 
 }
+
+/// @brief
+/// After built the complete mapping table, now we decide how to reallocate the elements
+/// @param elem_accum accumulated element of former processors.
+void Reallocate_elem(int elem_accum){
+
+	int first = elem_accum; 	// first elem global number
+	int last = first + local::local_elem_number - 1;	// last elem global number
+
+	if(mpi::rank == 0){	// first proc
+		
+		if(LB::proc_mapping_table[1].gnum <= last){	// should send
+
+			int num_send = last - LB::proc_mapping_table[1].gnum + 1;	// num of element to be sent
+
+		}
+		else if((LB::proc_mapping_table[1].gnum - 1) > last){	// recv from r1
+
+
+		}
+
+		// otherwiase no send or recv
+
+	}
+	else if(mpi::rank == mpi::num_proc - 1){	// last proc
+		
+		if(LB::proc_mapping_table.back().gnum < start){	// should recv
+
+
+		}
+		else if(LB::proc_mapping_table.back().gnum > start){	// send
+
+			int num_send = LB::proc_mapping_table.back().gnum - start;
+
+		}
+
+	}
+	else{	// proc in between 
+
+		// with former proc
+		if(LB::proc_mapping_table[mpi::rank] < start){	// recv
+
+
+		}
+		else if(LB::proc_mapping_table[mpi::rank] > start){	// send
+
+			int num_send = LB::proc_mapping_table[mpi::rank] - start;
+
+		}
+
+		// with latter proc
+		if(LB::proc_mapping_table[mpi::rank + 1] <= last){	// send   
+
+			int num_send = LB::proc_mapping_table[mpi::rank + 1] - last + 1;
+
+		}
+		else if(LB::proc_mapping_table[mpi::rank + 1] > (last - 1)){	// recv
+
+
+		}
+
+
+	}
+
+
+}
+
 
 /// @brief 
 /// Element computational load. The load on each element due to fluid computations is O(N**4),
