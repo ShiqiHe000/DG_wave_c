@@ -19,6 +19,9 @@ void Neighbour_change(int facei, int n_key, int my_key, int rank);
 
 void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& mtable);
 
+void Send_recv_ownership(std::vector<ownership>& sendo, std::vector<ownership>& recvo, 
+			std::vector<accum_elem>& send_accum, std::vector<accum_elem>& recv_accum);
+
 void Reallocate_elem(int elem_accum);
 // ------------------------------------------------------------
 
@@ -100,7 +103,7 @@ void Build_mapping_table(){
 
 		temp = temp -> next;
 	}
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //
 //	if(! Send.pre.empty()){
 //		for(auto& v : Send.pre){
@@ -189,6 +192,8 @@ void Build_mapping_table(){
 
 	}
 
+	// Updates local facen based on teh Sending list
+	Update_neighbours();
 
 }
 
@@ -212,10 +217,10 @@ void Update_neighbours(){
 					int n_key = it -> key;	// neighbour's key
 					
 					// find n_key in pre list
-					if(std::find(Send.pre.begin(), Send.pre.end(), n_key) != Send.pre.end()){	// if not find
+					if(std::find(Send.pre.begin(), Send.pre.end(), n_key) == Send.pre.end()){	// if not find
 
 						// find n_key in the next list
-						if(std::find(Send.next.begin(), Send.next.end(), n_key) != Send.next.end()){	// if not find
+						if(std::find(Send.next.begin(), Send.next.end(), n_key) == Send.next.end()){	// if not find
 				
 							// This element stays locally, updates
 							it -> face_type = 'M';
@@ -260,7 +265,7 @@ void Update_neighbours(){
 					int n_key = it -> key;	// neighbour's key
 
 					// find n_key in the next list
-					if(std::find(Send.next.begin(), Send.next.end(), n_key) != Send.next.end()){	// if not find
+					if(std::find(Send.next.begin(), Send.next.end(), n_key) == Send.next.end()){	// if not find
 			
 						// This element stays locally, updates
 						it -> face_type = 'M';
@@ -310,13 +315,26 @@ void Neighbour_change(int facei, int n_key, int my_key, int rank){
 void Form_ownership_table(){
 
 	std::vector<ownership> northo;	// north ownership table
-	std::vector<ownership> southo;
+	std::vector<ownership> southo;	// south
 
 	Ownership_one_dir(northo, hrefinement::north);
 	Ownership_one_dir(southo, hrefinement::south);
 
+//if(mpi::rank == 3){
+//
+//	for(auto& v : northo){
+//	
+//		std::cout<< "key " << v.local_key << " rank : " << v.owner_rank << "\n";
+//
+//	}
+//
+//}
 }
 
+/// @brief
+/// Form ownership table in one direction.
+/// @param otable owership table.
+/// @param mtable MPI boundary table of the corresponding direction. 
 void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& mtable){
 
 
@@ -325,16 +343,16 @@ void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& 
 		
 		if(std::find(Send.pre.begin(), Send.pre.end(), v.local_key) != Send.pre.end()){ // if find in pre list
 
-			otable.push_back({v.local_key, mpi::rank - 1});
+			otable.push_back({v.local_key, mpi::rank - 1, v.hlevel});
 		}
 		else if(std::find(Send.next.begin(), Send.next.end(), v.local_key) != Send.next.end()){	// if find in next list
 
-			otable.push_back({v.local_key, mpi::rank + 1});
+			otable.push_back({v.local_key, mpi::rank + 1, v.hlevel});
 
 
 		}
 		else{ // not inside the sending list, record directly
-			otable.push_back({v.local_key, mpi::rank});	
+			otable.push_back({v.local_key, mpi::rank, v.hlevel});	
 
 		}
 
@@ -344,14 +362,178 @@ void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& 
 
 /// @brief
 /// Updates the MPI boundaries before repartitioning. 
-void Update_mpi_boudary(){
+void Update_mpi_boudary(std::vector<ownership>& northo, std::vector<ownership>& southo){
 
 	// x direction-----------------------------------------------------------------------------------
+	
+	// north send and south recv
+
+
 	//-----------------------------------------------------------------------------------------------
 
 
 }
 
+/// @brief
+/// Send and recv ownership table to updates the MPI boundaries. 
+/// @param sendo Sender's ownership table.
+/// @param recvo Recver's ownership table.
+/// @param send_accum Sender's accumulation table. 
+/// @param recv_accum Receiver's accumulation table. 
+void Send_recv_ownership(std::vector<ownership>& sendo, std::vector<ownership>& recvo, 
+			std::vector<accum_elem>& send_accum, std::vector<accum_elem>& recv_accum){
+	
+	int size_s = send_accum.size();
+	int size_r = recv_accum.size();
+
+	// sender
+	if(size_s > 0){	// there is something to send
+		MPI_Request s_request[size_s];
+		MPI_Status s_status[size_s];
+
+		int i{}, j{};
+		for(auto& v : send_accum){
+	
+			std::vector<int> send_info(v.sum * 3);
+			
+			// serialization the struct
+			for(int k = 0; k < v.sum; ++k){
+
+				send_info[3 * k] = sendo[j].local_key;	
+				send_info[3 * k + 1] = sendo[j].owner_rank;
+				send_info[3 * k + 2] = sendo[j].hlevel;
+				++j;
+			}
+	
+			MPI_Isend(&send_info[0], v.sum * 3, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
+
+			++i;
+
+		}
+
+		MPI_Waitall(size_s, s_request, s_status);
+	}
+
+
+	// recver
+	if(size_r > 0){
+
+		for(auto& v : recv_accum){
+
+			MPI_Status status1, status2;
+
+			int num;
+
+			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
+
+			MPI_Get_count(&status1, MPI_INT, &num);
+
+			std::vector<int> recv_info(num);
+
+			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
+			
+			auto ito = recvo.begin();
+		}
+
+	}
+
+}
+
+/// @brief
+/// Update MPI boundaries based on the ownership table.
+/// @param recv_info Received infomation.
+/// @param otable ownership table.
+/// @param ito iterator of the ownership table.
+/// @param num1 number of element received * 3
+void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable, 
+		std::vector<ownership>::iterator& ito, int facei, int num1){
+
+	int num = num / 3;
+
+	int l_tol;
+
+	for(int k = 0; k < num;){
+
+		int l_local = Elem_length(ito -> helvel);	// local element length
+		int l_n = Elem_length(recv_info[3 * k + 2]);	// recv_info: key, rank, hlevel
+
+		if(l_local == l_n){	// if same size
+
+			if(recv_info[3 * k + 1] == (ito -> owner_rank)){	// if will be in the same rank
+				// change 'M' to 'L'
+				local::Hash_elem[ito -> local_key] -> facen[facei].front().face_type = 'L';
+			}
+			else{	// not in the same rank
+				int rank_old = Hash_elem[ito -> local_key] -> facen[facei].front().rank;
+
+				if(rank_old != recv_info[3 * k + 1]){	// if this element will to assign to a new rank
+					// change to target rank
+					local::Hash_elem[ito -> local_key] -> facen[facei].front().rank = recv_info[3 * k + 1];
+
+				}	// else no change
+			}
+			++ito; 	// to next local element
+			++k;
+		}
+		else if(l_local < l_n){	// local element is smaller
+	
+			l_tol = 0;
+			while((l_tol < l_n) && (ito != otable.end())){
+
+				if(recv_info[3 * k + 1] == (ito -> owner_rank)){	// if will be in the same rank
+					// change 'M' to 'L'
+					local::Hash_elem[ito -> local_key] -> facen[facei].front().face_type = 'L';
+				}
+				else{	// not in the same rank
+					int rank_old = Hash_elem[ito -> local_key] -> facen[facei].front().rank;
+	
+					if(rank_old != recv_info[3 * k + 1]){	// if this element will to assign to a new rank
+						// change to target rank
+						local::Hash_elem[ito -> local_key] -> facen[facei].front().rank = recv_info[3 * k + 1];
+	
+					}	// else no change
+				}
+
+				l_tol += Elem_length(it0 -> hlevel);
+
+				++ito;
+			}
+			++k;
+		}
+		else{	// local is larger
+
+				
+			// loop till we locate the neighbour's key
+			for(auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin(); 
+				it_face != local::Hash_elem[ito -> local_key] -> facen[facei].end(); ++it_face){
+		
+				if(it_face.key == recv_info[3 * k]){	// find the neighbour
+	
+					if(recv_info[3 * k + 1] == (ito -> owner_rank)){	// if will be in the same rank
+						// change 'M' to 'L'
+						local::Hash_elem[ito -> local_key] -> facen[facei].front().face_type = 'L';
+					}
+					else{	// not in the same rank
+						int rank_old = Hash_elem[ito -> local_key] -> facen[facei].front().rank;
+		
+						if(rank_old != recv_info[3 * k + 1]){	// if this element will to assign to a new rank
+							// change to target rank
+							local::Hash_elem[ito -> local_key] -> facen[facei].front().rank = recv_info[3 * k + 1];
+		
+						}	// else no change
+					}
+					
+					++k;	// next element in the otable
+				}
+				
+			}
+			
+			++ito;
+		}
+
+	}
+
+}
 
 /// @brief
 /// After built the complete mapping table, now we decide how to reallocate the elements

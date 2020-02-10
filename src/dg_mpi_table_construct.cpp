@@ -220,7 +220,6 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 
 			MPI_Get_count(&status1, MPI_INT, &num);
 
-
 			std::vector<int> recv_info(num);	
 			std::vector<table_elem>::iterator it;	// declare an iterator
 			it = north.begin();	// put the iterator at the begin of the north table

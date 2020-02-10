@@ -52,7 +52,11 @@ void Driver_for_DG_approximation(){
 	
 		Build_mapping_table();
 
-		Simple_test(k);
+		Form_ownership_table();
+
+		Write_faces_all();
+
+//		Simple_test(k);
 
 		Clear_tables();
 
