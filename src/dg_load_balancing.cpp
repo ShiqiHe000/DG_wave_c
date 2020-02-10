@@ -7,6 +7,7 @@
 #include "dg_cantor_pairing.h"
 #include <algorithm>
 #include "dg_status_table.h"
+#include "dg_boundary_table.h"
 #include <iostream> // test
 
 // forward declaration -----------------------------------------
@@ -15,6 +16,8 @@ double Elem_load(int porder);
 void Update_neighbours();
 
 void Neighbour_change(int facei, int n_key, int my_key, int rank);
+
+void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& mtable);
 
 void Reallocate_elem(int elem_accum);
 // ------------------------------------------------------------
@@ -299,6 +302,53 @@ void Neighbour_change(int facei, int n_key, int my_key, int rank){
 		}
 
 	}
+
+}
+
+/// @brief
+/// form the owership tables
+void Form_ownership_table(){
+
+	std::vector<ownership> northo;	// north ownership table
+	std::vector<ownership> southo;
+
+	Ownership_one_dir(northo, hrefinement::north);
+	Ownership_one_dir(southo, hrefinement::south);
+
+}
+
+void Ownership_one_dir(std::vector<ownership>& otable, std::vector<table_elem>& mtable){
+
+
+	// keys are inherited from MPI boundary tables
+	for(auto& v : mtable){
+		
+		if(std::find(Send.pre.begin(), Send.pre.end(), v.local_key) != Send.pre.end()){ // if find in pre list
+
+			otable.push_back({v.local_key, mpi::rank - 1});
+		}
+		else if(std::find(Send.next.begin(), Send.next.end(), v.local_key) != Send.next.end()){	// if find in next list
+
+			otable.push_back({v.local_key, mpi::rank + 1});
+
+
+		}
+		else{ // not inside the sending list, record directly
+			otable.push_back({v.local_key, mpi::rank});	
+
+		}
+
+	}
+
+}
+
+/// @brief
+/// Updates the MPI boundaries before repartitioning. 
+void Update_mpi_boudary(){
+
+	// x direction-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------
+
 
 }
 
