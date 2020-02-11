@@ -20,6 +20,10 @@ struct table_elem{
 
 bool compare_coord(table_elem left, table_elem right); 
 
+/// @brief
+/// Accumulation table. Store the neighbour ranks and the number of elements that is facing to the corresponding rank.
+/// @param rank neighbour rank.
+/// @param sum element number in current rank that is facing to the neighbour rank.
 struct accum_elem{
 
 	int rank;
@@ -27,6 +31,7 @@ struct accum_elem{
 	int sum{};
 
 };
+
 
 
 #endif

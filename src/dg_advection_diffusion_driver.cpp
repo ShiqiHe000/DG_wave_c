@@ -49,11 +49,12 @@ void Driver_for_DG_approximation(){
 		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
 	
 //		Write_faces(k);
-	
+
+		// load_balancing----------------------------------------------	
 		Build_mapping_table();
 
-		Form_ownership_table();
-
+		Update_mpi_boundary();
+		//-------------------------------------------------------------
 		Write_faces_all();
 
 //		Simple_test(k);

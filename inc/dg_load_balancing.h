@@ -7,14 +7,11 @@
 /// This structure assist to form the processor mapping table.
 /// @param iproc Process's rank number.
 /// @param gnum first element's global number.
-/// @param key first element's key.
 struct pmap{
 
 	int irank;	
 
 	int gnum;
-
-//	int key;
 
 };
 
@@ -30,8 +27,26 @@ struct sending_envelope{
 
 };
 
+/// @brief
+/// Data Structure to support to form the ownership table.
+/// @param local_key key of local element who is on the MPI boundary.
+/// @param owner_rank the destination rank this element will be after repatitioning. 
+/// @param hlevel current element's h-refinement level. 
+struct ownership{
 
+	int local_key;
+	
+	int owner_rank;
+
+	int hlevel;
+};
+
+// functions-----------------------------------------------------------------------------
 void Build_mapping_table();
 
+//void Form_ownership_table();
+
+void Update_mpi_boundary();
+// --------------------------------------------------------------------------------------
 
 #endif
