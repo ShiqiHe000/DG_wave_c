@@ -32,10 +32,14 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 void Update_mpi_boundary();
 
 void Reallocate_elem(int elem_accum);
+
+void Construct_data_type();
 // ------------------------------------------------------------
 
 // global variable----------------------------------------------
 struct sending_envelope Send;	// record what to send
+
+MPI_Datatype Elem_type;	// self-derived MPI data type
 //--------------------------------------------------------------
 
 /// @brief Calculate the sum of the local computational load.
@@ -548,68 +552,175 @@ void Change_face(int k, std::vector<int>& recv_info, std::vector<ownership>::ite
 
 }
 
+/// @brief 
+/// Construct data type to send the target element together.
+void Construct_data_type(){
+
+	int num = 7;	// number of primitive MPI datatype
+
+	// Number of elements in each block (array of integers)
+	int elem_blocklength[7]{1, 3, 1, 1, 2, 2, 1};
+	
+	// Byte displacement of each block (array of integers).
+	MPI_Aint array_of_offsets[num];
+	MPI_Aint intex, charex, doubleex;
+	MPI_Aint lb;
+	MPI_Type_extent(MPI_INT, &lb, &intex);
+	MPI_Type_extent(MPI_CHAR, &lb, &charex);
+	MPI_Type_extent(MPI_DOUBLE, &lb, &doubleex);
+
+	array_of_offsets[0] = (MPI_Aint) 0;
+	array_of_offsets[1] = array_of_offset[0] + intex;
+	array_of_offsets[2] = array_of_offset[1] + intex * 3;
+	array_of_offsets[3] = array_of_offset[2] + charex;
+	array_of_offsets[4] = array_of_offset[3] + intex;
+	array_of_offsets[5] = array_of_offset[4] + doubleex * 2;
+	array_of_offsets[6] = array_of_offset[5] + doubleex * 2;
+
+	MPI_Datatype array_of_types[num]{MPI_INT, MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE, MPI_DOUBLE, MPI_INT};
+
+	// create and MPI datatype
+	MPI_Tpye_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Elem_type);	
+	MPI_Type_commit(&Elem_type);
+
+
+}
+
+/// @brief
+/// Pack sending information. 
+/// @param send_info The sending vector.
+/// @param it iterator at the beginning of Sending list (pre or next). 
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>& it){
+
+
+	for(auto& v : send_info){
+		
+		v.n = local::Hash_elem[*it] -> n;
+
+		for(int i = 0; i < 3; ++i){
+			v.index[i] = local::Hash_elem[*it] -> index[i];
+		}
+
+		v.status = local::Hash_elem[*it] -> status;
+
+		v.child_position = local::Hash_elem[*it] -> child_position;
+
+		v.var = local::Hash_elem[*it] -> var;
+
+		++it;
+	}
+
+}
+
 /// @brief
 /// After built the complete mapping table, now we decide how to reallocate the elements
 /// @param elem_accum accumulated element of former processors.
 void Reallocate_elem(int elem_accum){
 
-	int start = elem_accum; 	// first elem global number
-	int last = start + local::local_elem_num - 1;	// last elem global number
+//	int start = elem_accum; 	// first elem global number
+//	int last = start + local::local_elem_num - 1;	// last elem global number
 
-	if(mpi::rank == 0){	// first proc
-		
-		if(LB::proc_mapping_table[1].gnum <= last){	// should send
+	int num_pre = Send.pre.size();
+	int num_next = Send.next.size();
+	
+	MPI_Request request_pre, request_next;
 
-			int num_send = last - LB::proc_mapping_table[1].gnum + 1;	// num of element to be sent
+	if(num_pre > 0){	// something to send
+		std::vector<info_pack> send_elem(num_pre);
 
-		}
-		else if((LB::proc_mapping_table[1].gnum - 1) > last){	// recv from r1
+		auto it = Send.pre.begin();
 
+		// pack info to send
+		Send_pack(send_info, it);
+	
+		// ready to send 
+		MPI_Isend(&send_elem, num_pre, Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, request_pre);
+			
+	}
+	if(num_next > 0){	
 
-		}
+		std::vector<info_pack> send_elem(num_next);
 
-		// otherwiase no send or recv
+		auto it = Send.next.begin();
+
+		Send_pack(send_info, it);
+
+		MPI_Isend(&send_elem, num_next, Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, request_next);
 
 	}
-	else if(mpi::rank == mpi::num_proc - 1){	// last proc
-		
-		if(LB::proc_mapping_table.back().gnum < start){	// should recv
 
+	// recv
+	
+	
 
-		}
-		else if(LB::proc_mapping_table.back().gnum > start){	// send
+	// wait
+	if(num_pre > 0){
+		MPI_Status status;
+		MPI_Wait(&request_pre, &status);
+	}
 
-			int num_send = LB::proc_mapping_table.back().gnum - start;
+	if(num_next > 0){
 
-		}
+		MPI_Status status;
+		MPI_Wait(&request_next, &status);
 
 	}
-	else{	// proc in between 
-
-		// with former proc
-		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv
 
 
-		}
-		else if(LB::proc_mapping_table[mpi::rank].gnum > start){	// send
-
-			int num_send = LB::proc_mapping_table[mpi::rank].gnum - start;
-
-		}
-
-		// with latter proc
-		if(LB::proc_mapping_table[mpi::rank + 1].gnum <= last){	// send   
-
-			int num_send = LB::proc_mapping_table[mpi::rank + 1].gnum - last + 1;
-
-		}
-		else if(LB::proc_mapping_table[mpi::rank + 1].gnum > (last - 1)){	// recv
-
-
-		}
-
-
-	}
+//	if(mpi::rank == 0){	// first proc
+//		
+//		if(LB::proc_mapping_table[1].gnum <= last){	// should send
+//
+//			int num_send = last - LB::proc_mapping_table[1].gnum + 1;	// num of element to be sent
+//
+//		}
+//		else if((LB::proc_mapping_table[1].gnum - 1) > last){	// recv from r1
+//
+//
+//		}
+//
+//		// otherwiase no send or recv
+//
+//	}
+//	else if(mpi::rank == mpi::num_proc - 1){	// last proc
+//		
+//		if(LB::proc_mapping_table.back().gnum < start){	// should recv
+//
+//
+//		}
+//		else if(LB::proc_mapping_table.back().gnum > start){	// send
+//
+//			int num_send = LB::proc_mapping_table.back().gnum - start;
+//
+//		}
+//
+//	}
+//	else{	// proc in between 
+//
+//		// with former proc
+//		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv
+//
+//
+//		}
+//		else if(LB::proc_mapping_table[mpi::rank].gnum > start){	// send
+//
+//			int num_send = LB::proc_mapping_table[mpi::rank].gnum - start;
+//
+//		}
+//
+//		// with latter proc
+//		if(LB::proc_mapping_table[mpi::rank + 1].gnum <= last){	// send   
+//
+//			int num_send = LB::proc_mapping_table[mpi::rank + 1].gnum - last + 1;
+//
+//		}
+//		else if(LB::proc_mapping_table[mpi::rank + 1].gnum > (last - 1)){	// recv
+//
+//
+//		}
+//
+//
+//	}
 
 
 }

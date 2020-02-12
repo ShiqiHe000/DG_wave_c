@@ -32,7 +32,6 @@ void MPI_boundary_construct(){
 
 		// on the south physical boundary?
 		if(temp -> index[0] == 0){
-			temp -> faces[0] = -1;	// Yes
 
 			temp -> facen[0].push_back(Unit::Face());
 
@@ -48,7 +47,6 @@ void MPI_boundary_construct(){
 			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
-				temp -> faces[0] = 1;
 			
 				temp -> facen[0][0].face_type = 'M';
 				temp -> facen[0][0].hlevel = 0;
@@ -76,7 +74,6 @@ void MPI_boundary_construct(){
 		// on the north physical boundary?
 		temp -> facen[1].push_back(Unit::Face());
 		if(temp -> index[0] == (SortMesh::num_of_element_x - 1)){
-			temp -> faces[1] = -2;	// yes
 			
 			temp -> facen[1][0].face_type = 'B';
 		}
@@ -88,7 +85,6 @@ void MPI_boundary_construct(){
 			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
-				temp -> faces[1] = 1;
 
 				temp -> facen[1][0].face_type = 'M';
 				temp -> facen[1][0].hlevel = 0;
@@ -114,7 +110,6 @@ void MPI_boundary_construct(){
 		// on the west physical boundary?
 		temp -> facen[2].push_back(Unit::Face());
 		if(temp -> index[1] == 0){
-			temp -> faces[2] = -3;	// yes
 
 			temp -> facen[2][0].face_type = 'B';
 
@@ -127,7 +122,6 @@ void MPI_boundary_construct(){
 			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
-				temp -> faces[2] = 1;
 				
 				temp -> facen[2][0].face_type = 'M';
 				temp -> facen[2][0].hlevel = 0;
@@ -153,7 +147,6 @@ void MPI_boundary_construct(){
 		// on the east physical boundary?
 		temp -> facen[3].push_back(Unit::Face());
 		if(temp -> index[1] == SortMesh::num_of_element_y - 1){
-			temp -> faces[3] = -4;	// yes
 
 			temp -> facen[3][0].face_type = 'B';
 		}
@@ -165,7 +158,6 @@ void MPI_boundary_construct(){
 			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
-				temp -> faces[3] = 1;
 				
 				temp -> facen[3][0].face_type = 'M';
 				temp -> facen[3][0].hlevel = 0;
