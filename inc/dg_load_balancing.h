@@ -41,12 +41,9 @@ struct ownership{
 	int hlevel;
 };
 
+
 // functions-----------------------------------------------------------------------------
-void Build_mapping_table();
-
-//void Form_ownership_table();
-
-void Update_mpi_boundary();
+void Load_balancing();
 // --------------------------------------------------------------------------------------
 
 #endif

@@ -9,10 +9,13 @@
 #include "dg_status_table.h"
 #include "dg_boundary_table.h"
 #include "dg_elem_length.h"
+#include "dg_derived_datatype.h"
 #include <iostream> // test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
+
+void Build_mapping_table();
 
 void Update_neighbours();
 
@@ -31,16 +34,29 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 
 void Update_mpi_boundary();
 
-void Reallocate_elem(int elem_accum);
+void Reallocate_elem();
 
-void Construct_data_type();
+void Recv(int source, int tag, std::vector<info_pack>& recv_info);
 // ------------------------------------------------------------
 
 // global variable----------------------------------------------
 struct sending_envelope Send;	// record what to send
 
-MPI_Datatype Elem_type;	// self-derived MPI data type
+int elem_accum{};	// elem prefix sum of former processor
+
 //--------------------------------------------------------------
+
+/// @brief
+/// Whole procedure of load balancing 
+void Load_balancing(){
+
+	Build_mapping_table();
+
+	Update_mpi_boundary();
+
+	Reallocate_elem();
+}
+
 
 /// @brief Calculate the sum of the local computational load.
 void Build_mapping_table(){
@@ -79,7 +95,6 @@ void Build_mapping_table(){
 	MPI_Bcast(&load_avg, 1, MPI_DOUBLE, mpi::num_proc - 1, MPI_COMM_WORLD);
 	
 	// Global element number
-	int elem_accum{};
 	MPI_Exscan(&local::local_elem_num, &elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 	
 	// form processor mapping table
@@ -552,45 +567,12 @@ void Change_face(int k, std::vector<int>& recv_info, std::vector<ownership>::ite
 
 }
 
-/// @brief 
-/// Construct data type to send the target element together.
-void Construct_data_type(){
-
-	int num = 7;	// number of primitive MPI datatype
-
-	// Number of elements in each block (array of integers)
-	int elem_blocklength[7]{1, 3, 1, 1, 2, 2, 1};
-	
-	// Byte displacement of each block (array of integers).
-	MPI_Aint array_of_offsets[num];
-	MPI_Aint intex, charex, doubleex;
-	MPI_Aint lb;
-	MPI_Type_extent(MPI_INT, &lb, &intex);
-	MPI_Type_extent(MPI_CHAR, &lb, &charex);
-	MPI_Type_extent(MPI_DOUBLE, &lb, &doubleex);
-
-	array_of_offsets[0] = (MPI_Aint) 0;
-	array_of_offsets[1] = array_of_offset[0] + intex;
-	array_of_offsets[2] = array_of_offset[1] + intex * 3;
-	array_of_offsets[3] = array_of_offset[2] + charex;
-	array_of_offsets[4] = array_of_offset[3] + intex;
-	array_of_offsets[5] = array_of_offset[4] + doubleex * 2;
-	array_of_offsets[6] = array_of_offset[5] + doubleex * 2;
-
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE, MPI_DOUBLE, MPI_INT};
-
-	// create and MPI datatype
-	MPI_Tpye_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Elem_type);	
-	MPI_Type_commit(&Elem_type);
-
-
-}
 
 /// @brief
 /// Pack sending information. 
 /// @param send_info The sending vector.
 /// @param it iterator at the beginning of Sending list (pre or next). 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>& it){
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it){
 
 
 	for(auto& v : send_info){
@@ -605,6 +587,12 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>& it){
 
 		v.child_position = local::Hash_elem[*it] -> child_position;
 
+		for(int i = 0; i < 2; ++i){
+		
+			v.xcoords[i] = local::Hash_elem[*it] -> xcoords[i];
+			v.ycoords[i] = local::Hash_elem[*it] -> ycoords[i];
+		}
+
 		v.var = local::Hash_elem[*it] -> var;
 
 		++it;
@@ -614,15 +602,16 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>& it){
 
 /// @brief
 /// After built the complete mapping table, now we decide how to reallocate the elements
-/// @param elem_accum accumulated element of former processors.
-void Reallocate_elem(int elem_accum){
+void Reallocate_elem(){
 
-//	int start = elem_accum; 	// first elem global number
-//	int last = start + local::local_elem_num - 1;	// last elem global number
+	int start = elem_accum; 	// first elem global number
+	int last = start + local::local_elem_num - 1;	// last elem global number
+//std::cout<< "rank " << mpi::rank << " start "<< start << " last " << last << "\n";
 
 	int num_pre = Send.pre.size();
 	int num_next = Send.next.size();
-	
+//std::cout<< "rank " << mpi::rank << "pre " << num_pre << " next " << num_next << "\n";
+
 	MPI_Request request_pre, request_next;
 
 	if(num_pre > 0){	// something to send
@@ -631,10 +620,10 @@ void Reallocate_elem(int elem_accum){
 		auto it = Send.pre.begin();
 
 		// pack info to send
-		Send_pack(send_info, it);
+		Send_pack(send_elem, it);
 	
 		// ready to send 
-		MPI_Isend(&send_elem, num_pre, Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, request_pre);
+		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre);	// tag = rank
 			
 	}
 	if(num_next > 0){	
@@ -643,16 +632,72 @@ void Reallocate_elem(int elem_accum){
 
 		auto it = Send.next.begin();
 
-		Send_pack(send_info, it);
+		Send_pack(send_elem, it);
 
-		MPI_Isend(&send_elem, num_next, Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, request_next);
+		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next);
 
 	}
 
 	// recv
-	
-	
+	if(mpi::rank == 0){	// first proc
+		
+		if(LB::proc_mapping_table[1].gnum - 1 > last){	// recv from next
 
+			std::vector<info_pack> recv_info;
+
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+		}
+
+	}
+	else if(mpi::rank == mpi::num_proc - 1){
+
+		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
+
+			std::vector<info_pack> recv_info;
+
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+//if(mpi::rank == 3){
+//
+//	for(auto& n : recv_info){
+//		std::cout << "n: " << n.n << "\n";
+//		std::cout << "index: " << n.index[0] << n.index[1] << n.index[2] << "\n";
+//
+//		std::cout<< "status " << n.status << "\n";
+//
+//		std::cout<< "child " << n.child_position << "\n";
+//
+//		std::cout << "coordx " << n.xcoords[0] << " " << n.xcoords[1] << "\n";
+//		std::cout << "coordy " << n.ycoords[0] << " " << n.ycoords[1] << "\n";
+//
+//		std::cout << "var " << n.var << "\n";
+//		std::cout << "---------------------------------------------------" << "\n";
+//
+//	}
+//
+//}
+
+		}
+
+	}
+	else{	// proc in between
+		if(LB::proc_mapping_table[mpi::rank + 1].gnum - 1 > last){	// recv from next
+
+			std::vector<info_pack> recv_info;
+
+			Recv(mpi::rank + 1, mpi::rank + 1, recv_info);
+
+		}
+
+		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
+
+			std::vector<info_pack> recv_info;
+
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+
+		}
+		
+	}
+	
 	// wait
 	if(num_pre > 0){
 		MPI_Status status;
@@ -666,62 +711,25 @@ void Reallocate_elem(int elem_accum){
 
 	}
 
+}
 
-//	if(mpi::rank == 0){	// first proc
-//		
-//		if(LB::proc_mapping_table[1].gnum <= last){	// should send
-//
-//			int num_send = last - LB::proc_mapping_table[1].gnum + 1;	// num of element to be sent
-//
-//		}
-//		else if((LB::proc_mapping_table[1].gnum - 1) > last){	// recv from r1
-//
-//
-//		}
-//
-//		// otherwiase no send or recv
-//
-//	}
-//	else if(mpi::rank == mpi::num_proc - 1){	// last proc
-//		
-//		if(LB::proc_mapping_table.back().gnum < start){	// should recv
-//
-//
-//		}
-//		else if(LB::proc_mapping_table.back().gnum > start){	// send
-//
-//			int num_send = LB::proc_mapping_table.back().gnum - start;
-//
-//		}
-//
-//	}
-//	else{	// proc in between 
-//
-//		// with former proc
-//		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv
-//
-//
-//		}
-//		else if(LB::proc_mapping_table[mpi::rank].gnum > start){	// send
-//
-//			int num_send = LB::proc_mapping_table[mpi::rank].gnum - start;
-//
-//		}
-//
-//		// with latter proc
-//		if(LB::proc_mapping_table[mpi::rank + 1].gnum <= last){	// send   
-//
-//			int num_send = LB::proc_mapping_table[mpi::rank + 1].gnum - last + 1;
-//
-//		}
-//		else if(LB::proc_mapping_table[mpi::rank + 1].gnum > (last - 1)){	// recv
-//
-//
-//		}
-//
-//
-//	}
+/// @brief
+/// Receive element information from sender. 
+/// @param source Sender's rank.
+/// @param tag Tag of the message. 
+/// @param recv_info Buffer for the message. 
+void Recv(int source, int tag, std::vector<info_pack>& recv_info){
 
+	MPI_Status status1, status2;
+	int count;
+
+	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
+
+	MPI_Get_count(&status1, Hash::Elem_type, &count);
+
+	recv_info = std::vector<info_pack>(count);
+
+	MPI_Recv(&recv_info[0], count, Hash::Elem_type, source, tag, MPI_COMM_WORLD, &status2);
 
 }
 

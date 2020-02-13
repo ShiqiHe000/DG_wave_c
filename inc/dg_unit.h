@@ -10,20 +10,17 @@
 class Unit{
 
 public:
-	int level;	// h-refinement level !!Redundent? since we have index!!
 
 	int n, m; 	// polynomial orders (x, y)	
 
 	int index[3]{0, 0, 0}; 	// element index[i, j, k]
  
-	int local_index{};	// element local index	!! redundent?
+//	int local_index{};	// element local index	!! redundent?
 
 	char status; 	// Hilbert status
 
 	int child_position{};	// ith-child
 	
-	short faces[4]{0, 0, 0, 0};	// remote element number (positive). Negtive means its on the physical boundary. 
-
 	struct Face;	// forward declare
 	std::vector<std::vector<Face>> facen;	// a structure for the neighbour on each face, initialized in dg_unit.cpp
 

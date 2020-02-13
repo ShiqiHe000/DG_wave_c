@@ -9,6 +9,7 @@
 #include "dg_mpi_table_construct.h"
 #include "dg_local_storage.h"
 #include "dg_load_balancing.h"
+#include "dg_derived_datatype.h"
 #include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
 
@@ -40,6 +41,8 @@ void Driver_for_DG_approximation(){
 	
 	Serial_io(tn);		
 
+	Construct_data_type();
+
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 	
@@ -51,9 +54,7 @@ void Driver_for_DG_approximation(){
 //		Write_faces(k);
 
 		// load_balancing----------------------------------------------	
-		Build_mapping_table();
-
-		Update_mpi_boundary();
+		Load_balancing();
 		//-------------------------------------------------------------
 		Write_faces_all();
 
@@ -66,7 +67,7 @@ void Driver_for_DG_approximation(){
 
 	}
 
-
+	Free_type();
 
 //	Test();
 
