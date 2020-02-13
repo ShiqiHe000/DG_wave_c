@@ -63,20 +63,20 @@ void Build_mapping_table(){
 
 	Unit* temp = local::head;
 
-	LB::lprefix_load = std::vector<double> (local::local_elem_num);
-	LB::pmapping = std::vector<int> (local::local_elem_num);
+	std::vector<double> lprefix_load(local::local_elem_num);
+	int pmapping;
 
 	// local prefix sum of load
-	LB::lprefix_load[0] = Elem_load(temp -> n);
+	lprefix_load[0] = Elem_load(temp -> n);
 	temp = temp -> next;
 	for(int k = 1; k < local::local_elem_num; ++k){
-		LB::lprefix_load[k] = Elem_load(temp -> n) + LB::lprefix_load[k - 1];
+		lprefix_load[k] = Elem_load(temp -> n) + lprefix_load[k - 1];
 		
 		temp = temp -> next;
 
 	}	
 	
-	double local_load_sum = LB::lprefix_load.back();	// local computational load sum
+	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
 
 	// Global prefix sum of load
@@ -102,26 +102,26 @@ void Build_mapping_table(){
 	int proc_pre = - 1;
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
-		LB::lprefix_load[k] += exscan_sum;
+		lprefix_load[k] += exscan_sum;
 
-		LB::pmapping[k] = std::floor((LB::lprefix_load[k] - 0.01 * load_avg) / load_avg);
+		pmapping = std::floor((lprefix_load[k] - 0.01 * load_avg) / load_avg);
 		
 		// form partial mapping table
-		if(LB::pmapping[k] != proc_pre){
+		if(pmapping != proc_pre){
 
-			LB::proc_mapping_table.push_back({LB::pmapping[k], k + elem_accum});
+			LB::proc_mapping_table.push_back({pmapping, k + elem_accum});
 			
-			proc_pre = LB::pmapping[k];
+			proc_pre = pmapping;
 		}	
 		
 		// form sending_envelope
-		if(LB::pmapping[k] < mpi::rank){	// need to be moved to the former proc
+		if(pmapping < mpi::rank){	// need to be moved to the former proc
 
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			Send.pre.push_back(key);
 		}
-		else if(LB::pmapping[k] > mpi::rank){
+		else if(pmapping > mpi::rank){
 
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 

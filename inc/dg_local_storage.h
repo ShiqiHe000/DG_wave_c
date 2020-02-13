@@ -43,10 +43,6 @@ namespace hrefinement{
 
 namespace LB{
 
-	extern std::vector<double> lprefix_load;
-
-	extern std::vector<int> pmapping;
-
 	extern std::vector<pmap> proc_mapping_table;
 };
 
