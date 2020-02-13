@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include "dg_boundary_table.h" 
-#include "dg_load_balancing.h"
+#include "dg_load_struct.h"
 
 namespace local{
  
@@ -44,6 +44,10 @@ namespace hrefinement{
 namespace LB{
 
 	extern std::vector<pmap> proc_mapping_table;
+
+	extern int elem_accum;
+
+	extern struct sending_envelope Send;
 };
 
 namespace result{
