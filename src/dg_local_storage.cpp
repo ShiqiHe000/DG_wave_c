@@ -67,6 +67,9 @@ namespace LB{
 	int elem_accum{}; 	// elem prefix sum of former processor
 
 	struct sending_envelope Send;	// record what to send
+	
+	Unit* end = nullptr; 	// pointer who points to the last element. 
+	Unit* my_rank_last = nullptr;	// pointer who points to the last element who stays in my rank. 
 };
 
 /// @brief

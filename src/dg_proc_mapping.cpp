@@ -10,7 +10,6 @@
 #include "dg_boundary_table.h"
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
-//#include "dg_derived_datatype.h"
 #include <iostream> // test
 
 // forward declaration -----------------------------------------
@@ -55,6 +54,10 @@ void Build_mapping_table(){
 		
 		temp = temp -> next;
 
+		if(k == local::local_elem_num - 2){
+
+			LB::end = temp;	// pointer points to the last element. 
+		}
 	}	
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
@@ -107,6 +110,10 @@ void Build_mapping_table(){
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			LB::Send.next.push_back(key);
+		}
+		else{
+
+			LB::my_rank_last = temp;
 		}
 
 

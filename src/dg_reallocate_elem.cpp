@@ -3,11 +3,14 @@
 #include "dg_local_storage.h"
 #include "dg_derived_datatype.h"
 #include "dg_param.h"
+#include "dg_cantor_pairing.h"
 
 // forward declaration-------------------------------------------------------------------
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
 
 void Recv(int source, int tag, std::vector<info_pack>& recv_info);
+
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir);
 // --------------------------------------------------------------------------------------
 
 /// @brief
@@ -56,6 +59,8 @@ void Reallocate_elem(){
 			std::vector<info_pack> recv_info;
 
 			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+
+			Enlarge_hash(recv_info, 'n');
 		}
 
 	}
@@ -66,6 +71,8 @@ void Reallocate_elem(){
 			std::vector<info_pack> recv_info;
 
 			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+			
+			Enlarge_hash(recv_info, 'p');
 //if(mpi::rank == 3){
 //
 //	for(auto& n : recv_info){
@@ -95,7 +102,8 @@ void Reallocate_elem(){
 			std::vector<info_pack> recv_info;
 
 			Recv(mpi::rank + 1, mpi::rank + 1, recv_info);
-
+			
+			Enlarge_hash(recv_info, 'n');
 		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
@@ -104,6 +112,7 @@ void Reallocate_elem(){
 
 			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
 
+			Enlarge_hash(recv_info, 'p');
 		}
 		
 	}
@@ -119,6 +128,71 @@ void Reallocate_elem(){
 		MPI_Status status;
 		MPI_Wait(&request_next, &status);
 
+	}
+
+}
+
+/// @brief
+/// After receive element information we create units in Hash table and store them.
+/// @parma recv_info The received element info (without facen).
+/// @param dir The info coming direction (pre: p, next: 'n').
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir){
+
+	Unit* temp_head = nullptr;	// head pointer to the recved linked list 
+	int pre_key;
+
+	for(auto it = recv_info.begin(); it != recv_info.end(); ++it){
+
+		int key = Get_key_fun((*it).index[0], (*it).index[1], (*it).index[2]);
+
+		local::Hash_elem[key] = new Unit();
+
+		if(it == recv_info.begin()){
+			temp_head = local::Hash_elem[key];	// temp_head points to the first element. 
+		}
+
+		local::Hash_elem[key] -> n = (*it).n;		// for now n == m
+		local::Hash_elem[key] -> m = (*it).n;		
+		
+		for(int i = 0; i < 3; ++i){
+			local::Hash_elem[key] -> index[i] = (*it).index[i];
+		}
+
+		local::Hash_elem[key] -> status = (*it).status;
+
+		local::Hash_elem[key] -> child_position = (*it).child_position; 
+
+		for(int i = 0; i < 2; ++i){	
+			local::Hash_elem[key] -> xcoords[i] = (*it).xcoords[i]; 
+			local::Hash_elem[key] -> ycoords[i] = (*it).ycoords[i]; 
+		}
+
+		
+		local::Hash_elem[key] -> var = (*it).var;
+		
+		if(it != recv_info.begin()){
+			local::Hash_elem[pre_key] -> next = local::Hash_elem[key];
+
+		}
+
+		pre_key = key;
+	}
+
+
+	if(dir == 'p'){		// put the elements at the beginning of the linked list
+		
+		local::Hash_elem[pre_key] -> next = local::head;
+
+		local::head = temp_head;
+
+	}	
+	else if(dir == 'n'){	// put the element at the end of the linked list
+		if(local::local_elem_num == 0){
+			local::head = temp_head;
+		}
+		else{	
+			LB::end -> next = temp_head;
+		}
 	}
 
 }
@@ -147,7 +221,13 @@ void Recv(int source, int tag, std::vector<info_pack>& recv_info){
 /// Pack sending information. 
 /// @param send_info The sending vector.
 /// @param it iterator at the beginning of Sending list (pre or next). 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it){
+/// @param dir sending direction (pre: 'p', next: 'n')
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, char dir){
+
+	if(dir == 'p'){
+
+
+	}
 
 
 	for(auto& v : send_info){
@@ -170,8 +250,28 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 
 		v.var = local::Hash_elem[*it] -> var;
 
+		// erase the element after we recorded it
+		local::Hash.erase(*it);
+		
+		--local::local_elem_num; 
+
 		++it;
 	}
 
+	if(local::local_elem_num == 0){
+
+		local::head = nullptr;	// of not element left, set head to be null. 
+
+		LB::end = nullptr;
+	}
+	
+
 }
 
+///// @brief
+///// Erase the elements in the sending list from the Hash table
+//void Erase_elem_old(std::vector<int>::iterator& it)
+//
+//
+//
+//}
