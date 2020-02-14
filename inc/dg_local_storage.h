@@ -36,9 +36,13 @@ namespace hrefinement{
 	
 	extern std::vector<table_elem> north;
 	extern std::vector<table_elem> south;
+	extern std::vector<table_elem> west;
+	extern std::vector<table_elem> east;
 
 	extern std::vector<accum_elem> south_accum;
 	extern std::vector<accum_elem> north_accum;
+	extern std::vector<accum_elem> west_accum;
+	extern std::vector<accum_elem> east_accum;
 };
 
 namespace LB{

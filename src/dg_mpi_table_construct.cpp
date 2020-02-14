@@ -27,10 +27,12 @@ void Sort_mpi_table(std::vector<table_elem>& north);
 
 /// @brief 
 /// Construct MPI boundary tables.
-/// @param north North direction table.
-/// @param south South direction table.
+/// @param north MPI boundary table.
+/// @param facen Face direction of the first table. 
+/// @param south MPI boundary table.
+/// @param faces Face direction of the second table. 
 // only in x direction
-void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>& south){
+void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<table_elem>& south, int faces){
 
 	Unit* temp = local::head;
 
@@ -40,7 +42,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 
 		// south
 		// interate through face 0
-		for(auto& face_s : temp -> facen[0]){
+		for(auto& face_s : temp -> facen[faces]){
 
 
 			if(face_s.face_type == 'M' && face_s.rank != pre_rank){	// if mpi boundary and rank changes, record
@@ -61,7 +63,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 	
 		// north
 		// iterate through face 1
-		for(auto& face_n : temp -> facen[1]){
+		for(auto& face_n : temp -> facen[facen]){
 
 
 			if(face_n.face_type == 'M' && face_n.rank != pre_rank){	// if mpi boundary, record
@@ -84,8 +86,6 @@ void Construct_mpi_table(std::vector<table_elem>& north, std::vector<table_elem>
 	}	
 
 		// sort north and south table in the end
-//		std::sort(south.begin(), south.end(), compare_coord);
-//		std::sort(north.begin(), north.end(), compare_coord);
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
 		
@@ -125,15 +125,18 @@ void Sort_mpi_table(std::vector<table_elem>& north){
 
 /// @brief
 /// Updates MPI boundaries
-/// @param north north MPI table
-/// @param south south MPI table
-void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_elem>& south){
+/// @param north MPI boundary table.
+/// @param facen Face direction of the first table. 
+/// @param south MPI boundary table. 
+/// @param faces Face direction of the second table. 
+void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vector<accum_elem>& north_accum, 
+				std::vector<table_elem>& south, int faces, std::vector<accum_elem>& south_accum){
 
-	Accum_table(south, hrefinement::south_accum);
-	Accum_table(north, hrefinement::north_accum);
+	Accum_table(south, south_accum);
+	Accum_table(north, north_accum);
 
-	int s = hrefinement::south_accum.size();
-	int n = hrefinement::north_accum.size();
+	int s = south_accum.size();
+	int n = north_accum.size();
 //if(mpi::rank == 0){
 //	
 //	std::cout<< "----------------------------- \n";
@@ -154,10 +157,10 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, std::vector<table_ele
 //	//std::cout << s << " " << n << "\n";
 //}
 	// south send, north recv
-	Sender_recver(s, n, hrefinement::south_accum, hrefinement::north_accum, south, north, 1);
+	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
 
 	// north send, south recv. 
-	Sender_recver(n, s, hrefinement::north_accum, hrefinement::south_accum, north, south, 0);
+	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
 
 }
 

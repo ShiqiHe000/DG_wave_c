@@ -6,10 +6,14 @@
 void Adapt(){
 
 	h_refinement();
+	
+	// x direction
+	Construct_mpi_table(hrefinement::north, 1, hrefinement::south, 0);
+	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::north_accum, hrefinement::south, 0, hrefinement::south_accum);	
 
-	Construct_mpi_table(hrefinement::north, hrefinement::south);
-	Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
-
+	// y direction
+	Construct_mpi_table(hrefinement::west, 2, hrefinement::east, 3);
+	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::west_accum, hrefinement::east, 3, hrefinement::east_accum);	
 }
 
 /// @brief
