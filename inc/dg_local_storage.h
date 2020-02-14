@@ -48,6 +48,9 @@ namespace LB{
 	extern int elem_accum;
 
 	extern struct sending_envelope Send;
+	
+	extern Unit* end;
+	extern Unit* my_rank_last;
 };
 
 namespace result{

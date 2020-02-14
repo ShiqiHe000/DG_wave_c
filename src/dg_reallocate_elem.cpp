@@ -4,13 +4,16 @@
 #include "dg_derived_datatype.h"
 #include "dg_param.h"
 #include "dg_cantor_pairing.h"
+#include <cassert>
 
 // forward declaration-------------------------------------------------------------------
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
 
-void Recv(int source, int tag, std::vector<info_pack>& recv_info);
+void Recv(int source, int tag, std::vector<info_pack>& recv_info, int& count);
 
-void Enlarge_hash(std::vector<info_pack>& recv_info, char dir);
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv);
+
+void Erase_elem_old(std::vector<int>& send, char dir, int num);
 // --------------------------------------------------------------------------------------
 
 /// @brief
@@ -38,6 +41,7 @@ void Reallocate_elem(){
 		// ready to send 
 		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre);	// tag = rank
 			
+		Erase_elem_old(LB::Send.pre, 'p', num_pre);
 	}
 	if(num_next > 0){	
 
@@ -49,6 +53,7 @@ void Reallocate_elem(){
 
 		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next);
 
+		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
 
 	// recv
@@ -58,9 +63,10 @@ void Reallocate_elem(){
 
 			std::vector<info_pack> recv_info;
 
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+			int recv_num;	
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 
-			Enlarge_hash(recv_info, 'n');
+			Enlarge_hash(recv_info, 'n', recv_num);
 		}
 
 	}
@@ -70,9 +76,10 @@ void Reallocate_elem(){
 
 			std::vector<info_pack> recv_info;
 
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
+			int recv_num;	
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
-			Enlarge_hash(recv_info, 'p');
+			Enlarge_hash(recv_info, 'p', recv_num);
 //if(mpi::rank == 3){
 //
 //	for(auto& n : recv_info){
@@ -101,18 +108,20 @@ void Reallocate_elem(){
 
 			std::vector<info_pack> recv_info;
 
-			Recv(mpi::rank + 1, mpi::rank + 1, recv_info);
+			int recv_num;	
+			Recv(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 			
-			Enlarge_hash(recv_info, 'n');
+			Enlarge_hash(recv_info, 'n', recv_num);
 		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
 
 			std::vector<info_pack> recv_info;
+			int recv_num;	
+		
+			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info);
-
-			Enlarge_hash(recv_info, 'p');
+			Enlarge_hash(recv_info, 'p', recv_num);
 		}
 		
 	}
@@ -136,7 +145,10 @@ void Reallocate_elem(){
 /// After receive element information we create units in Hash table and store them.
 /// @parma recv_info The received element info (without facen).
 /// @param dir The info coming direction (pre: p, next: 'n').
-void Enlarge_hash(std::vector<info_pack>& recv_info, char dir){
+/// @pram num_recv received element number. 
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
+
+	assert((dir == 'p' || dir == 'n') && "The sendign direction can only be 'p' or 'n'.");
 
 	Unit* temp_head = nullptr;	// head pointer to the recved linked list 
 	int pre_key;
@@ -178,22 +190,28 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir){
 		pre_key = key;
 	}
 
-
-	if(dir == 'p'){		// put the elements at the beginning of the linked list
-		
-		local::Hash_elem[pre_key] -> next = local::head;
+	if(local::local_elem_num == 0){	// if no local_elem
 
 		local::head = temp_head;
 
-	}	
-	else if(dir == 'n'){	// put the element at the end of the linked list
-		if(local::local_elem_num == 0){
-			local::head = temp_head;
-		}
-		else{	
-			LB::end -> next = temp_head;
-		}
 	}
+	else{
+
+		if(dir == 'p'){		// put the elements at the beginning of the linked list
+			
+			local::Hash_elem[pre_key] -> next = local::head;
+	
+			local::head = temp_head;
+	
+		}	
+		else{	// put the element at the end of the linked list
+				LB::end -> next = temp_head;
+		}
+
+	}
+
+	// update local element number
+	local::local_elem_num += num_recv;
 
 }
 
@@ -202,10 +220,10 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir){
 /// @param source Sender's rank.
 /// @param tag Tag of the message. 
 /// @param recv_info Buffer for the message. 
-void Recv(int source, int tag, std::vector<info_pack>& recv_info){
+/// @param count number of element received. 
+void Recv(int source, int tag, std::vector<info_pack>& recv_info, int& count){
 
 	MPI_Status status1, status2;
-	int count;
 
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
@@ -221,13 +239,7 @@ void Recv(int source, int tag, std::vector<info_pack>& recv_info){
 /// Pack sending information. 
 /// @param send_info The sending vector.
 /// @param it iterator at the beginning of Sending list (pre or next). 
-/// @param dir sending direction (pre: 'p', next: 'n')
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, char dir){
-
-	if(dir == 'p'){
-
-
-	}
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it){
 
 
 	for(auto& v : send_info){
@@ -250,28 +262,48 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 
 		v.var = local::Hash_elem[*it] -> var;
 
-		// erase the element after we recorded it
-		local::Hash.erase(*it);
-		
-		--local::local_elem_num; 
-
 		++it;
 	}
 
-	if(local::local_elem_num == 0){
-
-		local::head = nullptr;	// of not element left, set head to be null. 
-
-		LB::end = nullptr;
-	}
-	
 
 }
 
-///// @brief
-///// Erase the elements in the sending list from the Hash table
-//void Erase_elem_old(std::vector<int>::iterator& it)
-//
-//
-//
-//}
+/// @brief
+/// Erase the elements in the sending list from the Hash table
+/// @param send Sending list.
+/// @param dir Sending direction (pre: 'p', next: 'n').
+/// @parma num number of element to be send. 
+void Erase_elem_old(std::vector<int>& send, char dir, int num){
+
+	assert((dir == 'p' || dir == 'n') && "The sendign direction can only be 'p' or 'n'.");
+
+	local::local_elem_num -= num;	// remaining elements.
+
+	// take care of linked list
+	if(local::local_elem_num == 0){	// nothing left
+
+		local::head = nullptr;
+		LB::end = nullptr;
+
+	}
+	else{
+
+		if(dir == 'p'){
+
+			int last = send.back();
+			local::head = local::Hash_elem[last] -> next;
+		}
+		else{	// 'n'
+			LB::my_rank_last -> next = nullptr;
+		}		
+
+	}
+	
+	// erase elements
+	for(auto& v : send){
+
+		local::Hash_elem.erase(v);
+
+	}
+
+}
