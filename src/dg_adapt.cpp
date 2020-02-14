@@ -25,5 +25,9 @@ void Clear_tables(){
 	hrefinement::south.clear();
 	hrefinement::north.clear();
 
+	hrefinement::west_accum.clear();
+	hrefinement::east_accum.clear();
+	hrefinement::west.clear();
+	hrefinement::east.clear();
 
 }
