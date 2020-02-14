@@ -23,7 +23,6 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 
 void Sort_mpi_table(std::vector<table_elem>& north);
 
-void Clear_tables();
 //---------------------------------------------------------------------------------------
 
 /// @brief 
@@ -377,14 +376,3 @@ void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_
 
 }
 
-/// @brief
-/// Remove all the elements inside the tables (MPI tables and accumlation table)
-void Clear_tables(){
-
-	hrefinement::south_accum.clear();
-	hrefinement::north_accum.clear();
-	hrefinement::south.clear();
-	hrefinement::north.clear();
-
-
-}

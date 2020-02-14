@@ -6,7 +6,6 @@
 #include "dg_init.h"
 #include "dg_io.h"
 #include "dg_adapt.h"
-#include "dg_mpi_table_construct.h"
 #include "dg_local_storage.h"
 #include "dg_load_balancing.h"
 #include "dg_derived_datatype.h"
@@ -46,11 +45,13 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 	
-		h_refinement(k);
+	//	h_refinement();
+	//
+	//	Construct_mpi_table(hrefinement::north, hrefinement::south);
+	//	Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
 	
-		Construct_mpi_table(hrefinement::north, hrefinement::south);
-		Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
-	
+		Adapt();
+
 //		Write_faces(k);
 
 		// load_balancing----------------------------------------------	
