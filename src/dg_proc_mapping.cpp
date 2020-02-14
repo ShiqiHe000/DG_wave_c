@@ -348,6 +348,12 @@ void Update_mpi_boundary(){
 
 	Ownership_one_dir(northo, hrefinement::north);
 	Ownership_one_dir(southo, hrefinement::south);
+	
+	std::vector<ownership> westo;	// west ownership table
+	std::vector<ownership> easto;	// east
+
+	Ownership_one_dir(westo, hrefinement::west);
+	Ownership_one_dir(easto, hrefinement::east);
 	//-------------------------------------------------------------------------
 
 	// x direction-----------------------------------------------------------------------------------
@@ -360,6 +366,14 @@ void Update_mpi_boundary(){
 	//-----------------------------------------------------------------------------------------------
 
 
+	// y direction-----------------------------------------------------------------------------------
+	
+	// west send and east recv
+	Send_recv_ownership(westo, easto, hrefinement::west_accum, hrefinement::east_accum, 3);
+
+	// east send and west recv
+	Send_recv_ownership(easto, westo, hrefinement::east_accum, hrefinement::west_accum, 2);
+	//-----------------------------------------------------------------------------------------------
 }
 
 /// @brief

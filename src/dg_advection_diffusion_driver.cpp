@@ -46,13 +46,7 @@ void Driver_for_DG_approximation(){
 	for(int k = 0; k < dg_time::nt; ++k){
 	
 	//	h_refinement();
-	//
-	//	Construct_mpi_table(hrefinement::north, hrefinement::south);
-	//	Update_mpi_boundaries(hrefinement::north, hrefinement::south);	
-	
 		Adapt();
-
-//		Write_faces(k);
 
 		// load_balancing----------------------------------------------	
 		Load_balancing();
