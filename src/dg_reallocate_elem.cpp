@@ -9,9 +9,13 @@
 // forward declaration-------------------------------------------------------------------
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
 
-void Recv(int source, int tag, std::vector<info_pack>& recv_info, int& count);
+void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count);
 
 void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv);
+
+void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& num);
+
+void Recv_face(int source, int tag, std::vector<face_pack>& recv_face);
 
 void Erase_elem_old(std::vector<int>& send, char dir, int num);
 // --------------------------------------------------------------------------------------
@@ -28,19 +32,25 @@ void Reallocate_elem(){
 	int num_next = LB::Send.next.size();
 //std::cout<< "rank " << mpi::rank << "pre " << num_pre << " next " << num_next << "\n";
 
-	MPI_Request request_pre, request_next;
+	MPI_Request request_pre1, request_pre2, request_next1, request_next2;
 
 	if(num_pre > 0){	// something to send
 		std::vector<info_pack> send_elem(num_pre);
 
 		auto it = LB::Send.pre.begin();
 
+		std::vector<face_pack> face_info;
+
 		// pack info to send
 		Send_pack(send_elem, it);
-	
+		int num_n;
+		Face_pack(face_info, LB::Send.pre, num_n);
+
 		// ready to send 
-		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre);	// tag = rank
+		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre1);	// tag = rank
 			
+		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD, &request_pre2);
+
 		Erase_elem_old(LB::Send.pre, 'p', num_pre);
 	}
 	if(num_next > 0){	
@@ -48,10 +58,15 @@ void Reallocate_elem(){
 		std::vector<info_pack> send_elem(num_next);
 
 		auto it = LB::Send.next.begin();
+		std::vector<face_pack> face_info;
 
 		Send_pack(send_elem, it);
+		int num_n;
+		Face_pack(face_info, LB::Send.next, num_n);
 
-		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next);
+		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next1);
+
+		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request_next2);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
@@ -62,9 +77,12 @@ void Reallocate_elem(){
 		if(LB::proc_mapping_table[1].gnum - 1 > last){	// recv from next
 
 			std::vector<info_pack> recv_info;
+			std::vector<face_pack> recv_face;
 
 			int recv_num;	
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
+
+			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
 			Enlarge_hash(recv_info, 'n', recv_num);
 		}
@@ -76,9 +94,13 @@ void Reallocate_elem(){
 
 			std::vector<info_pack> recv_info;
 
+			std::vector<face_pack> recv_face;
+
 			int recv_num;	
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
+			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
+
 			Enlarge_hash(recv_info, 'p', recv_num);
 //if(mpi::rank == 3){
 //
@@ -107,19 +129,25 @@ void Reallocate_elem(){
 		if(LB::proc_mapping_table[mpi::rank + 1].gnum - 1 > last){	// recv from next
 
 			std::vector<info_pack> recv_info;
+			std::vector<face_pack> recv_face;
 
 			int recv_num;	
-			Recv(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
+			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 			
+			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
+
 			Enlarge_hash(recv_info, 'n', recv_num);
 		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
 
 			std::vector<info_pack> recv_info;
+			std::vector<face_pack> recv_face;
 			int recv_num;	
 		
-			Recv(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+
+			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
 			Enlarge_hash(recv_info, 'p', recv_num);
 		}
@@ -129,13 +157,15 @@ void Reallocate_elem(){
 	// wait
 	if(num_pre > 0){
 		MPI_Status status;
-		MPI_Wait(&request_pre, &status);
+		MPI_Wait(&request_pre1, &status);
+		MPI_Wait(&request_pre2, &status);
 	}
 
 	if(num_next > 0){
 
 		MPI_Status status;
-		MPI_Wait(&request_next, &status);
+		MPI_Wait(&request_next1, &status);
+		MPI_Wait(&request_next2, &status);
 
 	}
 
@@ -221,7 +251,7 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
 /// @param tag Tag of the message. 
 /// @param recv_info Buffer for the message. 
 /// @param count number of element received. 
-void Recv(int source, int tag, std::vector<info_pack>& recv_info, int& count){
+void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count){
 
 	MPI_Status status1, status2;
 
@@ -234,6 +264,22 @@ void Recv(int source, int tag, std::vector<info_pack>& recv_info, int& count){
 	MPI_Recv(&recv_info[0], count, Hash::Elem_type, source, tag, MPI_COMM_WORLD, &status2);
 
 }
+
+void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
+
+	MPI_Status status1, status2;
+
+	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
+
+	int count;
+	MPI_Get_count(&status1, Hash::Face_type, &count);
+
+	recv_face = std::vector<face_pack>(count);
+
+	MPI_Recv(&recv_face[0], count, Hash::Face_type, source, tag, MPI_COMM_WORLD, &status2);
+
+}
+
 
 /// @brief
 /// Pack sending information. 
@@ -267,6 +313,41 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 
 
 }
+
+/// @brief
+/// Pack face info. 
+/// @param face_info Store all the face neighbours in a vector.
+/// @param send Sending list. 
+/// @param num Number of neighbour. 
+void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& num){
+
+	for(auto& v : send){	// traverse the sending list
+
+		for(int i = 0; i < 4; ++i){	// four faces
+
+			for(auto it = local::Hash_elem[v] -> facen[i].begin(); 
+				it != local::Hash_elem[v] -> facen[i].end(); ++it){
+
+				face_info.push_back(face_pack());
+				++ num;
+
+				face_info.back().owners_key = v; 
+				face_info.back().facei = i;
+				face_info.back().face_type = it -> face_type;
+				face_info.back().hlevel = it -> hlevel;
+				face_info.back().porderx = it -> porderx;
+				face_info.back().pordery = it -> pordery;
+				face_info.back().key = it -> key;
+				face_info.back().rank = it -> rank;
+			}
+
+		}
+
+	}
+
+
+}
+
 
 /// @brief
 /// Erase the elements in the sending list from the Hash table
