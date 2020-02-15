@@ -5,6 +5,7 @@
 #include "dg_param.h"
 #include "dg_cantor_pairing.h"
 #include <cassert>
+#include <iostream> // test
 
 // forward declaration-------------------------------------------------------------------
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
@@ -61,11 +62,10 @@ void Reallocate_elem(){
 		std::vector<face_pack> face_info;
 
 		Send_pack(send_elem, it);
-		int num_n;
+		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
 		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next1);
-
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request_next2);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
@@ -265,6 +265,11 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 
 }
 
+/// @brief
+/// Receive face info.
+/// @param source source rank.
+/// @param tag message tag.
+/// @param recv_face vector to store the message. 
 void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 
 	MPI_Status status1, status2;
@@ -277,7 +282,13 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 	recv_face = std::vector<face_pack>(count);
 
 	MPI_Recv(&recv_face[0], count, Hash::Face_type, source, tag, MPI_COMM_WORLD, &status2);
-
+//if(mpi::rank == 1){
+//	
+//	for(auto& v : recv_face){
+//		std::cout<<"okey "<< v.owners_key << "facei "<< v.facei << " face_type "<< v.face_type << " rank "<< v.rank<< "\n";
+//	}
+//
+//}
 }
 
 
@@ -329,7 +340,7 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				it != local::Hash_elem[v] -> facen[i].end(); ++it){
 
 				face_info.push_back(face_pack());
-				++ num;
+				++num;
 
 				face_info.back().owners_key = v; 
 				face_info.back().facei = i;
@@ -339,6 +350,9 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				face_info.back().pordery = it -> pordery;
 				face_info.back().key = it -> key;
 				face_info.back().rank = it -> rank;
+//if(mpi::rank == 0){
+//	std::cout<<"okey " << v << " facei "<< i << " face_type "<< it -> face_type <<" rank " << it -> rank << "\n";
+//}
 			}
 
 		}
