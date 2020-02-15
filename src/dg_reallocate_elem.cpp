@@ -18,6 +18,8 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 
 void Recv_face(int source, int tag, std::vector<face_pack>& recv_face);
 
+void Fill_facen(std::vector<face_pack>& face_info);
+
 void Erase_elem_old(std::vector<int>& send, char dir, int num);
 // --------------------------------------------------------------------------------------
 
@@ -27,11 +29,9 @@ void Reallocate_elem(){
 
 	int start = LB::elem_accum; 	// first elem global number
 	int last = start + local::local_elem_num - 1;	// last elem global number
-//std::cout<< "rank " << mpi::rank << " start "<< start << " last " << last << "\n";
 
 	int num_pre = LB::Send.pre.size();
 	int num_next = LB::Send.next.size();
-//std::cout<< "rank " << mpi::rank << "pre " << num_pre << " next " << num_next << "\n";
 
 	MPI_Request request_pre1, request_pre2, request_next1, request_next2;
 
@@ -85,6 +85,7 @@ void Reallocate_elem(){
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
 			Enlarge_hash(recv_info, 'n', recv_num);
+			Fill_facen(recv_face);
 		}
 
 	}
@@ -102,25 +103,7 @@ void Reallocate_elem(){
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
 			Enlarge_hash(recv_info, 'p', recv_num);
-//if(mpi::rank == 3){
-//
-//	for(auto& n : recv_info){
-//		std::cout << "n: " << n.n << "\n";
-//		std::cout << "index: " << n.index[0] << n.index[1] << n.index[2] << "\n";
-//
-//		std::cout<< "status " << n.status << "\n";
-//
-//		std::cout<< "child " << n.child_position << "\n";
-//
-//		std::cout << "coordx " << n.xcoords[0] << " " << n.xcoords[1] << "\n";
-//		std::cout << "coordy " << n.ycoords[0] << " " << n.ycoords[1] << "\n";
-//
-//		std::cout << "var " << n.var << "\n";
-//		std::cout << "---------------------------------------------------" << "\n";
-//
-//	}
-//
-//}
+			Fill_facen(recv_face);
 
 		}
 
@@ -137,6 +120,7 @@ void Reallocate_elem(){
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
 			Enlarge_hash(recv_info, 'n', recv_num);
+			Fill_facen(recv_face);
 		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
@@ -150,6 +134,7 @@ void Reallocate_elem(){
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
 			Enlarge_hash(recv_info, 'p', recv_num);
+			Fill_facen(recv_face);
 		}
 		
 	}
@@ -246,6 +231,34 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
 }
 
 /// @brief
+/// Put the neighbours information inside the hash table. 
+/// @param face_info Received face information. 
+void Fill_facen(std::vector<face_pack>& face_info){
+
+	for(auto& v : face_info){
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].push_back(Unit::Face());
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().face_type = v.face_type;
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().hlevel = v.hlevel;
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().porderx = v.porderx;
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().pordery = v.pordery;
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().key = v.key;
+
+		local::Hash_elem[v.owners_key] -> facen[v.facei].back().rank = v.rank;
+
+		
+
+
+	}
+
+}
+
+/// @brief
 /// Receive element information from sender. 
 /// @param source Sender's rank.
 /// @param tag Tag of the message. 
@@ -282,13 +295,6 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 	recv_face = std::vector<face_pack>(count);
 
 	MPI_Recv(&recv_face[0], count, Hash::Face_type, source, tag, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 1){
-//	
-//	for(auto& v : recv_face){
-//		std::cout<<"okey "<< v.owners_key << "facei "<< v.facei << " face_type "<< v.face_type << " rank "<< v.rank<< "\n";
-//	}
-//
-//}
 }
 
 
@@ -350,9 +356,6 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				face_info.back().pordery = it -> pordery;
 				face_info.back().key = it -> key;
 				face_info.back().rank = it -> rank;
-//if(mpi::rank == 0){
-//	std::cout<<"okey " << v << " facei "<< i << " face_type "<< it -> face_type <<" rank " << it -> rank << "\n";
-//}
 			}
 
 		}
