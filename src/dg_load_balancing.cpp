@@ -2,6 +2,8 @@
 #include "dg_reallocate_elem.h"
 #include "dg_proc_mapping.h"
 #include "dg_local_storage.h"
+#include "dg_param.h"	// test
+#include <iostream>
 
 // forward declaration--------------------------------
 void Clear_mapping_tables();
@@ -13,10 +15,13 @@ void Load_balancing(){
 
 	Build_mapping_table();
 
+//if(mpi::rank == 0){
+//	std::cout<< "check \n";
+//
+//}
 	Update_mpi_boundary();
 
 	Reallocate_elem();
-
 	Clear_mapping_tables();
 
 }

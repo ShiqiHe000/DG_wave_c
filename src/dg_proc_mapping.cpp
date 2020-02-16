@@ -10,8 +10,7 @@
 #include "dg_boundary_table.h"
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
-#include <iostream> // test
-#include <unordered_map>
+#include <iostream>	//test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
@@ -193,6 +192,11 @@ void Build_mapping_table(){
 
 	// Updates local facen based on teh Sending list
 	Update_neighbours();
+
+//if(mpi::rank == 0){
+//
+//	std::cout<< "check"<< "\n";
+//}
 
 }
 

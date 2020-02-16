@@ -3,11 +3,12 @@
 #include "dg_local_storage.h"
 #include "dg_mpi_table_construct.h"
 #include <iostream>	//test
-#include <unordered_map>	//test
 #include "dg_param.h"	//test
 
 void Adapt(){
-
+//if(mpi::rank == 0){
+//	std::cout<< "check"<< "\n";
+//}
 	h_refinement();
 	
 	// x direction
@@ -16,16 +17,6 @@ void Adapt(){
 	// y direction
 	Construct_mpi_table_y(hrefinement::west, hrefinement::east);
 	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::west_accum, hrefinement::east, 3, hrefinement::east_accum);	
-//if(mpi::rank == 3){
-//
-//	auto got = local::Hash_elem.find(10);
-//
-//	if(got != local::Hash_elem.end()){
-//
-//		std::cout<< local::Hash_elem[10] -> facen[2].front().key << "\n";
-//	}
-//
-//}
 }
 
 /// @brief
