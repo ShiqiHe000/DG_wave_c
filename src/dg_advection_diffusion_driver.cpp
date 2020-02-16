@@ -11,6 +11,7 @@
 #include "dg_derived_datatype.h"
 #include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
+#include <iostream>	// test
 
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
@@ -45,9 +46,8 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 	
-	//	h_refinement();
 		Adapt();
-
+		
 		// load_balancing----------------------------------------------	
 		Load_balancing();
 		//-------------------------------------------------------------

@@ -26,5 +26,10 @@ void Clear_mapping_tables(){
 	LB::proc_mapping_table.clear();	// proc mapping table
 
 	LB::Send = {};	// Sending list clear up
-	
+
+	LB::elem_accum = 0;
+
+	Unit* end = nullptr;
+
+	Unit* my_rank_last = nullptr;
 }

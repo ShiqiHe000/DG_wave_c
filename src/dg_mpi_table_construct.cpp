@@ -8,7 +8,6 @@
 #include "dg_elem_length.h"
 #include <mpi.h>
 #include "dg_param.h"
-#include <iostream>	// test
 
 // forward declaration ------------------------------------------------------------------
 void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum);
@@ -23,16 +22,15 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 
 void Sort_mpi_table(std::vector<table_elem>& north);
 
+void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem>& east);
+void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_elem>& south);
 //---------------------------------------------------------------------------------------
 
 /// @brief 
-/// Construct MPI boundary tables.
-/// @param north MPI boundary table.
-/// @param facen Face direction of the first table. 
-/// @param south MPI boundary table.
-/// @param faces Face direction of the second table. 
-// only in x direction
-void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<table_elem>& south, int faces){
+/// Construct MPI boundary tables. Only in x direction. 
+/// @param north MPI north boundary table.
+/// @param south MPI south boundary table.
+void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_elem>& south){
 
 	Unit* temp = local::head;
 
@@ -42,7 +40,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<
 
 		// south
 		// interate through face 0
-		for(auto& face_s : temp -> facen[faces]){
+		for(auto& face_s : temp -> facen[0]){
 
 
 			if(face_s.face_type == 'M' && face_s.rank != pre_rank){	// if mpi boundary and rank changes, record
@@ -63,7 +61,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<
 	
 		// north
 		// iterate through face 1
-		for(auto& face_n : temp -> facen[facen]){
+		for(auto& face_n : temp -> facen[1]){
 
 
 			if(face_n.face_type == 'M' && face_n.rank != pre_rank){	// if mpi boundary, record
@@ -71,7 +69,7 @@ void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<
 				north.push_back(table_elem());
 				north.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				north.back().target_rank = face_n.rank;
-				north.back().coord = temp -> ycoords[1];
+				north.back().coord = temp -> ycoords[1];	// x direction
 				north.back().hlevel = temp -> index[2];	
 
 			}
@@ -89,12 +87,73 @@ void Construct_mpi_table(std::vector<table_elem>& north, int facen, std::vector<
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
 		
-//		for(auto& v : north){
-//
-//			std::cout<< "key: " << v.local_key << "\n";
-//		}		
 
 }
+
+/// @brief 
+/// Construct MPI boundary tables. Only in y direction. 
+/// @param north MPI west boundary table.
+/// @param south MPI east boundary table.
+void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem>& east){
+
+	Unit* temp = local::head;
+
+	for(int k = 0; k < local::local_elem_num; ++k){
+
+		int pre_rank = -1;
+
+		// west
+		// interate through face 2
+		for(auto& face_s : temp -> facen[2]){
+
+
+			if(face_s.face_type == 'M' && face_s.rank != pre_rank){	// if mpi boundary and rank changes, record
+
+				west.push_back(table_elem());
+				west.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+				west.back().target_rank = face_s.rank;
+				west.back().coord = temp -> xcoords[1];		// x coord
+				west.back().hlevel = temp -> index[2]; 	// hlevel	
+			}
+
+		
+			pre_rank = face_s.rank;
+		
+		}
+	
+		pre_rank = -1;
+	
+		// east
+		// iterate through face 3
+		for(auto& face_n : temp -> facen[3]){
+
+
+			if(face_n.face_type == 'M' && face_n.rank != pre_rank){	// if mpi boundary, record
+		
+				east.push_back(table_elem());
+				east.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+				east.back().target_rank = face_n.rank;
+				east.back().coord = temp -> xcoords[1];	// y direction
+				east.back().hlevel = temp -> index[2];	
+
+			}
+
+		
+			pre_rank = face_n.rank;
+		
+		}
+
+		temp = temp -> next;
+
+	}	
+
+		// sort north and south table in the end
+		Sort_mpi_table(west);
+		Sort_mpi_table(east);
+		
+
+}
+
 
 /// @brief sort the MPI_boundary table element in ascending sequence among the same target ranks. 
 ///@param north the MPI boundary table needed to be sorted. 
@@ -137,25 +196,7 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 
 	int s = south_accum.size();
 	int n = north_accum.size();
-//if(mpi::rank == 0){
-//	
-//	std::cout<< "----------------------------- \n";
-//	for(auto& v : north){
-//		std::cout<< "local key: " << v.local_key << " target rank: " << v.target_rank << "\n";
-//
-//	}
-//	std::cout<< "----------------------------- \n";
-////
-////	std::cout<< "----------------------------- \n";
-////	for(auto& v : hrefinement::north_accum){
-////
-////		std::cout<< "rank: " << v.rank << "\n";
-////		std::cout<< "sum: " << v.sum << "\n";
-////	}
-////
-////	std::cout<< "----------------------------- \n";
-//	//std::cout << s << " " << n << "\n";
-//}
+	
 	// south send, north recv
 	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
 
@@ -212,6 +253,8 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 	// north recv ------------------------------------------------------------------------------------------------------------
 	if(n > 0){
 	
+		auto it = north.begin();	// put the iterator at the begin of the north table
+
 		for(auto& v : north_accum){
 
 			MPI_Status status1, status2;		// dummy
@@ -223,10 +266,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			MPI_Get_count(&status1, MPI_INT, &num);
 
 			std::vector<int> recv_info(num);	
-			std::vector<table_elem>::iterator it;	// declare an iterator
-			it = north.begin();	// put the iterator at the begin of the north table
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
+
 			Update_hash(recv_info, north, update_dir, num, it);	// north recv
 		}
 	}

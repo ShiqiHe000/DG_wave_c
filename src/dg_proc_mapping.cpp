@@ -11,6 +11,7 @@
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
 #include <iostream> // test
+#include <unordered_map>
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
@@ -365,7 +366,6 @@ void Update_mpi_boundary(){
 	Send_recv_ownership(southo, northo, hrefinement::south_accum, hrefinement::north_accum, 1);
 	//-----------------------------------------------------------------------------------------------
 
-
 	// y direction-----------------------------------------------------------------------------------
 	
 	// west send and east recv
@@ -421,8 +421,10 @@ void Send_recv_ownership(std::vector<ownership>& sendo, std::vector<ownership>& 
 	// recver
 	if(size_r > 0){
 
+		auto ito = recvo.begin();
+		
 		for(auto& v : recv_accum){
-
+			
 			MPI_Status status1, status2;
 
 			int num;
@@ -435,8 +437,6 @@ void Send_recv_ownership(std::vector<ownership>& sendo, std::vector<ownership>& 
 
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
 			
-			auto ito = recvo.begin();
-
 			Update_mpib(recv_info, recvo, ito, facei, num);
 		}
 
@@ -466,6 +466,7 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 
 			auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
 			Change_face(k, recv_info, ito, it_face);
+
 			++ito; 	// to next local element
 			++k;
 		}
@@ -488,7 +489,7 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 			// loop till we locate the neighbour's key
 			for(auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin(); 
 				it_face != local::Hash_elem[ito -> local_key] -> facen[facei].end(); ++it_face){
-		
+				
 				if(it_face -> key == recv_info[3 * k]){	// find the neighbour
 	
 					Change_face(k, recv_info, ito, it_face);
@@ -515,6 +516,7 @@ void Change_face(int k, std::vector<int>& recv_info, std::vector<ownership>::ite
 			std::vector<Unit::Face>::iterator& it_face){
 
 	if(recv_info[3 * k + 1] == (ito -> owner_rank)){	// if will be in the same rank
+		
 		// change 'M' to 'L'
 		it_face -> face_type = 'L';
 	}
