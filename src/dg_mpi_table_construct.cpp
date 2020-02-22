@@ -8,6 +8,8 @@
 #include "dg_elem_length.h"
 #include <mpi.h>
 #include "dg_param.h"
+#include <iostream>	// test
+#include <unordered_map>
 
 // forward declaration ------------------------------------------------------------------
 void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum);
@@ -37,7 +39,6 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 	for(int k = 0; k < local::local_elem_num; ++k){
 
 		int pre_rank = -1;
-
 		// south
 		// interate through face 0
 		for(auto& face_s : temp -> facen[0]){
@@ -64,6 +65,10 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		for(auto& face_n : temp -> facen[1]){
 
 
+//if(mpi::rank == 1){
+//	std::cout<< temp -> index[0] << temp -> index[1] << temp -> index[2]<< " local_elem_num "<<local::local_elem_num<<"\n";
+//	std::cout<< "face_type " << face_n.face_type << "\n";
+//}
 			if(face_n.face_type == 'M' && face_n.rank != pre_rank){	// if mpi boundary, record
 		
 				north.push_back(table_elem());
@@ -78,7 +83,10 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 			pre_rank = face_n.rank;
 		
 		}
-
+//if(mpi::rank == 1){
+//
+//	std::cout << temp -> index[0] << temp -> index[1] << temp -> index[2]<< "\n";
+//}
 		temp = temp -> next;
 
 	}	
@@ -87,7 +95,6 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
 		
-
 }
 
 /// @brief 
@@ -193,16 +200,54 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 
 	Accum_table(south, south_accum);
 	Accum_table(north, north_accum);
-
+//if(mpi::rank == 1){
+//
+////	for(auto& v : north_accum){
+////		
+////		std::cout << "facen" << facen << "rank " << v.rank << " sum " << v.sum << "\n";
+////	}
+//	for(auto& v : north){
+//		std::cout<< "facen" << facen << " l_key " << v.local_key << " t_rank "<< v.target_rank << "\n";
+//
+//	}
+//}
 	int s = south_accum.size();
 	int n = north_accum.size();
 	
 	// south send, north recv
 	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
+//if(mpi::rank == 1){
+//
+//	std::cout<< " ---------------------------------- \n";
+//
+////	std::cout<< "check"<< "\n";
+//
+//	auto got_k12 = local::Hash_elem.find(12);
+//	auto got_k23 = local::Hash_elem.find(23);
+//
+//	bool true1 = (got_k12 != local::Hash_elem.end() );
+//	bool true2 = (got_k23 != local::Hash_elem.end() );
+//
+//	std::vector<int> key{23, 12};
+//
+//	if(true1 && true2){
+//		for(auto& v : key){
+//		
+//			for(auto it = local::Hash_elem[v] -> facen[2].begin(); 
+//				it != local::Hash_elem[v] -> facen[2].end(); ++it){
+//
+//				std::cout<< "key " <<it -> key << " rank " << it -> rank <<"\n";
+//			}
+//		}
+//
+//	}
+//
+//	std::cout<< " ---------------------------------- \n";
+//}
+
 
 	// north send, south recv. 
 	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
-
 }
 
 
@@ -238,12 +283,15 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 				send_info[4 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
 				++j;
 			}
-	
+//if(mpi::rank == 1){
+//	std::cout<< "--------------------------\n";
+//	std::cout<< "send_num"<< v.sum << " to rank "<< v.rank<< "\n";
+//	std::cout<< "--------------------------\n";
+//}
 			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
 			
 		}
-	
 		MPI_Waitall(s, s_request, s_status);
 
 	}
@@ -268,7 +316,6 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-
 			Update_hash(recv_info, north, update_dir, num, it);	// north recv
 		}
 	}

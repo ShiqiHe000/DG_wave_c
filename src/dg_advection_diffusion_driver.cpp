@@ -49,9 +49,7 @@ void Driver_for_DG_approximation(){
 		Adapt();
 		// load_balancing----------------------------------------------	
 		Load_balancing();
-//if(mpi::rank == 0){
-//	std::cout<<"check" << "\n";
-//}	
+		
 		//-------------------------------------------------------------
 		Write_faces_all();
 

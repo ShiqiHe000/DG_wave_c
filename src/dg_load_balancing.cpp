@@ -12,16 +12,16 @@ void Clear_mapping_tables();
 /// @brief
 /// Whole procedure of load balancing   
 void Load_balancing(){
-
 	Build_mapping_table();
 
-//if(mpi::rank == 0){
-//	std::cout<< "check \n";
-//
-//}
 	Update_mpi_boundary();
 
 	Reallocate_elem();
+
+//if(mpi::rank == 1){
+//	std::cout << "local_elem_num"<< local::local_elem_num << "\n";
+//	std::cout << "end elem" << 
+//}
 	Clear_mapping_tables();
 
 }
@@ -34,7 +34,7 @@ void Clear_mapping_tables(){
 
 	LB::elem_accum = 0;
 
-	Unit* end = nullptr;
+	LB::end = nullptr;
 
-	Unit* my_rank_last = nullptr;
+	LB::my_rank_last = nullptr;
 }

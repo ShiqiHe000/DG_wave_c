@@ -40,9 +40,9 @@ void Update_mpi_boundary();
 
 /// @brief Calculate the sum of the local computational load.
 void Build_mapping_table(){
-
+	
 	Unit* temp = local::head;
-
+	
 	std::vector<double> lprefix_load(local::local_elem_num);
 	int pmapping;
 
@@ -52,17 +52,22 @@ void Build_mapping_table(){
 	for(int k = 1; k < local::local_elem_num; ++k){
 		lprefix_load[k] = Elem_load(temp -> n) + lprefix_load[k - 1];
 		
-		temp = temp -> next;
-
-		if(k == local::local_elem_num - 2){
+		if(k == local::local_elem_num - 1){
 
 			LB::end = temp;	// pointer points to the last element. 
 		}
+
+		temp = temp -> next;
+
 	}	
+	if(local::local_elem_num == 1){	// if only one element
+		LB::end = local::head;
+
+	}
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
-
+	
 	// Global prefix sum of load
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	
@@ -73,6 +78,7 @@ void Build_mapping_table(){
 		double load_tol = exscan_sum + local_load_sum;
 
 		load_avg = load_tol / mpi::num_proc;
+
 	}
 	
 	// broadcast average load
@@ -193,10 +199,6 @@ void Build_mapping_table(){
 	// Updates local facen based on teh Sending list
 	Update_neighbours();
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "check"<< "\n";
-//}
 
 }
 
