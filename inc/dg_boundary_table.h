@@ -18,7 +18,6 @@ struct table_elem{
 	int hlevel;
 };
 
-bool compare_coord(table_elem left, table_elem right); 
 
 /// @brief
 /// Accumulation table. Store the neighbour ranks and the number of elements that is facing to the corresponding rank.

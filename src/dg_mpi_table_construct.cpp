@@ -7,9 +7,9 @@
 #include <vector>
 #include "dg_elem_length.h"
 #include <mpi.h>
+#include <unordered_map>
 #include "dg_param.h"
 #include <iostream>	// test
-#include <unordered_map>
 
 // forward declaration ------------------------------------------------------------------
 void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum);
@@ -94,7 +94,15 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		// sort north and south table in the end
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
-		
+//if(mpi::rank ==2){
+//	std::cout << "------------------- \n";
+//	for(auto& v : south){
+//		
+//		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << "\n";
+//	
+//	}
+//	std::cout << "------------------- \n";
+//}
 }
 
 /// @brief 
@@ -158,7 +166,14 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 		Sort_mpi_table(west);
 		Sort_mpi_table(east);
 		
-
+//if(mpi::rank == 1){
+//	std::cout << "--------------------"<< "\n";
+//	for(auto& v : east){
+//
+//		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << "\n";
+//	}
+//	std::cout << "--------------------"<< "\n";
+//}
 }
 
 
@@ -168,23 +183,26 @@ void Sort_mpi_table(std::vector<table_elem>& north){
 
 	if(! north.empty()){
 	
-		std::vector<table_elem>::iterator it1, it2;	// sort the vector between two iterator
-		it1 = north.begin();
-		it2 = north.begin();
-		
-		int rank_now = it1 -> target_rank;
-	
-		for(;it2 != north.end(); ++it2){
-	
-			if(it2 -> target_rank != rank_now){
-				std::sort(it1, it2, compare_coord);
-				rank_now = it2 -> target_rank;
-				it1 = it2;
+		// first sort the element coord in ascending sequence
+		std::sort(north.begin(), north.end(), 
+				[](const table_elem &left, const table_elem &right){
+				return left.coord < right.coord;});
+
+		// then record the coord of first appearance "target_rank" 
+		std::unordered_map<int, double> hash_first_c;
+		for(auto& v : north){
+			if(hash_first_c.count(v.target_rank) == 0){	// if this rank has not been recored
+				hash_first_c[v.target_rank] = v.coord;
+
 			}
-	
+
 		}
 	
-		std::sort(it1, it2, compare_coord);
+		// last sort the vector base on the coord again
+		std::stable_sort(north.begin(), north.end(), [&hash_first_c](const table_elem &left, const table_elem &right){
+				return hash_first_c[left.target_rank] < hash_first_c[right.target_rank];});			
+
+
 	}
 }
 
@@ -201,27 +219,22 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 	Accum_table(south, south_accum);
 	Accum_table(north, north_accum);
 //if(mpi::rank == 1){
-//
-////	for(auto& v : north_accum){
-////		
-////		std::cout << "facen" << facen << "rank " << v.rank << " sum " << v.sum << "\n";
-////	}
-//	for(auto& v : north){
-//		std::cout<< "facen" << facen << " l_key " << v.local_key << " t_rank "<< v.target_rank << "\n";
-//
+//std::cout << "-------------------------- \n";
+//	for(auto& v : south_accum){
+//		
+//		std::cout << "faces" << faces << "rank " << v.rank << " sum " << v.sum << "\n";
 //	}
+//std::cout << "-------------------------- \n";
+////	for(auto& v : north){
+////		std::cout<< "facen" << facen << " l_key " << v.local_key << " t_rank "<< v.target_rank << "\n";
+////
+////	}
 //}
 	int s = south_accum.size();
 	int n = north_accum.size();
 	
 	// south send, north recv
 	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
-//if(mpi::rank == 1){
-//
-//	std::cout<< " ---------------------------------- \n";
-//
-////	std::cout<< "check"<< "\n";
-//
 //	auto got_k12 = local::Hash_elem.find(12);
 //	auto got_k23 = local::Hash_elem.find(23);
 //
@@ -248,6 +261,13 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 
 	// north send, south recv. 
 	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
+//if(mpi::rank == 1){
+//
+//	std::cout<< " ---------------------------------- \n";
+//
+//	std::cout<< "check"<< "\n";
+//	std::cout<< " ---------------------------------- \n";
+//}
 }
 
 
@@ -283,7 +303,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 				send_info[4 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
 				++j;
 			}
-//if(mpi::rank == 1){
+//if(mpi::rank == 2){
 //	std::cout<< "--------------------------\n";
 //	std::cout<< "send_num"<< v.sum << " to rank "<< v.rank<< "\n";
 //	std::cout<< "--------------------------\n";
@@ -296,7 +316,6 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 
 	}
 	//-----------------------------------------------------------------------------------------------------------------------
-	
 
 	// north recv ------------------------------------------------------------------------------------------------------------
 	if(n > 0){
@@ -312,7 +331,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
-
+//if(mpi::rank == 1){
+//	std::cout<<"recv num " << num / 4 << " from rank "<< v.rank << "\n";
+//}
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
@@ -321,6 +342,10 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 	}
 	//-----------------------------------------------------------------------------------------------------------------------
 
+//if(mpi::rank == 1){
+//
+//	std::cout << "check \n";
+//}
 }
 
 /// @brief
