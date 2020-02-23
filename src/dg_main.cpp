@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 	// initialize mpi
 	Start_mpi(&argc, a);
 	
-	srand(time(NULL));
+	srand(time(NULL) + mpi::rank * mpi::num_proc);
 
 	// prepare Hilbert curve
 	Hilber_numbering();
