@@ -126,6 +126,7 @@ void Build_mapping_table(){
 		temp = temp -> next;
 	}
 
+
 	// send the last element's mapping number to the next rank
 	// rank0 ~ rank_max-1 send
 	MPI_Request request;
@@ -487,6 +488,9 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 				l_tol += Elem_length(ito -> hlevel);
 
 				++ito;
+
+				if((l_tol + Elem_length(ito -> hlevel)) > l_n) {break;}
+				
 			}
 			++k;
 		}
@@ -501,6 +505,7 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<ownership>& otable,
 					Change_face(k, recv_info, ito, it_face);
 					
 					++k;	// next element in the otable
+					
 				}
 				
 			}

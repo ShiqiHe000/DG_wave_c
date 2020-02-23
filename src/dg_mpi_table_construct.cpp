@@ -96,6 +96,7 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		Sort_mpi_table(north);
 //if(mpi::rank ==2){
 //	std::cout << "------------------- \n";
+//	std::cout<< "elem_num"<< local::local_elem_num << "\n";
 //	for(auto& v : south){
 //		
 //		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << "\n";
@@ -235,28 +236,6 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 	
 	// south send, north recv
 	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
-//	auto got_k12 = local::Hash_elem.find(12);
-//	auto got_k23 = local::Hash_elem.find(23);
-//
-//	bool true1 = (got_k12 != local::Hash_elem.end() );
-//	bool true2 = (got_k23 != local::Hash_elem.end() );
-//
-//	std::vector<int> key{23, 12};
-//
-//	if(true1 && true2){
-//		for(auto& v : key){
-//		
-//			for(auto it = local::Hash_elem[v] -> facen[2].begin(); 
-//				it != local::Hash_elem[v] -> facen[2].end(); ++it){
-//
-//				std::cout<< "key " <<it -> key << " rank " << it -> rank <<"\n";
-//			}
-//		}
-//
-//	}
-//
-//	std::cout<< " ---------------------------------- \n";
-//}
 
 
 	// north send, south recv. 
@@ -331,12 +310,22 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
-//if(mpi::rank == 1){
-//	std::cout<<"recv num " << num / 4 << " from rank "<< v.rank << "\n";
-//}
+			
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
+//if(mpi::rank == 1){
+//
+//	std::cout<<"------------------------------- \n";
+//	for(int m = 0; m < num / 4; ++m){
+//
+//		std::cout<< recv_info[4 * m]<< " ";
+//
+//	}
+//	std::cout<< "\n";
+//	std::cout<<"------------------------------- \n";
+//	
+//}
 			Update_hash(recv_info, north, update_dir, num, it);	// north recv
 		}
 	}
@@ -401,8 +390,11 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
 
 				l_tot += Elem_length(it -> hlevel);
-				
+			
 				++it;	// go to next local elem
+				
+				// next element does not face this nieghbour
+				if((l_tot + Elem_length(it -> hlevel)) > l_n ){ break; } 
 			}
 
 			++k;
@@ -424,6 +416,8 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 
 				++it_face;
 				++k;
+
+				if((l_tot + Elem_length(recv_info[4 * k + 1])) > l_local){ break;} 
 			}
 
 			++it;

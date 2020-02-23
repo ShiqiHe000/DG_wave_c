@@ -18,9 +18,9 @@ void Load_balancing(){
 
 	Reallocate_elem();
 
-//if(mpi::rank == 1){
-//	std::cout << "local_elem_num"<< local::local_elem_num << "\n";
-//	std::cout << "end elem" << 
+//if(mpi::rank == 0){
+////	std::cout << "local_elem_num"<< local::local_elem_num << "\n";
+//	std::cout<< "check"<< "\n";
 //}
 	Clear_mapping_tables();
 
