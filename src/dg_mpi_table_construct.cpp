@@ -185,7 +185,7 @@ void Sort_mpi_table(std::vector<table_elem>& north){
 	if(! north.empty()){
 	
 		// first sort the element coord in ascending sequence
-		std::sort(north.begin(), north.end(), 
+		std::stable_sort(north.begin(), north.end(), 
 				[](const table_elem &left, const table_elem &right){
 				return left.coord < right.coord;});
 
