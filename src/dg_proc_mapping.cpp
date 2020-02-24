@@ -530,6 +530,7 @@ void Change_face(int k, std::vector<int>& recv_info, std::vector<ownership>::ite
 		
 		// change 'M' to 'L'
 		it_face -> face_type = 'L';
+		it_face -> rank = ito -> owner_rank;
 	}
 	else{	// not in the same rank
 		int rank_old = it_face -> rank;

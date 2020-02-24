@@ -72,13 +72,12 @@ else{
 				
 
 				int position = Sibling_position(temp->status, i);
-//std::cout<< "i "<< i<<"position " << position << "\n";
+				
 				int index_new[3]{};
 				Gen_index(position, temp->index, index_new);
 				
 				int new_key = Get_key_fun(index_new[0], index_new[1], index_new[2]);
 
-//std::cout<< "new_key " << new_key << "\n";
 				// create unit
 				local::Hash_elem[new_key] = new Unit();
 
@@ -223,11 +222,11 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 					Unit::Face elem1 = {'L', local::Hash_elem[key1] -> index[2], 
 								local::Hash_elem[key1] -> n, 
 								local::Hash_elem[key1] -> m, 
-								key1, 0};	// 1st child
+								key1, mpi::rank};	// 1st child
 					Unit::Face elem2 = {'L', local::Hash_elem[key2] -> index[2], 
 								local::Hash_elem[key2] -> n, 
 								local::Hash_elem[key2] -> m, 
-								key2, 0};	// 2nd child
+								key2, mpi::rank};	// 2nd child
 					
 					it = local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem1);
 					++it;
@@ -271,7 +270,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 							Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
 								local::Hash_elem[two[i]] -> n, 
 								local::Hash_elem[two[i]] -> m, 
-								two[i], 0};	
+								two[i], mpi::rank};	
 
 							it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
 
@@ -312,7 +311,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 								Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
 									local::Hash_elem[two[i]] -> n, 
 									local::Hash_elem[two[i]] -> m, 
-									two[i], 0};	
+									two[i], mpi::rank};	
 
 								it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
 
@@ -385,11 +384,13 @@ void Two_siblings(int new_key, int position){
 			local::Hash_elem[new_key] -> facen[i][0].hlevel = local::Hash_elem[new_key] -> index[2];
 			local::Hash_elem[new_key] -> facen[i][0].porderx = local::Hash_elem[new_key] -> n;
 			local::Hash_elem[new_key] -> facen[i][0].pordery = local::Hash_elem[new_key] -> m;
-
+			local::Hash_elem[new_key] -> facen[i][0].rank = mpi::rank;
+			
 			// key
 			if(i == 0){	// south
 				
-				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0] - 1, 
+				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(
+										local::Hash_elem[new_key] -> index[0] - 1, 
 											local::Hash_elem[new_key] -> index[1], 
 											local::Hash_elem[new_key] -> index[2]);
 		

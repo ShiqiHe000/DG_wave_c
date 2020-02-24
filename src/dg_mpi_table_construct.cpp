@@ -314,7 +314,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 1){
+//if(mpi::rank == 3){
 //
 //	std::cout<<"------------------------------- \n";
 //	for(int m = 0; m < num / 4; ++m){

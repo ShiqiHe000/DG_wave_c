@@ -66,6 +66,7 @@ void MPI_boundary_construct(){
 				temp -> facen[0][0].porderx = grid::nmin;	
 				temp -> facen[0][0].pordery = grid::nmin;	
 				temp -> facen[0][0].key = nkey;	
+				temp -> facen[0][0].rank = mpi::rank;	
 			
 
 			}
@@ -102,6 +103,7 @@ void MPI_boundary_construct(){
 				temp -> facen[1][0].porderx = grid::nmin;	
 				temp -> facen[1][0].pordery = grid::nmin;	
 				temp -> facen[1][0].key = nkey;	
+				temp -> facen[1][0].rank = mpi::rank;	
 
 			}
 			
@@ -139,6 +141,7 @@ void MPI_boundary_construct(){
 				temp -> facen[2][0].porderx = grid::nmin;	
 				temp -> facen[2][0].pordery = grid::nmin;	
 				temp -> facen[2][0].key = nkey;	
+				temp -> facen[2][0].rank = mpi::rank;	
 
 			}
 			
@@ -176,6 +179,7 @@ void MPI_boundary_construct(){
 				temp -> facen[3][0].porderx = grid::nmin;	
 				temp -> facen[3][0].pordery = grid::nmin;	
 				temp -> facen[3][0].key = nkey;	
+				temp -> facen[3][0].rank = mpi::rank;	
 				
 			
 			}
