@@ -16,6 +16,7 @@ struct table_elem{
 	double coord;
 
 	int hlevel;
+
 };
 
 

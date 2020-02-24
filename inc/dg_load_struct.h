@@ -32,6 +32,7 @@ struct sending_envelope{
 /// @param local_key key of local element who is on the MPI boundary.
 /// @param owner_rank the destination rank this element will be after repatitioning. 
 /// @param hlevel current element's h-refinement level. 
+/// @param target_rank sender's rank, inherit from MPI boundary table. 
 struct ownership{
 
 	int local_key;
@@ -39,6 +40,8 @@ struct ownership{
 	int owner_rank;
 
 	int hlevel;
+
+	int target_rank;
 };
 
 
