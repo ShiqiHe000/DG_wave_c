@@ -230,7 +230,7 @@ void Update_neighbours(){
 				
 							// This element stays locally, updates
 							it -> face_type = 'M';
-							it -> rank = mpi::rank; //current rank	
+				//			it -> rank = mpi::rank; //current rank	
 							// updates neighbour	
 							Neighbour_change(facei, n_key, key, mpi::rank - 1);
 							
@@ -245,7 +245,11 @@ void Update_neighbours(){
 							Neighbour_change(facei, n_key, key, mpi::rank - 1);
 						}
 
-					} // if find: no updates
+					}
+					else{	// if find in pre list
+						it -> rank = mpi::rank - 1;	// update the rank
+
+					}
 						
 				}
 
@@ -279,7 +283,10 @@ void Update_neighbours(){
 						// updates neighbour	
 						Neighbour_change(facei, n_key, key, mpi::rank + 1);
 						
-					} // if find: no updates
+					}
+					else{
+						it -> rank = mpi::rank + 1;
+					}
 
 				}
 			}		
