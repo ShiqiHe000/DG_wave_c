@@ -20,7 +20,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 			std::vector<table_elem>& south, std::vector<table_elem>& north, int update_dir);
 
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
-			int facei, int num1, std::vector<table_elem>::iterator& it);
+			int facei, int num1, std::vector<table_elem>::iterator& it, int target_rank);
 
 void Sort_mpi_table(std::vector<table_elem>& north);
 
@@ -167,9 +167,9 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 		Sort_mpi_table(west);
 		Sort_mpi_table(east);
 		
-//if(mpi::rank == 1){
+//if(mpi::rank == 3){
 //	std::cout << "--------------------"<< "\n";
-//	for(auto& v : east){
+//	for(auto& v : west){
 //
 //		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << "\n";
 //	}
@@ -179,7 +179,7 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 
 
 /// @brief sort the MPI_boundary table element in ascending sequence among the same target ranks. 
-///@param north the MPI boundary table needed to be sorted. 
+/// @param north the MPI boundary table needed to be sorted. 
 void Sort_mpi_table(std::vector<table_elem>& north){
 
 	if(! north.empty()){
@@ -326,7 +326,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 //	std::cout<<"------------------------------- \n";
 //	
 //}
-			Update_hash(recv_info, north, update_dir, num, it);	// north recv
+			Update_hash(recv_info, north, update_dir, num, it, v.rank);	// north recv
 		}
 	}
 	//-----------------------------------------------------------------------------------------------------------------------
@@ -344,8 +344,9 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 /// @param facei element ith face to be updates
 /// @param num recieved element number * 4.
 /// @param it MPI direction table iterator.
+/// @param target_rank The rank number of the info sender.
 void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
-			int facei, int num1, std::vector<table_elem>::iterator& it){
+			int facei, int num1, std::vector<table_elem>::iterator& it, int target_rank){
 	
 	int l_tot{};
 
@@ -378,7 +379,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			l_tot = 0;
 			// recv_info stall (k), it loop
 			// traverse mpi table until face matches
-			while(l_tot < l_n && it != table.end()){
+			while(l_tot < l_n && it != table.end() && (it -> target_rank == target_rank)){
 				
 				// erase old face info
 				auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
