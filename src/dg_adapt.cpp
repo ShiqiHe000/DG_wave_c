@@ -8,6 +8,7 @@
 void Adapt(){
 
 	h_refinement();
+
 	// x direction
 	Construct_mpi_table_x(hrefinement::north, hrefinement::south);
 	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::north_accum, hrefinement::south, 0, hrefinement::south_accum);	
@@ -15,10 +16,10 @@ void Adapt(){
 	// y direction
 	Construct_mpi_table_y(hrefinement::west, hrefinement::east);
 	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::west_accum, hrefinement::east, 3, hrefinement::east_accum);	
-//if(mpi::rank == 1){
-//	std::cout<< "check \n";
+//if(mpi::rank == 3){
+//
+//	std::cout<< "check" << "\n";
 //}
-
 }
 
 /// @brief

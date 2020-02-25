@@ -38,7 +38,9 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 
 	for(int k = 0; k < local::local_elem_num; ++k){
 
+		int new_added{};
 		int pre_rank = -1;
+		int local_length = Elem_length(temp -> index[2]);	// current element's length
 		// south
 		// interate through face 0
 		for(auto& face_s : temp -> facen[0]){
@@ -51,15 +53,32 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 				south.back().target_rank = face_s.rank;
 				south.back().coord = temp -> ycoords[1];		// y coord
 				south.back().hlevel = temp -> index[2]; 	// hlevel	
+
+				++new_added;
+			}
+			else if(face_s.face_type == 'L'){
+
+				local_length -= Elem_length(face_s.hlevel);
 			}
 
 		
 			pre_rank = face_s.rank;
 		
 		}
+		// loop the table reversely to store the mpi_length
+		if(new_added > 0){
+			for(std::vector<table_elem>::reverse_iterator rit = south.rbegin();
+				rit != south.rend(); ++rit){
+				rit -> mpi_length = local_length;
+				--new_added;
 	
+				if(new_added == 0){break;}	
+			}
+		}
+
 		pre_rank = -1;
-	
+		local_length = Elem_length(temp -> index[2]);	// current element's length
+		
 		// north
 		// iterate through face 1
 		for(auto& face_n : temp -> facen[1]){
@@ -76,12 +95,27 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 				north.back().target_rank = face_n.rank;
 				north.back().coord = temp -> ycoords[1];	// x direction
 				north.back().hlevel = temp -> index[2];	
+				++new_added;
 
+			}
+			else if(face_n.face_type == 'L'){
+
+				local_length -= Elem_length(face_n.hlevel);
 			}
 
 		
 			pre_rank = face_n.rank;
 		
+		}
+		// loop the table reversely to store the mpi_length
+		if(new_added > 0){
+			for(std::vector<table_elem>::reverse_iterator rit = north.rbegin();
+				rit != north.rend(); ++rit){
+				rit -> mpi_length = local_length;
+				--new_added;
+	
+				if(new_added == 0){break;}	
+			}
 		}
 //if(mpi::rank == 1){
 //
@@ -94,16 +128,17 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		// sort north and south table in the end
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
-//if(mpi::rank ==2){
-//	std::cout << "------------------- \n";
-//	std::cout<< "elem_num"<< local::local_elem_num << "\n";
-//	for(auto& v : south){
-//		
-//		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << "\n";
-//	
-//	}
-//	std::cout << "------------------- \n";
-//}
+if(mpi::rank ==3){
+	std::cout << "------------------- \n";
+	std::cout<< "elem_num"<< local::local_elem_num << "\n";
+	for(auto& v : north){
+		
+		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << " local_length "<< v.mpi_length<<" ";
+	
+	}
+	std::cout<< "\n";
+	std::cout << "------------------- \n";
+}
 }
 
 /// @brief 
@@ -115,8 +150,9 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 	Unit* temp = local::head;
 
 	for(int k = 0; k < local::local_elem_num; ++k){
-
+		int new_added{};
 		int pre_rank = -1;
+		int local_length = Elem_length(temp -> index[2]);	// current element's length
 
 		// west
 		// interate through face 2
@@ -130,14 +166,30 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 				west.back().target_rank = face_s.rank;
 				west.back().coord = temp -> xcoords[1];		// x coord
 				west.back().hlevel = temp -> index[2]; 	// hlevel	
+				++new_added;
 			}
+			else if(face_s.face_type == 'L'){
 
+				local_length -= Elem_length(face_s.hlevel);
+			}
 		
 			pre_rank = face_s.rank;
 		
 		}
+		// loop the table reversely to store the mpi_length
+		if(new_added > 0){
+			for(std::vector<table_elem>::reverse_iterator rit = west.rbegin();
+				rit != west.rend(); ++rit){
+				rit -> mpi_length = local_length;
+				--new_added;
 	
+				if(new_added == 0){break;}	
+			}
+		}
+
 		pre_rank = -1;
+		
+		local_length = Elem_length(temp -> index[2]);	// current element's length
 	
 		// east
 		// iterate through face 3
@@ -151,14 +203,26 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 				east.back().target_rank = face_n.rank;
 				east.back().coord = temp -> xcoords[1];	// y direction
 				east.back().hlevel = temp -> index[2];	
+				++new_added;
+			}
+			else if(face_n.face_type == 'L'){
 
+				local_length -= Elem_length(face_n.hlevel);
 			}
 
-		
 			pre_rank = face_n.rank;
 		
 		}
-
+		// loop the table reversely to store the mpi_length
+		if(new_added > 0){
+			for(std::vector<table_elem>::reverse_iterator rit = east.rbegin();
+				rit != east.rend(); ++rit){
+				rit -> mpi_length = local_length;
+				--new_added;
+	
+				if(new_added == 0){break;}	
+			}
+		}
 		temp = temp -> next;
 
 	}	
@@ -167,12 +231,13 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 		Sort_mpi_table(west);
 		Sort_mpi_table(east);
 		
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //	std::cout << "--------------------"<< "\n";
-//	for(auto& v : west){
+//	for(auto& v : east){
 //
-//		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << "\n";
+//		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << " ";
 //	}
+//	std::cout<< "\n";
 //	std::cout << "--------------------"<< "\n";
 //}
 }
@@ -234,19 +299,19 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 	int s = south_accum.size();
 	int n = north_accum.size();
 	
-	// south send, north recv
-	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
-
-
-	// north send, south recv. 
-	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
-//if(mpi::rank == 1){
+//if(mpi::rank == 0){
 //
 //	std::cout<< " ---------------------------------- \n";
 //
 //	std::cout<< "check"<< "\n";
 //	std::cout<< " ---------------------------------- \n";
 //}
+	// south send, north recv
+	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
+
+
+	// north send, south recv. 
+	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
 }
 
 
@@ -271,15 +336,16 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 		int j{};
 		for(auto& v : south_accum){	// south send
 
-			std::vector<int> send_info(v.sum * 4);	// key, hlevel, porderx, pordery
+			std::vector<int> send_info(v.sum * 5);	// key, hlevel, porderx, pordery
 			
 			// serialization the struct
 			for(int k = 0; k < v.sum; ++k){
 				
-				send_info[4 * k] = south[j].local_key;	// key
-				send_info[4 * k + 1] = south[j].hlevel;	// hlevel
-				send_info[4 * k + 2] = local::Hash_elem[south[j].local_key] -> n;	// porderx
-				send_info[4 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
+				send_info[5 * k] = south[j].local_key;	// key
+				send_info[5 * k + 1] = south[j].hlevel;	// hlevel
+				send_info[5 * k + 2] = local::Hash_elem[south[j].local_key] -> n;	// porderx
+				send_info[5 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
+				send_info[5 * k + 4] = south[j].mpi_length;
 				++j;
 			}
 //if(mpi::rank == 2){
@@ -287,7 +353,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 //	std::cout<< "send_num"<< v.sum << " to rank "<< v.rank<< "\n";
 //	std::cout<< "--------------------------\n";
 //}
-			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
+			MPI_Isend(&send_info[0], v.sum * 5, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
 			
 		}
@@ -326,6 +392,10 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 //	std::cout<<"------------------------------- \n";
 //	
 //}
+//if(mpi::rank == 3){
+//
+//	std::cout << "check \n";
+//}
 			Update_hash(recv_info, north, update_dir, num, it, v.rank);	// north recv
 		}
 	}
@@ -350,12 +420,12 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 	
 	int l_tot{};
 
-	int num = num1 / 4;
+	int num = num1 / 5;
 	for(int k = 0; k < num; ){	// not table but number of recv elem
 
 
-		int l_local = Elem_length(it -> hlevel);	// local elem length
-		int l_n = Elem_length(recv_info[4 * k + 1]);		// neighbour elem length
+		int l_local = it -> mpi_length;	// local elem length
+		int l_n = recv_info[5 * k + 4];		// neighbour elem length
 
 
 		if(l_local == l_n){	// if same size
@@ -365,8 +435,8 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			Erase_old_face(it_face, it, facei);
 
 			// type, hlevel, porder, key, rank	
-			Unit::Face obj = {'M', recv_info[4 * k + 1], recv_info[4 * k + 2], recv_info[4 * k + 3], 
-						recv_info[4 * k], it -> target_rank};	
+			Unit::Face obj = {'M', recv_info[5 * k + 1], recv_info[5 * k + 2], recv_info[5 * k + 3], 
+						recv_info[5 * k], it -> target_rank};	
 
 
 			local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj); 
@@ -385,17 +455,17 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 				auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
 				Erase_old_face(it_face, it, facei);
 
-				Unit::Face obj = {'M', recv_info[4 * k + 1], recv_info[4 * k + 2], 
-							recv_info[4 * k + 3], recv_info[4 * k], it -> target_rank};
+				Unit::Face obj = {'M', recv_info[5 * k + 1], recv_info[5 * k + 2], 
+							recv_info[5 * k + 3], recv_info[5 * k], it -> target_rank};
 
 				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
 
-				l_tot += Elem_length(it -> hlevel);
+				l_tot += it -> mpi_length;
 			
 				++it;	// go to next local elem
 				
 				// next element does not face this nieghbour
-				if((l_tot + Elem_length(it -> hlevel)) > l_n ){ break; } 
+				if((l_tot + it -> mpi_length) > l_n ){ break; } 
 			}
 
 			++k;
@@ -409,16 +479,16 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			
 			// it stall, recv_info loop
 			while(k < num && l_tot < l_local){
-				Unit::Face obj = {'M', recv_info[4 * k + 1], recv_info[4 * k + 2], 
-						recv_info[4 * k + 3], recv_info[4 * k], it -> target_rank};
+				Unit::Face obj = {'M', recv_info[5 * k + 1], recv_info[5 * k + 2], 
+						recv_info[5 * k + 3], recv_info[5 * k], it -> target_rank};
 			
 				it_face = local::Hash_elem[it -> local_key] -> facen[facei].emplace(it_face, obj);
-				l_tot += Elem_length(recv_info[4 * k + 1]);
+				l_tot += recv_info[5 * k + 4];
 
 				++it_face;
 				++k;
 
-				if((l_tot + Elem_length(recv_info[4 * k + 1])) > l_local){ break;} 
+				if((l_tot + recv_info[5 * k + 4]) > l_local){ break;} 
 			}
 
 			++it;
