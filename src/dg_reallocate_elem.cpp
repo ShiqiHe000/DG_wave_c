@@ -44,12 +44,11 @@ void Reallocate_elem(){
 
 		// pack info to send
 		Send_pack(send_elem, it);
-		int num_n;
+		int num_n{};
 		Face_pack(face_info, LB::Send.pre, num_n);
-
+		
 		// ready to send 
 		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre1);	// tag = rank
-			
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD, &request_pre2);
 
 		Erase_elem_old(LB::Send.pre, 'p', num_pre);
@@ -70,7 +69,7 @@ void Reallocate_elem(){
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
-
+	
 	// recv
 	if(mpi::rank == 0){	// first proc
 		
@@ -79,7 +78,7 @@ void Reallocate_elem(){
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
 
-			int recv_num;	
+			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
@@ -92,12 +91,11 @@ void Reallocate_elem(){
 	else if(mpi::rank == mpi::num_proc - 1){
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
-
 			std::vector<info_pack> recv_info;
 
 			std::vector<face_pack> recv_face;
 
-			int recv_num;	
+			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
@@ -114,7 +112,7 @@ void Reallocate_elem(){
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
 
-			int recv_num;	
+			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
@@ -127,7 +125,7 @@ void Reallocate_elem(){
 
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
-			int recv_num;	
+			int recv_num{};	
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 
@@ -145,7 +143,6 @@ void Reallocate_elem(){
 		MPI_Wait(&request_pre1, &status);
 		MPI_Wait(&request_pre2, &status);
 	}
-
 	if(num_next > 0){
 
 		MPI_Status status;
@@ -291,7 +288,7 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 
 	int count;
 	MPI_Get_count(&status1, Hash::Face_type, &count);
-
+	
 	recv_face = std::vector<face_pack>(count);
 
 	MPI_Recv(&recv_face[0], count, Hash::Face_type, source, tag, MPI_COMM_WORLD, &status2);

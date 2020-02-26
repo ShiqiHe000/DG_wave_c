@@ -189,7 +189,7 @@ void Build_mapping_table(){
 	std::vector<int> recv_buff(mpi::num_proc * 2);
 	MPI_Allgatherv(&senda[0], sizet * 2, MPI_INT, &recv_buff[0], &recvcounts[0], &displs[0], MPI_INT, MPI_COMM_WORLD);
 
-	// rebild the mapping table
+	// rebuild the mapping table
 	LB::proc_mapping_table.clear();	// clear all the elements
 	for(int i = 0; i < mpi::num_proc; ++i){
 		
@@ -370,10 +370,10 @@ void Update_mpi_boundary(){
 	Ownership_one_dir(westo, hrefinement::west);
 	Ownership_one_dir(easto, hrefinement::east);
 	//-------------------------------------------------------------------------
-//if(mpi::rank == 2){
+//if(mpi::rank == 1){
 //
 //	std::cout<< "----------------------- \n";
-//	for(auto& v : easto){
+//	for(auto& v : southo){
 //
 //		std::cout<< "key "<< v.local_key << " owner "<< v.owner_rank << " ";
 //
@@ -399,6 +399,10 @@ void Update_mpi_boundary(){
 	// east send and west recv
 	Send_recv_ownership(easto, westo, hrefinement::east_accum, hrefinement::west_accum, 2);
 	//-----------------------------------------------------------------------------------------------
+//if(mpi::rank == 1){
+//
+//	std::cout<< "check \n";
+//}
 }
 
 /// @brief

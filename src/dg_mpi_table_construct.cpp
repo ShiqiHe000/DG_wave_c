@@ -128,17 +128,17 @@ void Construct_mpi_table_x(std::vector<table_elem>& north, std::vector<table_ele
 		// sort north and south table in the end
 		Sort_mpi_table(south);
 		Sort_mpi_table(north);
-if(mpi::rank ==3){
-	std::cout << "------------------- \n";
-	std::cout<< "elem_num"<< local::local_elem_num << "\n";
-	for(auto& v : north){
-		
-		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << " local_length "<< v.mpi_length<<" ";
-	
-	}
-	std::cout<< "\n";
-	std::cout << "------------------- \n";
-}
+//if(mpi::rank ==3){
+//	std::cout << "------------------- \n";
+//	std::cout<< "elem_num"<< local::local_elem_num << "\n";
+//	for(auto& v : north){
+//		
+//		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << " local_length "<< v.mpi_length<<" ";
+//	
+//	}
+//	std::cout<< "\n";
+//	std::cout << "------------------- \n";
+//}
 }
 
 /// @brief 

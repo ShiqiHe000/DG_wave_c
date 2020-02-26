@@ -16,12 +16,12 @@ void Load_balancing(){
 
 	Update_mpi_boundary();
 
-	Reallocate_elem();
-
-//if(mpi::rank == 0){
+//if(mpi::rank == 1){
 ////	std::cout << "local_elem_num"<< local::local_elem_num << "\n";
 //	std::cout<< "check"<< "\n";
 //}
+	Reallocate_elem();
+
 	Clear_mapping_tables();
 
 }
