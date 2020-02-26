@@ -299,6 +299,12 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 	int s = south_accum.size();
 	int n = north_accum.size();
 	
+	// south send, north recv
+	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
+
+
+	// north send, south recv. 
+	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
 //if(mpi::rank == 0){
 //
 //	std::cout<< " ---------------------------------- \n";
@@ -306,12 +312,6 @@ void Update_mpi_boundaries(std::vector<table_elem>& north, int facen, std::vecto
 //	std::cout<< "check"<< "\n";
 //	std::cout<< " ---------------------------------- \n";
 //}
-	// south send, north recv
-	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
-
-
-	// north send, south recv. 
-	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
 }
 
 
@@ -348,7 +348,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 				send_info[5 * k + 4] = south[j].mpi_length;
 				++j;
 			}
-//if(mpi::rank == 2){
+//if(mpi::rank == 3){
 //	std::cout<< "--------------------------\n";
 //	std::cout<< "send_num"<< v.sum << " to rank "<< v.rank<< "\n";
 //	std::cout<< "--------------------------\n";
@@ -373,28 +373,30 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 
 			int num;	// number of elem on the other side
 
+//if(mpi::rank == 0){
+//
+//	std::cout << "recv from rank "<< v.rank << "\n";
+//}
 			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
-			
+//if(mpi::rank == 0){
+//	std::cout<< "num " << num / 5 << "\n";
+//}
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //
 //	std::cout<<"------------------------------- \n";
-//	for(int m = 0; m < num / 4; ++m){
+//	for(int m = 0; m < num / 5; ++m){
 //
-//		std::cout<< recv_info[4 * m]<< " ";
+//		std::cout<< recv_info[5 * m]<< " ";
 //
 //	}
 //	std::cout<< "\n";
 //	std::cout<<"------------------------------- \n";
 //	
-//}
-//if(mpi::rank == 3){
-//
-//	std::cout << "check \n";
 //}
 			Update_hash(recv_info, north, update_dir, num, it, v.rank);	// north recv
 		}

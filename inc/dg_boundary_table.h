@@ -7,6 +7,8 @@
 /// @param target_rank neighbour's rank.
 /// @param coord element coordinate of related direction. (x:j, y:i).
 /// @param hlevel current element's hlevel.
+/// @param mpi_length The portion of the element interface length that exposes to the mpi boundary. 
+/// @param owners_rank The future (after repartitioning) rank of current element.
 struct table_elem{
 
 	int local_key;
@@ -17,6 +19,9 @@ struct table_elem{
 
 	int hlevel;
 
+	int mpi_length;
+	
+	int owners_rank;
 };
 
 

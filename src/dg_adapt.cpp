@@ -16,7 +16,7 @@ void Adapt(){
 	// y direction
 	Construct_mpi_table_y(hrefinement::west, hrefinement::east);
 	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::west_accum, hrefinement::east, 3, hrefinement::east_accum);	
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //
 //	std::cout<< "check" << "\n";
 //}
