@@ -49,11 +49,21 @@ namespace local{
 namespace hrefinement{
 
 	
-	std::vector<table_elem> north;
-	std::vector<table_elem> south;
+//	std::vector<table_elem> north;
+//	std::vector<table_elem> south;
 
-	std::vector<table_elem> west;
-	std::vector<table_elem> east;
+	std::vector<int> rank_north;
+	std::vector<int> rank_south;
+	std::vector<int> rank_west;
+	std::vector<int> rank_east;
+	
+	std::unordered_map<int, std::vector<mpi_table>> north;
+	std::unordered_map<int, std::vector<mpi_table>> south;
+	std::unordered_map<int, std::vector<mpi_table>> west;
+	std::unordered_map<int, std::vector<mpi_table>> east;
+	
+//	std::vector<table_elem> west;
+//	std::vector<table_elem> east;
 
 	// accumulates boundaries info
 	std::vector<accum_elem> south_accum;

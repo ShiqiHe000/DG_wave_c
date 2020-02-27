@@ -10,6 +10,7 @@
 #include "dg_boundary_table.h"
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
+#include <unordered_map>
 #include <iostream>	//test
 
 // forward declaration -----------------------------------------
@@ -21,7 +22,7 @@ void Update_neighbours();
 
 void Neighbour_change(int facei, int n_key, int my_key, int rank);
 
-void Ownership_one_dir(std::vector<table_elem>& mtable);
+void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable);
 
 void Send_recv_ownership(std::vector<table_elem>& sendo, std::vector<table_elem>& recvo, 
 			std::vector<accum_elem>& send_accum, std::vector<accum_elem>& recv_accum, int facei);

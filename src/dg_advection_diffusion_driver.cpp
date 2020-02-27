@@ -50,18 +50,18 @@ void Driver_for_DG_approximation(){
 //if(mpi::rank == 0){
 //	std::cout<< "check"<< "\n";
 //}
-		Write_faces_all();
-
-		// load_balancing----------------------------------------------	
-		Load_balancing();
-		//-------------------------------------------------------------
-		Write_faces_all();
-
-//		Simple_test(k);
-
+//		Write_faces_all();
+//
+//		// load_balancing----------------------------------------------	
+//		Load_balancing();
+//		//-------------------------------------------------------------
+//		Write_faces_all();
+//
+////		Simple_test(k);
+//
 		Clear_tables();
-
-      		Serial_io(tn);		
+//
+//      		Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 
 	}

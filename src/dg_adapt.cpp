@@ -10,11 +10,11 @@ void Adapt(){
 	h_refinement();
 
 	// x direction
-	Construct_mpi_table_x(hrefinement::north, hrefinement::south);
+	Construct_mpi_table_x();
 	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::north_accum, hrefinement::south, 0, hrefinement::south_accum);	
 
 	// y direction
-	Construct_mpi_table_y(hrefinement::west, hrefinement::east);
+	Construct_mpi_table_y();
 	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::west_accum, hrefinement::east, 3, hrefinement::east_accum);	
 //if(mpi::rank == 0){
 //
