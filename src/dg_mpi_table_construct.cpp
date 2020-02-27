@@ -191,6 +191,7 @@ void Construct_mpi_table_y(){
 		int new_added{};
 		int pre_rank = -1;
 		int local_length = Elem_length(temp -> index[2]);	// current element's length
+		double coord_c = (temp -> xcoords[1] + temp -> xcoords[0]) / 2.0;	// central coordinates of the element
 
 		// west
 		// interate through face 2
@@ -202,13 +203,26 @@ void Construct_mpi_table_y(){
 				west.push_back(table_elem());
 				west.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				west.back().target_rank = face_s.rank;
-				west.back().coord = temp -> xcoords[1];		// x coord
+				west.back().coord = coord_c;		// x coord
 				west.back().hlevel = temp -> index[2]; 	// hlevel	
 				++new_added;
 			}
 			else if(face_s.face_type == 'L'){
 
 				local_length -= Elem_length(face_s.hlevel);
+				
+				double coord_n_l = local::Hash_elem[face_s.key] -> xcoords[0];
+				double coord_n_r = local::Hash_elem[face_s.key] -> xcoords[1];
+				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
+				if(coord_c > coord_n_c){	// neighbour is on the left side
+
+					coord_c = (temp -> xcoord[1] + coord_n_r) / 2.0;
+
+				}
+				else{	// neighbour is on the right side
+					coord_c = (temp -> xcoord[0] + coord_n_l) / 2.0;
+
+				}
 			}
 		
 			pre_rank = face_s.rank;
@@ -218,7 +232,9 @@ void Construct_mpi_table_y(){
 		if(new_added > 0){
 			for(std::vector<table_elem>::reverse_iterator rit = west.rbegin();
 				rit != west.rend(); ++rit){
+				
 				rit -> mpi_length = local_length;
+				rit -> coord = coord_c;
 				--new_added;
 	
 				if(new_added == 0){break;}	
@@ -228,7 +244,7 @@ void Construct_mpi_table_y(){
 		pre_rank = -1;
 		
 		local_length = Elem_length(temp -> index[2]);	// current element's length
-	
+		coord_c = (temp -> xcoords[0] + temp -> xcoords[1]) / 2.0;	
 		// east
 		// iterate through face 3
 		for(auto& face_n : temp -> facen[3]){
@@ -239,13 +255,25 @@ void Construct_mpi_table_y(){
 				east.push_back(table_elem());
 				east.back().local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 				east.back().target_rank = face_n.rank;
-				east.back().coord = temp -> xcoords[1];	// y direction
+				east.back().coord = coord_c;	// y direction
 				east.back().hlevel = temp -> index[2];	
 				++new_added;
 			}
 			else if(face_n.face_type == 'L'){
 
 				local_length -= Elem_length(face_n.hlevel);
+				double coord_n_l = local::Hash_elem[face_n.key] -> xcoords[0];
+				double coord_n_r = local::Hash_elem[face_n.key] -> xcoords[1];
+				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
+				if(coord_c > coord_n_c){	// neighbour is on the left side
+
+					coord_c = (temp -> xcoord[1] + coord_n_r) / 2.0;
+
+				}
+				else{	// neighbour is on the right side
+					coord_c = (temp -> xcoord[0] + coord_n_l) / 2.0;
+
+				}
 			}
 
 			pre_rank = face_n.rank;
@@ -255,9 +283,12 @@ void Construct_mpi_table_y(){
 		if(new_added > 0){
 			for(std::vector<table_elem>::reverse_iterator rit = east.rbegin();
 				rit != east.rend(); ++rit){
+
 				rit -> mpi_length = local_length;
-				--new_added;
 	
+				rit -> coord = coord_c;
+
+				--new_added;
 				if(new_added == 0){break;}	
 			}
 		}
