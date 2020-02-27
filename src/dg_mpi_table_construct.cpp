@@ -231,9 +231,9 @@ void Construct_mpi_table_y(std::vector<table_elem>& west, std::vector<table_elem
 		Sort_mpi_table(west);
 		Sort_mpi_table(east);
 		
-//if(mpi::rank == 0){
+//if(mpi::rank == 3){
 //	std::cout << "--------------------"<< "\n";
-//	for(auto& v : east){
+//	for(auto& v : west){
 //
 //		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << " ";
 //	}
@@ -391,7 +391,7 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 //	std::cout<<"------------------------------- \n";
 //	for(int m = 0; m < num / 5; ++m){
 //
-//		std::cout<< recv_info[5 * m]<< " ";
+//		std::cout<< "from rank "<< v.rank<< " key "<<recv_info[5 * m]<< " ";
 //
 //	}
 //	std::cout<< "\n";
