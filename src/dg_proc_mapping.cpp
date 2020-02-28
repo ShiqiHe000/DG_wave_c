@@ -22,16 +22,15 @@ void Update_neighbours();
 
 void Neighbour_change(int facei, int n_key, int my_key, int rank);
 
-void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable);
+void Ownership_one_dir(std::unordered_map<int, mpi_table>& mtable);
 
-void Send_recv_ownership(std::vector<table_elem>& sendo, std::vector<table_elem>& recvo, 
-			std::vector<accum_elem>& send_accum, std::vector<accum_elem>& recv_accum, int facei);
+void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unordered_map<mpi_table>& recvo, int facei);
 
 void Change_face(int k, std::vector<int>& recv_info, std::vector<table_elem>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face);
 
-void Update_mpib(std::vector<int>& recv_info, std::vector<table_elem>& otable, 
-		std::vector<table_elem>::iterator& ito, int facei, int num1, int target_rank);
+void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, mpi_elem>& otable, 
+		int facei, int num1, int target_rank);
 
 void Update_mpi_boundary();
 
@@ -328,21 +327,24 @@ void Neighbour_change(int facei, int n_key, int my_key, int rank){
 /// @brief
 /// Fill in ownership in MPI table in one direction.
 /// @param mtable MPI boundary table of the corresponding direction. 
-void Ownership_one_dir(std::vector<table_elem>& mtable){
+void Ownership_one_dir(std::unordered_map<int, mpi_table>& mtable){
 
 
 	// keys are inherited from MPI boundary tables
-	for(auto& v : mtable){
-		if(std::find(LB::Send.pre.begin(), LB::Send.pre.end(), v.local_key) != LB::Send.pre.end()){ // if find in pre list
-			v.owners_rank = mpi::rank - 1;
-		}
-		else if(std::find(LB::Send.next.begin(), LB::Send.next.end(), v.local_key) != LB::Send.next.end()){	// if find in next list
+	for(auto& v1 : mtable){
 
-			v.owners_rank = mpi::rank + 1;
-
-		}
-		else{ // not inside the sending list, record directly
-			v.owners_rank = mpi::rank;
+		for(auto& v2 : v1.second){
+			if(std::find(LB::Send.pre.begin(), LB::Send.pre.end(), v2.local_key) != LB::Send.pre.end()){ // if find in pre list
+				v2.owners_rank = mpi::rank - 1;
+			}
+			else if(std::find(LB::Send.next.begin(), LB::Send.next.end(), v2.local_key) != LB::Send.next.end()){	// if find in next list
+	
+				v2.owners_rank = mpi::rank + 1;
+	
+			}
+			else{ // not inside the sending list, record directly
+				v2.owners_rank = mpi::rank;
+			}
 		}
 
 	}
@@ -407,33 +409,34 @@ void Update_mpi_boundary(){
 /// @param send_accum Sender's accumulation table. 
 /// @param recv_accum Receiver's accumulation table. 
 /// @param facei the face direction to be updated. 
-void Send_recv_ownership(std::vector<table_elem>& sendo, std::vector<table_elem>& recvo, 
-			std::vector<accum_elem>& send_accum, std::vector<accum_elem>& recv_accum, int facei){
+void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unordered_map<mpi_table>& recvo, int facei){
 	
-	int size_s = send_accum.size();
-	int size_r = recv_accum.size();
+	int size_s = sendo.size();
+	int size_r = recvo.size();
 	
 	// sender
 	if(size_s > 0){	// there is something to send
 		MPI_Request s_request[size_s];
 		MPI_Status s_status[size_s];
 
-		int i{}, j{};
-		for(auto& v : send_accum){
-	
-			std::vector<int> send_info(v.sum * 4);
-			
-			// serialization the struct
-			for(int k = 0; k < v.sum; ++k){
+		int i{};
+		for(auto& v : sendo){
 
-				send_info[4 * k] = sendo[j].local_key;	
-				send_info[4 * k + 1] = sendo[j].hlevel;
-				send_info[4 * k + 2] = sendo[j].mpi_length;
-				send_info[4 * k + 3] = sendo[j].owners_rank;
-				++j;
+			int num_elem = v.second.size();	
+			std::vector<int> send_info(num_elem * 4);
+			auto it = v.second.begin();
+	
+			// serialization the struct
+			for(int k = 0; k < num_elem; ++k){
+
+				send_info[4 * k] = it -> local_key;	
+				send_info[4 * k + 1] = it -> hlevel;
+				send_info[4 * k + 2] = it -> mpi_length;
+				send_info[4 * k + 3] = it -> owners_rank;
+				++it;
 			}
 	
-			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
+			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.first.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
 
 			++i;
 
@@ -446,28 +449,26 @@ void Send_recv_ownership(std::vector<table_elem>& sendo, std::vector<table_elem>
 	// recver
 	if(size_r > 0){
 
-		auto ito = recvo.begin();
-		
-		for(auto& v : recv_accum){
+		for(auto& v : recvo){
 			
 			MPI_Status status1, status2;
 
-			int num;
+			int num{};
 
-			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
+			MPI_Probe(v.first.rank, v.first.rank, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
 
 			std::vector<int> recv_info(num);
 
-			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
+			MPI_Recv(&recv_info[0], num, MPI_INT, v.first.rank, v.first.rank, MPI_COMM_WORLD, &status2);
 //if(mpi::rank == 1){
 //	for(int m = 0; m < num / 4; ++m){
 //		std::cout<< "key "<< recv_info[4 * m]<< " owner "<< recv_info[4 * m + 3]<< " ";
 //	}
 //	std::cout<< "\n";
 //}			
-			Update_mpib(recv_info, recvo, ito, facei, num, v.rank);
+			Update_mpib(recv_info, recvo, facei, num, v.first);
 //std::cout<< "rank "<< mpi::rank << "\n";
 		}
 
@@ -481,12 +482,14 @@ void Send_recv_ownership(std::vector<table_elem>& sendo, std::vector<table_elem>
 /// @param otable MPI boundary table.
 /// @param ito iterator of the MPI boundary table.
 /// @param num1 number of element received * 4.
-void Update_mpib(std::vector<int>& recv_info, std::vector<table_elem>& otable, 
-		std::vector<table_elem>::iterator& ito, int facei, int num1, int target_rank){
+void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, mpi_elem>& otable, 
+		int facei, int num1, int target_rank){
 
 	int num = num1 / 4;
 
 	int l_tol;
+
+	auto ito = otable[target_rank].begin();
 
 	for(int k = 0; k < num;){
 
@@ -504,7 +507,7 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<table_elem>& otable,
 		else if(l_local < l_n){	// local element is smaller
 	
 			l_tol = 0;
-			while((l_tol < l_n) && (ito != otable.end()) && (ito -> target_rank == target_rank)){
+			while((l_tol < l_n) && (ito != otable[target_rank].end())){
 
 				auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
 				Change_face(k, recv_info, ito, it_face);
@@ -547,7 +550,7 @@ void Update_mpib(std::vector<int>& recv_info, std::vector<table_elem>& otable,
 /// @param recv_info Received information.
 /// @param ito interator of the updating MPI boundary table.
 /// @param it_face iterator of facen at the corresponding position. 
-void Change_face(int k, std::vector<int>& recv_info, std::vector<table_elem>::iterator& ito, 
+void Change_face(int k, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face){
 
 	if(recv_info[4 * k + 3] == (ito -> owners_rank)){	// if will be in the same rank

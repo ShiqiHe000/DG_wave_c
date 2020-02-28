@@ -413,16 +413,17 @@ void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map
 			int num_elem = v.second.size();
 	
 			std::vector<int> send_info(num_elem * 5);
+			auto it = v.second.begin();
 	
 			// serialize the struct
 			for(int k = 0; k < num_elem; ++k){
 	
-				send_info[5 * k] = v.second.local_key;	// key
-				send_info[5 * k + 1] = v.second.hlevel;	// hlevel
-				send_info[5 * k + 2] = local::Hash_elem[v.second.local_key] -> n;	// porderx
-				send_info[5 * k + 3] = local::Hash_elem[v.second.local_key] -> m;	// pordery
-				send_info[5 * k + 4] = v.second.mpi_length;
-	
+				send_info[5 * k] = it -> local_key;	// key
+				send_info[5 * k + 1] = it -> hlevel;	// hlevel
+				send_info[5 * k + 2] = local::Hash_elem[it -> local_key] -> n;	// porderx
+				send_info[5 * k + 3] = local::Hash_elem[it -> local_key] -> m;	// pordery
+				send_info[5 * k + 4] = it -> mpi_length;
+				++it;
 			}
 	
 			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
