@@ -12,21 +12,21 @@
 #include <iostream>	// test
 
 // forward declaration ------------------------------------------------------------------
-void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum);
-
-void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<table_elem>::iterator& it, int facei);
+void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_table>::iterator& it, int facei);
 
 void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vector<accum_elem>& north_accum, 
 			std::vector<table_elem>& south, std::vector<table_elem>& north, int update_dir);
 
-void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
-			int facei, int num1, std::vector<table_elem>::iterator& it, int target_rank);
+void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<table_elem>& south, int faces);
 
 void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std::vector<mpi_table>>& hash_north, 
 			std::vector<int>& rank_north);
 
 void Construct_mpi_table_y();
 void Construct_mpi_table_x();
+
+void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<accum_elem>& north_accum, 
+				std::vector<table_elem>& south, int faces, std::vector<accum_elem>& south_accum);
 //---------------------------------------------------------------------------------------
 
 /// @brief 
@@ -356,11 +356,10 @@ void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std:
 /// @param facen Face direction of the first table. 
 /// @param south MPI boundary table. 
 /// @param faces Face direction of the second table. 
-void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<accum_elem>& north_accum, 
-				std::vector<table_elem>& south, int faces, std::vector<accum_elem>& south_accum){
+void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<table_elem>& south, int faces){
 
-	Accum_table(south, south_accum);
-	Accum_table(north, north_accum);
+//	Accum_table(south, south_accum);
+//	Accum_table(north, north_accum);
 //if(mpi::rank == 1){
 //std::cout << "-------------------------- \n";
 //	for(auto& v : south_accum){
@@ -373,15 +372,15 @@ void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<acc
 ////
 ////	}
 //}
-	int s = south_accum.size();
-	int n = north_accum.size();
+//	int s = south_accum.size();
+//	int n = north_accum.size();
 	
 	// south send, north recv
-	Sender_recver(s, n, south_accum, north_accum, south, north, facen);
+	Sender_recver(south, north, facen);
 
 
 	// north send, south recv. 
-	Sender_recver(n, s, north_accum, south_accum, north, south, faces);
+	Sender_recver(north, south, faces);
 //if(mpi::rank == 0){
 //
 //	std::cout<< " ---------------------------------- \n";
@@ -394,96 +393,116 @@ void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<acc
 
 /// @brief
 /// Send and recv info to update MPI boundaries. 
-/// @param s number of element to send.
-/// @param n number of element to recv.
-/// @param south_accum sender's accum table.
-/// @param north_accum recver's accum table.
-/// @param south sender's MPI table.
-/// @param north recver's MPI table.
+/// @param south sender's MPI boundary table. 
+/// @param north recver's MPI boundary table. 
 /// @param update_dir update_direaction. Should be the recver's direction.
-void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vector<accum_elem>& north_accum, 
-			std::vector<table_elem>& south, std::vector<table_elem>& north, int update_dir){
+void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map<int, mpi_table>& north, int update_dir){
 
+	int num_rank_s = south.size();	// number of pairs in the hash table
+	int num_rank_n = north.size();	// number of pairs in the hash table
 
-	if(s > 0){	// there is thing to send
+	if(num_rank_s > 0){	
+		
 		MPI_Request s_request[s];	// for mpi_waitall
 		MPI_Status  s_status[s];		// mpi_waitall
 
 		int i{};
-		int j{};
-		for(auto& v : south_accum){	// south send
-
-			std::vector<int> send_info(v.sum * 5);	// key, hlevel, porderx, pordery
-			
-			// serialization the struct
-			for(int k = 0; k < v.sum; ++k){
-				
-				send_info[5 * k] = south[j].local_key;	// key
-				send_info[5 * k + 1] = south[j].hlevel;	// hlevel
-				send_info[5 * k + 2] = local::Hash_elem[south[j].local_key] -> n;	// porderx
-				send_info[5 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
-				send_info[5 * k + 4] = south[j].mpi_length;
-				++j;
+		for(auto& v : south){	
+	
+			int target_rank = v.first;
+			int num_elem = v.second.size();
+	
+			std::vector<int> send_info(num_elem * 5);
+	
+			// serialize the struct
+			for(int k = 0; k < num_elem; ++k){
+	
+				send_info[5 * k] = v.second.local_key;	// key
+				send_info[5 * k + 1] = v.second.hlevel;	// hlevel
+				send_info[5 * k + 2] = local::Hash_elem[v.second.local_key] -> n;	// porderx
+				send_info[5 * k + 3] = local::Hash_elem[v.second.local_key] -> m;	// pordery
+				send_info[5 * k + 4] = v.second.mpi_length;
+	
 			}
-//if(mpi::rank == 3){
-//	std::cout<< "--------------------------\n";
-//	std::cout<< "send_num"<< v.sum << " to rank "<< v.rank<< "\n";
-//	std::cout<< "--------------------------\n";
-//}
-			MPI_Isend(&send_info[0], v.sum * 5, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
+	
+			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
-			
 		}
 		MPI_Waitall(s, s_request, s_status);
-
 	}
+
+//	if(s > 0){	// there is thing to send
+//		MPI_Request s_request[s];	// for mpi_waitall
+//		MPI_Status  s_status[s];		// mpi_waitall
+//
+//		int i{};
+//		int j{};
+//		for(auto& v : south_accum){	// south send
+//
+//			std::vector<int> send_info(v.sum * 5);	// key, hlevel, porderx, pordery
+//			
+//			// serialization the struct
+//			for(int k = 0; k < v.sum; ++k){
+//				
+//				send_info[5 * k] = south[j].local_key;	// key
+//				send_info[5 * k + 1] = south[j].hlevel;	// hlevel
+//				send_info[5 * k + 2] = local::Hash_elem[south[j].local_key] -> n;	// porderx
+//				send_info[5 * k + 3] = local::Hash_elem[south[j].local_key] -> m;	// pordery
+//				send_info[5 * k + 4] = south[j].mpi_length;
+//				++j;
+//			}
+//			MPI_Isend(&send_info[0], v.sum * 5, MPI_INT, v.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
+//			++i;
+//			
+//		}
+//		MPI_Waitall(s, s_request, s_status);
+//
+//	}
 	//-----------------------------------------------------------------------------------------------------------------------
 
 	// north recv ------------------------------------------------------------------------------------------------------------
-	if(n > 0){
-	
-		auto it = north.begin();	// put the iterator at the begin of the north table
+	if(num_rank_n > 0){
 
-		for(auto& v : north_accum){
+		for(auto& v : north){
 
 			MPI_Status status1, status2;		// dummy
 
-			int num;	// number of elem on the other side
-
-//if(mpi::rank == 0){
-//
-//	std::cout << "recv from rank "<< v.rank << "\n";
-//}
-			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
+			int num{};	// number of elem on the other side
+		
+			MPI_Probe(v.first.rank, v.first.rank, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
-//if(mpi::rank == 0){
-//	std::cout<< "num " << num / 5 << "\n";
-//}
+			
 			std::vector<int> recv_info(num);	
 	
-			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 0){
-//
-//	std::cout<<"------------------------------- \n";
-//	for(int m = 0; m < num / 5; ++m){
-//
-//		std::cout<< "from rank "<< v.rank<< " key "<<recv_info[5 * m]<< " ";
-//
-//	}
-//	std::cout<< "\n";
-//	std::cout<<"------------------------------- \n";
-//	
-//}
-			Update_hash(recv_info, north, update_dir, num, it, v.rank);	// north recv
+			MPI_Recv(&recv_info[0], num, MPI_INT, v.first.rank, v.first.rank, MPI_COMM_WORLD, &status2);
+			
+			Update_hash(recv_info, north, update_dir, num, v.first.rank);
 		}
+
 	}
+
+//	if(n > 0){
+//	
+//		auto it = north.begin();	// put the iterator at the begin of the north table
+//
+//		for(auto& v : north_accum){
+//
+//			MPI_Status status1, status2;		// dummy
+//
+//			int num;	// number of elem on the other side
+//
+//			MPI_Probe(v.rank, v.rank, MPI_COMM_WORLD, &status1);
+//
+//			MPI_Get_count(&status1, MPI_INT, &num);
+//			std::vector<int> recv_info(num);	
+//	
+//			MPI_Recv(&recv_info[0], num, MPI_INT, v.rank, v.rank, MPI_COMM_WORLD, &status2);
+//			Update_hash(recv_info, north, update_dir, num, it, v.rank);	// north recv
+//		}
+//	}
 	//-----------------------------------------------------------------------------------------------------------------------
 
-//if(mpi::rank == 1){
-//
-//	std::cout << "check \n";
-//}
 }
 
 /// @brief
@@ -494,10 +513,12 @@ void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vect
 /// @param num recieved element number * 4.
 /// @param it MPI direction table iterator.
 /// @param target_rank The rank number of the info sender.
-void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table, 
-			int facei, int num1, std::vector<table_elem>::iterator& it, int target_rank){
+void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, mpi_table>& table, 
+			int facei, int num1, int target_rank){
 	
 	int l_tot{};
+
+	auto it = table[target_rank].begin();
 
 	int num = num1 / 5;
 	for(int k = 0; k < num; ){	// not table but number of recv elem
@@ -528,7 +549,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 			l_tot = 0;
 			// recv_info stall (k), it loop
 			// traverse mpi table until face matches
-			while(l_tot < l_n && it != table.end() && (it -> target_rank == target_rank)){
+			while(l_tot < l_n && it != table[target_rank].end() ){
 				
 				// erase old face info
 				auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
@@ -582,7 +603,7 @@ void Update_hash(std::vector<int>& recv_info, std::vector<table_elem>& table,
 /// @param it_face iterator on facen.
 /// @param it iterator of mpi table.
 /// @param facei face direction. 
-void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<table_elem>::iterator& it, int facei){
+void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_table>::iterator& it, int facei){
 
 	int target_rank = it -> target_rank;
 	for(; it_face != local::Hash_elem[it -> local_key] -> facen[facei].end(); ){
@@ -605,35 +626,43 @@ void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<tabl
 /// Form rank Accumulate table.
 /// @param south MPI south table.
 /// @param north MPI north table. 
-void Accum_table(std::vector<table_elem>& south, std::vector<accum_elem>& south_accum){
-
-
-	if(! south.empty()){	// if not empty
-		
-		south_accum.push_back(accum_elem());
-
-		int rank1 = south.front().target_rank;
-		south_accum.back().rank = rank1;
-
-		for(auto& v : south){
-
-			int rank2 = v.target_rank;
-
-			if(rank2 == rank1){
-
-				south_accum.back().sum += 1;
-				
-			}	
-			else{
-				south_accum.push_back(accum_elem());
-				south_accum.back().rank = rank2;
-				south_accum.back().sum += 1;
-				rank1 = rank2;
-		
-			}		
-			
-		}
-	}
-
-}
-
+//void Accum_table(std::unordered_map<int, mpi_table>& south, std::vector<accum_elem>& south_accum){
+//
+//	for(auto& v : south){
+//
+//		int rank = v.first;
+//		int num = v.second().size();	// number of element
+//		south_accum.push_back({rank, num});
+//
+//	}
+//
+//
+////	if(! south.empty()){	// if not empty
+////		
+////		south_accum.push_back(accum_elem());
+////
+////		int rank1 = south.front().target_rank;
+////		south_accum.back().rank = rank1;
+////
+////		for(auto& v : south){
+////
+////			int rank2 = v.target_rank;
+////
+////			if(rank2 == rank1){
+////
+////				south_accum.back().sum += 1;
+////				
+////			}	
+////			else{
+////				south_accum.push_back(accum_elem());
+////				south_accum.back().rank = rank2;
+////				south_accum.back().sum += 1;
+////				rank1 = rank2;
+////		
+////			}		
+////			
+////		}
+////	}
+////
+//}
+//

@@ -34,10 +34,15 @@ namespace local{
 namespace hrefinement{
 
 	
-	extern std::vector<table_elem> north;
-	extern std::vector<table_elem> south;
-	extern std::vector<table_elem> west;
-	extern std::vector<table_elem> east;
+	extern std::vector<int> rank_north;
+	extern std::vector<int> rank_south;
+	extern std::vector<int> rank_west;
+	extern std::vector<int> rank_east;
+
+	extern std::unordered_map<int, std::vector<mpi_table>> north;
+	extern std::unordered_map<int, std::vector<mpi_table>> south;
+	extern std::unordered_map<int, std::vector<mpi_table>> west;
+	extern std::unordered_map<int, std::vector<mpi_table>> east;
 
 	extern std::vector<accum_elem> south_accum;
 	extern std::vector<accum_elem> north_accum;

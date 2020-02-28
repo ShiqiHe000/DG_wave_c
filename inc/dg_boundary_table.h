@@ -21,6 +21,20 @@ struct table_elem{
 
 	int mpi_length;
 	
+	int owners_rank; // useless?
+};
+
+
+struct mpi_table{
+
+	int local_key;
+
+	int target_rank;
+
+	int hlevel;
+
+	int mpi_length;
+
 	int owners_rank;
 };
 
@@ -29,13 +43,13 @@ struct table_elem{
 /// Accumulation table. Store the neighbour ranks and the number of elements that is facing to the corresponding rank.
 /// @param rank neighbour rank.
 /// @param sum element number in current rank that is facing to the neighbour rank.
-struct accum_elem{
-
-	int rank;
-	
-	int sum{};
-
-};
+//struct accum_elem{
+//
+//	int rank;
+//	
+//	int sum{};
+//
+//};
 
 
 

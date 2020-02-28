@@ -66,10 +66,10 @@ namespace hrefinement{
 //	std::vector<table_elem> east;
 
 	// accumulates boundaries info
-	std::vector<accum_elem> south_accum;
-	std::vector<accum_elem> north_accum;
-	std::vector<accum_elem> west_accum;
-	std::vector<accum_elem> east_accum;
+//	std::vector<accum_elem> south_accum;
+//	std::vector<accum_elem> north_accum;
+//	std::vector<accum_elem> west_accum;
+//	std::vector<accum_elem> east_accum;
 };
 
 
