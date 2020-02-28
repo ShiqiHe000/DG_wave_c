@@ -44,10 +44,10 @@ namespace hrefinement{
 	extern std::unordered_map<int, std::vector<mpi_table>> west;
 	extern std::unordered_map<int, std::vector<mpi_table>> east;
 
-	extern std::vector<accum_elem> south_accum;
-	extern std::vector<accum_elem> north_accum;
-	extern std::vector<accum_elem> west_accum;
-	extern std::vector<accum_elem> east_accum;
+//	extern std::vector<accum_elem> south_accum;
+//	extern std::vector<accum_elem> north_accum;
+//	extern std::vector<accum_elem> west_accum;
+//	extern std::vector<accum_elem> east_accum;
 };
 
 namespace LB{

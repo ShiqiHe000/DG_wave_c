@@ -3,11 +3,12 @@
 
 #include "dg_boundary_table.h"
 #include <vector>
+#include <unordered_map>
 
 void Construct_mpi_table_x();
 void Construct_mpi_table_y();
 
-void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<table_elem>& south, int faces);
-
+void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
+				std::unordered_map<int, std::vector<mpi_table>>& south, int faces);
 void Clear_tables();
 #endif

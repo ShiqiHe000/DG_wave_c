@@ -16,146 +16,146 @@ void Boundary_condition(double& s_interface, int nt);
 
 
 /// @parma tn nth-delta_t.
-void Simple_test(int tn){
-
-	// tarverse the hash table
-	Unit* temp = local::head;
-	
-	// total number of info to send
-	int mpi_num{};
-	for(auto& v : hrefinement::north_accum){
-		mpi_num += v.sum;
-
-	}
-
-
-	MPI_Request request[mpi_num];
-	MPI_Status status[mpi_num];
-	int i{};
-
-	// form interface + send info on the mpi boundary
-	for(int k = 0; k < local::local_elem_num; ++k){
-
-		temp -> n_interface = (double)(temp -> var);
-
-
-//int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//if(key_now == 8){
-//	std::cout<< "tn " << tn << " n_inter " << temp -> n_interface << "\n";
+//void Simple_test(int tn){
+//
+//	// tarverse the hash table
+//	Unit* temp = local::head;
+//	
+//	// total number of info to send
+//	int mpi_num{};
+//	for(auto& v : hrefinement::north_accum){
+//		mpi_num += v.sum;
+//
+//	}
+//
+//
+//	MPI_Request request[mpi_num];
+//	MPI_Status status[mpi_num];
+//	int i{};
+//
+//	// form interface + send info on the mpi boundary
+//	for(int k = 0; k < local::local_elem_num; ++k){
+//
+//		temp -> n_interface = (double)(temp -> var);
+//
+//
+////int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+////if(key_now == 8){
+////	std::cout<< "tn " << tn << " n_inter " << temp -> n_interface << "\n";
+////
+////}
+//
+//		// send if on the mpi boudary
+//		for(auto& v : temp -> facen[1]){
+//
+//			if(v.face_type == 'M'){
+//				int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//				//tag=sender's key
+//				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]); 
+////if(mpi::rank == 0){
+////	std::cout<< "local_key " << local_key << " n_interface: " << temp -> n_interface << "\n";
+////
+////}
+//
+//				++i;
+//			}
+//		}
+//
+//		temp = temp -> next;
+//	}
+//
+//	temp = local::head;
+//
+//	for(int k = 0; k < local::local_elem_num; ++k){
+//		
+//		if(temp -> facen[0].front().face_type == 'B'){	// if on the physical boundary
+//				
+//			Boundary_condition(temp -> s_interface, tn);
+//
+//		}
+//		else{	// local/MPI neighbour
+//
+//		 	for(auto& v : temp -> facen[0]){
+//
+//				if(v.face_type == 'L'){	// local
+//					
+//					if(v.hlevel <= (temp -> index[2])){	// if neighbour is larger than current element, or equal size
+//
+//						temp -> s_interface = local::Hash_elem[v.key] -> n_interface;
+//
+//					}
+//					else{	// neighbour is smaller
+////int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]) ;
+//
+//
+//
+//						int l_self = Elem_length(temp -> index[2]);				
+//						int n_length = Elem_length(v.hlevel);
+//						temp -> s_interface += (local::Hash_elem[v.key] -> n_interface * 
+//										(double)(n_length) / l_self);
+//
+////if(key_now == 4){
+////
+////std::cout<< "tn "<< tn << "self_length " << l_self << " n_length " << n_length << " s_inter " << temp -> s_interface << "\n";
+//
+////}
+//
+//					}
+//				}
+//				else{	// neighbour is stored remotely
+//
+//					MPI_Status status;
+//				
+//					double recv_info;
+//
+//					MPI_Recv(&recv_info, 1, MPI_DOUBLE, v.rank, v.key, MPI_COMM_WORLD, &status); // tag = n_key
+//						
+////if(mpi::rank == 2){
+////
+////	std::cout<< "recv_info " << recv_info << "\n";
+////
+////}
+//					if(v.hlevel <= (temp -> index[2])){	// if remote element is larger
+//
+//						temp -> s_interface += recv_info;						
+//
+//					}
+//					else{	// remote element is smaller
+//
+//						int l_self = Elem_length(temp -> index[2]);
+//						int n_length = Elem_length(v.hlevel);
+//						temp -> s_interface += recv_info * (double)(n_length) / l_self;
+//
+//					}	
+//
+//				}
+//
+//			}
+//
+//
+//		}
+//
+//
+//		temp = temp -> next;
+//
+//	}
+//	
+//	// confirm all the messages being received
+//	MPI_Waitall(mpi_num, request, &status[0]);
+//
+//	// updates var
+//	temp = local::head;
+//	for(int k = 0; k < local::local_elem_num; ++k){
+//
+//		temp -> var = (int)(temp -> s_interface);
+//		
+//		temp -> s_interface = 0;
+//
+//		temp = temp -> next;
+//	}
+//
 //
 //}
-
-		// send if on the mpi boudary
-		for(auto& v : temp -> facen[1]){
-
-			if(v.face_type == 'M'){
-				int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-				//tag=sender's key
-				MPI_Isend(&(temp -> n_interface), 1, MPI_DOUBLE, v.rank, local_key, MPI_COMM_WORLD, &request[i]); 
-//if(mpi::rank == 0){
-//	std::cout<< "local_key " << local_key << " n_interface: " << temp -> n_interface << "\n";
-//
-//}
-
-				++i;
-			}
-		}
-
-		temp = temp -> next;
-	}
-
-	temp = local::head;
-
-	for(int k = 0; k < local::local_elem_num; ++k){
-		
-		if(temp -> facen[0].front().face_type == 'B'){	// if on the physical boundary
-				
-			Boundary_condition(temp -> s_interface, tn);
-
-		}
-		else{	// local/MPI neighbour
-
-		 	for(auto& v : temp -> facen[0]){
-
-				if(v.face_type == 'L'){	// local
-					
-					if(v.hlevel <= (temp -> index[2])){	// if neighbour is larger than current element, or equal size
-
-						temp -> s_interface = local::Hash_elem[v.key] -> n_interface;
-
-					}
-					else{	// neighbour is smaller
-//int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]) ;
-
-
-
-						int l_self = Elem_length(temp -> index[2]);				
-						int n_length = Elem_length(v.hlevel);
-						temp -> s_interface += (local::Hash_elem[v.key] -> n_interface * 
-										(double)(n_length) / l_self);
-
-//if(key_now == 4){
-//
-//std::cout<< "tn "<< tn << "self_length " << l_self << " n_length " << n_length << " s_inter " << temp -> s_interface << "\n";
-
-//}
-
-					}
-				}
-				else{	// neighbour is stored remotely
-
-					MPI_Status status;
-				
-					double recv_info;
-
-					MPI_Recv(&recv_info, 1, MPI_DOUBLE, v.rank, v.key, MPI_COMM_WORLD, &status); // tag = n_key
-						
-//if(mpi::rank == 2){
-//
-//	std::cout<< "recv_info " << recv_info << "\n";
-//
-//}
-					if(v.hlevel <= (temp -> index[2])){	// if remote element is larger
-
-						temp -> s_interface += recv_info;						
-
-					}
-					else{	// remote element is smaller
-
-						int l_self = Elem_length(temp -> index[2]);
-						int n_length = Elem_length(v.hlevel);
-						temp -> s_interface += recv_info * (double)(n_length) / l_self;
-
-					}	
-
-				}
-
-			}
-
-
-		}
-
-
-		temp = temp -> next;
-
-	}
-	
-	// confirm all the messages being received
-	MPI_Waitall(mpi_num, request, &status[0]);
-
-	// updates var
-	temp = local::head;
-	for(int k = 0; k < local::local_elem_num; ++k){
-
-		temp -> var = (int)(temp -> s_interface);
-		
-		temp -> s_interface = 0;
-
-		temp = temp -> next;
-	}
-
-
-}
 
 /// @breif
 /// Boundary condition. Imposed on the south interfaces.

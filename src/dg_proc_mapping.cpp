@@ -22,14 +22,15 @@ void Update_neighbours();
 
 void Neighbour_change(int facei, int n_key, int my_key, int rank);
 
-void Ownership_one_dir(std::unordered_map<int, mpi_table>& mtable);
+void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable);
 
-void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unordered_map<mpi_table>& recvo, int facei);
+void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo, 
+			std::unordered_map<int, std::vector<mpi_table>>& recvo, int facei);
 
-void Change_face(int k, std::vector<int>& recv_info, std::vector<table_elem>::iterator& ito, 
+void Change_face(int k, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face);
 
-void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, mpi_elem>& otable, 
+void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank);
 
 void Update_mpi_boundary();
@@ -327,7 +328,7 @@ void Neighbour_change(int facei, int n_key, int my_key, int rank){
 /// @brief
 /// Fill in ownership in MPI table in one direction.
 /// @param mtable MPI boundary table of the corresponding direction. 
-void Ownership_one_dir(std::unordered_map<int, mpi_table>& mtable){
+void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable){
 
 
 	// keys are inherited from MPI boundary tables
@@ -381,20 +382,19 @@ void Update_mpi_boundary(){
 	// x direction-----------------------------------------------------------------------------------
 	
 	// north send and south recv
-	Send_recv_ownership(hrefinement::north, hrefinement::south, hrefinement::north_accum, hrefinement::south_accum, 0);
-
+	Send_recv_ownership(hrefinement::north, hrefinement::south, 0);
 	// south send and north recv
-	Send_recv_ownership(hrefinement::south, hrefinement::north, hrefinement::south_accum, hrefinement::north_accum, 1);
+	Send_recv_ownership(hrefinement::south, hrefinement::north, 1);
 	//-----------------------------------------------------------------------------------------------
 
 
 	// y direction-----------------------------------------------------------------------------------
 	
 	// west send and east recv
-	Send_recv_ownership(hrefinement::west, hrefinement::east, hrefinement::west_accum, hrefinement::east_accum, 3);
+	Send_recv_ownership(hrefinement::west, hrefinement::east, 3);
 
 	// east send and west recv
-	Send_recv_ownership(hrefinement::east, hrefinement::west, hrefinement::east_accum, hrefinement::west_accum, 2);
+	Send_recv_ownership(hrefinement::east, hrefinement::west, 2);
 	//-----------------------------------------------------------------------------------------------
 //if(mpi::rank == 1){
 //
@@ -409,7 +409,8 @@ void Update_mpi_boundary(){
 /// @param send_accum Sender's accumulation table. 
 /// @param recv_accum Receiver's accumulation table. 
 /// @param facei the face direction to be updated. 
-void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unordered_map<mpi_table>& recvo, int facei){
+void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo, 
+			std::unordered_map<int, std::vector<mpi_table>>& recvo, int facei){
 	
 	int size_s = sendo.size();
 	int size_r = recvo.size();
@@ -436,7 +437,7 @@ void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unorder
 				++it;
 			}
 	
-			MPI_Isend(&send_info[0], v.sum * 4, MPI_INT, v.first.rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
+			MPI_Isend(&send_info[0], num_elem * 4, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
 
 			++i;
 
@@ -455,13 +456,13 @@ void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unorder
 
 			int num{};
 
-			MPI_Probe(v.first.rank, v.first.rank, MPI_COMM_WORLD, &status1);
+			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
 
 			std::vector<int> recv_info(num);
 
-			MPI_Recv(&recv_info[0], num, MPI_INT, v.first.rank, v.first.rank, MPI_COMM_WORLD, &status2);
+			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
 //if(mpi::rank == 1){
 //	for(int m = 0; m < num / 4; ++m){
 //		std::cout<< "key "<< recv_info[4 * m]<< " owner "<< recv_info[4 * m + 3]<< " ";
@@ -482,7 +483,7 @@ void Send_recv_ownership(std::unordered_map<int, mpi_table>& sendo, std::unorder
 /// @param otable MPI boundary table.
 /// @param ito iterator of the MPI boundary table.
 /// @param num1 number of element received * 4.
-void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, mpi_elem>& otable, 
+void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank){
 
 	int num = num1 / 4;

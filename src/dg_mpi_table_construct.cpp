@@ -14,19 +14,21 @@
 // forward declaration ------------------------------------------------------------------
 void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_table>::iterator& it, int facei);
 
-void Sender_recver(int s, int n, std::vector<accum_elem>& south_accum, std::vector<accum_elem>& north_accum, 
-			std::vector<table_elem>& south, std::vector<table_elem>& north, int update_dir);
+void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south, 
+			std::unordered_map<int, std::vector<mpi_table>>& north, int update_dir);
 
-void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<table_elem>& south, int faces);
+void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
+				std::unordered_map<int, std::vector<mpi_table>>& south, int faces);
 
 void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std::vector<mpi_table>>& hash_north, 
 			std::vector<int>& rank_north);
 
+void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
+			int facei, int num1, int target_rank);
+
 void Construct_mpi_table_y();
 void Construct_mpi_table_x();
 
-void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<accum_elem>& north_accum, 
-				std::vector<table_elem>& south, int faces, std::vector<accum_elem>& south_accum);
 //---------------------------------------------------------------------------------------
 
 /// @brief 
@@ -72,11 +74,11 @@ void Construct_mpi_table_x(){
 				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
 				if(coord_c > coord_n_c){	// neighbour is on the left side
 
-					coord_c = (temp -> ycoord[1] + coord_n_r) / 2.0;
+					coord_c = (temp -> ycoords[1] + coord_n_r) / 2.0;
 
 				}
 				else{	// neighbour is on the right side
-					coord_c = (temp -> ycoord[0] + coord_n_l) / 2.0;
+					coord_c = (temp -> ycoords[0] + coord_n_l) / 2.0;
 
 				}
 			}
@@ -129,11 +131,11 @@ void Construct_mpi_table_x(){
 				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
 				if(coord_c > coord_n_c){	// neighbour is on the left side
 
-					coord_c = (temp -> ycoord[1] + coord_n_r) / 2.0;
+					coord_c = (temp -> ycoords[1] + coord_n_r) / 2.0;
 
 				}
 				else{	// neighbour is on the right side
-					coord_c = (temp -> ycoord[0] + coord_n_l) / 2.0;
+					coord_c = (temp -> ycoords[0] + coord_n_l) / 2.0;
 
 				}
 			}
@@ -216,11 +218,11 @@ void Construct_mpi_table_y(){
 				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
 				if(coord_c > coord_n_c){	// neighbour is on the left side
 
-					coord_c = (temp -> xcoord[1] + coord_n_r) / 2.0;
+					coord_c = (temp -> xcoords[1] + coord_n_r) / 2.0;
 
 				}
 				else{	// neighbour is on the right side
-					coord_c = (temp -> xcoord[0] + coord_n_l) / 2.0;
+					coord_c = (temp -> xcoords[0] + coord_n_l) / 2.0;
 
 				}
 			}
@@ -267,11 +269,11 @@ void Construct_mpi_table_y(){
 				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
 				if(coord_c > coord_n_c){	// neighbour is on the left side
 
-					coord_c = (temp -> xcoord[1] + coord_n_r) / 2.0;
+					coord_c = (temp -> xcoords[1] + coord_n_r) / 2.0;
 
 				}
 				else{	// neighbour is on the right side
-					coord_c = (temp -> xcoord[0] + coord_n_l) / 2.0;
+					coord_c = (temp -> xcoords[0] + coord_n_l) / 2.0;
 
 				}
 			}
@@ -356,7 +358,8 @@ void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std:
 /// @param facen Face direction of the first table. 
 /// @param south MPI boundary table. 
 /// @param faces Face direction of the second table. 
-void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<table_elem>& south, int faces){
+void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
+				std::unordered_map<int, std::vector<mpi_table>>& south, int faces){
 
 //	Accum_table(south, south_accum);
 //	Accum_table(north, north_accum);
@@ -396,12 +399,12 @@ void Update_mpi_boundaries(std::unordered_map& north, int facen, std::vector<tab
 /// @param south sender's MPI boundary table. 
 /// @param north recver's MPI boundary table. 
 /// @param update_dir update_direaction. Should be the recver's direction.
-void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map<int, mpi_table>& north, int update_dir){
+void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south, 
+					std::unordered_map<int, std::vector<mpi_table>>& north, int update_dir){
+	int s = south.size();	// number of pairs in the hash table
+	int n = north.size();	// number of pairs in the hash table
 
-	int num_rank_s = south.size();	// number of pairs in the hash table
-	int num_rank_n = north.size();	// number of pairs in the hash table
-
-	if(num_rank_s > 0){	
+	if(s > 0){	
 		
 		MPI_Request s_request[s];	// for mpi_waitall
 		MPI_Status  s_status[s];		// mpi_waitall
@@ -462,7 +465,7 @@ void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map
 	//-----------------------------------------------------------------------------------------------------------------------
 
 	// north recv ------------------------------------------------------------------------------------------------------------
-	if(num_rank_n > 0){
+	if(n > 0){
 
 		for(auto& v : north){
 
@@ -470,15 +473,15 @@ void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map
 
 			int num{};	// number of elem on the other side
 		
-			MPI_Probe(v.first.rank, v.first.rank, MPI_COMM_WORLD, &status1);
+			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);
 			
 			std::vector<int> recv_info(num);	
 	
-			MPI_Recv(&recv_info[0], num, MPI_INT, v.first.rank, v.first.rank, MPI_COMM_WORLD, &status2);
+			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
 			
-			Update_hash(recv_info, north, update_dir, num, v.first.rank);
+			Update_hash(recv_info, north, update_dir, num, v.first);
 		}
 
 	}
@@ -514,7 +517,7 @@ void Sender_recver(std::unordered_map<int, mpi_table>& south, std::unordered_map
 /// @param num recieved element number * 4.
 /// @param it MPI direction table iterator.
 /// @param target_rank The rank number of the info sender.
-void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, mpi_table>& table, 
+void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num1, int target_rank){
 	
 	int l_tot{};
