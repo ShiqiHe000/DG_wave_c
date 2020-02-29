@@ -13,7 +13,9 @@ else
  ./configure --prefix=`pwd`/../openmpi
  make -j 4 all
  make install
- cd 
+ cd ..
  rm -rf openmpi-4.0.2
 fi
 
+test -n $CC && unset CC
+test -n $CXX && unset CXX
