@@ -48,10 +48,6 @@ namespace local{
 /// The variables that will be used in h-refinement
 namespace hrefinement{
 
-	
-//	std::vector<table_elem> north;
-//	std::vector<table_elem> south;
-
 	std::vector<int> rank_north;
 	std::vector<int> rank_south;
 	std::vector<int> rank_west;
@@ -62,14 +58,6 @@ namespace hrefinement{
 	std::unordered_map<int, std::vector<mpi_table>> west;
 	std::unordered_map<int, std::vector<mpi_table>> east;
 	
-//	std::vector<table_elem> west;
-//	std::vector<table_elem> east;
-
-	// accumulates boundaries info
-//	std::vector<accum_elem> south_accum;
-//	std::vector<accum_elem> north_accum;
-//	std::vector<accum_elem> west_accum;
-//	std::vector<accum_elem> east_accum;
 };
 
 

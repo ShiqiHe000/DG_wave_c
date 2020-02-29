@@ -127,7 +127,6 @@ void Build_mapping_table(){
 		temp = temp -> next;
 	}
 
-
 	// send the last element's mapping number to the next rank
 	// rank0 ~ rank_max-1 send
 	MPI_Request request;
@@ -198,6 +197,16 @@ void Build_mapping_table(){
 
 	}
 
+//if(mpi::rank == 1){
+//
+//	std::cout<< "--------------------------- \n";
+//	for(auto& a : LB::Send.pre){
+//		std::cout<< a << " ";
+//	}
+//	std::cout<<"local elem num "<< local::local_elem_num<< "\n";
+//	std::cout<< "\n";
+//	std::cout<< "--------------------------- \n";
+//}
 	// Updates local facen based on teh Sending list
 	Update_neighbours();
 

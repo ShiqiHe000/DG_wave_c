@@ -40,7 +40,7 @@ void h_refinement(){
 		
 		// predefine rand_num test
 //		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-if(mpi::rank == 0){
+if(mpi::rank == 1 || mpi::rank == 2){
 	rand_num = 1;
 
 }
