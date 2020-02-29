@@ -7,9 +7,15 @@ sudo: false	# do not need sudo support
 language: cpp
 #compiler: gcc
 
+# Cacnhing dependencies
+cache:
+ directories:
+  - openmpi	# build mpi only need to done onece
+
 
 # MPI project
-#before_install:
+before_install:
+ - sh ./get_openmpi.sh 
 
 # savelisting branches (specifies the branch to build)	
 branches:
