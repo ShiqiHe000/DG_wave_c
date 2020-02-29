@@ -15,7 +15,8 @@ language: cpp
 branches:
  only:
  - master
- - static_mpi_b
+ - load_balancing 
+
 
 script:
  - mkdir build
