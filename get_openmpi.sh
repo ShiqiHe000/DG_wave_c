@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # check if OpenMPI is cached from previous build
-if [ -f openmpi/bin/mpirun]; then
+if [ -f openmpi/lib/libmpi.so]; then
  echo "Using cached OpenMPI"
 else
  echo "Downloading OpenMPI source"
