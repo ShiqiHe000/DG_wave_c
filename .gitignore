@@ -2,4 +2,5 @@
 build/
 outputs/
 tests/
-
+openmpi/
+openmpi-4.0.2/
