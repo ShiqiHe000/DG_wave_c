@@ -12,7 +12,7 @@ else
  echo "Configuring and building openmpi"
  cd openmpi-4.0.2
  echo `pwd`
- ./configure --prefix=`pwd`
+ ./configure --prefix=/$TRAVIS_BUILD_DIR/openmpi
  make -j 4 all
  make install
  cd ..
