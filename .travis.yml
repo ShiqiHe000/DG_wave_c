@@ -2,6 +2,7 @@
 ## configure travis to use the right compiler
 dist: trusty
 sudo: false	# do not need sudo support
+os: Linux
 
 
 language: cpp
