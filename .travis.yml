@@ -28,5 +28,5 @@ branches:
 script:
  - mkdir build
  - cd build
- - cmake .. 	# configuring cmake in the current build folder
+ #- cmake .. 	# configuring cmake in the current build folder
 # - cmake --build . -- -j2  #parallel build (two virtual CPU available)

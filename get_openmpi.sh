@@ -16,7 +16,6 @@ else
  make -j 4 all
  make install
  cd ..
- rm openmpi-4.0.2.tar.gz
 fi
 
 #test -n $CC && unset CC
