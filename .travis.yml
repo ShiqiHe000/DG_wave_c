@@ -8,7 +8,7 @@ language: cpp
 #compiler: gcc
 
 # Cacnhing dependencies
-cache:
+cache: ccache
  directories:
   - openmpi	# build mpi only need to done onece
 
