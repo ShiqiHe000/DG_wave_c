@@ -1,25 +1,31 @@
 
 ## configure travis to use the right compiler
 dist: trusty
-sudo: false
+sudo: false	# do not need sudo support
+os: Linux
+
 
 language: cpp
 #compiler: gcc
 
+# Cacnhing dependencies
+cache: ccache
+ directories:
+  - openmpi	# build mpi only need to done onece
+
 
 # MPI project
-#before_install:
-	
+before_install:
+ - sh ./get_openmpi.sh 
+
+# savelisting branches (specifies the branch to build)	
 branches:
  only:
- - master
- - static_mpi_b
+  - travis
 
 
 script:
  - mkdir build
  - cd build
- - cmake .
- - cmake --build . -- -j2
-# - cmake ..
-# - make 
+# - cmake .. 	# configuring cmake in the current build folder
+# - cmake --build . -- -j2  #parallel build (two virtual CPU available)
