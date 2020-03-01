@@ -10,11 +10,11 @@ else
  rm openmpi-4.0.2.tar.gz
  echo "Configuring and building openmpi"
  cd openmpi-4.0.2
- ./configure --prefix=`pwd`/../openmpi
+ ./configure --prefix=`pwd`
  make -j 4 all
  make install
  cd ..
- rm -rf openmpi-4.0.2
+ rm openmpi-4.0.2.tar.gz
 fi
 
 test -n $CC && unset CC
