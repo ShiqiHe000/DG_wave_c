@@ -21,7 +21,6 @@ before_install:
 # savelisting branches (specifies the branch to build)	
 branches:
  only:
- - master
  - travis
 
 
