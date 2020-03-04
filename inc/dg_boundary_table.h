@@ -9,20 +9,20 @@
 /// @param hlevel current element's hlevel.
 /// @param mpi_length The portion of the element interface length that exposes to the mpi boundary. 
 /// @param owners_rank The future (after repartitioning) rank of current element.
-struct table_elem{
-
-	int local_key;
-
-	int target_rank;
-
-	double coord;
-
-	int hlevel;
-
-	int mpi_length;
-	
-	int owners_rank; // useless?
-};
+//struct table_elem{
+//
+//	int local_key;
+//
+//	int target_rank;
+//
+////	double coord;
+//
+//	int hlevel;
+//
+//	int mpi_length;
+//	
+//	int owners_rank; // useless?
+//};
 
 
 struct mpi_table{

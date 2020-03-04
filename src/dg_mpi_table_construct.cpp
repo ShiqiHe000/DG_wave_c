@@ -20,16 +20,16 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces);
 
-void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std::vector<mpi_table>>& hash_north, 
-			std::vector<int>& rank_north);
-
 void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num1, int target_rank);
 
-void Construct_mpi_table_y();
-void Construct_mpi_table_x();
+void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& mpi_table);
 
-void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, int>& hash_length);
+void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
+			std::unordered_map<int, std::vector<mpi_table>>& mpi_table)
+
+void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north
+				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south)
 //---------------------------------------------------------------------------------------
 
 /// @brief
@@ -37,26 +37,46 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 /// @param my_level current element's h-refinement level.
 /// @param n_hlevel neighbour's h-refinement level.
 /// @param target_rank neighbour's rank.
-/// @param hash_length hash table to store the length. Key == rank, value == length segment. 
-void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, int>& hash_length){
+/// @param mpi_table Relevent direction's MPI table. 
+void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& mpi_table){
 
-	if(hash_length.count(target_rank) == 0){	// if not record yet
-
-
-		if(n_hlevel <= my_hlevel){	// if neighbour is larger or same size
-			// length is the full scale of current element
-			hash_length[target_rank] = Elem_length(my_hlevel);
-		}
-		else{	// neighbour is smaller
-			hash_length[target_rank] = Elem_length(n_hlevel);
-
-		}
+	if(n_hlevel <= my_hlevel){	// if neighbour is larger or same size
+		// length is the full scale of current element
+		mpi_table[target_rank].back().mpi_length = Elem_length(my_hlevel);
 	}
-	else{	// already exist
+	else{	// neighbour is smaller
+		mpi_table[target_rank].back().mpi_length += Elem_length(n_hlevel);
 
-		// neighbour is smaller
-		hash_length[target_rank] += Elem_length(n_hlevel);
 	}
+
+}
+
+/// @brief 
+/// Insert the current MPI boundary element to the MPI boundary table. 
+/// @param temp Pointer to the current unit. 
+/// @param facen_it Iterator on the element face info vector.
+/// @param mpi_table The relevent MPI bountary table. 
+/// @param target_rank The neighbour's rank. 
+void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
+			std::unordered_map<int, std::vector<mpi_table>>& mpi_table){
+
+	if(mpi_table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
+
+		mpi_table[target_rank] = std::vector<mpi_table>();
+
+		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+		// mpi_length and owners_rank will be recorded later
+		mpi_table[target_rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
+	}
+	else{ // this rank is already been record
+
+		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+		mpi_table[target_rank].push_back({local_key, target_rank, facen_it -> hlevel, 0, 0});
+
+	}
+
 }
 
 
@@ -64,337 +84,64 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 /// Construct MPI boundary tables. Only in x direction. 
 /// @param north MPI north boundary table.
 /// @param south MPI south boundary table.
-void Construct_mpi_table_x(){
+void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north
+				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south){
 
 	Unit* temp = local::head;
 
-	// record all the mpi boundary elements	
-	std::vector<table_elem> north;
-	std::vector<table_elem> south;
-
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		int new_added{};
 		int pre_rank = -1;
-		double coord_c = (temp -> ycoords[1] + temp -> ycoords[0]) / 2.0;	// central coordinates of the element
 	
-		// hash table to form the element length facing each neighbour rank
-		std::unordered_map<int, int> hash_length;	// <rank, length>
+
 		// south
 		// interate through face 0
-		for(auto& face_s : temp -> facen[0]){
+		for(auto it = temp -> facen[face_south].begin(); it != temp -> facen[0].end(); ++it){
 
+			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
 
-			if(face_s.face_type == 'M'){	// if mpi boundary and rank changes, record
+				if(it -> rank != pre_rank){
 
-				if(face_s.rank != pre_rank){
-					south.push_back(table_elem());
-					south.back().local_key = Get_key_fun(temp -> index[0],
-									 temp -> index[1], temp -> index[2]);
-					south.back().target_rank = face_s.rank;
-					south.back().coord = coord_c;		// y coord
-					south.back().hlevel = temp -> index[2]; 	// hlevel	
-	
-					++new_added;
+					Put_in_mpi_table(temp, it, south);
 				}
 
-				Record_length(temp -> index[2], face_s.hlevel, face_s.rank, hash_length);
+				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
 
 			}
-			else if(face_s.face_type == 'L'){
 
-				// central coord of the neighbour
-				double coord_n_l = local::Hash_elem[face_s.key] -> ycoords[0];
-				double coord_n_r = local::Hash_elem[face_s.key] -> ycoords[1];
-				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
-				if(coord_c > coord_n_c){	// neighbour is on the left side
-
-					coord_c = (temp -> ycoords[1] + coord_n_r) / 2.0;
-
-				}
-				else{	// neighbour is on the right side
-					coord_c = (temp -> ycoords[0] + coord_n_l) / 2.0;
-
-				}
-			}
-
-		
-			pre_rank = face_s.rank;
+			pre_rank = it -> rank;
 		
 		}
-		// loop the table reversely to store the mpi_length
-		if(new_added > 0){
-			for(std::vector<table_elem>::reverse_iterator rit = south.rbegin();
-				rit != south.rend(); ++rit){
 
-				rit -> mpi_length = hash_length[rit -> target_rank];	// mpi_length
-				
-				rit -> coord = coord_c;
 
-				--new_added;
-	
-				if(new_added == 0){break;}	
-			}
-		}
-
-		pre_rank = -1;
-		coord_c = (temp -> ycoords[1] + temp -> ycoords[0]) / 2.0;	// central coordinates of the element
-		hash_length.clear();
+		pre_rank = - 1;
 
 		// north
 		// iterate through face 1
-		for(auto& face_n : temp -> facen[1]){
+		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[1].end(); ++it){
 
+			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
 
-			if(face_n.face_type == 'M'){	// if mpi boundary, record
-		
-				if(face_n.rank != pre_rank){
-					north.push_back(table_elem());
-					north.back().local_key = Get_key_fun(temp -> index[0], 
-									temp -> index[1], temp -> index[2]);
-					north.back().target_rank = face_n.rank;
-					north.back().coord = coord_c;	// x direction
-					north.back().hlevel = temp -> index[2];	
-					
-					++new_added;
+				if(it -> rank != pre_rank){
+
+					Put_in_mpi_table(temp, it, north);
 				}
-				Record_length(temp -> index[2], face_n.hlevel, face_n.rank, hash_length);
+
+				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
 
 			}
-			else if(face_n.face_type == 'L'){
 
-				// central coord of the neighbour
-				double coord_n_l = local::Hash_elem[face_n.key] -> ycoords[0];
-				double coord_n_r = local::Hash_elem[face_n.key] -> ycoords[1];
-				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
-				if(coord_c > coord_n_c){	// neighbour is on the left side
-
-					coord_c = (temp -> ycoords[1] + coord_n_r) / 2.0;
-
-				}
-				else{	// neighbour is on the right side
-					coord_c = (temp -> ycoords[0] + coord_n_l) / 2.0;
-
-				}
-			}
-
-		
-			pre_rank = face_n.rank;
+			pre_rank = it -> rank;
 		
 		}
-		// loop the table reversely to store the mpi_length
-		if(new_added > 0){
-			for(std::vector<table_elem>::reverse_iterator rit = north.rbegin();
-				rit != north.rend(); ++rit){
-				rit -> mpi_length = hash_length[rit -> target_rank];
-				rit -> coord = coord_c;
-				--new_added;
-	
-				if(new_added == 0){break;}	
-			}
-		}
-//if(mpi::rank == 1){
-//
-//	std::cout << temp -> index[0] << temp -> index[1] << temp -> index[2]<< "\n";
-//}
+		
 		temp = temp -> next;
 
 	}	
 
-		// sort north and south table in the end
-		Sort_mpi_table(south, hrefinement::south, hrefinement::rank_south);
-		Sort_mpi_table(north, hrefinement::north, hrefinement::rank_north);
-//if(mpi::rank ==3){
-//	std::cout << "------------------- \n";
-//	std::cout<< "elem_num"<< local::local_elem_num << "\n";
-//	for(auto& v : north){
-//		
-//		std::cout<< "local_key "<< v.local_key << " t_rank"<< v.target_rank << " local_length "<< v.mpi_length<<" ";
-//	
-//	}
-//	std::cout<< "\n";
-//	std::cout << "------------------- \n";
-//}
-}
-
-/// @brief 
-/// Construct MPI boundary tables. Only in y direction. 
-/// @param north MPI west boundary table.
-/// @param south MPI east boundary table.
-void Construct_mpi_table_y(){
-
-	Unit* temp = local::head;
-	std::vector<table_elem> west;
-	std::vector<table_elem> east;
-
-	for(int k = 0; k < local::local_elem_num; ++k){
-		int new_added{};
-		int pre_rank = -1;
-		double coord_c = (temp -> xcoords[1] + temp -> xcoords[0]) / 2.0;	// central coordinates of the element
-
-		std::unordered_map<int, int> hash_length;
-
-		// west
-		// interate through face 2
-		for(auto& face_s : temp -> facen[2]){
-
-
-			if(face_s.face_type == 'M' ){	// if mpi boundary and rank changes, record
-
-				if(face_s.rank != pre_rank){
-					west.push_back(table_elem());
-					west.back().local_key = Get_key_fun(temp -> index[0], 
-									temp -> index[1], temp -> index[2]);
-					west.back().target_rank = face_s.rank;
-					west.back().coord = coord_c;		// x coord
-					west.back().hlevel = temp -> index[2]; 	// hlevel	
-					++new_added;
-				}
-				Record_length(temp -> index[2], face_s.hlevel, face_s.rank, hash_length);
-			}
-			else if(face_s.face_type == 'L'){
-
-				double coord_n_l = local::Hash_elem[face_s.key] -> xcoords[0];
-				double coord_n_r = local::Hash_elem[face_s.key] -> xcoords[1];
-				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
-				if(coord_c > coord_n_c){	// neighbour is on the left side
-
-					coord_c = (temp -> xcoords[1] + coord_n_r) / 2.0;
-
-				}
-				else{	// neighbour is on the right side
-					coord_c = (temp -> xcoords[0] + coord_n_l) / 2.0;
-
-				}
-			}
-		
-			pre_rank = face_s.rank;
-		
-		}
-		// loop the table reversely to store the mpi_length
-		if(new_added > 0){
-			for(std::vector<table_elem>::reverse_iterator rit = west.rbegin();
-				rit != west.rend(); ++rit){
-				
-				rit -> mpi_length = hash_length[rit -> target_rank];
-				rit -> coord = coord_c;
-				--new_added;
-	
-				if(new_added == 0){break;}	
-			}
-		}
-
-		pre_rank = -1;
-	
-		hash_length.clear();	
-		coord_c = (temp -> xcoords[0] + temp -> xcoords[1]) / 2.0;	
-
-		// east
-		// iterate through face 3
-		for(auto& face_n : temp -> facen[3]){
-
-
-			if(face_n.face_type == 'M'){	// if mpi boundary, record
-	
-				if(face_n.rank != pre_rank){	
-					east.push_back(table_elem());
-					east.back().local_key = Get_key_fun(temp -> index[0], 
-										temp -> index[1], temp -> index[2]);
-					east.back().target_rank = face_n.rank;
-					east.back().coord = coord_c;	// y direction
-					east.back().hlevel = temp -> index[2];	
-					++new_added;
-				}
-				Record_length(temp -> index[2], face_n.hlevel, face_n.rank, hash_length);
-			}
-			else if(face_n.face_type == 'L'){
-
-				double coord_n_l = local::Hash_elem[face_n.key] -> xcoords[0];
-				double coord_n_r = local::Hash_elem[face_n.key] -> xcoords[1];
-				double coord_n_c = ( coord_n_l + coord_n_r) / 2.0;
-				if(coord_c > coord_n_c){	// neighbour is on the left side
-
-					coord_c = (temp -> xcoords[1] + coord_n_r) / 2.0;
-
-				}
-				else{	// neighbour is on the right side
-					coord_c = (temp -> xcoords[0] + coord_n_l) / 2.0;
-
-				}
-			}
-
-			pre_rank = face_n.rank;
-		
-		}
-		// loop the table reversely to store the mpi_length
-		if(new_added > 0){
-			for(std::vector<table_elem>::reverse_iterator rit = east.rbegin();
-				rit != east.rend(); ++rit){
-
-				rit -> mpi_length = hash_length[rit -> target_rank];
-	
-				rit -> coord = coord_c;
-
-				--new_added;
-				if(new_added == 0){break;}	
-			}
-		}
-		temp = temp -> next;
-
-	}	
-
-		// sort north and south table in the end
-		Sort_mpi_table(west, hrefinement::west, hrefinement::rank_west);
-		Sort_mpi_table(east, hrefinement::east, hrefinement::rank_east);
-//if(mpi::rank == 3){
-//	std::cout << "--------------------"<< "\n";
-//	for(auto& v : west){
-//
-//		std::cout << "local_key "<<v.local_key<< " rank "<< v.target_rank << " ";
-//	}
-//	std::cout<< "\n";
-//	std::cout << "--------------------"<< "\n";
-//}
 }
 
 
-/// @brief sort the MPI_boundary table element in ascending sequence among the same target ranks. 
-/// @param north the unsorted MPI boundary table.
-/// @param hash_north the MPI boudary table to be formed.
-/// @param rank_north the currunt direction's neighbour rank sequnence. 
-void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std::vector<mpi_table>>& hash_north, 
-			std::vector<int>& rank_north){
-
-	if(! north.empty()){
-	
-		// first sort the element coord in ascending sequence
-		std::stable_sort(north.begin(), north.end(), 
-				[](const table_elem &left, const table_elem &right){
-				return left.coord < right.coord;});
-
-		// then record the coord of first appearance "target_rank" 
-		for(auto& v : north){
-			if(std::find(rank_north.begin(), rank_north.end(), v.target_rank) == rank_north.end()){	
-				// if this rank has not been recored
-				rank_north.push_back(v.target_rank);	// record rank
-				
-				// put it in hash
-				hash_north[v.target_rank] = std::vector<mpi_table>();
-				// owners_rank will be form in load-balancing
-				hash_north[v.target_rank].push_back({v.local_key, v.target_rank, v.hlevel,
-									v.mpi_length, 0});
-			}
-			else{	// this rank already exist
-
-				hash_north[v.target_rank].push_back({v.local_key, v.target_rank, v.hlevel,
-									v.mpi_length, 0});
-
-			}
-
-		}
-
-	}
-}
 
 
 /// @brief
@@ -406,36 +153,11 @@ void Sort_mpi_table(std::vector<table_elem>& north, std::unordered_map<int, std:
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces){
 
-//	Accum_table(south, south_accum);
-//	Accum_table(north, north_accum);
-//if(mpi::rank == 1){
-//std::cout << "-------------------------- \n";
-//	for(auto& v : south_accum){
-//		
-//		std::cout << "faces" << faces << "rank " << v.rank << " sum " << v.sum << "\n";
-//	}
-//std::cout << "-------------------------- \n";
-////	for(auto& v : north){
-////		std::cout<< "facen" << facen << " l_key " << v.local_key << " t_rank "<< v.target_rank << "\n";
-////
-////	}
-//}
-//	int s = south_accum.size();
-//	int n = north_accum.size();
-	
 	// south send, north recv
 	Sender_recver(south, north, facen);
 
-
 	// north send, south recv. 
 	Sender_recver(north, south, faces);
-//if(mpi::rank == 0){
-//
-//	std::cout<< " ---------------------------------- \n";
-//
-//	std::cout<< "check"<< "\n";
-//	std::cout<< " ---------------------------------- \n";
-//}
 }
 
 

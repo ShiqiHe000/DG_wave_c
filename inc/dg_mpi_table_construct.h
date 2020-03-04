@@ -5,8 +5,8 @@
 #include <vector>
 #include <unordered_map>
 
-void Construct_mpi_table_x();
-void Construct_mpi_table_y();
+void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north
+				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south);
 
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces);
