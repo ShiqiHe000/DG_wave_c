@@ -89,6 +89,11 @@ void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it,
 
 		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
+//if(mpi::rank == 0){
+//
+//	std::cout<< "rank "<< facen_it -> rank<< "\n";
+//	std::cout<< "n_key "<< local_key<< "\n";
+//}
 		table[facen_it -> rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
 
 	}
@@ -163,6 +168,14 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 		pre_level[2]--;
 	}
 
+//if(mpi::rank == 0){
+//	std::cout<< "neighbours \n";
+//	for(auto& v : neighbours[local_key]){
+//
+//		std::cout<< v << " "<< "\n";
+//	}
+//	std::cout<< "\n";
+//}
 }
 
 
@@ -260,6 +273,9 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 	}
 	else if(facen == 1){	// north neighbour
 	
+//if(mpi::rank == 0){
+//	std::cout<< "local_key "<< local_key<< "\n";
+//}
 		Neighbours_array_x(i + 1, j, k, local_key, facen, neighbours);
 
 	}
@@ -311,7 +327,6 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south, 
 				std::unordered_map<int, std::vector<int>>& neighbours_south){
-
 	Unit* temp = local::head;
 
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -343,7 +358,7 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 		// north
 		// iterate through face 1
-		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[1].end(); ++it){
+		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[face_north].end(); ++it){
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
 
@@ -351,9 +366,13 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 					Put_in_mpi_table(temp, it, north);
 					Possible_neighbours(temp, neighbours_north, face_north);
+//if(mpi::rank == 0){
+//
+//	std::cout<< "check \n";
+//}
 				}
 
-				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
+				Record_length(temp -> index[2], it -> hlevel, it -> rank, north);
 
 			}
 
@@ -365,6 +384,19 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 	}	
 
+//if(mpi::rank == 0){
+//	std::cout<< "-------------------------------------- \n";
+//	for(auto& v: north){
+//		std::cout<< "n_rank "<< v.first<< "\n";
+//		for(auto& a : v.second){
+//
+//			std::cout<< a.mpi_length << " ";
+//
+//		}
+//		std::cout<< "\n";
+//	}
+//	std::cout<< "-------------------------------------- \n";
+//}
 }
 
 
