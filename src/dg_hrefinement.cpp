@@ -39,14 +39,47 @@ void h_refinement(){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-//		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//if(mpi::rank == 0 || mpi::rank == 2){
-//	rand_num = 1;
-//
-//}
-//else{
-//	rand_num = 9;
-//}
+		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+if(mpi::rank == 0){
+	if(key_now == 11){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+
+}
+else if(mpi::rank == 1){
+
+	if(key_now == 1 || key_now == 79){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+}
+else if(mpi::rank == 2){
+
+	if(key_now == 10 || key_now == 172){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+
+}
+else if(mpi::rank == 3){
+
+	if(key_now == 3 && local::local_elem_num == 3){
+
+		rand_num = 1;
+	}
+	else{
+
+		rand_num = 9;
+	}
+
+}
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 
@@ -129,7 +162,30 @@ void h_refinement(){
 			}	
 			// form then external interfaces between 4 children and updates their neighbour's faces			
 			Non_sibling_interfaces(temp2, old_key);
-
+//if(mpi::rank == 3){
+//
+//	if(local::local_elem_num == 3){
+//
+//		auto test_it = local::Hash_elem[106] -> facen[1].begin();
+//
+//		std::cout<< "106 neighbour "<< test_it -> key << "\n";
+//
+//		auto test_it2 = local::Hash_elem[46] -> facen[1].begin();
+//
+//		std::cout<< "46 neighbour "<< test_it2 -> key << "\n";
+//
+//		auto test_it3 = local::Hash_elem[191] -> facen[0].begin();
+//
+//		std::cout<< "191 neighbour "<< test_it3 -> key << "\n";
+//		auto p_it = local::Hash_elem[3] -> facen[1].begin();
+//
+//		for(; p_it != local::Hash_elem[3] -> facen[1].end(); ++p_it){
+//
+//			std::cout<< p_it -> key<< " ";
+//		}
+//		std::cout<< "\n";
+//	}
+//}
 			temp2 -> next = temp -> next;
 
 			// erase the parent
@@ -189,7 +245,11 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 
 	int p_level = local::Hash_elem[parent] -> index[2];	// parent's level
 	int n_level = local::Hash_elem[parent] -> facen[facen].front().hlevel;
-
+//if(mpi::rank == 3){
+//
+//	std::cout<< "facen "<< facen<< " p_level"<< p_level<< " n_level "<< n_level<< "\n";
+//
+//}
 	// not on the physical boundary
 	std::array<int, 2> two = {key1, key2};
 	if(n_level <= p_level){		// neighbour is larger or at the same size as parent. Inherit form parent. Treate 'M' and 'L' equally.
@@ -240,7 +300,9 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 	}
 	else{	// neighbour size is smaller than parent
 
-
+//if(mpi::rank == 3){
+//	std::cout<< "check \n";
+//}
 		// iterator for parent facen
 		auto it = local::Hash_elem[parent] -> facen[facen].begin();
 
@@ -254,7 +316,10 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 				Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, it -> key,
 							it -> rank};
 				local::Hash_elem[two[i]] -> facen[facen].emplace_back(obj);
-
+//if(mpi::rank == 3){
+//
+//	std::cout<< "p neighbour "<< it -> key << "\n";
+//}
 				// updates neighbours
 				if(it -> face_type == 'L'){	// only updates local elements
 					int n_key = it -> key; // neighbour's key

@@ -83,7 +83,7 @@ void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it,
 		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		// mpi_length and owners_rank will be recorded later
-		table[facen_it -> rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
+		table[facen_it -> rank].push_back({local_key, facen_it -> rank, temp -> index[2], 0, 0});
 	}
 	else{ // this rank is already been record
 
@@ -94,7 +94,7 @@ void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it,
 //	std::cout<< "rank "<< facen_it -> rank<< "\n";
 //	std::cout<< "n_key "<< local_key<< "\n";
 //}
-		table[facen_it -> rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
+		table[facen_it -> rank].push_back({local_key, facen_it -> rank, temp -> index[2], 0, 0});
 
 	}
 
@@ -474,6 +474,10 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 				send_info[5 * k + 3] = local::Hash_elem[it -> local_key] -> m;	// pordery
 				send_info[5 * k + 4] = it -> mpi_length;
 				++it;
+//if(mpi::rank == 2){
+//
+//	std::cout<< "local_key "<< send_info[5 * k] << " hlevel "<< send_info[5 * k + 1]<< "\n";
+//}
 			}
 	
 			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
