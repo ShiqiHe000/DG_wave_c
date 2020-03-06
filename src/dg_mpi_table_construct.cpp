@@ -227,7 +227,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen,
 	}
 
 	pre_level[0] = i / 2;
-	pre_level[1] = (j - 1) / 2;
+	pre_level[1] = j / 2;
 	pre_level[2] = k - 1;
 
 	elem = same_size + 1;
@@ -397,6 +397,25 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 //	}
 //	std::cout<< "-------------------------------------- \n";
 //}
+
+//if(mpi::rank == 0){
+//
+//	std::cout<< "-------------------------------------- \n";
+//	for(auto& v : neighbours_north){
+//
+//		std::cout<< "local_key "<< v.first<< "\n";
+//		for(auto& a : v.second){
+//
+//			std::cout<< a << " ";
+//
+//		}
+//
+//		std::cout<< "\n";
+//
+//	}
+//	std::cout<< "-------------------------------------- \n";
+//}
+	
 }
 
 
