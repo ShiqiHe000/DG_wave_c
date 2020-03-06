@@ -9,6 +9,7 @@
 #include <mpi.h>
 #include <unordered_map>
 #include "dg_param.h"
+#include <cmath>
 #include <iostream>	// test
 
 // forward declaration ------------------------------------------------------------------
@@ -29,7 +30,7 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& mpi_table);
 
 void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-			std::unordered_map<int, std::vector<mpi_table>>& mpi_table);
+			std::unordered_map<int, std::vector<mpi_table>>& table);
 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 
@@ -40,8 +41,11 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 
 void Total_neighbours(int level_now, int& all, int& my_position);
 
-void Neighbours_array_x(int i, int j, int k, int local_key, int facen);
-void Neighbours_array_y(int i, int j, int k, int local_key, int facen);
+void Neighbours_array_x(int i, int j, int k, int local_key, int facen, 
+			std::unordered_map<int, std::vector<int>>& neighbours);
+
+void Neighbours_array_y(int i, int j, int k, int local_key, int facen, 
+			std::unordered_map<int, std::vector<int>>& neighbours);
 //---------------------------------------------------------------------------------------
 
 /// @brief
@@ -70,22 +74,22 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 /// @param mpi_table The relevent MPI bountary table. 
 /// @param target_rank The neighbour's rank. 
 void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-			std::unordered_map<int, std::vector<mpi_table>>& mpi_table){
+			std::unordered_map<int, std::vector<mpi_table>>& table){
 
-	if(mpi_table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
+	if(table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
 
-		mpi_table[target_rank] = std::vector<mpi_table>();
+		table[facen_it -> rank] = std::vector<mpi_table>();
 
 		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		// mpi_length and owners_rank will be recorded later
-		mpi_table[target_rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
+		table[facen_it -> rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
 	}
 	else{ // this rank is already been record
 
 		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
-		mpi_table[target_rank].push_back({local_key, target_rank, facen_it -> hlevel, 0, 0});
+		table[facen_it -> rank].push_back({local_key, facen_it -> rank, facen_it -> hlevel, 0, 0});
 
 	}
 
@@ -99,7 +103,9 @@ void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it,
 /// @param k same size neighbour's h-refinement level.
 /// @param local_key the key of the current element.
 /// @param facen facen face number. 
-void Neighbours_array_x(int i, int j, int k, int local_key, int facen){
+/// @param neighbours neighbours list. 
+void Neighbours_array_x(int i, int j, int k, int local_key, int facen, 
+			std::unordered_map<int, std::vector<int>>& neighbours){
 
 	int x{}; 
 	
@@ -132,7 +138,7 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen){
 		for(int n = layer_elem - 1; n >= 0; --n){
 			int key = Get_key_fun(pre_level[0], pre_level[1] + n, pre_level[2]);				
 			
-			neighbours[local_key].left[elem] = key;
+			neighbours[local_key][elem] = key;
 
 			elem--;
 		}
@@ -148,13 +154,13 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen){
 
 		int key = Get_key_fun(pre_level[0], pre_level[1], pre_level[2]);
 
-		neighbours[local_key].left[elem] = key;
+		neighbours[local_key][elem] = key;
 
 		++elem;
 	
 		pre_level[0] /= 2;
 		pre_level[1] /= 2;
-		pre_level--;
+		pre_level[2]--;
 	}
 
 }
@@ -167,7 +173,9 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen){
 /// @param k same size neighbour's h-refinement level.
 /// @param local_key the key of the current element.
 /// @param facen facen face number. 
-void Neighbours_array_y(int i, int j, int k, int local_key, int facen){
+/// @param neighbours neighbours list. 
+void Neighbours_array_y(int i, int j, int k, int local_key, int facen, 
+			std::unordered_map<int, std::vector<int>>& neighbours){
 
 	int y{};
 	if(facen == 2){
@@ -221,7 +229,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen){
 	
 		pre_level[0] /= 2;
 		pre_level[1] /= 2;
-		pre_level--;
+		pre_level[2]--;
 	}
 }
 
@@ -247,20 +255,20 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 	// first form the same size neighbour
 	if(facen == 0){	// south neighbour
 
-		Neighbours_array_x(i - 1, j, k, local_key, facen);
+		Neighbours_array_x(i - 1, j, k, local_key, facen, neighbours);
 
 	}
 	else if(facen == 1){	// north neighbour
 	
-		Neighbours_array_x(i + 1, j, k, local_key, facen);
+		Neighbours_array_x(i + 1, j, k, local_key, facen, neighbours);
 
 	}
 	else if(facen == 2){	// west
-		Neighbours_array_y(i, j - 1, k, local_key, facen);
+		Neighbours_array_y(i, j - 1, k, local_key, facen, neighbours);
 	}
 	else{	// east
 	
-		Neighbours_array_y(i, j + 1, k, local_key, facen);
+		Neighbours_array_y(i, j + 1, k, local_key, facen, neighbours);
 	}
 
 }
@@ -320,7 +328,7 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 					Put_in_mpi_table(temp, it, south);
 					
-					Possible_neighbours(temp, neighbours_south, facen_south);
+					Possible_neighbours(temp, neighbours_south, face_south);
 				}
 
 				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
@@ -342,7 +350,7 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 				if(it -> rank != pre_rank){
 
 					Put_in_mpi_table(temp, it, north);
-					Possible_neighbours(temp, neighbours_north, facen_north);
+					Possible_neighbours(temp, neighbours_north, face_north);
 				}
 
 				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
@@ -469,9 +477,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
 			
-			Update_hash(recv_info, north, update_dir, num, v.first);
-			
-			Update_hash(recv_info, table, update_dir, num, v.first, neighbours_north);
+			Update_hash(recv_info, north, update_dir, num, v.first, neighbours_north);
 		}
 
 	}
@@ -525,8 +531,8 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 		int l_tol{};
 
 		// find in neighbours list	
-		for(auto itn = std::find(neighbours[it -> local_key].begin();
-				neighbours[it -> local_key].end(); ++itn){
+		for(auto itn = neighbours[it -> local_key].begin();
+			itn != neighbours[it -> local_key].end(); ++itn){
 
 
 			for(int k = 0; k < num; ++k){

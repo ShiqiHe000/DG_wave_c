@@ -20,7 +20,7 @@ void Adapt(){
 	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
 				 hrefinement::west, 2, hrefinement::neighbours_west);
 
-	Update_mpi_boundaries(hrefinement::east, 3, hrefinement::neighbours_east
+	Update_mpi_boundaries(hrefinement::east, 3, hrefinement::neighbours_east,
 				hrefinement::west, 2, hrefinement::neighbours_west);	
 //if(mpi::rank == 0){
 //
