@@ -2,29 +2,12 @@
 #define DG_BOUNDARY_TABLE_H
 
 /// @brief
-/// MPI boundary information table.
-/// @param local_key the key of current elememt.
-/// @param target_rank neighbour's rank.
-/// @param coord element coordinate of related direction. (x:j, y:i).
-/// @param hlevel current element's hlevel.
-/// @param mpi_length The portion of the element interface length that exposes to the mpi boundary. 
-/// @param owners_rank The future (after repartitioning) rank of current element.
-//struct table_elem{
-//
-//	int local_key;
-//
-//	int target_rank;
-//
-////	double coord;
-//
-//	int hlevel;
-//
-//	int mpi_length;
-//	
-//	int owners_rank; // useless?
-//};
-
-
+/// Structure for MPI table. 
+/// @param local_key Current element's key.
+/// @param target_rank Neighbour's rank.
+/// @param hlevel Current element's h-refinemnt level.
+/// @param mpi_length The length of current element that is exposed to target_rank.
+/// @param owners_rank The rank of the owner of this element after repartitioning. 
 struct mpi_table{
 
 	int local_key;
@@ -38,19 +21,16 @@ struct mpi_table{
 	int owners_rank;
 };
 
-
 /// @brief
-/// Accumulation table. Store the neighbour ranks and the number of elements that is facing to the corresponding rank.
-/// @param rank neighbour rank.
-/// @param sum element number in current rank that is facing to the neighbour rank.
-//struct accum_elem{
+/// One element could have maximum two remote nieghbours in one direction (x or y).
+/// Store the possible neighbours' key the corresponding vector. Left == face 0 or face 2.
+/// Right == face 1 for face 3.
+//struct two_sides{
 //
-//	int rank;
+//	std::vector<int> left;
 //	
-//	int sum{};
-//
+//	std::vector<int> right;
 //};
-
 
 
 #endif

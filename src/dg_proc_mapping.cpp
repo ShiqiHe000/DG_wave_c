@@ -27,14 +27,13 @@ void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable);
 void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo, 
 			std::unordered_map<int, std::vector<mpi_table>>& recvo, int facei);
 
-void Change_face(int k, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
-			std::vector<Unit::Face>::iterator& it_face);
-
 void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank);
 
 void Update_mpi_boundary();
 
+void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
+			std::vector<Unit::Face>::iterator& it_face);
 // ------------------------------------------------------------
 
 
@@ -433,20 +432,18 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 		for(auto& v : sendo){
 
 			int num_elem = v.second.size();	
-			std::vector<int> send_info(num_elem * 4);
+			std::vector<int> send_info(num_elem * 2);
 			auto it = v.second.begin();
 	
 			// serialization the struct
 			for(int k = 0; k < num_elem; ++k){
 
-				send_info[4 * k] = it -> local_key;	
-				send_info[4 * k + 1] = it -> hlevel;
-				send_info[4 * k + 2] = it -> mpi_length;
-				send_info[4 * k + 3] = it -> owners_rank;
+				send_info[2 * k] = it -> local_key;	
+				send_info[2 * k + 1] = it -> owners_rank;
 				++it;
 			}
 	
-			MPI_Isend(&send_info[0], num_elem * 4, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
+			MPI_Isend(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
 
 			++i;
 
@@ -491,63 +488,22 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 /// @param recv_info Received infomation.
 /// @param otable MPI boundary table.
 /// @param ito iterator of the MPI boundary table.
-/// @param num1 number of element received * 4.
+/// @param num1 number of element received * 2.
 void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank){
 
-	int num = num1 / 4;
+	int num = num1 / 2;
 
-	int l_tol;
+	for(auto ito = otable[target_rank].begin(); ito != otable[target_rank].end(); ++ito){
 
-	auto ito = otable[target_rank].begin();
+		for(auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
+			it_face != local::Hash_elem[ito -> local_key] -> facen[facei].end(); ++it_face){
 
-	for(int k = 0; k < num;){
+			if(it_face -> face_type == 'M' && it_face -> rank == target_rank){
 
-		int l_local = ito -> mpi_length;	// local element length
-		int l_n = recv_info[4 * k + 2];	// recv_info: key, rank, hlevel
-
-		if(l_local == l_n){	// if same size
-
-			auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
-			Change_face(k, recv_info, ito, it_face);
-
-			++ito; 	// to next local element
-			++k;
-		}
-		else if(l_local < l_n){	// local element is smaller
-	
-			l_tol = 0;
-			while((l_tol < l_n) && (ito != otable[target_rank].end())){
-
-				auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
-				Change_face(k, recv_info, ito, it_face);
-
-				l_tol += ito -> mpi_length;
-
-				++ito;
-
-				if((l_tol + Elem_length(ito -> hlevel)) > l_n) {break;}
-				
+				Change_face(num, recv_info, ito, it_face);
 			}
-			++k;
-		}
-		else{	// local is larger
 
-			// loop till we locate the neighbour's key
-			for(auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin(); 
-				it_face != local::Hash_elem[ito -> local_key] -> facen[facei].end(); ++it_face){
-				
-				if(it_face -> key == recv_info[4 * k]){	// find the neighbour
-	
-					Change_face(k, recv_info, ito, it_face);
-					
-					++k;	// next element in the otable
-					
-				}
-				
-			}
-			
-			++ito;
 		}
 
 	}
@@ -560,26 +516,31 @@ void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 /// @param recv_info Received information.
 /// @param ito interator of the updating MPI boundary table.
 /// @param it_face iterator of facen at the corresponding position. 
-void Change_face(int k, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
+void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face){
 
-	if(recv_info[4 * k + 3] == (ito -> owners_rank)){	// if will be in the same rank
+	for(int k = 0; k < num; ++k){	// loop to find the neighbour
+
+		if(recv_info[2 * k] == it_face -> key){	// find it
+
+			if(recv_info[2 * k + 1] == (ito -> owners_rank)){	// if will be in the same rank
+				
+				// change 'M' to 'L'
+				it_face -> face_type = 'L';
+				it_face -> rank = ito -> owners_rank;
+			}
+			else{	// not in the same rank
+				int rank_old = it_face -> rank;
 		
-		// change 'M' to 'L'
-		it_face -> face_type = 'L';
-		it_face -> rank = ito -> owners_rank;
+				if(rank_old != recv_info[2 * k + 1]){	// if this element will to assign to a new rank
+					// change to target rank
+					it_face -> rank = recv_info[2 * k + 1];
+		
+				}	// else no change
+			}
+
+		}
 	}
-	else{	// not in the same rank
-		int rank_old = it_face -> rank;
-
-		if(rank_old != recv_info[4 * k + 3]){	// if this element will to assign to a new rank
-			// change to target rank
-			it_face -> rank = recv_info[4 * k + 3];
-
-		}	// else no change
-	}
-
-
 }
 
 

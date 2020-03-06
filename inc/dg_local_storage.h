@@ -33,21 +33,16 @@ namespace local{
 
 namespace hrefinement{
 
-	
-	extern std::vector<int> rank_north;
-	extern std::vector<int> rank_south;
-	extern std::vector<int> rank_west;
-	extern std::vector<int> rank_east;
-
 	extern std::unordered_map<int, std::vector<mpi_table>> north;
 	extern std::unordered_map<int, std::vector<mpi_table>> south;
 	extern std::unordered_map<int, std::vector<mpi_table>> west;
 	extern std::unordered_map<int, std::vector<mpi_table>> east;
 
-//	extern std::vector<accum_elem> south_accum;
-//	extern std::vector<accum_elem> north_accum;
-//	extern std::vector<accum_elem> west_accum;
-//	extern std::vector<accum_elem> east_accum;
+	
+	extern std::unordered_map<int, std::vector<int>> neighbours_north;
+	extern std::unordered_map<int, std::vector<int>> neighbours_south;
+	extern std::unordered_map<int, std::vector<int>> neighbours_east;
+	extern std::unordered_map<int, std::vector<int>> neighbours_west;
 };
 
 namespace LB{

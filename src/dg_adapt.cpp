@@ -10,12 +10,18 @@ void Adapt(){
 	h_refinement();
 
 	// x direction
-	Construct_mpi_table_x();
-	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::south, 0);	
+	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
+				 hrefinement::south, 0, hrefinement::neighbours_south);
+
+	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::neighbours_north,
+				hrefinement::south, 0, hrefinement::neighbours_south);	
 
 	// y direction
-	Construct_mpi_table_y();
-	Update_mpi_boundaries(hrefinement::west, 2, hrefinement::east, 3);	
+	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
+				 hrefinement::west, 2, hrefinement::neighbours_west);
+
+	Update_mpi_boundaries(hrefinement::east, 3, hrefinement::neighbours_east
+				hrefinement::west, 2, hrefinement::neighbours_west);	
 //if(mpi::rank == 0){
 //
 //	std::cout<< "check" << "\n";
@@ -26,14 +32,14 @@ void Adapt(){
 /// Remove all the elements inside the tables (MPI tables and accumlation table)
 void Clear_tables(){
 
-//	hrefinement::south_accum.clear();
-//	hrefinement::north_accum.clear();
 	hrefinement::south.clear();
 	hrefinement::north.clear();
-
-//	hrefinement::west_accum.clear();
-//	hrefinement::east_accum.clear();
 	hrefinement::west.clear();
 	hrefinement::east.clear();
+
+	hrefinement::neighbours_north.clear();	
+	hrefinement::neighbours_south.clear();	
+	hrefinement::neighbours_east.clear();	
+	hrefinement::neighbours_west.clear();	
 
 }
