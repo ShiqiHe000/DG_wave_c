@@ -38,14 +38,19 @@ add_executable(main ${SOURCES})
 # MPI---------------------------------------------------------------------------------------
 
 # find MPI package
-find_package(MPI REQUIRED)
-if(MPI_NOFOUND)
-	message(ERROR "MPI is not found. Please check FindMPI.")
-endif(MPI_NOFOUND)
+#find_package(MPI REQUIRED)
+#if(MPI_NOFOUND)
+#	message(ERROR "MPI is not found. Please check FindMPI.")
+#endif(MPI_NOFOUND)
 
+include_directories(/home/travis/build/ShiqiHe000/DG_wave_c/openmpi/include)
+find_library(MPI NAMES openmpi HINTS /home/travis/build/ShiqiHe000/DG_wave_c/openmpi/lib)
+if(MPI_NOTFOUND)
+	message(ERROR "openmpi not found.")
+endif(MPI_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # libraires links
-target_link_libraries(main PUBLIC MPI::MPI_CXX )
+target_link_libraries(main PUBLIC ${MPI} )
 #target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
