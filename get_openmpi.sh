@@ -17,5 +17,5 @@ else
  rm -rf openmpi-4.0.2
 fi
 
-test -n $CC && unset CC
-test -n $CXX && unset CXX
+#test -n $CC && unset CC
+#test -n $CXX && unset CXX
