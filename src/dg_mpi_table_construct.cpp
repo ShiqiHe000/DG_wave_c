@@ -9,7 +9,6 @@
 #include <mpi.h>
 #include <unordered_map>
 #include "dg_param.h"
-#include <cmath>
 #include "dg_neighbour_list.h"
 #include <iostream>	// test
 

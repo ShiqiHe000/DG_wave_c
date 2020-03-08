@@ -10,19 +10,24 @@
 #include <array>
 #include <cassert>
 #include "dg_elem_length.h"
+#include "dg_neighbour_list.h"
+#include <algorithm>
 #include <iostream>	// test
 
 /// global variable
 double xcoord_new[3]{};
 double ycoord_new[3]{};
 
-/// forward declaration
+/// forward declaration ----------------------------------------------------------------------------
 void Get_coordinates(int ith, double* xcoord, double* ycoord);
 void Gen_index(int ith, int* index, int* index_new);
 void Two_siblings(int new_key, int position);
 void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children);
 void Non_sibling_interfaces(Unit* last, int parent);
 void Form_one_direction(int key1, int key2, int parent, int facen);
+void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
+// --------------------------------------------------------------------------------------------------
+
 
 /// @brief
 /// Random h-refinement scheme. Each element has 30% chance to split.
@@ -199,18 +204,64 @@ void Non_sibling_interfaces(Unit* last, int parent){
 	Form_one_direction(children[3], children[2], parent, 3);
 }
 
-//void Possible_neighbours_list_x(int i, int j, int k, int local_key, int facen, std::vector<int>& neighbours){
-//
-//	int x{};
-//
-//	if(facen == 0){	// south
-//		x = 1;
-//	}
-//
-//	
-//
-//}
+/// @brief
+/// Loop through parent's face and sign out the nieghbours to the two children on one face.
+/// Plus update the neighbours face info.
+/// @param parent parent's key.
+/// @param local_key child's key.
+/// @parem facen face number.
+/// @param neighbours vector of the possible neighbours.
+void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours){
 
+	int l_tol{};
+	int local_length = Elem_length(local::Hash_elem[local_key] -> index[2]);
+
+	for(auto it = local::Hash_elem[parent] -> facen[facen].begin(); 
+		it != local::Hash_elem[parent] -> facen[facen].end(); ++it){
+
+		auto it_n = std::find(neighbours.begin(), neighbours.end(), it -> key);
+
+		if(it_n != neighbours.end()){	// if find, stores
+			
+			Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, 
+						it -> key, it -> rank};
+				
+			local::Hash_elem[local_key] -> facen[facen].emplace_back(obj);
+
+			// update neighbours face info
+			if(it -> face_type == 'L'){	// only local element
+				
+				int n_dir = Opposite_dir(facen);	// neighbour face direction
+				int n_key = it -> key;	// neighbour's key
+
+				// erase parent info, if exist
+				for(auto it_nf = local::Hash_elem[n_key] -> facen[n_dir].begin();
+					it_nf != local::Hash_elem[n_key] -> facen[n_dir].end(); ++it_nf){
+
+					if(it_nf -> key == parent){	// find old parent info
+				
+						it_nf = local::Hash_elem[n_key] -> facen[n_dir].erase(it_nf);
+						break;
+					}
+
+				}
+				// child info
+				Unit::Face obj2 = {'L', local::Hash_elem[local_key] -> index[2], 
+							local::Hash_elem[local_key] -> n, 
+							local::Hash_elem[local_key] -> m, 
+							local_key, mpi::rank};
+				local::Hash_elem[n_key] -> facen[n_dir].emplace_back(obj2);
+			}
+			
+
+			l_tol += Elem_length(it -> hlevel);
+
+			while(l_tol >= local_length){ break; }
+		}
+	
+	}
+	
+}
 
 /// @brief 
 /// Form one direction's non-siblnig interfaces of two children.
@@ -233,170 +284,74 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 	}
 
 	std::array<int, 2> two = {key1, key2};
+	
+	std::unordered_map<int, std::vector<int>> neighbours;
+
 	// not on the physical boundary, form possible nieghbour list and search
 	if(facen == 0){	// south
 
 		for(auto& key : two){
+	
+			int i = local::Hash_elem[key] -> index[0];
+			int j = local::Hash_elem[key] -> index[1];
+			int k = local::Hash_elem[key] -> index[2];
 
+			// form neighbour list
+			Neighbours_array_x(i - 1, j, k, key, facen, neighbours);
 			
+			// form child's neighbours + updates neighbours' interfaces			
+			Match_neighbours(parent, key, facen, neighbours[key]);
 		}
 	}
 	else if(facen == 1){	// north 
 
+		for(auto& key : two){
+	
+			int i = local::Hash_elem[key] -> index[0];
+			int j = local::Hash_elem[key] -> index[1];
+			int k = local::Hash_elem[key] -> index[2];
+
+			// form neighbour list
+			Neighbours_array_x(i + 1, j, k, key, facen, neighbours);
+			
+			// form child's neighbours + updates neighbours' interfaces			
+			Match_neighbours(parent, key, facen, neighbours[key]);
+		}
 
 	}
 	else if(facen == 2){	// west
 
+		for(auto& key : two){
+	
+			int i = local::Hash_elem[key] -> index[0];
+			int j = local::Hash_elem[key] -> index[1];
+			int k = local::Hash_elem[key] -> index[2];
+
+			// form neighbour list
+			Neighbours_array_y(i, j - 1, k, key, facen, neighbours);
+			
+			// form child's neighbours + updates neighbours' interfaces			
+			Match_neighbours(parent, key, facen, neighbours[key]);
+		}
 
 	}
 	else{	// east
 
-
-	}
-
-	int p_level = local::Hash_elem[parent] -> index[2];	// parent's level
-	int n_level = local::Hash_elem[parent] -> facen[facen].front().hlevel;
+		for(auto& key : two){
 	
-	// not on the physical boundary
-	std::array<int, 2> two = {key1, key2};
-	if(n_level <= p_level){		// neighbour is larger or at the same size as parent. Inherit form parent. Treate 'M' and 'L' equally.
+			int i = local::Hash_elem[key] -> index[0];
+			int j = local::Hash_elem[key] -> index[1];
+			int k = local::Hash_elem[key] -> index[2];
 
-		// key1, key2
-		for(auto& a : two){
-			local::Hash_elem[a] -> facen[facen].push_back(Unit::Face());
-			local::Hash_elem[a] -> facen[facen].front().face_type = local::Hash_elem[parent] -> facen[facen].front().face_type;
-			local::Hash_elem[a] -> facen[facen].front().hlevel = local::Hash_elem[parent] -> facen[facen].front().hlevel;
-			local::Hash_elem[a] -> facen[facen].front().porderx = local::Hash_elem[parent] -> facen[facen].front().porderx;
-			local::Hash_elem[a] -> facen[facen].front().pordery = local::Hash_elem[parent] -> facen[facen].front().pordery;
-			local::Hash_elem[a] -> facen[facen].front().key = local::Hash_elem[parent] -> facen[facen].front().key;
-			local::Hash_elem[a] -> facen[facen].front().rank = local::Hash_elem[parent] -> facen[facen].front().rank;
-		}
-
-		// updates neighbour's facen table (skip 'M', only updates 'L')
-		if(local::Hash_elem[parent] -> facen[facen].front().face_type == 'L'){
-	
-			int n_key = local::Hash_elem[parent] -> facen[facen].front().key;	// neighbour's key
-			int n_dir = Opposite_dir(facen);	// neighbour face direction
-
-			// erase the parent info, and add two children info
-			for(auto it = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
-				it != local::Hash_elem[n_key] -> facen[n_dir].end(); ){
-				// loop till we find the parent info
-				if(it -> key == parent){
-					it = local::Hash_elem[n_key] -> facen[n_dir].erase(it);	// return the next vaild iterator
-
-					Unit::Face elem1 = {'L', local::Hash_elem[key1] -> index[2], 
-								local::Hash_elem[key1] -> n, 
-								local::Hash_elem[key1] -> m, 
-								key1, mpi::rank};	// 1st child
-					Unit::Face elem2 = {'L', local::Hash_elem[key2] -> index[2], 
-								local::Hash_elem[key2] -> n, 
-								local::Hash_elem[key2] -> m, 
-								key2, mpi::rank};	// 2nd child
-					
-					it = local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem1);
-					++it;
-					it = local::Hash_elem[n_key] -> facen[n_dir].emplace(it, elem2);
-					break;	// emplace two neighbours, return
-				}
-				
-				++it;
-			}
+			// form neighbour list
+			Neighbours_array_y(i, j + 1, k, key, facen, neighbours);
+			
+			// form child's neighbours + updates neighbours' interfaces			
+			Match_neighbours(parent, key, facen, neighbours[key]);
 		}
 
 	}
-	else{	// neighbour size is smaller than parent
 
-		// iterator for parent facen
-		auto it = local::Hash_elem[parent] -> facen[facen].begin();
-
-		for(int i = 0; i < 2; ++i){
-
-			int c_length = Elem_length(local::Hash_elem[two[i]] -> index[2]);	// child length				
-
-			int n_length = Elem_length(it -> hlevel);	// neighbour length
-
-			if(n_length == c_length){	// if length matches
-				Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, it -> key,
-							it -> rank};
-				local::Hash_elem[two[i]] -> facen[facen].emplace_back(obj);
-				
-				// updates neighbours
-				if(it -> face_type == 'L'){	// only updates local elements
-					int n_key = it -> key; // neighbour's key
-					int n_dir = Opposite_dir(facen);
-					for(auto it2 = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
-						it2 != local::Hash_elem[n_key] -> facen[n_dir].end(); ++it2 ){
-
-						if(it2 -> key == parent){	// find parent
-
-							it2 = local::Hash_elem[n_key] -> facen[n_dir].erase(it2);
-
-							Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
-								local::Hash_elem[two[i]] -> n, 
-								local::Hash_elem[two[i]] -> m, 
-								two[i], mpi::rank};	
-
-							it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
-
-							break;	// only emplace 1 elem
-						}
-				
-					}
-				
-				}
-				++it;
-				
-			}
-			else{	// neighbour is smaller than child-------------------------------------------------------------
-		
-				int l_accum{};
-				
-				while((l_accum < c_length) && (it != local::Hash_elem[parent] -> facen[facen].end())){
-
-					n_length = Elem_length(it -> hlevel);	// neighbour length
-
-					Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, it -> key,
-							it -> rank};
-					local::Hash_elem[two[i]] -> facen[facen].emplace_back(obj);
-
-					l_accum += n_length;
-
-					// updates neighbours
-					if(it -> face_type == 'L'){	// only updates local elements
-						int n_key = it -> key; // neighbour's key
-						int n_dir = Opposite_dir(facen);
-						for(auto it2 = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
-							it2 != local::Hash_elem[n_key] -> facen[n_dir].end(); ++it2 ){
-
-							if(it2 -> key == parent){	// find parent
-
-								it2 = local::Hash_elem[n_key] -> facen[n_dir].erase(it2);
-
-								Unit::Face obj2 = {'L', local::Hash_elem[two[i]] -> index[2], 
-									local::Hash_elem[two[i]] -> n, 
-									local::Hash_elem[two[i]] -> m, 
-									two[i], mpi::rank};	
-
-								it2 = local::Hash_elem[n_key] -> facen[n_dir].emplace(it2, obj2);
-
-								break;	// only emplace 1 elem
-							}
-					
-						}
-					
-					}
-					++it;
-
-				}		
-				
-			} //----------------------------------------------------------------------------------------------------------
-
-		}
-
-
-	}
-	
 }
 
 

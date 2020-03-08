@@ -1,6 +1,9 @@
 #include "dg_neighbour_list.h"
 #include <unordered_map>
 #include <vector>
+#include "dg_cantor_pairing.h"
+#include "dg_param.h"
+#include <cmath>
 
 // forward declaration-----------------------------------------------------
 void Total_neighbours(int level_now, int& all, int& my_position);
