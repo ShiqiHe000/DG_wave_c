@@ -371,22 +371,7 @@ void Update_mpi_boundary(){
 	Ownership_one_dir(hrefinement::west);
 	Ownership_one_dir(hrefinement::east);
 	//-------------------------------------------------------------------------
-//if(mpi::rank == 0){
-//
-//	std::cout<< "----------------------- \n";
-//	for(auto& v : hrefinement::north){
-//
-//		std::cout<< "key "<< v.local_key << " owner "<< v.owners_rank << " ";
-//
-//	}
-//	std::cout<< "\n";
-//	std::cout<< "----------------------- \n";
-//
-//}
-//if(mpi::rank == 0){
-//
-//	std::cout<< "check \n";
-//}
+
 	// x direction-----------------------------------------------------------------------------------
 	
 	// north send and south recv
@@ -404,10 +389,6 @@ void Update_mpi_boundary(){
 	// east send and west recv
 	Send_recv_ownership(hrefinement::east, hrefinement::west, 2);
 	//-----------------------------------------------------------------------------------------------
-//if(mpi::rank == 1){
-//
-//	std::cout<< "check \n";
-//}
 }
 
 /// @brief
