@@ -44,47 +44,47 @@ void h_refinement(){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 		
 		// predefine rand_num test
-//		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//if(mpi::rank == 0){
-//	if(key_now == 11){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//
-//}
-//else if(mpi::rank == 1){
-//
-//	if(key_now == 1 || key_now == 79){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//}
-//else if(mpi::rank == 2){
-//
-//	if(key_now == 10 || key_now == 172){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//
-//}
-//else if(mpi::rank == 3){
-//
-//	if(key_now == 3 && local::local_elem_num == 3){
-//
-//		rand_num = 1;
-//	}
-//	else{
-//
-//		rand_num = 9;
-//	}
-//
-//}
+		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+if(mpi::rank == 0){
+	if(key_now == 0 || key_now == 107){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+
+}
+else if(mpi::rank == 1){
+
+	if(key_now == 16 || key_now == 192 || key_now == 353){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+}
+else if(mpi::rank == 2){
+
+	if(key_now == 4 ){
+		rand_num = 1;
+	}
+	else{
+		rand_num = 9;
+	}
+
+}
+else if(mpi::rank == 3 ){
+
+	if(key_now == 10 || key_now == 191){
+
+		rand_num = 1;
+	}
+	else{
+
+		rand_num = 9;
+	}
+
+}
 
 		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 

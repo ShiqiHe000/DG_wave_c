@@ -75,7 +75,7 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 
 	for(int m = k + 1; m <= grid::hlevel_max; ++m){
 
-		int layer_elem = (m - k) * 2;
+		int layer_elem = (int)std::pow(2, m - k);
 		
 		pre_level[0] = 2 * pre_level[0] + x;
 		pre_level[1] = 2 * pre_level[1];
@@ -144,7 +144,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen,
 
 	for(int m = k + 1; m <= grid::hlevel_max; ++m){
 
-		int layer_elem = (m - k) * 2;
+		int layer_elem = (int)std::pow(2, m - k);
 		
 		pre_level[0] = 2 * pre_level[0];
 		pre_level[1] = 2 * pre_level[1] + y;

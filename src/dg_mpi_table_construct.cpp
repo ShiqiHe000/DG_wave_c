@@ -28,7 +28,7 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num1, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours);
 
-void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& mpi_table);
+void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
 
 void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
 			std::unordered_map<int, std::vector<mpi_table>>& table);
@@ -55,14 +55,14 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 /// @param n_hlevel neighbour's h-refinement level.
 /// @param target_rank neighbour's rank.
 /// @param mpi_table Relevent direction's MPI table. 
-void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& mpi_table){
+void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table){
 
 	if(n_hlevel <= my_hlevel){	// if neighbour is larger or same size
 		// length is the full scale of current element
-		mpi_table[target_rank].back().mpi_length = Elem_length(my_hlevel);
+		my_table[target_rank].back().mpi_length = Elem_length(my_hlevel);
 	}
 	else{	// neighbour is smaller
-		mpi_table[target_rank].back().mpi_length += Elem_length(n_hlevel);
+		my_table[target_rank].back().mpi_length += Elem_length(n_hlevel);
 
 	}
 
@@ -371,8 +371,22 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 		temp = temp -> next;
 
 	}	
-
 	
+//if(mpi::rank == 2){
+//	
+//	std::cout<< "---------------------------------- \n";
+//	for(auto& v : south){
+//
+//		std::cout<< "t_rank "<< v.first<< "\n";
+//		for(auto& a : v.second){
+//
+//			std::cout<< a.local_key << " "<< a.mpi_length<< " "<< "\n";
+//		}
+//		std::cout<< "\n";
+//	}
+//
+//	std::cout<< "---------------------------------- \n";
+//}
 }
 
 
@@ -457,6 +471,20 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
+
+//if(mpi::rank == 2){
+//
+//	int num_n = num / 5;
+//	std::cout<< "------------------------------ \n";
+//	std::cout<< "from rank "<< v.first<< "\n";
+//	for(int m = 0; m < num_n; ++m){
+//
+//		std::cout<< recv_info[5 * m] << " ";
+//
+//	}
+//	std::cout<< "\n";
+//	std::cout<< "------------------------------ \n";
+//}
 			
 			Update_hash(recv_info, north, update_dir, num, v.first, neighbours_north);
 		}
@@ -479,12 +507,21 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 			int facei, int num1, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
 	
 	int num = num1 / 5;
-	std::vector<int> recv_bucket(num);
-	for(int i = 0; i < num; ++i){
-		recv_bucket[i] = i;
-	}
 
 	for(auto it = table[target_rank].begin(); it != table[target_rank].end(); ++it){
+
+//if(mpi::rank == 2){
+//
+//	std::cout<< "------------------- \n";
+//	std::cout<< "local_key "<< it -> local_key<< "\n";
+//	for(auto& v: neighbours[it -> local_key]){
+//		std::cout<< v << " ";
+//
+//	}
+//	std::cout<< "\n";
+//
+//	std::cout<< "------------------- \n";
+//}
 
 		// delete old face info			
 		auto it_face = local::Hash_elem[it -> local_key] -> facen[facei].begin();
