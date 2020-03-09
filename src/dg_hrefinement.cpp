@@ -26,8 +26,35 @@ void Four_children(int ith, int i, int j, int level, std::array<int, 4>& childre
 void Non_sibling_interfaces(Unit* last, int parent);
 void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
+void Flag_elem();
 // --------------------------------------------------------------------------------------------------
 
+/// @brief
+/// loop through all the elements and flag then for refining or coarsening. 
+void Flag_elem(){
+
+	Unit* temp = local::head;
+
+	for(int k = 0; k < local::local_elem_num; ++k){
+
+		// generate random number
+		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
+
+		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
+		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
+
+
+		if(check_h && rand_num <= 3){	// h-refinement
+
+			temp -> hrefine = true;
+		}
+		else if(check_c && rand_num > 7 ){	// coarse
+			
+			temp -> coarsen = true;
+		}
+		temp = temp -> next;
+	}
+}
 
 /// @brief
 /// Random h-refinement scheme. Each element has 30% chance to split.
@@ -39,56 +66,8 @@ void h_refinement(){
 	int increment{};
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
-		
-		// generate random number
-		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
-		
-		// predefine rand_num test
-//		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//if(mpi::rank == 0){
-//	if(key_now == 0 || key_now == 107){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//
-//}
-//else if(mpi::rank == 1){
-//
-//	if(key_now == 16 || key_now == 192 || key_now == 353){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//}
-//else if(mpi::rank == 2){
-//
-//	if(key_now == 4 ){
-//		rand_num = 1;
-//	}
-//	else{
-//		rand_num = 9;
-//	}
-//
-//}
-//else if(mpi::rank == 3 ){
-//
-//	if(key_now == 10 || key_now == 191){
-//
-//		rand_num = 1;
-//	}
-//	else{
-//
-//		rand_num = 9;
-//	}
-//
-//}
 
-		bool check = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
-
-		if(rand_num <= 3 && check){	// refine
+		if(temp -> hrefine){	// refine
 			
 			increment += 3; 
 			
