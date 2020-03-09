@@ -10,7 +10,7 @@ language: cpp
 # Cacnhing dependencies
 cache:
  directories:
-  - openmpi	# build mpi only need to done onece
+  - openmpi-4.0.2	# build mpi only need to done onece
 
 
 # MPI project

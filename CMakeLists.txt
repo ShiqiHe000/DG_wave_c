@@ -1,11 +1,7 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.9)
 
 # name of the project + language
 project(2d_wave CXX)
-
-# set cpp standard
-#set(CMAKE_CXX_STANDARD 11)  # C++ 11
-#set(CMAKE_POSITION_INDEPENDENT_CODE ON)	# initialize the POSITION_INDEPENDENT_CODE property on all target/libraries. 
 
 # have unit tets
 #enable_testing()
@@ -18,6 +14,27 @@ file(GLOB SOURCES "src/*.cpp")
 
 # executable file
 add_executable(main ${SOURCES})
+
+
+
+# MPI---------------------------------------------------------------------------------------
+
+# find MPI package
+find_package(MPI REQUIRED)
+if(MPI_NOFOUND)
+	message(ERROR "MPI is not found. Please check FindMPI.")
+endif(MPI_NOFOUND)
+
+#include_directories(/openmpi/include)
+#find_library(MPI NAMES openmpi HINTS /openmpi/lib)
+#if(MPI_NOTFOUND)
+#	message(ERROR "openmpi not found.")
+#endif(MPI_NOTFOUND)
+#-----------------------------------------------------------------------------------------------
+
+# libraires links
+target_link_libraries(main PUBLIC MPI::MPI_CXX )
+#target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
 # OpenBLAS--------------------------------------------------------------------------------------
 #include_directories(/opt/OpenBLAS/include)
@@ -33,24 +50,4 @@ add_executable(main ${SOURCES})
 #if(SILO_NOTFOUND)
 #	message(ERROR "silo not found.")
 #endif(SILO_NOTFOUND)
-
-
-# MPI---------------------------------------------------------------------------------------
-
-# find MPI package
-#find_package(MPI REQUIRED)
-#if(MPI_NOFOUND)
-#	message(ERROR "MPI is not found. Please check FindMPI.")
-#endif(MPI_NOFOUND)
-
-include_directories(/openmpi/include)
-find_library(MPI NAMES openmpi HINTS /openmpi/lib)
-if(MPI_NOTFOUND)
-	message(ERROR "openmpi not found.")
-endif(MPI_NOTFOUND)
-#-----------------------------------------------------------------------------------------------
-
-# libraires links
-target_link_libraries(main PUBLIC ${MPI} )
-#target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
