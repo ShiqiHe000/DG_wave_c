@@ -27,6 +27,7 @@ void Non_sibling_interfaces(Unit* last, int parent);
 void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
 void Flag_elem();
+void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -63,7 +64,8 @@ void h_refinement(){
 	Unit* temp = local::head;
 	Unit* temp2 = temp;
 
-	int increment{};
+	int increment{};	// new added element because of hrefinemnt
+	int decrement{};	// element decrement because coarening
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
 
@@ -152,6 +154,39 @@ void h_refinement(){
 			local::Hash_elem.erase(old_key);
 			temp = temp2;
 		}
+		else if(temp -> coarsen && (temp -> child_position == 0 || temp -> child_position == 2)){
+			// only flaged element at the child posiiton 0 or 2 can croasen
+	
+			std::array<int, 4> four_keys;
+			bool pass; 	
+			Coarsen_critira(temp, pass, four_keys);
+		
+			if(pass){ // if four siblings all want to coarse
+				decrement += 3;	
+	
+				// generate parent's key
+				int key_p = Get_key_fun((temp->index[0]) / 2, (temp->index[1]) / 2, temp->index[2] - 1);
+	
+				local::Hash_elem[key_p] = new Unit();	// create parent
+			
+				// index	
+				local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
+				local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
+				local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
+	
+				// status
+				local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
+	
+				// coordinates (inherit from elements at position 0 and 2)
+				local::Hash_elem[key_p]	-> xcoords[0] = local::Hash_elem[four_keys[0]] -> xcoords[0];
+				local::Hash_elem[key_p]	-> ycoords[0] = local::Hash_elem[four_keys[0]] -> ycoords[0];
+
+				local::Hash_elem[key_p]	-> xcoords[1] = local::Hash_elem[four_keys[2]] -> xcoords[1];
+				local::Hash_elem[key_p]	-> ycoords[1] = local::Hash_elem[four_keys[2]] -> ycoords[1];
+
+				// relative position
+			}
+		}
 		temp2 = temp;
 		temp = temp -> next;
 	}
@@ -159,6 +194,95 @@ void h_refinement(){
 	local::local_elem_num += increment;
 
 }
+
+/// @brief
+/// Enable coarsening only if 4 siblings all agree to coarse. 
+/// @param temp unit pointer to the current element.
+/// @param pass boolean variable. If true then coarse the grid. 
+/// @param four_keys array that stores the four siblings key (in relative position order 0 1 2 3).
+void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
+
+	// only two circumstances
+	if(temp -> child_position == 0){	
+		
+		int my_level = temp -> index[2];
+
+		// first check north and east
+		if(temp -> facen[1].front().face_type != 'L') { // only neighbour are resided locally
+			pass = false;
+			return;
+		}
+		if(my_level != (temp -> facen[1].front().hlevel)) { // only neighbour is the same size
+			pass = false;
+			return;
+		}	
+
+		if(temp -> facen[3].front().face_type != 'L'){
+			pass = false;
+			return;
+		}
+		if(my_level != (temp -> facen[3].front().hlevel)){
+			pass = false;
+			return;
+		}
+		
+		// check the last sibling
+		int north_key = temp -> facen[1].front().key;
+		if(local::Hash_elem[north_key] -> facen[3].front().face_type != 'L'){
+			pass = false;
+			return;
+		}
+		if(local::Hash_elem[north_key] -> facen[3].front().hlevel != my_level){
+			pass = false;
+			return;
+		}
+		
+		// generate four childrens key (0 1 2 3)
+		four_keys[0] = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		four_keys[1] = Get_key_fun(temp -> index[0] + 1, temp -> index[1], temp -> index[2]);
+		four_keys[2] = Get_key_fun(temp -> index[0] + 1, temp -> index[1] + 1, temp -> index[2]);
+		four_keys[3] = Get_key_fun(temp -> index[0], temp -> index[1] + 1, temp -> index[2]);
+
+	}
+	else{	// child_position == 2
+
+		int my_level = temp -> index[2];
+
+		// first check south and west
+		if(temp -> facen[0].front().face_type != 'L'){
+			pass = false;
+			return;
+		}
+		if(my_level != (temp -> facen[0].front().hlevel)){
+			pass = false;
+			return;
+		}
+
+		if(temp -> facen[2].front().face_type != 'L'){
+			pass = false;
+			return;
+		}
+		if(my_level != (temp -> facen[2].front().hlevel)){
+			pass = false;
+			return;
+		}
+		
+		// check the last sibling
+		int south_key = temp -> facen[0].front().key;
+		if(local::Hash_elem[south_key] -> facen[2].front().face_type != 'L'){return false};
+		if(local::Hash_elem[south_key] -> facen[2].front().hlevel != my_level){return false};
+
+		// generate four childrens key (0 1 2 3)
+		four_keys[0] = Get_key_fun(temp -> index[0] - 1, temp -> index[1] - 1, temp -> index[2]);
+		four_keys[1] = Get_key_fun(temp -> index[0], temp -> index[1] - 1, temp -> index[2]);
+		four_keys[2] = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		four_keys[3] = Get_key_fun(temp -> index[0] - 1, temp -> index[1], temp -> index[2]);
+	}
+
+	// pass test
+	pass = true;
+}
+
 
 /// @brief
 /// Form the non-sibling interfaces of 4 children. 
