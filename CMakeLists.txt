@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 3.2)
 project(2d_wave CXX)
 
 # set cpp standard
-set(CMAKE_CXX_STANDARD 11)  # C++ 11
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)	# initialize the POSITION_INDEPENDENT_CODE property on all target/libraries. 
+#set(CMAKE_CXX_STANDARD 11)  # C++ 11
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)	# initialize the POSITION_INDEPENDENT_CODE property on all target/libraries. 
 
 # have unit tets
-enable_testing()
+#enable_testing()
 
 # Bring the headers
 include_directories(inc)
@@ -43,8 +43,8 @@ add_executable(main ${SOURCES})
 #	message(ERROR "MPI is not found. Please check FindMPI.")
 #endif(MPI_NOFOUND)
 
-include_directories(/home/travis/build/ShiqiHe000/DG_wave_c/openmpi/include)
-find_library(MPI NAMES openmpi HINTS /home/travis/build/ShiqiHe000/DG_wave_c/openmpi/lib)
+include_directories(/openmpi/include)
+find_library(MPI NAMES openmpi HINTS /openmpi/lib)
 if(MPI_NOTFOUND)
 	message(ERROR "openmpi not found.")
 endif(MPI_NOTFOUND)
