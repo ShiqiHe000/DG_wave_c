@@ -16,7 +16,7 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(main ${SOURCES})
 
 # set cmake compiler
-set(CMAKE_CXX_COMPILER openmpi-4.0.2/bin/mpicxx)
+set(CMAKE_CXX_COMPILER /openmpi-4.0.2/bin/mpicxx)
 
 # MPI---------------------------------------------------------------------------------------
 
