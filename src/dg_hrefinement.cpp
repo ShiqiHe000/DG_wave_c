@@ -49,27 +49,27 @@ void Flag_elem(){
 
 int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
-if(mpi::rank == 0 || mpi::rank == 1){
+//if(mpi::rank == 0 || mpi::rank == 1){
 
-	if(key == 0 || key == 4){
-		rand_num = 1;
-	}
-	else if(key == 16){
-
-		rand_num = 1;
-	}
-	else if(key == 107 || key == 212 || key == 353 || key == 192){
-
-		rand_num = 9;
-	}
-	else{
-		rand_num = 9;
-	}
-}
-else{
-
-	rand_num = 9;
-}
+//	if(key == 0 || key == 4){
+//		rand_num = 1;
+//	}
+//	else if(key == 16){
+//
+//		rand_num = 1;
+//	}
+//	else if(key == 47 || key == 93 || key == 38 || key == 17){
+//
+//		rand_num = 9;
+//	}
+//	else{
+//		rand_num = 5;
+//	}
+//}
+//else{
+//
+//	rand_num = 5;
+//}
 
 		if(check_h && rand_num <= 3){	// h-refinement
 
@@ -87,6 +87,10 @@ else{
 /// Random h-refinement scheme. Each element has 30% chance to split.
 void h_refinement(){
 
+//if(mpi::rank == 0){
+//
+//	std::cout<< "check" << "\n";
+//}
 	Unit* temp = local::head;
 	Unit* temp2 = temp;
 
@@ -182,17 +186,21 @@ void h_refinement(){
 		}
 		else if(temp -> coarsen && (temp -> child_position == 0 || temp -> child_position == 2)){
 			// only flaged element at the child posiiton 0 or 2 can croasen
-	
+//std::cout<< "rank "<< mpi::rank << " "<<temp -> index[0] << temp -> index[1]<< temp -> index[2] << "\n";
 			std::array<int, 4> four_keys;
 			bool pass; 	
 			Coarsen_critira(temp, pass, four_keys);
-		
+//if(mpi::rank = 2){
+//	if(pass){
+//		std::cout<< "pass \n";
+//	}
+//}	
 			if(pass){ // if four siblings all want to coarse
 				decrement += 3;	
 	
 				// generate parent's key
 				int key_p = Get_key_fun((temp->index[0]) / 2, (temp->index[1]) / 2, temp->index[2] - 1);
-	
+				
 				local::Hash_elem[key_p] = new Unit();	// create parent
 			
 				// index	
@@ -202,7 +210,7 @@ void h_refinement(){
 	
 				// status
 				local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
-	
+
 				// coordinates (inherit from elements at position 0 and 2)
 				local::Hash_elem[key_p]	-> xcoords[0] = local::Hash_elem[four_keys[0]] -> xcoords[0];
 				local::Hash_elem[key_p]	-> ycoords[0] = local::Hash_elem[four_keys[0]] -> ycoords[0];
@@ -213,7 +221,7 @@ void h_refinement(){
 				// relative position
 				local::Hash_elem[key_p] -> child_position = Parent_position(local::Hash_elem[key_p] -> index[0],
 										 local::Hash_elem[key_p] -> index[1]);
-
+//std::cout<< local::Hash_elem[key_p] -> child_position<< "\n";
 				// poly orders
 				local::Hash_elem[key_p] -> n = temp -> n;	// now assume four siblings share same n, m
 				local::Hash_elem[key_p] -> m = temp -> m;	// now assume four siblings share same n, m
@@ -234,7 +242,9 @@ void h_refinement(){
 				local::Hash_elem[key_p] -> next = temp3 -> next;
 
 				temp = local::Hash_elem[key_p];	// move pointer to the last 
-				
+			
+				k += 3;	// skip other siblings 
+	
 				// form the face info
 				Form_parent_faces(four_keys, key_p);
 
