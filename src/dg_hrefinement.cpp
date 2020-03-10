@@ -30,6 +30,7 @@ void Flag_elem();
 void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
 int Parent_position(int i, int j);
 void Inherit_from_children(int c1, int c2, int p_key, int facen);
+void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -210,14 +211,15 @@ void h_refinement(){
 				local::Hash_elem[key_p] -> next = temp3 -> next;
 
 				temp = local::Hash_elem[key_p];	// move pointer to the last 
+				
+				// form the face info
+				Form_parent_faces(four_keys, key_p);
 
+				// erase four siblings
+				for(int i = 0; i < 4; ++i){
+					local::Hash_elem[four_keys[i]].erase();
+				}
 			}
-			// form the face info
-
-
-			// erase four siblings
-
-
 			
 		}
 		temp2 = temp;
@@ -225,6 +227,7 @@ void h_refinement(){
 	}
 
 	local::local_elem_num += increment;
+	local::local_elem_num -= decrement;
 
 }
 
@@ -235,9 +238,25 @@ void h_refinement(){
 void Form_parent_faces(std::array<int, 4>& four_keys, int p_key){
 
 	// south
+	Inherit_from_children(four_keys[0], four_keys[3], p_key, 0);
+
+	// north
+	Inherit_from_children(four_keys[1], four_keys[2], p_key, 1);
+
+	// west
+	Inherit_from_children(four_keys[0], four_keys[1], p_key, 2);
+
+	// east
+	Inherit_from_children(four_keys[3], four_keys[2], p_key, 3);
 	
 }
 
+/// @brief
+/// Form the face info for parent element in one direction (N, S, E, W).
+/// @param c1 key of the 1st element of the corresponding direction. 
+/// @param c2 key of the 2st element of the corresponding direction. 
+/// @param p_key parent's key. 
+/// @param facen face direction (0, 1, 2, 3).
 void Inherit_from_children(int c1, int c2, int p_key, int facen){
 
 	if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'B'){	// if on the physical boundary
