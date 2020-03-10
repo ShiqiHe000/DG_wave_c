@@ -15,8 +15,6 @@ public:
 
 	int index[3]{0, 0, 0}; 	// element index[i, j, k]
  
-//	int local_index{};	// element local index	!! redundent?
-
 	char status; 	// Hilbert status
 
 	int child_position{};	// ith-child
@@ -31,6 +29,8 @@ public:
 
 	Unit* next = nullptr;	// pointer to the next Unit
 	
+	bool hrefine = false;
+	bool coarsen = false;
 
 	// for testing-----------------------------------------
 	int var{};
