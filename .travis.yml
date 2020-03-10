@@ -28,6 +28,7 @@ script:
  - mkdir build
  - mkdir outputs
  - mkdir tests
+ - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/openmpi-4.0.2/lib
  - cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc
  - cd build
  - cmake .. 	# configuring cmake in the current build folder
