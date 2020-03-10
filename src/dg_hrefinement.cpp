@@ -47,6 +47,26 @@ void Flag_elem(){
 		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
 
+int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
+if(mpi::rank == 0){
+
+	if(key == 0){
+		rand_num = 1;
+	}
+	else if(key == 16){
+
+		rand_num = 1;
+	}
+	else if(key == 107 || key == 212 || key == 353 || key == 192){
+
+		rand_num = 9;
+	}
+}
+else{
+
+	rand_num = 9;
+}
 
 		if(check_h && rand_num <= 3){	// h-refinement
 

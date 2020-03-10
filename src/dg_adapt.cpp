@@ -7,6 +7,8 @@
 
 void Adapt(){
 
+	Flag_elem();
+
 	h_refinement();
 
 	// x direction
