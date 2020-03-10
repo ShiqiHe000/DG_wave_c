@@ -49,9 +49,9 @@ void Flag_elem(){
 
 int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
-if(mpi::rank == 0){
+if(mpi::rank == 0 || mpi::rank == 1){
 
-	if(key == 0){
+	if(key == 0 || key == 4){
 		rand_num = 1;
 	}
 	else if(key == 16){
@@ -60,6 +60,9 @@ if(mpi::rank == 0){
 	}
 	else if(key == 107 || key == 212 || key == 353 || key == 192){
 
+		rand_num = 9;
+	}
+	else{
 		rand_num = 9;
 	}
 }
