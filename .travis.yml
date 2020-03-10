@@ -28,7 +28,7 @@ script:
  - mkdir build
  - mkdir outputs
  - mkdir tests
- - cd build
  - cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc
+ - cd build
  - cmake .. 	# configuring cmake in the current build folder
 # - cmake --build . -- -j2  #parallel build (two virtual CPU available)
