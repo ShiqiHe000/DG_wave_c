@@ -217,7 +217,7 @@ void h_refinement(){
 
 				// erase four siblings
 				for(int i = 0; i < 4; ++i){
-					local::Hash_elem[four_keys[i]].erase();
+					local::Hash_elem.erase(four_keys[i]);
 				}
 			}
 			
@@ -390,8 +390,14 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 		
 		// check the last sibling
 		int south_key = temp -> facen[0].front().key;
-		if(local::Hash_elem[south_key] -> facen[2].front().face_type != 'L'){return false};
-		if(local::Hash_elem[south_key] -> facen[2].front().hlevel != my_level){return false};
+		if(local::Hash_elem[south_key] -> facen[2].front().face_type != 'L'){
+			pass = false;
+			return;
+		}
+		if(local::Hash_elem[south_key] -> facen[2].front().hlevel != my_level){
+			pass = false;
+			return;
+		}
 
 		// generate four childrens key (0 1 2 3)
 		four_keys[0] = Get_key_fun(temp -> index[0] - 1, temp -> index[1] - 1, temp -> index[2]);
