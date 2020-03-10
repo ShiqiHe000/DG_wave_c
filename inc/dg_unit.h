@@ -15,8 +15,6 @@ public:
 
 	int index[3]{0, 0, 0}; 	// element index[i, j, k]
  
-//	int local_index{};	// element local index	!! redundent?
-
 	char status; 	// Hilbert status
 
 	int child_position{};	// ith-child
@@ -30,7 +28,9 @@ public:
 	double* solution = nullptr;	// dymanic solution 
 
 	Unit* next = nullptr;	// pointer to the next Unit
-	
+
+	bool hrefine = false;	// refinemnt 
+	bool coarsen = false; 
 
 	// for testing-----------------------------------------
 	int var{};
@@ -42,10 +42,6 @@ public:
 	// constructor (default)
 	Unit();
 	
-	// key function
-//	int GetKey();
-//
-//	int Cantor_pairing(int x, int y);
 };
 
 /// @param face_type interface type of current direction.
