@@ -28,6 +28,8 @@ void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
 void Flag_elem();
 void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
+int Parent_position(int i, int j);
+void Inherit_from_children(int c1, int c2, int p_key, int facen);
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -185,7 +187,38 @@ void h_refinement(){
 				local::Hash_elem[key_p]	-> ycoords[1] = local::Hash_elem[four_keys[2]] -> ycoords[1];
 
 				// relative position
+				local::Hash_elem[key_p] -> child_position = Parent_position(local::Hash_elem[key_p] -> index[0],
+										 local::Hash_elem[key_p] -> index[1]);
+
+				// poly orders
+				local::Hash_elem[key_p] -> n = temp -> n;	// now assume four siblings share same n, m
+				local::Hash_elem[key_p] -> m = temp -> m;	// now assume four siblings share same n, m
+
+				// adjust linked list
+				if(k == 0){	// first elem
+					local::head = local::Hash_elem[key_p];	
+				}
+				else{
+
+					temp2 -> next = local::Hash_elem[key_p];
+				}
+				Unit* temp3 = temp;
+				for(int m = 0; m < 3; ++m){	// rearch last sibling
+
+					temp3 = temp3 -> next;
+				}
+				local::Hash_elem[key_p] -> next = temp3 -> next;
+
+				temp = local::Hash_elem[key_p];	// move pointer to the last 
+
 			}
+			// form the face info
+
+
+			// erase four siblings
+
+
+			
 		}
 		temp2 = temp;
 		temp = temp -> next;
@@ -194,6 +227,75 @@ void h_refinement(){
 	local::local_elem_num += increment;
 
 }
+
+/// @brief 
+/// Record the neighbours info of new parent (4 sides). 
+/// @param four_keys An array which stores the keys of four siblings in the sequence of relative posiiton. 
+/// @param p_key the key of parent. 
+void Form_parent_faces(std::array<int, 4>& four_keys, int p_key){
+
+	// south
+	
+}
+
+void Inherit_from_children(int c1, int c2, int p_key, int facen){
+
+	if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'B'){	// if on the physical boundary
+
+		local::Hash_elem[p_key] -> facen[facen].push_back({'B', 0, 0, 0, 0, 0});
+
+		return;
+	}
+
+	// if not physical boundary, then c1 and c2 must be facing same size neighbour or larger neighbour. 
+	// If same size, record both. If larger, then they are facing the same one, record one. 
+	int c_level = local::Hash_elem[c1] -> index[2];
+	int n_level = local::Hash_elem[c1] -> facen[facen].front().hlevel;
+	if(c_level == n_level){	// if same size
+
+		local::Hash_elem[p_key]	-> facen[facen] = local::Hash_elem[c1] -> facen[facen];
+
+		local::Hash_elem[p_key] -> facen[facen].insert(local::Hash_elem[p_key] -> facen[facen].end(), 
+								local::Hash_elem[c2] -> facen[facen].begin(),
+								local::Hash_elem[c2] -> facen[facen].end());
+
+	}
+	else{	// larger enighbour
+
+		// copy the info
+		local::Hash_elem[p_key] -> facen[facen] = local::Hash_elem[c1] -> facen[facen];
+	}
+
+}
+
+
+/// @brief
+/// Generate parent relative position base on the position of the first child.
+/// @brief i integer coordinate in x direction.
+/// @brief j integer coordinate in y direction.
+int Parent_position(int i, int j){
+
+	int a = i % 2;
+	int b = j % 2;
+
+	if(a == 0 && b == 0){
+		return 0;
+
+	}
+	else if(a == 0 && b != 0){
+
+		return 3;
+	}
+	else if(a != 0 && j == 0){
+
+		return 1;
+	}
+	else{	// a, b != 0
+
+		return 2;
+	}
+}
+
 
 /// @brief
 /// Enable coarsening only if 4 siblings all agree to coarse. 
