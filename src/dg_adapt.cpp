@@ -5,9 +5,9 @@
 #include <iostream>	//test
 #include "dg_param.h"	//test
 
-void Adapt(){
+void Adapt(int kt){
 
-	Flag_elem();
+	Flag_elem(kt);
 
 	h_refinement();
 

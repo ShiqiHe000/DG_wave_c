@@ -13,6 +13,7 @@
 #include "dg_neighbour_list.h"
 #include <algorithm>
 #include <iostream>	// test
+#include "dg_test.h"
 
 /// global variable
 double xcoord_new[3]{};
@@ -26,16 +27,20 @@ void Four_children(int ith, int i, int j, int level, std::array<int, 4>& childre
 void Non_sibling_interfaces(Unit* last, int parent);
 void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
-void Flag_elem();
+void Flag_elem(int kt);
 void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
 int Parent_position(int i, int j);
 void Inherit_from_children(int c1, int c2, int p_key, int facen);
 void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
+void Change_neighbour_coasen_case1(int c1, int facen, int p_key);
+void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key);
+bool First_child(Unit* temp);
+void Coarsen_results(Unit* temp, bool pass);	// test
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
 /// loop through all the elements and flag then for refining or coarsening. 
-void Flag_elem(){
+void Flag_elem(int kt){
 
 	Unit* temp = local::head;
 
@@ -47,35 +52,49 @@ void Flag_elem(){
 		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
 
-int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-
-//if(mpi::rank == 0 || mpi::rank == 1){
-
-//	if(key == 0 || key == 4){
+//int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//
+//if(mpi::rank == 0 ){
+//
+////std::cout<< key<<" "<< kt << "\n";
+//	if(key == 0 || kt == 0){
 //		rand_num = 1;
 //	}
-//	else if(key == 16){
+//	else if((key == 2 && kt == 2) || (key == 7 && kt == 2)){
+//		rand_num = 1;
+////std::cout<< key << "\n";
+//	}
+////	else if(kt == 3){
+////		rand_num = 8;
+////	}
+//	else{
+//		rand_num = 5;
+//	}
+//}
+//else if(mpi::rank == 1){
+//
+//	if(key == 16 && kt == 1){
 //
 //		rand_num = 1;
 //	}
-//	else if(key == 47 || key == 93 || key == 38 || key == 17){
-//
-//		rand_num = 9;
+//	else if(kt == 3){
+//		rand_num = 8;
 //	}
 //	else{
 //		rand_num = 5;
 //	}
+//
 //}
 //else{
 //
 //	rand_num = 5;
 //}
 
-		if(check_h && rand_num <= 3){	// h-refinement
+		if(check_h && rand_num <= 3 && kt <= 5){	// h-refinement
 
 			temp -> hrefine = true;
 		}
-		else if(check_c && rand_num > 7 ){	// coarse
+		else if(check_c && rand_num > 5 && kt > 5 && mpi::rank == 0){	// coarse
 			
 			temp -> coarsen = true;
 		}
@@ -184,85 +203,108 @@ void h_refinement(){
 			local::Hash_elem.erase(old_key);
 			temp = temp2;
 		}
-		else if(temp -> coarsen && (temp -> child_position == 0 || temp -> child_position == 2)){
+		else if(temp -> coarsen){
+			
 			// only flaged element at the child posiiton 0 or 2 can croasen
-//std::cout<< "rank "<< mpi::rank << " "<<temp -> index[0] << temp -> index[1]<< temp -> index[2] << "\n";
-			std::array<int, 4> four_keys;
-			bool pass; 	
-			Coarsen_critira(temp, pass, four_keys);
-//if(mpi::rank = 2){
-//	if(pass){
-//		std::cout<< "pass \n";
+			bool first = First_child(temp);
+
+			if(first){
+				std::array<int, 4> four_keys;
+				bool pass; 	
+				Coarsen_critira(temp, pass, four_keys);
+//if(mpi::rank =	 2){
+//	if(pass)	{
+//			std::cout<< "pass \n";
 //	}
 //}	
-			if(pass){ // if four siblings all want to coarse
-				decrement += 3;	
+				//Coarsen_results(temp, pass);
+
+				if(pass){ // if four siblings all want to coarse
+					decrement += 3;	
 	
-				// generate parent's key
-				int key_p = Get_key_fun((temp->index[0]) / 2, (temp->index[1]) / 2, temp->index[2] - 1);
+					// generate parent's key
+					int key_p = Get_key_fun((temp->index[0]) / 2, (temp->index[1]) / 2, temp->index[2] - 1);
+					
+					local::Hash_elem[key_p] = new Unit();	// create parent
 				
-				local::Hash_elem[key_p] = new Unit();	// create parent
-			
-				// index	
-				local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
-				local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
-				local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
+					// index	
+					local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
+					local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
+					local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
 	
-				// status
-				local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
+					// status
+					local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
 
-				// coordinates (inherit from elements at position 0 and 2)
-				local::Hash_elem[key_p]	-> xcoords[0] = local::Hash_elem[four_keys[0]] -> xcoords[0];
-				local::Hash_elem[key_p]	-> ycoords[0] = local::Hash_elem[four_keys[0]] -> ycoords[0];
+					// coordinates (inherit from elements at position 0 and 2)
+					local::Hash_elem[key_p]	-> xcoords[0] = local::Hash_elem[four_keys[0]] -> xcoords[0];
+					local::Hash_elem[key_p]	-> ycoords[0] = local::Hash_elem[four_keys[0]] -> ycoords[0];
 
-				local::Hash_elem[key_p]	-> xcoords[1] = local::Hash_elem[four_keys[2]] -> xcoords[1];
-				local::Hash_elem[key_p]	-> ycoords[1] = local::Hash_elem[four_keys[2]] -> ycoords[1];
+					local::Hash_elem[key_p]	-> xcoords[1] = local::Hash_elem[four_keys[2]] -> xcoords[1];
+					local::Hash_elem[key_p]	-> ycoords[1] = local::Hash_elem[four_keys[2]] -> ycoords[1];
 
-				// relative position
-				local::Hash_elem[key_p] -> child_position = Parent_position(local::Hash_elem[key_p] -> index[0],
-										 local::Hash_elem[key_p] -> index[1]);
-//std::cout<< local::Hash_elem[key_p] -> child_position<< "\n";
-				// poly orders
-				local::Hash_elem[key_p] -> n = temp -> n;	// now assume four siblings share same n, m
-				local::Hash_elem[key_p] -> m = temp -> m;	// now assume four siblings share same n, m
+					// relative position
+					local::Hash_elem[key_p] -> child_position = 
+									Parent_position(local::Hash_elem[key_p] -> index[0],
+									local::Hash_elem[key_p] -> index[1]);
+//std::cout<< lo	cal::Hash_elem[key_p] -> child_position<< "\n";
+					// poly orders
+					local::Hash_elem[key_p] -> n = temp -> n;	// now assume four siblings share same n, m
+					local::Hash_elem[key_p] -> m = temp -> m;	// now assume four siblings share same n, m
 
-				// adjust linked list
-				if(k == 0){	// first elem
-					local::head = local::Hash_elem[key_p];	
-				}
-				else{
+					// adjust linked list
+					if(k == 0){	// first elem
+						local::head = local::Hash_elem[key_p];	
+					}
+					else{
 
-					temp2 -> next = local::Hash_elem[key_p];
-				}
-				Unit* temp3 = temp;
-				for(int m = 0; m < 3; ++m){	// rearch last sibling
+						temp2 -> next = local::Hash_elem[key_p];
+					}
+					Unit* temp3 = temp;
+					for(int m = 0; m < 3; ++m){	// rearch last sibling
 
-					temp3 = temp3 -> next;
-				}
-				local::Hash_elem[key_p] -> next = temp3 -> next;
+						temp3 = temp3 -> next;
+					}
+					local::Hash_elem[key_p] -> next = temp3 -> next;
+//std::cout<< te	mp3 -> index[0]<< temp3 -> index[1]<<  temp3 -> index[2]<< "\n";
+					temp = local::Hash_elem[key_p];	// move pointer to the last 
+				
+					k += 3;	// skip other siblings 
+					
+					// form the face info
+					Form_parent_faces(four_keys, key_p);
 
-				temp = local::Hash_elem[key_p];	// move pointer to the last 
-			
-				k += 3;	// skip other siblings 
-	
-				// form the face info
-				Form_parent_faces(four_keys, key_p);
+					// change neighbours faces
 
-				// erase four siblings
-				for(int i = 0; i < 4; ++i){
-					local::Hash_elem.erase(four_keys[i]);
+					// erase four siblings
+					for(int i = 0; i < 4; ++i){
+						local::Hash_elem.erase(four_keys[i]);
+					}
 				}
 			}
 			
 		}
 		temp2 = temp;
 		temp = temp -> next;
+
 	}
 
 	local::local_elem_num += increment;
 	local::local_elem_num -= decrement;
 
+	Write_faces_all();
+	
 }
+
+void Coarsen_results(Unit* temp, bool pass){
+
+	if(pass){
+
+		std::cout<< "coord " << temp -> index[0] << temp -> index[1]<< temp -> index[2]<< 
+			" state "<< temp -> status << " child_position "<< temp -> child_position <<"\n";
+	}
+
+}
+
 
 /// @brief 
 /// Record the neighbours info of new parent (4 sides). 
@@ -284,6 +326,31 @@ void Form_parent_faces(std::array<int, 4>& four_keys, int p_key){
 	
 }
 
+
+/// @brief
+/// Examine whether this child is the first sibling.
+/// @param temp pointer to the current child.
+bool First_child(Unit* temp){
+
+	if(temp -> child_position == 0){
+
+		if(temp -> status == 'A' || temp -> status == 'H'){
+			return true;
+		}
+		else{ return false;}
+	}
+	else if(temp -> child_position == 2){
+
+		if(temp -> status == 'B' || temp -> status == 'R'){
+
+			return true;
+		}
+		else{ return false;}
+	}
+	else{ return false;}
+}
+
+
 /// @brief
 /// Form the face info for parent element in one direction (N, S, E, W).
 /// @param c1 key of the 1st element of the corresponding direction. 
@@ -303,7 +370,20 @@ void Inherit_from_children(int c1, int c2, int p_key, int facen){
 	// If same size, record both. If larger, then they are facing the same one, record one. 
 	int c_level = local::Hash_elem[c1] -> index[2];
 	int n_level = local::Hash_elem[c1] -> facen[facen].front().hlevel;
-	if(c_level == n_level){	// if same size
+
+	if(c_level > n_level){	// neighbour is larger. erase two children + insert parent
+
+		// copy the info
+		local::Hash_elem[p_key] -> facen[facen] = local::Hash_elem[c1] -> facen[facen];
+		
+		if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'L'){	// change neighbours
+
+			Change_neighbour_coarsen_case2(c1, c2, facen, p_key);
+
+		}
+
+	}
+	else{	// neighbours are smaller or equaled in size. Erase children + insert parent.
 
 		local::Hash_elem[p_key]	-> facen[facen] = local::Hash_elem[c1] -> facen[facen];
 
@@ -311,16 +391,78 @@ void Inherit_from_children(int c1, int c2, int p_key, int facen){
 								local::Hash_elem[c2] -> facen[facen].begin(),
 								local::Hash_elem[c2] -> facen[facen].end());
 
-	}
-	else{	// larger enighbour
+		
+		Change_neighbour_coasen_case1(c1, facen, p_key);
+		Change_neighbour_coasen_case1(c2, facen, p_key);
 
-		// copy the info
-		local::Hash_elem[p_key] -> facen[facen] = local::Hash_elem[c1] -> facen[facen];
 	}
+
+
+}
+
+/// @brief
+/// Change neighbours inferfaces info. Case one: neighbours size equals or smaller than children's size. 
+/// @param c1 Key of child.
+/// @param facen Children's facen number. 
+/// @param p_key Parent's key.
+void Change_neighbour_coasen_case1(int c1, int facen, int p_key){
+
+	int n_dir = Opposite_dir(facen);	// neighbour face direction
+
+	for(auto it = local::Hash_elem[c1] -> facen[facen].begin();
+		it != local::Hash_elem[c1] -> facen[facen].end(); ++it){
+
+		if(it -> face_type == 'L'){
+
+			int n_key = it -> key;
+
+			--local::Hash_elem[n_key] -> facen[n_dir].front().hlevel;	// hlevel - 1
+		
+			local::Hash_elem[n_key] -> facen[n_dir].front().porderx = local::Hash_elem[p_key] -> n;
+			local::Hash_elem[n_key] -> facen[n_dir].front().pordery = local::Hash_elem[p_key] -> m;
+			
+			local::Hash_elem[n_key] -> facen[n_dir].front().key = p_key;
+			
+		}
+
+	}
+
+
 
 }
 
 
+/// @brief
+/// Change neighbours inferfaces info. Case two: neighbours size is larger than children's size. 
+/// @param c1 Key of child 1.
+/// @param c2 Key of child 2.
+/// @param facen Children's facen number. 
+/// @param p_key Parent's key.
+void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key){
+
+	int n_dir = Opposite_dir(facen);	// neighbour face direction
+
+	int n_key = local::Hash_elem[c1] -> facen[facen].front().key;
+
+	for(auto it = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
+		it != local::Hash_elem[n_key] -> facen[n_dir].end(); ){
+
+
+		if(it -> key == c1 || it -> key == c2){
+
+			it = local::Hash_elem[n_key] -> facen[n_dir].erase(it);
+		}
+		else{
+			++it;
+		}
+	}
+
+	// append parent's info at the end
+	Unit::Face obj = {'L', local::Hash_elem[p_key] -> index[2], local::Hash_elem[p_key] -> n, 
+			local::Hash_elem[p_key] -> m, p_key, mpi::rank};
+	
+	local::Hash_elem[n_key] -> facen[n_dir].emplace_back(obj);
+}
 /// @brief
 /// Generate parent relative position base on the position of the first child.
 /// @brief i integer coordinate in x direction.

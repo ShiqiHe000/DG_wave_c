@@ -45,14 +45,14 @@ void Driver_for_DG_approximation(){
 
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
-		Adapt();
+		Adapt(k);
 
-		Write_faces_all();
+//		Write_faces_all();
 
 		// load_balancing----------------------------------------------	
 		Load_balancing();
 		//-------------------------------------------------------------
-		Write_faces_all();
+//		Write_faces_all();
 
 //		Simple_test(k);
 
