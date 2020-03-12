@@ -90,11 +90,11 @@ void Flag_elem(int kt){
 //	rand_num = 5;
 //}
 
-		if(check_h && rand_num <= 3 && kt <= 5){	// h-refinement
+		if(check_h && rand_num <= 3 ){	// h-refinement
 
 			temp -> hrefine = true;
 		}
-		else if(check_c && rand_num > 5 && kt > 5 && mpi::rank == 0){	// coarse
+		else if(check_c && rand_num > 5 ){	// coarse
 			
 			temp -> coarsen = true;
 		}

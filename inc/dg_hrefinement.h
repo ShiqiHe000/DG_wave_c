@@ -3,6 +3,6 @@
 
 void h_refinement();
 
-void Flag_elem();
+void Flag_elem(int kt);
 
 #endif
