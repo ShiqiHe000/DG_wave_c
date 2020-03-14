@@ -29,6 +29,20 @@ char Status_table( char input, int i){
 	
 }
 
+/// @brief
+/// Input first child's status, output the parent's status. 
+/// @brief child First child's (among the four) status. 
+char Go_back_to_parent(char child){
+
+	static std::unordered_map<char, char> parent_hash = {
+								{'A', {'H'}},
+								{'H', {'A'}},
+								{'R', {'B'}},
+								{'B', {'R'}}
+								};
+
+	return parent_hash[child];
+}
 
 /// @brief
 /// Hilbert curve generation table. Input element status, output ith sibling position.
