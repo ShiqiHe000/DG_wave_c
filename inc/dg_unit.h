@@ -28,15 +28,9 @@ public:
 	double* solution = nullptr;	// dymanic solution 
 
 	Unit* next = nullptr;	// pointer to the next Unit
-<<<<<<< HEAD
 
 	bool hrefine = false;	// refinemnt 
 	bool coarsen = false; 
-=======
-	
-	bool hrefine = false;
-	bool coarsen = false;
->>>>>>> coarsen
 
 	// for testing-----------------------------------------
 	int var{};
