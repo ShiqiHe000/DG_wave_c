@@ -52,44 +52,6 @@ void Flag_elem(int kt){
 		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
 
-//int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//
-//if(mpi::rank == 0 ){
-//
-////std::cout<< key<<" "<< kt << "\n";
-//	if(key == 0 || kt == 0){
-//		rand_num = 1;
-//	}
-//	else if((key == 2 && kt == 2) || (key == 7 && kt == 2)){
-//		rand_num = 1;
-////std::cout<< key << "\n";
-//	}
-////	else if(kt == 3){
-////		rand_num = 8;
-////	}
-//	else{
-//		rand_num = 5;
-//	}
-//}
-//else if(mpi::rank == 1){
-//
-//	if(key == 16 && kt == 1){
-//
-//		rand_num = 1;
-//	}
-//	else if(kt == 3){
-//		rand_num = 8;
-//	}
-//	else{
-//		rand_num = 5;
-//	}
-//
-//}
-//else{
-//
-//	rand_num = 5;
-//}
-
 		if(check_h && rand_num <= 3 ){	// h-refinement
 
 			temp -> hrefine = true;
@@ -208,12 +170,8 @@ void h_refinement(){
 				std::array<int, 4> four_keys;
 				bool pass; 	
 				Coarsen_critira(temp, pass, four_keys);
-//if(mpi::rank =	 2){
-//	if(pass)	{
-//			std::cout<< "pass \n";
-//	}
-//}	
-				Coarsen_results(temp, pass);
+
+//				Coarsen_results(temp, pass);
 
 				if(pass){ // if four siblings all want to coarse
 					decrement += 3;	
@@ -242,10 +200,9 @@ void h_refinement(){
 					local::Hash_elem[key_p] -> child_position = 
 									Parent_position(local::Hash_elem[key_p] -> index[0],
 									local::Hash_elem[key_p] -> index[1]);
-//std::cout<< lo	cal::Hash_elem[key_p] -> child_position<< "\n";
 					// poly orders
-					local::Hash_elem[key_p] -> n = temp -> n;	// now assume four siblings share same n, m
-					local::Hash_elem[key_p] -> m = temp -> m;	// now assume four siblings share same n, m
+					local::Hash_elem[key_p] -> n = temp -> n; // now assume four siblings share same n, m
+					local::Hash_elem[key_p] -> m = temp -> m; // now assume four siblings share same n, m
 
 					// adjust linked list
 					if(k == 0){	// first elem
@@ -261,7 +218,7 @@ void h_refinement(){
 						temp3 = temp3 -> next;
 					}
 					local::Hash_elem[key_p] -> next = temp3 -> next;
-//std::cout<< te	mp3 -> index[0]<< temp3 -> index[1]<<  temp3 -> index[2]<< "\n";
+					
 					temp = local::Hash_elem[key_p];	// move pointer to the last 
 				
 					k += 3;	// skip other siblings 
@@ -287,10 +244,10 @@ void h_refinement(){
 	local::local_elem_num += increment;
 	local::local_elem_num -= decrement;
 
-	//Write_faces_all();
 	
 }
 
+// test function, trivial
 void Coarsen_results(Unit* temp, bool pass){
 
 	if(pass){
