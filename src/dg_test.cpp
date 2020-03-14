@@ -110,6 +110,8 @@ void Write_faces(){
 		myfile<< "elem: " << local::Hash_elem[key] -> index[0] <<
 							 local::Hash_elem[key] -> index[1] <<
 							 local::Hash_elem[key] -> index[2] << "\n";
+		myfile<< "status "<< local::Hash_elem[key] -> status<< " c_position "<< 
+					local::Hash_elem[key] -> child_position << "\n";
 		// write 4 faces
 		for(int i = 0; i < 4; ++i){
 	

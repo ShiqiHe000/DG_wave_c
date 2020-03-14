@@ -106,10 +106,6 @@ void Flag_elem(int kt){
 /// Random h-refinement scheme. Each element has 30% chance to split.
 void h_refinement(){
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "check" << "\n";
-//}
 	Unit* temp = local::head;
 	Unit* temp2 = temp;
 
@@ -217,7 +213,7 @@ void h_refinement(){
 //			std::cout<< "pass \n";
 //	}
 //}	
-				//Coarsen_results(temp, pass);
+				Coarsen_results(temp, pass);
 
 				if(pass){ // if four siblings all want to coarse
 					decrement += 3;	
@@ -291,7 +287,7 @@ void h_refinement(){
 	local::local_elem_num += increment;
 	local::local_elem_num -= decrement;
 
-	Write_faces_all();
+	//Write_faces_all();
 	
 }
 
@@ -299,7 +295,7 @@ void Coarsen_results(Unit* temp, bool pass){
 
 	if(pass){
 
-		std::cout<< "coord " << temp -> index[0] << temp -> index[1]<< temp -> index[2]<< 
+		std::cout<< "rank "<< mpi::rank<<" coord " << temp -> index[0] << temp -> index[1]<< temp -> index[2]<< 
 			" state "<< temp -> status << " child_position "<< temp -> child_position <<"\n";
 	}
 
@@ -480,7 +476,7 @@ int Parent_position(int i, int j){
 
 		return 3;
 	}
-	else if(a != 0 && j == 0){
+	else if(a != 0 && b == 0){
 
 		return 1;
 	}
@@ -497,6 +493,8 @@ int Parent_position(int i, int j){
 /// @param pass boolean variable. If true then coarse the grid. 
 /// @param four_keys array that stores the four siblings key (in relative position order 0 1 2 3).
 void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
+
+	assert(temp -> child_position == 0 || temp -> child_position == 2 && "children position prob");
 
 	// only two circumstances
 	if(temp -> child_position == 0){	
