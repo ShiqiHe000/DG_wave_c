@@ -47,6 +47,6 @@ int Target_rank(int i, int j){
 		}
 
 	}
-
+	return target_rank;
 }
 

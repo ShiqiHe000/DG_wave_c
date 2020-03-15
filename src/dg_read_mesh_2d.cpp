@@ -107,7 +107,7 @@ void Read_mesh_2d(){
 		std::stringstream elem(charline);
 		int num_of_element;
 		elem >> num_of_element;
-
+		
 		// record 4 nodes number of each element
 		const int quad_size = 4 * num_of_element;
 		int* quad_node = new int[quad_size];
@@ -140,7 +140,6 @@ void Read_mesh_2d(){
 		
 		// Sort the node ordering format to the standard way
 		Sort_node_ordering(total_node, total_quad, quad_node, node_xy );
-
 
 		// free memory on heap
 		delete[] quad_node;

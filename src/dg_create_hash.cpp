@@ -16,7 +16,6 @@
 void Create_hash(){
 	
 	// create hash table
-//	std::unordered_map<int, Unit*> Hash_elem;
 
 	int key_pre{};
 	int solution_num = dg_fun::num_of_equation * (grid::nmin + 1) * (grid::nmin + 1);

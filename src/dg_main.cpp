@@ -39,8 +39,8 @@ int main(int argc, char *argv[]){
 	srand(time(NULL) + mpi::rank * mpi::num_proc);
 
 	// prepare Hilbert curve
-	Hilber_numbering();
-
+	Hilbert_numbering();
+	
 	// start parallel process
 	Start_parallel();
 

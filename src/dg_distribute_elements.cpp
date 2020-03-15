@@ -5,6 +5,7 @@
 #include "dg_local_storage.h"
 #include "dg_distribute_elements.h"
 #include <cmath>	// pow
+#include <iostream>	//test
 
 /// @brief
 /// After reading the mesh file, we spread the elements between processors 
@@ -51,6 +52,7 @@ void Distribute_elem(){
 				local::elem_range[1] = 0;
 		}
 		else{	// element number >= processor number
+//std::cout<< "num_elem "<< SortMesh::num_of_element<< "\n";
 			average = SortMesh::num_of_element / mpi::num_proc;
 			last = SortMesh::num_of_element - (mpi::num_proc -1) * average;
 

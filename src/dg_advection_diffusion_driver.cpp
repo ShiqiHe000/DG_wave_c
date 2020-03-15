@@ -24,7 +24,7 @@ void Driver_for_DG_approximation(){
 
 	// create hash table
 	Create_hash();
-
+	
 	// construct mpi boundaries and physical boundaries
 	MPI_boundary_construct();
 
@@ -47,6 +47,7 @@ void Driver_for_DG_approximation(){
 	for(int k = 0; k < dg_time::nt; ++k){
 		Adapt(k);
 
+//std::cout<<"rank "<< mpi::rank << "\n";
 		Write_faces_all();
 
 		// load_balancing----------------------------------------------	

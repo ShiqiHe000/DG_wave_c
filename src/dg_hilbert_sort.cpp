@@ -44,4 +44,6 @@ void Hilbert_sort_2d(){
 	std::cout<< "-----------------------------------------" << "\n";
 	std::cout<< "Finished read mesh file and sorting." << "\n";
 	std::cout<< "-----------------------------------------" << "\n";
+
+//std::cout<< "num_ elem "<<SortMesh::num_of_element<< "\n";
 }

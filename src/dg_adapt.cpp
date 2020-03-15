@@ -10,7 +10,7 @@ void Adapt(int kt){
 	Flag_elem(kt);
 
 	h_refinement();
-
+	
 	// x direction
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);

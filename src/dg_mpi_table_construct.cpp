@@ -182,7 +182,6 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[face_north].end(); ++it){
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
-
 				if(it -> rank != pre_rank){
 
 					Put_in_mpi_table(temp, it, north);
@@ -219,7 +218,6 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 
 	// south send, north recv
 	Sender_recver(south, north, facen, neighbours_north);
-
 	// north send, south recv. 
 	Sender_recver(north, south, faces, neighbours_south);
 }
@@ -246,7 +244,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 	
 			int target_rank = v.first;
 			int num_elem = v.second.size();
-	
+
 			std::vector<int> send_info(num_elem * 5);
 			auto it = v.second.begin();
 	
@@ -285,7 +283,6 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 			std::vector<int> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
-
 			Update_hash(recv_info, north, update_dir, num, v.first, neighbours_north);
 		}
 

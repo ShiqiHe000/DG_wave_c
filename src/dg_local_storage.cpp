@@ -8,7 +8,7 @@
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
 /// @param original_elem_num total element number before refine. 
-/// @param elem_range the range of element stores on each processor.  Stored the last element numebr (start with 0, global index). 
+/// @param elem_range the range of element stores on each processor.  Stored the last element numeber (start with 0, global index). 
 /// @param rank_indicator store the last element Hilbert index on the finest level (useful in message exchange process).
 /// @param x_local coordinate, start with 0.
 /// @param y_local y coordinate, start with 0.

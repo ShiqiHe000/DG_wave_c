@@ -11,7 +11,7 @@
 /// 2. Sort the local element node numbering sequence. 
 /// 3. Generate dual graph of the mesh. 
 /// 4. Re-numbering all the elements by using Hilbert curve.
-void Hilber_numbering(){
+void Hilbert_numbering(){
 	
 	if(mpi::rank == 0){
 		
