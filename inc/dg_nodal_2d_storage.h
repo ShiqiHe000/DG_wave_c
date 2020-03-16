@@ -1,6 +1,8 @@
 #ifndef DG_NODAL_2D_STORAGE_H
 #define DG_NODAL_2D_STORAGE_H
 
+#include <vector>
+
 namespace SortMesh{
 
 	extern double* elem_x_position;
@@ -15,7 +17,7 @@ namespace SortMesh{
 	extern double* x_hilbert;
 	extern double* y_hilbert;
 
-	extern char* status;
+	extern std::vector<char> status;
 }
 
 namespace nodal{

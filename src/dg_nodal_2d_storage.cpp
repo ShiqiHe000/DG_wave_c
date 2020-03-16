@@ -1,4 +1,5 @@
 #include "dg_nodal_2d_storage.h"
+#include <vector>
 
 /// @brief vairables used in sort mesh file
 /// @param elem_x_position kth element x coordinates in design sequence
@@ -23,7 +24,7 @@ namespace SortMesh{
 	double* x_hilbert = nullptr;
 	double* y_hilbert = nullptr;
 
-	char* status = nullptr;
+	std::vector<char> status; 
 }
 
 /// @brief 

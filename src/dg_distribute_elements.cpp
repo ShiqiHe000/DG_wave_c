@@ -5,6 +5,7 @@
 #include "dg_local_storage.h"
 #include "dg_distribute_elements.h"
 #include <cmath>	// pow
+#include <vector>
 #include <iostream>	//test
 
 /// @brief
@@ -102,7 +103,7 @@ void Distribute_elem(){
 	// scatter data
 	MPI_Scatterv(SortMesh::x_hilbert, sendcouts, displs, MPI_DOUBLE, local::x_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Scatterv(SortMesh::y_hilbert, sendcouts, displs, MPI_DOUBLE, local::y_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Scatterv(SortMesh::status, sendcouts_status, displs_status, MPI_CHAR, local::status, local::local_elem_num, MPI_CHAR, 0, MPI_COMM_WORLD);
+	MPI_Scatterv(&SortMesh::status[0], sendcouts_status, displs_status, MPI_CHAR, local::status, local::local_elem_num, MPI_CHAR, 0, MPI_COMM_WORLD);
 	MPI_Bcast(local::elem_range, mpi::num_proc + 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(local::rank_indicator, mpi::num_proc, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -111,10 +112,11 @@ void Distribute_elem(){
 	if(mpi::rank == 0){
 		delete[] SortMesh::x_hilbert;
 		delete[] SortMesh::y_hilbert;
-		delete[] SortMesh::status;
+		//delete[] SortMesh::status;
+		SortMesh::status.clear();
 
 		SortMesh::x_hilbert = nullptr;
 		SortMesh::y_hilbert = nullptr;
-		SortMesh::status = nullptr;
+		//SortMesh::status = nullptr;
 	}
 }

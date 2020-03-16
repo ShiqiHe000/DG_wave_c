@@ -18,7 +18,7 @@
 /// First, get DG basis parameters, such as collocation points and weights.
 /// Then marches by each time step. Using explicit 3rd order Runge-Kutta methods.
 void Driver_for_DG_approximation(){
-
+//std::cout<< "rank "<<mpi::rank<<" elem "<< local::local_elem_num<< "\n";
 	// construct basis
 	Construct_basis();
 

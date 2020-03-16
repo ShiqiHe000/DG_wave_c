@@ -8,7 +8,8 @@
 /// @brief mesh file information
 /// @param fileplace The path of mesh file and mesh file name
 namespace fileinfo{
-	const std::string fileplace = "../gmsh_files/16_elements.msh";
+	const std::string fileplace = "../gmsh_files/sin_256.msh";
+//	const std::string fileplace = "../gmsh_files/16_elements.msh";
 }
 
 /// @brief Domain size
@@ -22,13 +23,13 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 2; 
-	const int exp_y = 2; 
+	const int exp_x = 4; 
+	const int exp_y = 4; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 1.0; 
+	const double gx_r = 20.0; 
 	const double gy_l = 0.0;
-	const double gy_r = 1.0; 
+	const double gy_r = 20.0; 
 
 	const int nmin = 2;	// x direction
 	const int nmax = 4;
