@@ -11,6 +11,7 @@
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
 #include <unordered_map>
+#include <cassert>
 #include <iostream>	//test
 
 // forward declaration -----------------------------------------
@@ -86,7 +87,7 @@ void Build_mapping_table(){
 	
 	// Global element number
 	MPI_Exscan(&local::local_elem_num, &LB::elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-	
+
 	// form processor mapping table
 	temp = local::head;
 	int proc_pre = - 1;
@@ -94,8 +95,10 @@ void Build_mapping_table(){
 		
 		lprefix_load[k] += exscan_sum;
 
-		pmapping = std::floor((lprefix_load[k] - 0.01 * load_avg) / load_avg);
-		
+		pmapping = std::floor((lprefix_load[k] - 0.01) / load_avg);
+
+		assert(pmapping >= 0 && "processor mapping is smaller than 0.");	// check
+
 		// form partial mapping table
 		if(pmapping != proc_pre){
 
@@ -106,7 +109,6 @@ void Build_mapping_table(){
 		
 		// form sending_envelope
 		if(pmapping < mpi::rank){	// need to be moved to the former proc
-
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			LB::Send.pre.push_back(key);

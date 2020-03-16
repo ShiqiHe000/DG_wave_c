@@ -18,6 +18,7 @@ void Load_balancing(){
 
 	Reallocate_elem();
 
+//std::cout<< "rank "<< mpi::rank<< "\n";
 	Clear_mapping_tables();
 
 }
