@@ -46,13 +46,19 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 		Adapt(k);
-
-//std::cout<<"rank "<< mpi::rank << "\n";
+//if(mpi::rank == 0){
+//
+//	std::cout<< "after h \n";
+//}
 		Write_faces_all();
 
 		// load_balancing----------------------------------------------	
 		Load_balancing();
 		//-------------------------------------------------------------
+//if(mpi::rank == 0){
+//
+//	std::cout<< "after LB \n";
+//}
 		Write_faces_all();
 
 //		Simple_test(k);

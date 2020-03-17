@@ -46,7 +46,7 @@ void Reallocate_elem(){
 		Send_pack(send_elem, it);
 		int num_n{};
 		Face_pack(face_info, LB::Send.pre, num_n);
-//	std::cout<<"rank "<< mpi::rank << "\n"	;
+		
 		// ready to send 
 		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre1);	// tag = rank
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD, &request_pre2);
