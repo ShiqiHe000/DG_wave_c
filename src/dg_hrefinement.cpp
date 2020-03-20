@@ -48,7 +48,13 @@ void Flag_elem(int kt){
 
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
-
+//if(mpi::rank == 3){
+//
+//	rand_num = 1;
+//}
+//else{
+//	rand_num = 4;
+//}
 		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
 

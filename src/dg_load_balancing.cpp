@@ -11,14 +11,13 @@ void Clear_mapping_tables();
 
 /// @brief
 /// Whole procedure of load balancing   
-void Load_balancing(){
+void Load_balancing(int kt){
 	Build_mapping_table();
 
-	Update_mpi_boundary();
+	Update_mpi_boundary(kt);
 
-	Reallocate_elem();
+	Reallocate_elem(kt);
 
-//std::cout<< "rank "<< mpi::rank<< "\n";
 	Clear_mapping_tables();
 
 }
@@ -31,7 +30,6 @@ void Clear_mapping_tables(){
 
 	LB::elem_accum = 0;
 
-	LB::end = nullptr;
-
 	LB::my_rank_last = nullptr;
+	LB::my_rank_first = nullptr;
 }

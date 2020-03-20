@@ -31,7 +31,7 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank);
 
-void Update_mpi_boundary();
+void Update_mpi_boundary(int kt);
 
 void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face);
@@ -53,18 +53,9 @@ void Build_mapping_table(){
 	for(int k = 1; k < local::local_elem_num; ++k){
 		lprefix_load[k] = Elem_load(temp -> n) + lprefix_load[k - 1];
 		
-		if(k == local::local_elem_num - 1){
-
-			LB::end = temp;	// pointer points to the last element. 
-		}
-
 		temp = temp -> next;
 
 	}	
-	if(local::local_elem_num == 1){	// if only one element
-		LB::end = local::head;
-
-	}
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
@@ -90,6 +81,7 @@ void Build_mapping_table(){
 
 	// form processor mapping table
 	temp = local::head;
+	LB::my_rank_first = local::head;
 	int proc_pre = - 1;
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
@@ -112,6 +104,8 @@ void Build_mapping_table(){
 			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			LB::Send.pre.push_back(key);
+
+			LB::my_rank_first = temp -> next;
 		}
 		else if(pmapping > mpi::rank){
 
@@ -134,7 +128,6 @@ void Build_mapping_table(){
 	if(mpi::rank != (mpi::num_proc - 1)){
 	
 		int last_rank = LB::proc_mapping_table.back().irank;
-		
 		MPI_Isend(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request);// tag == recver's rank
 
 	}
@@ -364,7 +357,7 @@ void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable){
 
 /// @brief
 /// Updates the MPI boundaries before repartitioning. 
-void Update_mpi_boundary(){
+void Update_mpi_boundary(int kt){
 
 	// form the element future ownership----------------------------------------------
 	Ownership_one_dir(hrefinement::north);
@@ -382,7 +375,6 @@ void Update_mpi_boundary(){
 	Send_recv_ownership(hrefinement::south, hrefinement::north, 1);
 	//-----------------------------------------------------------------------------------------------
 
-
 	// y direction-----------------------------------------------------------------------------------
 	
 	// west send and east recv
@@ -391,6 +383,7 @@ void Update_mpi_boundary(){
 	// east send and west recv
 	Send_recv_ownership(hrefinement::east, hrefinement::west, 2);
 	//-----------------------------------------------------------------------------------------------
+//std::cout<< "rank "<< mpi::rank<< " kt "<< kt<< "\n";
 }
 
 /// @brief
@@ -425,7 +418,7 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 				send_info[2 * k + 1] = it -> owners_rank;
 				++it;
 			}
-	
+assert(v.first >= 0 && v.first < 4 && "target_rank wrong" );
 			MPI_Isend(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
 
 			++i;
@@ -444,7 +437,7 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 			MPI_Status status1, status2;
 
 			int num{};
-
+assert(v.first >= 0 && v.first <= 3 && "rank wrong send_recv_ownership");
 			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);

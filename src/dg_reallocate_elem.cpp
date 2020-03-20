@@ -6,6 +6,7 @@
 #include "dg_cantor_pairing.h"
 #include <cassert>
 #include <iostream> // test
+#include <fstream>	// test
 
 // forward declaration-------------------------------------------------------------------
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
@@ -21,11 +22,14 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face);
 void Fill_facen(std::vector<face_pack>& face_info);
 
 void Erase_elem_old(std::vector<int>& send, char dir, int num);
+
+void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank); 	// test
+void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target_rank);	//test
 // --------------------------------------------------------------------------------------
 
 /// @brief
 /// After built the complete mapping table, now we decide how to reallocate the elements
-void Reallocate_elem(){
+void Reallocate_elem(int kt){
 
 	int start = LB::elem_accum; 	// first elem global number
 	int last = start + local::local_elem_num - 1;	// last elem global number
@@ -36,6 +40,9 @@ void Reallocate_elem(){
 	MPI_Request request_pre1, request_pre2, request_next1, request_next2;
 
 	if(num_pre > 0){	// something to send
+//if(mpi::rank == 2){
+//	std::cout<< "rank2 "<< num_pre<< "\n";
+//}
 		std::vector<info_pack> send_elem(num_pre);
 
 		auto it = LB::Send.pre.begin();
@@ -47,6 +54,14 @@ void Reallocate_elem(){
 		int num_n{};
 		Face_pack(face_info, LB::Send.pre, num_n);
 		
+//if(mpi::rank == 2){
+//	std::cout<< "rank2 "<< num_pre<< "\n";
+//	std::cout<< "local "<< local::local_elem_num << "\n";
+//}
+		// test--------------------------------------------------------------
+		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
+		//----------------------------------------------------------------------
+
 		// ready to send 
 		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre1);	// tag = rank
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD, &request_pre2);
@@ -64,12 +79,15 @@ void Reallocate_elem(){
 		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
+		// test		
+		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
+
 		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next1);
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request_next2);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
-	
+//std::cout<< "rank "	<< mpi::rank << "\n";
 	// recv
 	if(mpi::rank == 0){	// first proc
 		
@@ -80,6 +98,8 @@ void Reallocate_elem(){
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
+
+			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -98,6 +118,8 @@ void Reallocate_elem(){
 			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
+			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
+
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
 			Enlarge_hash(recv_info, 'p', recv_num);
@@ -114,6 +136,7 @@ void Reallocate_elem(){
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
+			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -128,6 +151,7 @@ void Reallocate_elem(){
 			int recv_num{};	
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -137,6 +161,7 @@ void Reallocate_elem(){
 		
 	}
 	
+//std::cout<< "rank "<< mpi::rank << " kt "<< kt<< "\n";
 	// wait
 	if(num_pre > 0){
 		MPI_Status status;
@@ -150,6 +175,99 @@ void Reallocate_elem(){
 		MPI_Wait(&request_next2, &status);
 
 	}
+
+}
+
+
+void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank){
+
+	// generate the file name
+	std::string my_rank = std::to_string(mpi::rank);
+	std::string filename = "../send_info/rank" + my_rank + "send.dat";
+	std::ofstream myfile; 	// stream class to write on files	
+
+
+	myfile.open(filename, std::ios::out | std::ios::app);
+
+	if(!myfile){	// if this file does not exist
+
+		myfile.open(filename, std::ios::out | std::ios::trunc);
+		myfile << "my rank " << mpi::rank << "\n";
+
+	}
+
+	// record
+	myfile << "============================================== \n";
+	myfile << "time " << kt << "\n";
+	myfile << "target_rank " << target_rank << " number elem "<< num_n << "\n";
+
+//	int key_first = Get_key_fun(LB::my_rank_first -> index[0], LB::my_rank_first -> index[1], LB::my_rank_first -> index[2]);
+	if((local::local_elem_num - num_n) > 0){
+		myfile << "new first " << LB::my_rank_first -> index[0] << " " << 
+					LB::my_rank_first -> index[1] << " " <<
+					LB::my_rank_first -> index[2] << 
+					" new_last "<< LB::my_rank_last -> index[0] 
+					<< " "<<LB::my_rank_last -> index[1] << " "<< LB::my_rank_last -> index[2]<< "\n";
+	}
+//	int num{};
+	for(auto& v : send_elem){
+
+		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
+
+		myfile << key << " ";
+
+		
+	}
+	myfile << "\n";
+	myfile << "============================================== \n";
+
+	myfile.close();
+
+}
+
+
+void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target_rank){
+
+	// generate the file name
+	std::string my_rank = std::to_string(mpi::rank);
+	std::string filename = "../recv_info/rank" + my_rank + ".dat";
+	std::ofstream myfile; 	// stream class to write on files	
+
+
+	myfile.open(filename, std::ios::out | std::ios::app);
+
+	if(!myfile){	// if this file does not exist
+
+		myfile.open(filename, std::ios::out | std::ios::trunc);
+		myfile << "my rank " << mpi::rank << "\n";
+
+	}
+
+	// record
+	myfile << "============================================== \n";
+	myfile << "time " << kt << "\n";
+	myfile << "target_rank " << target_rank << " number elem "<< num_n << "\n";
+
+	if(local::local_elem_num > 0){
+		myfile << "new first " << LB::my_rank_first -> index[0] << " " << 
+					LB::my_rank_first -> index[1] << " " <<
+					LB::my_rank_first -> index[2] << 
+					" new_last "<< LB::my_rank_last -> index[0] 
+					<< " "<<LB::my_rank_last -> index[1] << " "<< LB::my_rank_last -> index[2]<< "\n";
+	}
+//	int num{};
+	for(auto& v : recv_elem){
+
+		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
+
+		myfile << key << " ";
+
+		
+	}
+	myfile << "\n";
+	myfile << "============================================== \n";
+
+	myfile.close();
 
 }
 
@@ -211,13 +329,13 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
 
 		if(dir == 'p'){		// put the elements at the beginning of the linked list
 			
-			local::Hash_elem[pre_key] -> next = local::head;
+			local::Hash_elem[pre_key] -> next = LB::my_rank_first;
 	
 			local::head = temp_head;
 	
 		}	
 		else{	// put the element at the end of the linked list
-				LB::end -> next = temp_head;
+			LB::my_rank_last -> next = temp_head;
 		}
 
 	}
@@ -265,6 +383,7 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 
 	MPI_Status status1, status2;
 
+assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_elem");
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, Hash::Elem_type, &count);
@@ -283,7 +402,7 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 
 	MPI_Status status1, status2;
-
+assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_face");
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	int count;
@@ -378,7 +497,6 @@ void Erase_elem_old(std::vector<int>& send, char dir, int num){
 	if(local::local_elem_num == 0){	// nothing left
 
 		local::head = nullptr;
-		LB::end = nullptr;
 
 	}
 	else{

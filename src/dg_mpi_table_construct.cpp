@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include "dg_param.h"
 #include "dg_neighbour_list.h"
+#include <cassert>	// test
 #include <iostream>	// test
 
 // forward declaration ------------------------------------------------------------------
@@ -258,7 +259,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 				send_info[5 * k + 4] = it -> mpi_length;
 				++it;
 			}
-	
+assert(target_rank >=0 && target_rank <=3 && "target_rank wrong");
 			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
 		}
@@ -275,7 +276,8 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 			MPI_Status status1, status2;		// dummy
 
 			int num{};	// number of elem on the other side
-		
+assert(v.first >= 0 && v.first <= 3 && "rank wrong. Sender_recver");
+
 			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);

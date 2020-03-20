@@ -70,8 +70,8 @@ namespace LB{
 
 	struct sending_envelope Send;	// record what to send
 	
-	Unit* end = nullptr; 	// pointer who points to the last element. 
 	Unit* my_rank_last = nullptr;	// pointer who points to the last element who stays in my rank. 
+	Unit* my_rank_first = nullptr;	// pointer who points to the first element who stays in my rank. 
 };
 
 /// @brief

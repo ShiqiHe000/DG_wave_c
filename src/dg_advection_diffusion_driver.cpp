@@ -51,9 +51,10 @@ void Driver_for_DG_approximation(){
 //	std::cout<< "after h \n";
 //}
 		Write_faces_all();
+     		Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
-		Load_balancing();
+		Load_balancing(k);
 		//-------------------------------------------------------------
 //if(mpi::rank == 0){
 //
