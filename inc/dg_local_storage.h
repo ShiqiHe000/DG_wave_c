@@ -53,8 +53,8 @@ namespace LB{
 
 	extern struct sending_envelope Send;
 	
-	extern Unit* end;
 	extern Unit* my_rank_last;
+	extern Unit* my_rank_first;
 };
 
 namespace result{

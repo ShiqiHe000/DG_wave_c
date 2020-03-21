@@ -1,6 +1,6 @@
 #ifndef DG_REALLOCATE_ELEM_H
 #define DG_REALLOCATE_ELEM_H
 
-void Reallocate_elem();
+void Reallocate_elem(int kt);
 
 #endif

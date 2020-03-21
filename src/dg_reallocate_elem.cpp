@@ -25,6 +25,8 @@ void Erase_elem_old(std::vector<int>& send, char dir, int num);
 
 void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank); 	// test
 void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target_rank);	//test
+void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank);	// test
+void Write_send_face(int kt, std::vector<face_pack>& recv_face, int target_rank);
 // --------------------------------------------------------------------------------------
 
 /// @brief
@@ -60,6 +62,7 @@ void Reallocate_elem(int kt){
 //}
 		// test--------------------------------------------------------------
 		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
+		Write_send_face(kt, face_info, mpi::rank - 1);
 		//----------------------------------------------------------------------
 
 		// ready to send 
@@ -81,13 +84,14 @@ void Reallocate_elem(int kt){
 
 		// test		
 		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
+		Write_send_face(kt, face_info, mpi::rank + 1);
 
 		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next1);
 		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request_next2);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
-//std::cout<< "rank "	<< mpi::rank << "\n";
+	
 	// recv
 	if(mpi::rank == 0){	// first proc
 		
@@ -102,6 +106,8 @@ void Reallocate_elem(int kt){
 			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
+
+			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
 
 			Enlarge_hash(recv_info, 'n', recv_num);
 			Fill_facen(recv_face);
@@ -122,6 +128,8 @@ void Reallocate_elem(int kt){
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
+			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
+
 			Enlarge_hash(recv_info, 'p', recv_num);
 			Fill_facen(recv_face);
 
@@ -140,6 +148,8 @@ void Reallocate_elem(int kt){
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
+			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
+
 			Enlarge_hash(recv_info, 'n', recv_num);
 			Fill_facen(recv_face);
 		}
@@ -154,6 +164,8 @@ void Reallocate_elem(int kt){
 			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
+
+			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
 			Enlarge_hash(recv_info, 'p', recv_num);
 			Fill_facen(recv_face);
@@ -178,6 +190,72 @@ void Reallocate_elem(int kt){
 
 }
 
+void Write_send_face(int kt, std::vector<face_pack>& recv_face, int target_rank){
+
+
+	// generate the file name
+	std::string my_rank = std::to_string(mpi::rank);
+	std::string filename = "../send_face_info/rank" + my_rank + ".dat";
+	std::ofstream myfile; 	// stream class to write on files	
+
+
+	myfile.open(filename, std::ios::out | std::ios::app);
+
+	if(!myfile){	// if this file does not exist
+
+		myfile.open(filename, std::ios::out | std::ios::trunc);
+		myfile << "my rank " << mpi::rank << "\n";
+	}
+
+	// record
+	myfile << "============================================== \n";
+	myfile << "time " << kt << "\n";
+	myfile << "target_rank " << target_rank << "\n";
+
+
+	for(auto& v : recv_face){
+
+		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
+		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+	}
+	
+
+	myfile.close();
+
+}
+void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank){
+
+
+	// generate the file name
+	std::string my_rank = std::to_string(mpi::rank);
+	std::string filename = "../recv_face_info/rank" + my_rank + ".dat";
+	std::ofstream myfile; 	// stream class to write on files	
+
+
+	myfile.open(filename, std::ios::out | std::ios::app);
+
+	if(!myfile){	// if this file does not exist
+
+		myfile.open(filename, std::ios::out | std::ios::trunc);
+		myfile << "my rank " << mpi::rank << "\n";
+	}
+
+	// record
+	myfile << "============================================== \n";
+	myfile << "time " << kt << "\n";
+	myfile << "target_rank " << target_rank << "\n";
+
+
+	for(auto& v : recv_face){
+
+		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
+		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+	}
+	
+
+	myfile.close();
+
+}
 
 void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank){
 
@@ -467,6 +545,7 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				face_info.back().owners_key = v; 
 				face_info.back().facei = i;
 				face_info.back().face_type = it -> face_type;
+assert((it -> face_type) == 'M' || (it -> face_type) == 'B' || (it -> face_type) == 'L' && "face type wrong");
 				face_info.back().hlevel = it -> hlevel;
 				face_info.back().porderx = it -> porderx;
 				face_info.back().pordery = it -> pordery;

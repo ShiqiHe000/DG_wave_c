@@ -17,7 +17,7 @@ void Load_balancing(int kt){
 	Update_mpi_boundary(kt);
 
 	Reallocate_elem(kt);
-
+//std::cout<<"rank "<< mpi::rank << " time "<< kt << "\n";
 	Clear_mapping_tables();
 
 }
