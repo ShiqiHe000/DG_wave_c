@@ -187,6 +187,7 @@ void Reallocate_elem(int kt){
 		MPI_Wait(&request_next2, &status);
 
 	}
+MPI_Barrier(MPI_COMM_WORLD);
 
 }
 
@@ -338,7 +339,8 @@ void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target
 
 		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
 
-		myfile << key << " ";
+		myfile << key << " status " << v.status<< " c position "<< v.child_position<< " x p "<< v.xcoords[0]
+			<< " " << v.xcoords[1] << " y "<< v.ycoords[0]<< v.ycoords[1] << "\n";
 
 		
 	}
@@ -483,7 +485,7 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_face");
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
-	int count;
+	int count{};
 	MPI_Get_count(&status1, Hash::Face_type, &count);
 	
 	recv_face = std::vector<face_pack>(count);

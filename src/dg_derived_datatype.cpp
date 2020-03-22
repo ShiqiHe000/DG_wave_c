@@ -23,14 +23,15 @@ void Construct_data_type(){
 
 }
 
+
 /// @brief
 /// Construct Face_type for sending info of element neighbours.  
 void MPI_Face_type(){
 
-	int num = 3;
+	int num = 8;
 
 	// Number of elements in each block (array of integers)
-	int elem_blocklength[num]{2, 1, 5};
+	int elem_blocklength[num]{1, 1, 1, 1, 1, 1, 1, 1};
 	
 	// Byte displacement of each block (array of integers).
 	MPI_Aint array_of_offsets[num];
@@ -39,11 +40,16 @@ void MPI_Face_type(){
 	MPI_Type_get_extent(MPI_INT, &lb, &intex);
 	MPI_Type_get_extent(MPI_CHAR, &lb, &charex);
 
-	array_of_offsets[0] = (MPI_Aint) 0;
-	array_of_offsets[1] = array_of_offsets[0] + intex * 2;
-	array_of_offsets[2] = array_of_offsets[1] + charex;
+	array_of_offsets[0] = (MPI_Aint) 0;	// owners_key
+	array_of_offsets[1] = array_of_offsets[0] + intex ;	// facei
+	array_of_offsets[2] = array_of_offsets[1] + intex ;	// face_type
+	array_of_offsets[3] = array_of_offsets[2] + charex;	// hlevel
+	array_of_offsets[4] = array_of_offsets[3] + intex;	// porderx
+	array_of_offsets[5] = array_of_offsets[4] + intex;	// pordery
+	array_of_offsets[6] = array_of_offsets[5] + intex;	// key
+	array_of_offsets[7] = array_of_offsets[6] + intex;	// rank
 
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_CHAR, MPI_INT};
+	MPI_Datatype array_of_types[num]{MPI_INT, MPI_INT, MPI_CHAR, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
 
 	// create and MPI datatype
 	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Face_type);	
