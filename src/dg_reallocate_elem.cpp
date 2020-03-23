@@ -39,8 +39,6 @@ void Reallocate_elem(int kt){
 	int num_pre = LB::Send.pre.size();
 	int num_next = LB::Send.next.size();
 
-	MPI_Request request_pre1, request_pre2, request_next1, request_next2;
-
 	if(num_pre > 0){	// something to send
 //if(mpi::rank == 2){
 //	std::cout<< "rank2 "<< num_pre<< "\n";
@@ -66,8 +64,8 @@ void Reallocate_elem(int kt){
 		//----------------------------------------------------------------------
 
 		// ready to send 
-		MPI_Isend(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &request_pre1);	// tag = rank
-		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD, &request_pre2);
+		MPI_Send(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD);	// tag = rank
+		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD);
 
 		Erase_elem_old(LB::Send.pre, 'p', num_pre);
 	}
@@ -86,8 +84,8 @@ void Reallocate_elem(int kt){
 		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
 		Write_send_face(kt, face_info, mpi::rank + 1);
 
-		MPI_Isend(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD, &request_next1);
-		MPI_Isend(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request_next2);
+		MPI_Send(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD);
+		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
@@ -103,7 +101,6 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 
-//			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -124,7 +121,6 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
-//			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -144,7 +140,6 @@ void Reallocate_elem(int kt){
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
-//			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -161,7 +156,6 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
-//			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -173,21 +167,6 @@ void Reallocate_elem(int kt){
 		
 	}
 	
-//std::cout<< "rank "<< mpi::rank << " kt "<< kt<< "\n";
-	// wait
-	if(num_pre > 0){
-		MPI_Status status;
-		MPI_Wait(&request_pre1, &status);
-		MPI_Wait(&request_pre2, &status);
-	}
-	if(num_next > 0){
-
-		MPI_Status status;
-		MPI_Wait(&request_next1, &status);
-		MPI_Wait(&request_next2, &status);
-
-	}
-//MPI_Barrier(MPI_COMM_WORLD);
 
 }
 
