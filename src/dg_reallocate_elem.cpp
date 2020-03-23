@@ -187,7 +187,7 @@ void Reallocate_elem(int kt){
 		MPI_Wait(&request_next2, &status);
 
 	}
-MPI_Barrier(MPI_COMM_WORLD);
+//MPI_Barrier(MPI_COMM_WORLD);
 
 }
 
@@ -211,8 +211,8 @@ void Write_send_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	// record
 	myfile << "============================================== \n";
 	myfile << "time " << kt << "\n";
-	myfile << "target_rank " << target_rank << "\n";
-
+	int num_face = recv_face.size();
+	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
 
 	for(auto& v : recv_face){
 
@@ -244,8 +244,9 @@ void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	// record
 	myfile << "============================================== \n";
 	myfile << "time " << kt << "\n";
-	myfile << "target_rank " << target_rank << "\n";
 
+	int num_face = recv_face.size();
+	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
 
 	for(auto& v : recv_face){
 
@@ -547,7 +548,6 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				face_info.back().owners_key = v; 
 				face_info.back().facei = i;
 				face_info.back().face_type = it -> face_type;
-assert((it -> face_type) == 'M' || (it -> face_type) == 'B' || (it -> face_type) == 'L' && "face type wrong");
 				face_info.back().hlevel = it -> hlevel;
 				face_info.back().porderx = it -> porderx;
 				face_info.back().pordery = it -> pordery;
