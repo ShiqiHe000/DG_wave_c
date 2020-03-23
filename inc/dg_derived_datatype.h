@@ -2,6 +2,7 @@
 #define DG_DERIVED_DATA_TYPE_H
 
 #include <mpi.h>
+#include <stdio.h>
 
 /// @brief
 /// Pack all the element information together and send together.
@@ -28,6 +29,7 @@ struct info_pack{
 /// Variables without annotation refer to the same one as class Unit. 
 /// @param owners_key The key of the owner element.
 /// @param facei face direction (0, 1, 2, 3). 
+//#pragma pack(push, 1)
 struct face_pack{
 
 	int owners_key;	// the key of the owner element
@@ -47,6 +49,7 @@ struct face_pack{
 	int rank;
 
 };
+//#pragma pack(pop)
 
 namespace Hash{
 

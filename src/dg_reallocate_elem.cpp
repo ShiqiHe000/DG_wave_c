@@ -103,7 +103,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 
-			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
+//			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -124,7 +124,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
-			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
+//			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -144,7 +144,7 @@ void Reallocate_elem(int kt){
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
-			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
+//			Write_recv(kt, recv_info, recv_num, mpi::rank + 1);	//test
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -161,7 +161,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
-			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
+//			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -205,19 +205,22 @@ void Write_send_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	if(!myfile){	// if this file does not exist
 
 		myfile.open(filename, std::ios::out | std::ios::trunc);
-		myfile << "my rank " << mpi::rank << "\n";
+//		myfile << "my rank " << mpi::rank << "\n";
 	}
 
 	// record
 	myfile << "============================================== \n";
 	myfile << "time " << kt << "\n";
 	int num_face = recv_face.size();
-	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
+//	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
+	myfile << "num_face " << num_face << "\n";
 
 	for(auto& v : recv_face){
 
-		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
-		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+//		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
+//		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+		myfile << v.owners_key << " "<<v.facei << " "<< v.face_type << 
+		" "<< v.key << " "<< v.rank<< "\n";
 	}
 	
 
@@ -238,7 +241,7 @@ void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	if(!myfile){	// if this file does not exist
 
 		myfile.open(filename, std::ios::out | std::ios::trunc);
-		myfile << "my rank " << mpi::rank << "\n";
+//		myfile << "my rank " << mpi::rank << "\n";
 	}
 
 	// record
@@ -246,12 +249,16 @@ void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	myfile << "time " << kt << "\n";
 
 	int num_face = recv_face.size();
-	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
+	myfile << "num_face " << num_face << "\n";
+//	myfile << "target_rank " << target_rank << " num_face " << num_face << "\n";
 
 	for(auto& v : recv_face){
 
-		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
-		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+//		myfile << "owners_key" << v.owners_key << " facei "<<v.facei << " face_type "<< v.face_type << 
+//		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
+
+		myfile << v.owners_key << " "<<v.facei << " "<< v.face_type << 
+		" "<< v.key << " "<< v.rank<< "\n";
 	}
 	
 
