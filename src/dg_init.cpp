@@ -1,4 +1,3 @@
-
 #include "dg_local_storage.h"
 #include "dg_unit.h"
 #include "dg_param.h"
@@ -23,7 +22,6 @@ void DG_init(){
 
 	// traverse the linked list
 	for(int k = 0; k < local::local_elem_num; ++k){
-	
 
 		// elemement size
 		double del_x = (temp -> xcoords[1]) - (temp -> xcoords[0]);
@@ -32,27 +30,22 @@ void DG_init(){
 		for(int j = 0; j <= grid::nmin; ++j){
 			
 			// map reference location to physical localtion
-			double gl_p_y = nodal::gl_p[0][j];
-			double y = Affine_mapping(gl_p_y, temp->ycoords[0], del_y);
+			double gl_p_y = nodal::gl_p[grid::nmin][j];
+			double y = Affine_mapping(gl_p_y, temp -> ycoords[0], del_y);
 			
 			for(int i = 0; i <= grid::nmin; ++i){
 	
-				double gl_p_x = nodal::gl_p[0][i];
-				double x = Affine_mapping(gl_p_x, temp->xcoords[0], del_x);
+				double gl_p_x = nodal::gl_p[grid::nmin][i];
+				double x = Affine_mapping(gl_p_x, temp -> xcoords[0], del_x);
 				
 				double inter = exp( - std::pow((kx * (x - x0) + 
 							ky * (y - y0)), 2) / std::pow(D, 2));
 				
-				int nodei[dg_fun::num_of_equation]{};	
-				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+				int num_p = Get_single_index(i, j, grid::nmin + 1);
 
-					nodei[equ] = Get_single_index_3d(i, j, equ, grid::nmin + 1, grid::nmin + 1);
-
-				}
-
-				temp -> solution[nodei[0]] = inter;
-				temp -> solution[nodei[1]] = kx / dg_fun::C * inter;
-				temp -> solution[nodei[2]] = ky / dg_fun::C * inter;
+				temp -> solution[0][num_p] = inter;
+				temp -> solution[1][num_p] = kx / dg_fun::C * inter;
+				temp -> solution[2][num_p] = ky / dg_fun::C * inter;
 			}
 		}
 	

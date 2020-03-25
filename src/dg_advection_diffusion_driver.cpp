@@ -1,6 +1,6 @@
 #include <mpi.h>
 #include "dg_param.h"
-#include "dg_constructor.h"
+#include "dg_basis_storage.h"
 #include "dg_create_hash.h"
 #include "dg_construct_mpi_boundary.h"
 #include "dg_init.h"
@@ -20,7 +20,7 @@
 void Driver_for_DG_approximation(){
 //std::cout<< "rank "<<mpi::rank<<" elem "<< local::local_elem_num<< "\n";
 	// construct basis
-	Construct_basis();
+	Construct_basis_storage();
 
 	// create hash table
 	Create_hash();
@@ -35,7 +35,7 @@ void Driver_for_DG_approximation(){
 	double tn{};
 
 	// Initialization
-	DG_init();	
+//	DG_init();	
 	
 	// h-refinement
 	
@@ -46,21 +46,13 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 		Adapt(k);
-//if(mpi::rank == 0){
-//
-//	std::cout<< "after h \n";
-//}
-		Write_faces_all();
+//		Write_faces_all();
      		Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
 		Load_balancing(k);
 		//-------------------------------------------------------------
-//if(mpi::rank == 0){
-//
-//	std::cout<< "after LB \n";
-//}
-		Write_faces_all();
+//		Write_faces_all();
 
 //		Simple_test(k);
 
@@ -73,6 +65,5 @@ void Driver_for_DG_approximation(){
 
 	Free_type();
 
-//	Test();
 
 }

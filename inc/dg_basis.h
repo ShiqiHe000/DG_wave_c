@@ -1,15 +1,17 @@
 #ifndef DG_BASIS_H
 #define DG_BASIS_H
 
-void GL(int n, double* gl_p, double* gl_w);
+#include <vector>
 
+void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
+						std::vector<double>& bary);
 
-void BARW(int n, double* x, double* bary);
+void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w);
 
-void Lagrange_interpolating_polynomial(int n, double target_p, double* x, double* bary, double* lag);
+void BARW(int n, std::vector<double>& x, std::vector<double>& bary);
 
-void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, double* der);
-
+void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<double>& x, std::vector<double>& bary,
+					 std::vector<double>& lag );
 
 
 #endif

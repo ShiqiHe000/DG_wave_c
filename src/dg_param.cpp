@@ -34,7 +34,7 @@ namespace grid{
 	const int nmin = 2;	// x direction
 	const int nmax = 4;
 
-	const int hlevel_max = 4;	
+	const int hlevel_max = 3;	
 };
 //---------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ namespace grid{
 namespace dg_time{
 	const double t_total = 1.0;
 
-	const int nt = 500;
+	const int nt = 50;
 
 };
 

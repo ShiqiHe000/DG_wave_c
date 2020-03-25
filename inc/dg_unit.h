@@ -2,6 +2,7 @@
 #define DG_UNIT_H
 
 #include <vector>
+#include <unordered_map>
 
 
 /// @brief
@@ -25,7 +26,7 @@ public:
 	double xcoords[2]{0.0, 0.0};	// x coordinates
 	double ycoords[2]{0.0, 0.0};	// y coordinates
 
-	double* solution = nullptr;	// dymanic solution 
+	std::unordered_map<int, std::vector<double>> solution;	// solutions
 
 	Unit* next = nullptr;	// pointer to the next Unit
 

@@ -40,9 +40,6 @@ void Reallocate_elem(int kt){
 	int num_next = LB::Send.next.size();
 
 	if(num_pre > 0){	// something to send
-//if(mpi::rank == 2){
-//	std::cout<< "rank2 "<< num_pre<< "\n";
-//}
 		std::vector<info_pack> send_elem(num_pre);
 
 		auto it = LB::Send.pre.begin();
@@ -54,13 +51,9 @@ void Reallocate_elem(int kt){
 		int num_n{};
 		Face_pack(face_info, LB::Send.pre, num_n);
 		
-//if(mpi::rank == 2){
-//	std::cout<< "rank2 "<< num_pre<< "\n";
-//	std::cout<< "local "<< local::local_elem_num << "\n";
-//}
 		// test--------------------------------------------------------------
-		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
-		Write_send_face(kt, face_info, mpi::rank - 1);
+//		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
+//		Write_send_face(kt, face_info, mpi::rank - 1);
 		//----------------------------------------------------------------------
 
 		// ready to send 
@@ -81,8 +74,8 @@ void Reallocate_elem(int kt){
 		Face_pack(face_info, LB::Send.next, num_n);
 
 		// test		
-		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
-		Write_send_face(kt, face_info, mpi::rank + 1);
+//		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
+//		Write_send_face(kt, face_info, mpi::rank + 1);
 
 		MPI_Send(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD);
 		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);
@@ -104,7 +97,7 @@ void Reallocate_elem(int kt){
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
-			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
+		//	Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
 
 			Enlarge_hash(recv_info, 'n', recv_num);
 			Fill_facen(recv_face);
@@ -124,7 +117,7 @@ void Reallocate_elem(int kt){
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
-			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
+//			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
 			Enlarge_hash(recv_info, 'p', recv_num);
 			Fill_facen(recv_face);
@@ -143,7 +136,7 @@ void Reallocate_elem(int kt){
 			
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
-			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
+//			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
 
 			Enlarge_hash(recv_info, 'n', recv_num);
 			Fill_facen(recv_face);
@@ -159,7 +152,7 @@ void Reallocate_elem(int kt){
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
-			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
+//			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
 			Enlarge_hash(recv_info, 'p', recv_num);
 			Fill_facen(recv_face);
@@ -184,7 +177,6 @@ void Write_send_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 	if(!myfile){	// if this file does not exist
 
 		myfile.open(filename, std::ios::out | std::ios::trunc);
-//		myfile << "my rank " << mpi::rank << "\n";
 	}
 
 	// record

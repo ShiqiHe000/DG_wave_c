@@ -2,6 +2,7 @@
 #define DG_NODAL_2D_STORAGE_H
 
 #include <vector>
+#include <unordered_map>
 
 namespace SortMesh{
 
@@ -22,13 +23,21 @@ namespace SortMesh{
 
 namespace nodal{
 
-	extern double** gl_p;
-	extern double** gl_w;
-	
-	extern double** first_der;
+//	extern double** gl_p;
+//	extern double** gl_w;
 
-	extern double** lagrange_l;
-	extern double** lagrange_r;
+	extern std::unordered_map<int, std::vector<double>> gl_points;
+	extern std::unordered_map<int, std::vector<double>> gl_weights;
+
+	extern std::unordered_map<int, std::vector<double>> first_der;
+
+	extern std::unordered_map<int, std::vector<double>> lagrange_l;
+	extern std::unordered_map<int, std::vector<double>> lagrange_r;
+
+//	extern double** first_der;
+//
+//	extern double** lagrange_l;
+//	extern double** lagrange_r;
 
 }
 

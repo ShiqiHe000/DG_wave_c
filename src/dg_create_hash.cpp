@@ -18,7 +18,7 @@ void Create_hash(){
 	// create hash table
 
 	int key_pre{};
-	int solution_num = dg_fun::num_of_equation * (grid::nmin + 1) * (grid::nmin + 1);
+	int solution_num = (grid::nmin + 1) * (grid::nmin + 1);
 
 	// build each unit
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -53,8 +53,10 @@ void Create_hash(){
 		}
 
 
-		// solution
-		local::Hash_elem[key] -> solution = new double[solution_num]{};
+		// solution allocate the space
+		for(int i = 0; i < dg_fun::num_of_equation; ++i){
+			local::Hash_elem[key] -> solution[i] = std::vector<double>(solution_num);
+		}
 	
 		// previous unit should point to current unit
 		if(k > 0){

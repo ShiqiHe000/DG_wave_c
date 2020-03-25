@@ -1,5 +1,6 @@
 #include "dg_nodal_2d_storage.h"
 #include <vector>
+#include <unordered_map>
 
 /// @brief vairables used in sort mesh file
 /// @param elem_x_position kth element x coordinates in design sequence
@@ -36,13 +37,22 @@ namespace SortMesh{
 /// @param lagrange_r Lagrange interpolating polynomial on the right boundary
 namespace nodal{
 
-	double** gl_p{};
-	double** gl_w{};
+//	double** gl_p{};
+//	double** gl_w{};
 
-	double** first_der{};
+	std::unordered_map<int, std::vector<double>> gl_points;
+	std::unordered_map<int, std::vector<double>> gl_weights;
+
+	std::unordered_map<int, std::vector<double>> first_der;
+
+	std::unordered_map<int, std::vector<double>> lagrange_l;
+	std::unordered_map<int, std::vector<double>> lagrange_r;
+
+
+//	double** first_der{};
 		
-	double** lagrange_l{};
-	double** lagrange_r{};
+//	double** lagrange_l{};
+//	double** lagrange_r{};
 
 
 }
