@@ -40,8 +40,6 @@ void Distribute_elem(){
 	// process 1 compute the average load
 	if(mpi::rank == 0){
 		
-		local::original_elem_num = SortMesh::num_of_element;
-
 		// if element number < processor number
 		if(SortMesh::num_of_element < mpi::num_proc){
 			
@@ -92,9 +90,6 @@ void Distribute_elem(){
 	// scatter local element number
 	MPI_Scatter(&local_elem_number[0], 1, MPI_INT, &local::local_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);	
 	
-	// broadcast total element numebr
-	MPI_Bcast(&local::original_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
 	// allocate local storage
 	local::x_local = new double[2 * local::local_elem_num ];
 	local::y_local = new double[2 * local::local_elem_num ];

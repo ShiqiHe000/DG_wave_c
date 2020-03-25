@@ -22,6 +22,8 @@ void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<doubl
 					 std::vector<double>& lag );
 
 void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq);
+
+double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag);
 //------------------------------------------------
 
 /// @brief 
@@ -246,8 +248,8 @@ void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<doubl
 void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
 						std::vector<double>& bary){
 	
-	assert(mth_der == 1 && "Now the Mth_order_poynomial_derivative_maxtri() function can only compute the 1st\ 
-					order derivative. ");
+	assert(mth_der == 1 && "Now the Mth_order_poynomial_derivative_maxtri() function can only compute the 1st"  
+					" order derivative. ");
 
 	// mth-order == 1
 	for(int i = 0; i <= n; ++i){
@@ -304,6 +306,26 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<doub
 	
 
 }
+
+/// @brief
+/// Interpolate the interior solution to the element boundary/interface.
+/// @param n polynomial order.
+/// @param q solution array. 
+/// @param lag Lagrange interpolation polynomial.
+double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag){
+
+	double inter{};
+
+	for(int j = 0; j < n + 1; ++j){
+
+		inter += lag[j] * q[j];
+
+	}
+
+	return inter;
+
+}
+
 
 /// @brief
 /// Testing equality of two floating point numbers. Algorithm 139

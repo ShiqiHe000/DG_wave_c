@@ -10,8 +10,6 @@
 namespace local{
  
 	extern int local_elem_num;
- 
-        extern int original_elem_num;
 
         extern int* elem_range;
 	extern int* rank_indicator;
