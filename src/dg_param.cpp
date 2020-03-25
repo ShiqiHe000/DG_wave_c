@@ -1,5 +1,3 @@
-#include <iostream>
-#include <mpi.h>
 #include <string>
 #include "dg_param.h"
 
@@ -9,7 +7,7 @@
 /// @param fileplace The path of mesh file and mesh file name
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-	const std::string fileplace = "../gmsh_files/16_elements.msh";
+	const std::string fileplace = "../gmsh_files/4_elements.msh";
 }
 
 /// @brief Domain size
@@ -23,8 +21,8 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 2; 
-	const int exp_y = 2; 
+	const int exp_x = 1; 
+	const int exp_y = 1; 
 	
 	const double gx_l = 0.0;
 	const double gx_r = 1.0; 
@@ -32,7 +30,7 @@ namespace grid{
 	const double gy_r = 1.0; 
 
 	const int nmin = 2;	// x direction
-	const int nmax = 4;
+	const int nmax = 6;
 
 	const int hlevel_max = 3;	
 };
@@ -46,9 +44,9 @@ namespace grid{
 /// @param t_total total time integal
 /// @param nt time step number
 namespace dg_time{
-	const double t_total = 1.0;
+	const double t_total = 0;
 
-	const int nt = 50;
+	const int nt = 0;
 
 };
 

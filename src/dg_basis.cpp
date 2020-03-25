@@ -3,6 +3,7 @@
 #include <limits>	// epsilon
 #include <cmath>	// sqrt
 #include "dg_single_index.h"
+#include <cassert>
 
 
 const double pi = 4.0 * atan(1.0); 
@@ -245,6 +246,8 @@ void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<doubl
 void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
 						std::vector<double>& bary){
 	
+	assert(mth_der == 1 && "Now the Mth_order_poynomial_derivative_maxtri() function can only compute the 1st\ 
+					order derivative. ");
 
 	// mth-order == 1
 	for(int i = 0; i <= n; ++i){
@@ -270,7 +273,6 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<doub
 		return;
 	}
 
-std::cout << "please implement mth_order_derivative_matrix function"	<< "\n";
 	// mth_order > 1
 	//------------
 //	aux = der

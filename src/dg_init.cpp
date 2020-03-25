@@ -30,12 +30,12 @@ void DG_init(){
 		for(int j = 0; j <= grid::nmin; ++j){
 			
 			// map reference location to physical localtion
-			double gl_p_y = nodal::gl_p[grid::nmin][j];
+			double gl_p_y = nodal::gl_points[grid::nmin][j];
 			double y = Affine_mapping(gl_p_y, temp -> ycoords[0], del_y);
 			
 			for(int i = 0; i <= grid::nmin; ++i){
 	
-				double gl_p_x = nodal::gl_p[grid::nmin][i];
+				double gl_p_x = nodal::gl_points[grid::nmin][i];
 				double x = Affine_mapping(gl_p_x, temp -> xcoords[0], del_x);
 				
 				double inter = exp( - std::pow((kx * (x - x0) + 

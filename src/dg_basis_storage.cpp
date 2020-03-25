@@ -3,6 +3,7 @@
 #include "dg_param.h"
 #include "dg_basis.h"
 #include "dg_basis_storage.h"
+#include <iostream>	// test
 
 
 /// @brief
@@ -40,6 +41,7 @@ void Construct_basis_storage(){
 		nodal::lagrange_r[n] = std::vector<double>(n + 1);
 		Lagrange_interpolating_polynomial(n, -1.0, nodal::gl_points[n], bary, nodal::lagrange_l[n]);
 		Lagrange_interpolating_polynomial(n,  1.0, nodal::gl_points[n], bary, nodal::lagrange_r[n]);
+
 	}
 	
 }

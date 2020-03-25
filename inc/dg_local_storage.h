@@ -59,12 +59,11 @@ namespace LB{
 
 namespace result{
 
-	extern double* exact;
-	
-	extern double* error;
+	extern std::unordered_map<int, std::vector<double>> exact;
 
-	extern double* L2_norm;
+	extern std::unordered_map<int, std::vector<double>> error;
 
+	extern std::vector<double> L2_norm;
 };
 
 #endif

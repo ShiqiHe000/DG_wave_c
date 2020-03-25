@@ -23,9 +23,6 @@ namespace SortMesh{
 
 namespace nodal{
 
-//	extern double** gl_p;
-//	extern double** gl_w;
-
 	extern std::unordered_map<int, std::vector<double>> gl_points;
 	extern std::unordered_map<int, std::vector<double>> gl_weights;
 
@@ -33,11 +30,6 @@ namespace nodal{
 
 	extern std::unordered_map<int, std::vector<double>> lagrange_l;
 	extern std::unordered_map<int, std::vector<double>> lagrange_r;
-
-//	extern double** first_der;
-//
-//	extern double** lagrange_l;
-//	extern double** lagrange_r;
 
 }
 

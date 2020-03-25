@@ -442,7 +442,6 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 
 	MPI_Status status1, status2;
 
-assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_elem");
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, Hash::Elem_type, &count);
@@ -461,7 +460,6 @@ assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_elem");
 void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 
 	MPI_Status status1, status2;
-assert(source >= 0 && source <= 3 && "rank wrong! dg_reallocate recv_face");
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	int count{};

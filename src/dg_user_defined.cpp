@@ -2,9 +2,10 @@
 #include "dg_affine_map.h"
 #include <cmath>
 #include "dg_param.h"
-#include "dg_poly_level_and_order.h"
 #include "dg_nodal_2d_storage.h"
 #include "dg_single_index.h"
+#include <unordered_map>
+#include <vector>
 
 // Global variables
 static const double kx = sqrt(2.0) / 2.0; 
@@ -27,32 +28,24 @@ static const double yy0 = 0.0;
 /// @param e exact solution
 /// @param t current time step
 void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
-				double del_x, double del_y, double* e, double t){
+				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t){
 
-	// get poly level
-	int level_x = Poly_order_to_level(grid::nmin, n);
-	int level_y = Poly_order_to_level(grid::nmin, m);
-	
 	for(int j = 0; j <= m; ++j ){
 
-		double y = Affine_mapping(nodal::gl_p[level_y][j], y_d, del_y);
+		double y = Affine_mapping(nodal::gl_points[m][j], y_d, del_y);
 		
 		for(int i = 0; i <= n; ++i){
 
-			double x = Affine_mapping(nodal::gl_p[level_x][i], x_l, del_x);
+			double x = Affine_mapping(nodal::gl_points[n][i], x_l, del_x);
 
 			double inter = exp( - pow((kx * (x - xx0) + 
 						ky * (y - yy0) - dg_fun::C * t), 2) / (D * D) );
 		
-			int nodei[dg_fun::num_of_equation]{};	
-			for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-				nodei[equ] = Get_single_index_3d(i, j, equ, grid::nmin + 1, grid::nmin + 1);
+			int nodei = Get_single_index(i, j, m + 1);
 
-			}		
-			
-			e[nodei[0]] = inter;
-			e[nodei[1]] = kx / dg_fun::C *inter;
-			e[nodei[2]] = ky / dg_fun::C *inter;
+			e[0][nodei] = inter;
+			e[1][nodei]= kx / dg_fun::C *inter;
+			e[2][nodei]= ky / dg_fun::C *inter;
 		}
 
 	}

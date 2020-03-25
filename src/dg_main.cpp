@@ -30,10 +30,8 @@
 
 int main(int argc, char *argv[]){
 
-	char** a = argv;	
-	
 	// initialize mpi
-	Start_mpi(&argc, a);
+	Start_mpi(argc, argv);
 	
 	srand(time(NULL) + mpi::rank * mpi::num_proc);
 
@@ -50,11 +48,11 @@ int main(int argc, char *argv[]){
 //	Test();
 
 	// verification
-//	Get_error();
+	Get_error();
 
 
 	// terminate mpi
-        int ierr = MPI_Finalize();	
+        MPI_Finalize();	
 	
 }
 

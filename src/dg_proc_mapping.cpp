@@ -418,7 +418,6 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 				send_info[2 * k + 1] = it -> owners_rank;
 				++it;
 			}
-assert(v.first >= 0 && v.first < 4 && "target_rank wrong" );
 			MPI_Isend(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
 
 			++i;
@@ -437,7 +436,7 @@ assert(v.first >= 0 && v.first < 4 && "target_rank wrong" );
 			MPI_Status status1, status2;
 
 			int num{};
-assert(v.first >= 0 && v.first <= 3 && "rank wrong send_recv_ownership");
+
 			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
 			MPI_Get_count(&status1, MPI_INT, &num);

@@ -35,7 +35,7 @@ void Driver_for_DG_approximation(){
 	double tn{};
 
 	// Initialization
-//	DG_init();	
+	DG_init();	
 	
 	// h-refinement
 	
@@ -63,7 +63,7 @@ void Driver_for_DG_approximation(){
 
 	}
 
-	Free_type();
+	Free_type();	// free up the derived datatype
 
 
 }

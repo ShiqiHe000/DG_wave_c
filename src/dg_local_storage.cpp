@@ -78,10 +78,10 @@ namespace LB{
 /// Variables for results verification
 namespace result{
 	
-	double* exact = nullptr;
+	std::unordered_map<int, std::vector<double>> exact;
 
-	double* error = nullptr;
+	std::unordered_map<int, std::vector<double>> error;
 
-	double* L2_norm = nullptr;
+	std::vector<double> L2_norm;
 
 };
