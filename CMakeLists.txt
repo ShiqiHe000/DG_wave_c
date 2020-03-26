@@ -15,6 +15,9 @@ file(GLOB SOURCES "src/*.cpp")
 # executable file
 add_executable(main ${SOURCES})
 
+# set compiler warning flag
+set(GCC_COMPILER_FLAGS "-Wall -Wpedantic")
+
 # set cmake compiler
 #set(CMAKE_CXX_COMPILER /home/travis/build/ShiqiHe000/DG_wave_c/openmpi-4.0.2/bin/mpicxx)
 
@@ -34,7 +37,7 @@ endif(MPI_NOFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # libraires links
-target_link_libraries(main PUBLIC MPI::MPI_CXX )
+target_link_libraries(main PUBLIC MPI::MPI_CXX ${GCC_COMPILER_FLAGS})
 #target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
 
 # OpenBLAS--------------------------------------------------------------------------------------

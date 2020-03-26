@@ -31,6 +31,9 @@ public:
 	std::unordered_map<int, std::vector<double>> solution_int_l;	// solution on the element left interface
 	std::unordered_map<int, std::vector<double>> solution_int_r;	// solution on the element right interface
 
+	std::unordered_map<int, std::vector<double>> ghost; // ghost space to store the neighbours' solutions on the interface
+							    // hash <neighbour's key, solution_int>
+
 	Unit* next = nullptr;	// pointer to the next Unit
 
 	bool hrefine = false;	// refinemnt 
