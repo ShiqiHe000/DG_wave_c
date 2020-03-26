@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "dg_param.h"
 #include "dg_search_rank.h"
+#include "dg_put_into_mpi_table.h"
 #include <iostream>	//test
 
 /// @brief
@@ -59,7 +60,8 @@ void MPI_boundary_construct(){
 				temp -> facen[0][0].rank = target_rank;
 
 				// put this element into the mpi table
-				
+				auto it_face = temp -> facen[0].begin();
+				Put_in_mpi_table(temp, it_face, hrefinement::south);
 			}
 			else{	// if found, record info
 
@@ -97,6 +99,10 @@ void MPI_boundary_construct(){
 				int target_rank = Target_rank(ni, nj);
 
 				temp -> facen[1][0].rank = target_rank;
+				
+				// record in MPI boundary table
+				auto it_face = temp -> facen[1].begin();
+				Put_in_mpi_table(temp, it_face, hrefinement::north);
 			}
 			else{
 
@@ -135,6 +141,8 @@ void MPI_boundary_construct(){
 				int target_rank = Target_rank(ni, nj);
 
 				temp -> facen[2][0].rank = target_rank;
+				auto it_face = temp -> facen[2].begin();
+				Put_in_mpi_table(temp, it_face, hrefinement::west);
 			}
 			else{	// locally
 				
@@ -173,6 +181,8 @@ void MPI_boundary_construct(){
 				int target_rank = Target_rank(ni, nj);
 
 				temp -> facen[3][0].rank = target_rank;
+				auto it_face = temp -> facen[3].begin();
+				Put_in_mpi_table(temp, it_face, hrefinement::east);
 			}
 			else{
 
