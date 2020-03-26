@@ -32,9 +32,6 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
 
-//void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-//			std::unordered_map<int, std::vector<mpi_table>>& table);
-
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south, 
