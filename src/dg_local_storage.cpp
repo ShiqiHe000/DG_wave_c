@@ -2,8 +2,8 @@
 #include "dg_unit.h"	// head pointer
 #include <unordered_map>
 #include <vector>
-#include "dg_boundary_table.h"
 #include "dg_load_balancing.h"
+#include "dg_boundary_table.h"
 
 /// @brief Local data storage (on each process)
 /// @param local_elem_num local element number, start with 1.
@@ -33,9 +33,6 @@ namespace local{
 	Unit* head = nullptr; // head ptr points to the first element
 
 	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
-
-	std::vector<std::vector<double>> solution_int_l{};
-	std::vector<std::vector<double>> solution_int_r{};
 
 };
 

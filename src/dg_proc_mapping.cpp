@@ -7,10 +7,10 @@
 #include "dg_cantor_pairing.h"
 #include <algorithm>
 #include "dg_status_table.h"
-#include "dg_boundary_table.h"
 #include "dg_elem_length.h"
 #include "dg_load_struct.h"
 #include <unordered_map>
+#include "dg_boundary_table.h"
 #include <cassert>
 #include <iostream>	//test
 

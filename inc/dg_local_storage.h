@@ -4,8 +4,8 @@
 #include "dg_unit.h"
 #include <unordered_map>
 #include <vector>
-#include "dg_boundary_table.h" 
 #include "dg_load_struct.h"
+#include "dg_boundary_table.h"
 
 namespace local{
  
@@ -22,9 +22,6 @@ namespace local{
 	extern Unit* head;
 	
 	extern std::unordered_map<int, Unit*> Hash_elem;
-
-	extern std::vector<std::vector<double>> solution_int_l;
-	extern std::vector<std::vector<double>> solution_int_r;
 	
 };
 

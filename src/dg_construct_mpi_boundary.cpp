@@ -52,11 +52,13 @@ void MPI_boundary_construct(){
 				temp -> facen[0][0].hlevel = 0;
 				temp -> facen[0][0].porderx = grid::nmin;	// for uniform mesh, we can record
 				temp -> facen[0][0].pordery = grid::nmin;	// for uniform mesh, we can record
-				temp -> facen[0][0].key = nkey;		// hlevel initially 0
+				temp -> facen[0][0].key = nkey;		
 
 				int target_rank = Target_rank(ni, nj);
 
 				temp -> facen[0][0].rank = target_rank;
+
+				// put this element into the mpi table
 				
 			}
 			else{	// if found, record info
@@ -191,3 +193,4 @@ void MPI_boundary_construct(){
 	}
 
 }
+

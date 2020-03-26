@@ -1,7 +1,6 @@
 #include "dg_mpi_table_construct.h"
 #include "dg_local_storage.h"
 #include "dg_unit.h"
-#include "dg_boundary_table.h"
 #include "dg_cantor_pairing.h"
 #include <algorithm>
 #include <vector>
@@ -10,6 +9,8 @@
 #include <unordered_map>
 #include "dg_param.h"
 #include "dg_neighbour_list.h"
+#include "dg_boundary_table.h"
+#include "dg_put_into_mpi_table.h"
 #include <cassert>	// test
 #include <iostream>	// test
 
@@ -31,8 +32,8 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
 
-void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-			std::unordered_map<int, std::vector<mpi_table>>& table);
+//void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
+//			std::unordered_map<int, std::vector<mpi_table>>& table);
 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 
@@ -68,34 +69,34 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 /// @param facen_it Iterator on the element face info vector.
 /// @param mpi_table The relevent MPI bountary table. 
 /// @param target_rank The neighbour's rank. 
-void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-			std::unordered_map<int, std::vector<mpi_table>>& table){
-
-	if(table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
-
-		table[facen_it -> rank] = std::vector<mpi_table>();
-
-		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-
-		// mpi_length and owners_rank will be recorded later
-		table[facen_it -> rank].push_back({local_key, 0, 0});
-	}
-	else{ // this rank is already been record
-
-		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-
-		// avoid duplication
-		auto it = std::find_if(table[facen_it -> rank].begin(), table[facen_it -> rank].end(),
-					[local_key] (const mpi_table& v) {return v.local_key == local_key;});
-
-		if(it == table[facen_it -> rank].end()){	// if not find
-
-			table[facen_it -> rank].push_back({local_key, 0, 0});
-		}
-
-	}
-
-}
+//void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
+//			std::unordered_map<int, std::vector<mpi_table>>& table){
+//
+//	if(table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
+//
+//		table[facen_it -> rank] = std::vector<mpi_table>();
+//
+//		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//
+//		// mpi_length and owners_rank will be recorded later
+//		table[facen_it -> rank].push_back({local_key, 0, 0});
+//	}
+//	else{ // this rank is already been record
+//
+//		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//
+//		// avoid duplication
+//		auto it = std::find_if(table[facen_it -> rank].begin(), table[facen_it -> rank].end(),
+//					[local_key] (const mpi_table& v) {return v.local_key == local_key;});
+//
+//		if(it == table[facen_it -> rank].end()){	// if not find
+//
+//			table[facen_it -> rank].push_back({local_key, 0, 0});
+//		}
+//
+//	}
+//
+//}
 
 
 /// @brief
@@ -259,7 +260,6 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 				send_info[5 * k + 4] = it -> mpi_length;
 				++it;
 			}
-assert(target_rank >=0 && target_rank <=3 && "target_rank wrong");
 			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
 		}
@@ -276,7 +276,6 @@ assert(target_rank >=0 && target_rank <=3 && "target_rank wrong");
 			MPI_Status status1, status2;		// dummy
 
 			int num{};	// number of elem on the other side
-assert(v.first >= 0 && v.first <= 3 && "rank wrong. Sender_recver");
 
 			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 

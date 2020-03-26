@@ -1,9 +1,9 @@
 #ifndef DG_MPI_TABLE_CONSTRUCT_H
 #define DG_MPI_TABLE_CONSTRUCT_H
 
-#include "dg_boundary_table.h"
 #include <vector>
 #include <unordered_map>
+#include "dg_boundary_table.h"
 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 

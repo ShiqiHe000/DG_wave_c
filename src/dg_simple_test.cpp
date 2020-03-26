@@ -5,7 +5,6 @@
 #include "dg_elem_length.h"
 #include <mpi.h>
 #include "dg_cantor_pairing.h"
-#include "dg_boundary_table.h"
 #include  <iostream>	// test
 #include "dg_param.h"	//test
 

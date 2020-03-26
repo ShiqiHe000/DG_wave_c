@@ -16,7 +16,4 @@ struct mpi_table{
 };
 
 
-
 #endif
-
-
