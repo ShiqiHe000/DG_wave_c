@@ -1,7 +1,8 @@
 #include "dg_local_storage.h"
 #include <vector>
 #include "dg_interface_construct.h"
-//#include "dg_unit.h"
+#include "dg_message_exchange.h"
+#include "dg_unit.h"
 //#include "dg_param.h"
 
 /// @brief
@@ -9,21 +10,20 @@
 /// @param t current time step.
 void DG_time_der(double t){
 
-//	local::solution_int_l = std::vector<std::vector<double>>(local::local_elem_num);
-//	local::solution_int_r = std::vector<std::vector<double>>(local::local_elem_num);
-
 	// x direction==================================================================================
-	// get the flux on the interfaces
-
+	// compute the solutions on the element interfaces
 	Unit* temp = local::head;
-
 	for(int k = 0; k < local::local_elem_num; ++k){
-
+	
 		Construct_interface_x(temp);
 
 		temp = temp -> next;
-
 	}
 
+	// exchange solution on the mpi boundaries
+	Exchange_solution(hrefinemnt::north, 1, hrefinement::south, 0, 'x');
+	
+	// compute the numberical flux
+	
 	//===============================================================================================
 }

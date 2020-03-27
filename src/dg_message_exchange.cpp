@@ -12,7 +12,11 @@
 /// @brief
 /// Exchange element interface info for those on the MPI boundaries. In x direction. 
 /// North send, south recv.
-/// @param
+/// @param sender sender's mpi boundary table.
+/// @param face_s sender's face number.
+/// @param recver recver's mpi boundary table.
+/// @param face_r recver's face number.
+/// @param dir direction ('x' or 'y').
 void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
 			std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir){
 
@@ -69,28 +73,16 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 				for(auto it_face = temp -> facen[face_s].begin();
 					it_face != temp -> facen[face_s].end(); ++it_face){
 				
-					if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
+					if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // recv
 					
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
-						int sizei = (it_face -> pordery + 1);
-						std::vector<double> recv_info(recv_size);
+						temp -> ghost[it_face -> key] = std::vector<double> recv_info(recv_size);
 						
 						MPI_Status status;
-						MPI_Recv(&recv_info[0], recv_size, MPI_DOUBLE, 
+						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
 	
-						// put it in ghost layer
-						auto it1 = recv_info.begin();	// first
-						auto it2 = it1 + sizei;	// last
-						for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-	
-							temp -> ghost[equ] = std::vector<double>(sizei);
-							std::copy(it1, it2, temp -> ghost[equ].begin());
-				
-							it1 += sizei;
-							it2 += sizei;
-						}
 					}
 				}
 			}
@@ -116,24 +108,13 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 					
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> porderx + 1);
-						int sizei = (it_face -> porderx + 1);
-						std::vector<double> recv_info(recv_size);
+						
+						temp -> ghost[it_face -> key] = std::vector<double> recv_info(recv_size);
 						
 						MPI_Status status;
-						MPI_Recv(&recv_info[0], recv_size, MPI_DOUBLE, 
+						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
 	
-						// put it in ghost layer
-						auto it1 = recv_info.begin();	// first
-						auto it2 = it1 + sizei;	// last
-						for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-	
-							temp -> ghost[equ] = std::vector<double>(sizei);
-							std::copy(it1, it2, temp -> ghost[equ].begin());
-				
-							it1 += sizei;
-							it2 += sizei;
-						}
 					}
 				}
 			}
