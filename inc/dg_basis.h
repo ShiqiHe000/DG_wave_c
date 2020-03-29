@@ -14,4 +14,6 @@ void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<doubl
 					 std::vector<double>& lag );
 
 double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag);
+
+void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out);
 #endif

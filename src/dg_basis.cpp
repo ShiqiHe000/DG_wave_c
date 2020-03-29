@@ -24,6 +24,8 @@ void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<doubl
 void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq);
 
 double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag);
+
+void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out);
 //------------------------------------------------
 
 /// @brief 
@@ -32,14 +34,22 @@ double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double
 /// @param n polynomial order
 /// @param d coefficient martrix (usually derivative matrix), d[n * n].
 /// @param f vector, f[n].
-/// @param der output. (usually the derivative of interpolation), der[n].
-void Matrix_vector_multiplication(int n, double* d, double* f, double* der ){
+/// @param out output. (usually the derivative of interpolation).
+void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out){
 
-//	for(){
-//	
-//
-//
-//	}
+	int m{};
+	for(int i = 0; i <= n; ++i){
+	
+		double t{};	// intermediate variable
+
+		for(int j = 0; j <= n; ++j){
+
+			t += d[m] * f[j];
+			++m;
+		}
+		
+		out[i] = t;
+	}
 
 }
 
