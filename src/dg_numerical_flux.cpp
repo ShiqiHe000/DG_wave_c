@@ -7,10 +7,9 @@
 #include "dg_nodal_2d_storage.h"
 #include "dg_param.h"
 #include "dg_affine_map.h"
-#include <cassert>
+#include "dg_numerical_flux.h"
 
 // forward declaration-----------------------------------------------------
-void Unary_minus(std::vector<double>& a, std::vector<double>& b);
 
 void Numerical_flux_x(double t);
 //------------------------------------------------------------------------
@@ -127,13 +126,3 @@ void Numerical_flux_x(double t){
 	}
 }
 
-/// @brief
-/// Vector b = - vector a (same size)
-/// @param a the vector to apply - operator.
-/// @param b vector b gets the value.
-void Unary_minus(std::vector<double>& a, std::vector<double>& b){
-
-	assert(a.size() == b.size() && "The size of the two vector should be equal. ");
-
-	std::transform(a.begin(), a.end(), b.begin(), [](double x){return -x;});
-}

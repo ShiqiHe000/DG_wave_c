@@ -3,6 +3,7 @@
 #include "dg_interface_construct.h"
 #include "dg_message_exchange.h"
 #include "dg_unit.h"
+#include "dg_numerical_flux.h"
 //#include "dg_param.h"
 
 /// @brief

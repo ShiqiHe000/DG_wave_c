@@ -8,6 +8,17 @@
 #include <cassert>
 #include "dg_message_exchange.h" 
 #include "dg_param.h"
+#include "dg_unary_minus.h"
+
+// forward declaration ----------------------------------------------------------------
+
+void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
+			std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir);
+
+void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s, int face_r);
+//--------------------------------------------------------------------------------------
+
+
 
 /// @brief
 /// Exchange element interface info for those on the MPI boundaries. In x direction. 
@@ -119,8 +130,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 
 /// @brief
 ///
-void Exchange_flux_x(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
-			std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir){
+void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s, int face_r){
 
 	// first send out the fluxes on the south mpi interfaces
 	for(auto& v : sender){	// south send
@@ -140,6 +150,9 @@ void Exchange_flux_x(std::unordered_map<int, std::vector<mpi_table>>& sender, in
 				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 				
 					int count = (temp -> nflux_l).size();
+
+					// future interpolate to neighbour's porder
+
 					// tag == sender's key
 					MPI_Send(&(temp -> nflux_l)[0], count, MPI_DOUBLE, 
 							target_rank, local_key, MPI_COMM_WORLD);
@@ -161,7 +174,22 @@ void Exchange_flux_x(std::unordered_map<int, std::vector<mpi_table>>& sender, in
 			it_face != temp -> facen[face_r].end(); ++it_face){
 
 
-			
+			if(it_face -> face_type == 'L'){	// local neighbour
+
+				int n_key = it_face -> key;
+				// numerical flux == - neighbours numerical flux
+				Unary_minus(local::Hash_elem[n_key] -> nflux_l, temp -> nflux_r);				
+
+			}
+			else if(it_face -> face_type == 'M'){	// remote neighbour
+		
+				int count = (temp -> nflux_r).size();
+				MPI_Status status;
+
+				MPI_Recv(&(temp -> nflux_r)[0], count, MPI_DOUBLE, it_face -> rank,
+					 it_face -> key, MPI_COMM_WORLD, &status);	
+				
+			}	// 'B' skip
 		}
 
 
