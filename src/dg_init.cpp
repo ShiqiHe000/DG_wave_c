@@ -5,19 +5,12 @@
 #include "dg_nodal_2d_storage.h"
 #include <cmath>	// exp
 #include "dg_single_index.h"
+#include "dg_user_defined.h"
 
 /// @brief
 /// Initialization all local elements based on the initial conditions.
 void DG_init(){
 	
-	// coefficients in the I.Cs
-	const double kx = sqrt(2.0) / 2.0;
-	const double ky = sqrt(2.0) / 2.0;
-	const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-	const double x0 = 0.0;
-	const double y0 = 0.0;
-
-
 	Unit* temp = local::head;
 
 	// traverse the linked list
@@ -38,14 +31,14 @@ void DG_init(){
 				double gl_p_x = nodal::gl_points[grid::nmin][i];
 				double x = Affine_mapping(gl_p_x, temp -> xcoords[0], del_x);
 				
-				double inter = exp( - std::pow((kx * (x - x0) + 
-							ky * (y - y0)), 2) / std::pow(D, 2));
+				double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
+							user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
 				
 				int num_p = Get_single_index(i, j, grid::nmin + 1);
 
 				temp -> solution[0][num_p] = inter;
-				temp -> solution[1][num_p] = kx / dg_fun::C * inter;
-				temp -> solution[2][num_p] = ky / dg_fun::C * inter;
+				temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
+				temp -> solution[2][num_p] = user::ky / dg_fun::C * inter;
 			}
 		}
 	

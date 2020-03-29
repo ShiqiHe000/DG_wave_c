@@ -1,7 +1,7 @@
 #include "dg_unit.h"
 #include "dg_param.h"
 #include <vector>
-
+#include <algorithm>
 
 
 /// @brief
@@ -13,7 +13,5 @@ Unit::Unit() : n(grid::nmin), m(grid::nmin)
 {
 	facen = std::vector<std::vector<Face>>(4);
 }
-
-
 
 

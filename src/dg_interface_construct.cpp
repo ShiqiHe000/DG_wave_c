@@ -15,10 +15,14 @@ void Construct_interface_x(Unit* temp){
 	int m = temp -> m;
 	int n = temp -> n;
 
-	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+	int size = dg_fun::num_of_equation * (m + 1);
+	
+	temp -> solution_int_l = std::vector<double>(size);
+	temp -> solution_int_r = std::vector<double>(size);
 
-		temp -> solution_int_l[equ] = std::vector<double>(m + 1);
-		temp -> solution_int_r[equ] = std::vector<double>(m + 1);
+	int now{};
+
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 		for(int j = 0; j <= m; ++j ){
 
@@ -31,9 +35,9 @@ void Construct_interface_x(Unit* temp){
 				s_array[i] = temp -> solution[equ][nodei];
 			}
 
-			temp -> solution_int_l[equ][j] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
-			temp -> solution_int_r[equ][j] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
-		
+			temp -> solution_int_l[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
+			temp -> solution_int_r[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
+			++now;	
 		}
 
 	}
@@ -51,8 +55,8 @@ void Construct_interface_y(Unit* temp){
 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
-		temp -> solution_int_l[equ] = std::vector<double>(n + 1);
-		temp -> solution_int_r[equ] = std::vector<double>(n + 1);
+		temp -> solution_int_l = std::vector<double>(n + 1);
+		temp -> solution_int_r = std::vector<double>(n + 1);
 
 		for(int i = 0; i <= n; ++i ){
 
@@ -65,8 +69,8 @@ void Construct_interface_y(Unit* temp){
 				s_array[j] = temp -> solution[equ][nodei];
 			}
 
-			temp -> solution_int_l[equ][i] = Interpolate_to_boundary(m, s_array, nodal::lagrange_l[m]);
-			temp -> solution_int_r[equ][i] = Interpolate_to_boundary(m, s_array, nodal::lagrange_r[m]);
+			temp -> solution_int_l[i] = Interpolate_to_boundary(m, s_array, nodal::lagrange_l[m]);
+			temp -> solution_int_r[i] = Interpolate_to_boundary(m, s_array, nodal::lagrange_r[m]);
 		
 		}
 

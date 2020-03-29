@@ -38,17 +38,10 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 				
 				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 				
-					std::vector<double> send_info;
-					// copy solution to a vector to send
-					for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){	
-					
-						std::copy(temp -> solution_int_r[equ].begin(), 
-								temp -> solution_int_r[equ].end(), 
-								std::back_inserter(send_info));
-					}
-					int count = send_info.size();
+					int count = (temp -> solution_int_r).size();
 					// tag == sender's key
-					MPI_Send(&send_info[0], count, MPI_DOUBLE, target_rank, local_key, MPI_COMM_WORLD);
+					MPI_Send(&(temp -> solution_int_r)[0], count, MPI_DOUBLE, 
+							target_rank, local_key, MPI_COMM_WORLD);
 	
 				}
 			}
@@ -77,10 +70,11 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 					
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
-						temp -> ghost[it_face -> key] = std::vector<double> recv_info(recv_size);
+						int n_key = it_face -> key;
+						temp -> ghost[n_key] = std::vector<double>(recv_size);
 						
 						MPI_Status status;
-						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
+						MPI_Recv(&(temp -> ghost[n_key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
 	
 					}
@@ -109,7 +103,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> porderx + 1);
 						
-						temp -> ghost[it_face -> key] = std::vector<double> recv_info(recv_size);
+						temp -> ghost[it_face -> key] = std::vector<double> (recv_size);
 						
 						MPI_Status status;
 						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
@@ -119,6 +113,59 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 				}
 			}
 		}
+	}
+
+}
+
+/// @brief
+///
+void Exchange_flux_x(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
+			std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir){
+
+	// first send out the fluxes on the south mpi interfaces
+	for(auto& v : sender){	// south send
+
+		int target_rank = v.first;
+		auto it_local = v.second.begin();	// point to the members in vactor
+
+		for(; it_local != v.second.end(); ++it_local){
+	
+			int local_key = it_local -> local_key;	// sender's key
+			Unit* temp = local::Hash_elem[local_key];
+
+			// go to this element, and loop through its facen[face_s]
+			for(auto it_face = temp -> facen[face_s].begin();
+				it_face != temp -> facen[face_s].end(); ++it_face){
+				
+				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
+				
+					int count = (temp -> nflux_l).size();
+					// tag == sender's key
+					MPI_Send(&(temp -> nflux_l)[0], count, MPI_DOUBLE, 
+							target_rank, local_key, MPI_COMM_WORLD);
+	
+				}
+			}
+			
+		}
+		
+	}
+
+
+	// North interface get numerical flux from neighbours
+	Unit* temp = local::head;
+	for(int k; k < local::local_elem_num; ++k){
+
+		// loop north interface
+		for(auto it_face = temp -> facen[face_r].begin(); 
+			it_face != temp -> facen[face_r].end(); ++it_face){
+
+
+			
+		}
+
+
+		temp = temp -> next;
 	}
 
 }
