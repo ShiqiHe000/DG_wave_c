@@ -37,9 +37,9 @@ void Construct_interface_x(Unit* temp){
 			}
 			temp -> solution_int_l[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
 			temp -> solution_int_r[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
-//if(mpi::rank == 1){
+//if(mpi::rank == 0){
 //
-//	std::cout << "num "<< now <<" solution_int_l "<< temp-> solution_int_l[now] << "\n";
+//	std::cout << "num "<< now <<" solution_int_r "<< temp-> solution_int_r[now] << "\n";
 //}
 			++now;	
 		}

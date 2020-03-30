@@ -9,6 +9,7 @@
 #include "dg_message_exchange.h" 
 #include "dg_param.h"
 #include "dg_unary_minus.h"
+#include <iostream>	// test
 
 // forward declaration ----------------------------------------------------------------
 
@@ -53,7 +54,10 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 					// tag == sender's key
 					MPI_Send(&(temp -> solution_int_r)[0], count, MPI_DOUBLE, 
 							target_rank, local_key, MPI_COMM_WORLD);
-	
+//if(mpi::rank == 0){
+//
+//	std::cout<< "rank0 to "<< target_rank << " elem "<< local_key << "\n";
+//}
 				}
 			}
 			
@@ -64,18 +68,21 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 	// recver
 	if(dir == 'x'){
 		for(auto& v : recver){
-			
 			int target_rank = v.first;
 			auto it_local = v.second.begin();	// point to the members in vactor
 	
+//if(mpi::rank == 1){
+//
+//	std::cout<< "target_rank "<< target_rank << " key "<< it_local -> local_key << "\n";
+//}
 			for(; it_local != v.second.end(); ++it_local){
 	
 				int local_key = it_local -> local_key;	// sender's key
 				Unit* temp = local::Hash_elem[local_key];
 	
-				// go to this element, and loop through its facen[face_s]
-				for(auto it_face = temp -> facen[face_s].begin();
-					it_face != temp -> facen[face_s].end(); ++it_face){
+				// go to this element, and loop through its facen[face_r]
+				for(auto it_face = temp -> facen[face_r].begin();
+					it_face != temp -> facen[face_r].end(); ++it_face){
 				
 					if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // recv
 					
@@ -86,7 +93,16 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 						MPI_Status status;
 						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
-	
+//if(mpi::rank == 1){
+//
+//	std::cout<< "size "<< recv_size<< " key "<< it_face -> key <<"\n";
+//
+//	for(int i = 0; i< 21; ++i){
+//
+//		std::cout<< (temp -> ghost[it_face -> key])[i] << "\n";
+//
+//	}
+//}
 					}
 				}
 			}
@@ -104,9 +120,9 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 				int local_key = it_local -> local_key;	// sender's key
 				Unit* temp = local::Hash_elem[local_key];
 	
-				// go to this element, and loop through its facen[face_s]
-				for(auto it_face = temp -> facen[face_s].begin();
-					it_face != temp -> facen[face_s].end(); ++it_face){
+				// go to this element, and loop through its facen[face_r]
+				for(auto it_face = temp -> facen[face_r].begin();
+					it_face != temp -> facen[face_r].end(); ++it_face){
 				
 					if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 					
