@@ -13,16 +13,13 @@
 /// Construct MPI boundaries and physical boundaries. 
 /// Each element has 4 faces
 /// \verbatim
-///   ---f2----
-///   |       |
-/// f3|       |f4
-///   |       |
 ///   ---f1----
+///   |       |
+/// f2|       |f3
+///   |       |
+///   ---f0----
 /// \endverbatim
-/// Boundaries circumstances are stored in short face[4]. 
-/// positive value means the number of element on the other side of the MPI boundary.
-/// negative value means the face in on the physical boundary and the magnitude of 
-/// the value represents the face number as shown above. 
+/// Each face is a vector of struct "mpi_table" that contains all the info required. 
 void MPI_boundary_construct(){
 	
 	// start by the first element

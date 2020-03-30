@@ -9,6 +9,7 @@
 #include "dg_local_storage.h"
 #include "dg_load_balancing.h"
 #include "dg_derived_datatype.h"
+#include "dg_step_by_RK3.h"
 #include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
 #include <iostream>	// test
@@ -18,7 +19,7 @@
 /// First, get DG basis parameters, such as collocation points and weights.
 /// Then marches by each time step. Using explicit 3rd order Runge-Kutta methods.
 void Driver_for_DG_approximation(){
-//std::cout<< "rank "<<mpi::rank<<" elem "<< local::local_elem_num<< "\n";
+	
 	// construct basis
 	Construct_basis_storage();
 
@@ -37,20 +38,22 @@ void Driver_for_DG_approximation(){
 	// Initialization
 	DG_init();	
 	
-	// h-refinement
-	
 	Serial_io(tn);		
 
 	Construct_data_type();
 
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
-		Adapt(k);
+
+		DG_step_by_RK3(tn, delta_t);
+
+
+//		Adapt(k);
 //		Write_faces_all();
      		Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
-		Load_balancing(k);
+//		Load_balancing(k);
 		//-------------------------------------------------------------
 //		Write_faces_all();
 

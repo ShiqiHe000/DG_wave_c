@@ -37,12 +37,13 @@ void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<dou
 /// @param out output. (usually the derivative of interpolation).
 void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out){
 
-	int m{};
 	for(int i = 0; i <= n; ++i){
 	
 		double t{};	// intermediate variable
 
 		for(int j = 0; j <= n; ++j){
+
+			int m = Get_single_index(i, j, n + 1);
 
 			t += d[m] * f[j];
 			++m;

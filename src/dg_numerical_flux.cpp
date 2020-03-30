@@ -42,10 +42,11 @@ void Numerical_flux_x(double t){
 
 				for(int s = 0; s <= pordery; ++s){
 
+					//now conforming interface=========================================================
 					// Riemann solver
 					Riemann_solver_x(local::Hash_elem[n_key] -> solution_int_r, temp -> solution_int_l, 
 							temp -> nflux_l, -1, index);
-
+					//=================================================================================
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
@@ -114,8 +115,8 @@ void Numerical_flux_x(double t){
 				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 	
 				// Riemann solver
-				Riemann_solver_x(solution_ext, temp -> solution_int_l, 
-						temp -> nflux_l, 1, index);
+				Riemann_solver_x(temp -> solution_int_r, solution_ext,
+						temp -> nflux_r, 1, index);
 				
 				std::transform(index.begin(), index.end(), index.begin(), 
 						[](int x){return (x + 1);});		// increment 1
@@ -227,8 +228,8 @@ void Numerical_flux_y(double t){
 				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 	
 				// Riemann solver
-				Riemann_solver_y(solution_ext, temp -> solution_int_l, 
-						temp -> nflux_l, 1, index);
+				Riemann_solver_y(temp -> solution_int_r, solution_ext, 
+						temp -> nflux_r, 1, index);
 				
 				std::transform(index.begin(), index.end(), index.begin(), 
 						[](int x){return (x + 1);});		// increment 1

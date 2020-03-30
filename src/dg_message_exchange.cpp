@@ -81,7 +81,6 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 					
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
-						int n_key = it_face -> key;
 						temp -> ghost[n_key] = std::vector<double>(recv_size);
 						
 						MPI_Status status;
@@ -192,6 +191,8 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 				MPI_Recv(&(temp -> nflux_r)[0], count, MPI_DOUBLE, it_face -> rank,
 					 it_face -> key, MPI_COMM_WORLD, &status);	
 				
+				Unary_minus(temp -> nflux_r, temp -> nflux_r);				
+
 			}	// 'B' skip
 		}
 

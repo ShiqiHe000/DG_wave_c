@@ -20,7 +20,6 @@ void A_times_spatial_derivative_x(){
 
 		double del_x = temp -> xcoords[1] - temp -> xcoords[0];
 	
-		int index{};
 		std::vector<int> index_equ{0, temp -> m + 1, (temp -> m + 1) * 2};
 		for(int j = 0; j <= (temp -> m); ++j){
 
@@ -29,8 +28,9 @@ void A_times_spatial_derivative_x(){
 
 			for(int i = 0; i <= (temp -> n); ++i){
 
+				int index = Get_single_index(i, j, (temp -> m + 1));
+			
 				xflux(temp -> solution, flux_x, index);			
-				++index;
 			}
 			
 			// flux_der

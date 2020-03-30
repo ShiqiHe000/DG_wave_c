@@ -6,7 +6,6 @@
 #include "dg_unit.h"
 #include "dg_numerical_flux.h"
 #include "dg_a_times_spatial_derivative.h"
-//#include "dg_param.h"
 
 /// @brief
 /// Compute the time derivative of all local element.

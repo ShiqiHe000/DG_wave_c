@@ -26,7 +26,6 @@ void Distribute_elem(){
 	// allocate one more unit for the offset
 	local::elem_range = new int[mpi::num_proc + 1]{};
 	local::elem_range[0] = -1;
-	local::rank_indicator = new int[mpi::num_proc]{};	
 	       
 	// distribute elements
 	int local_elem_number[mpi::num_proc]{}; 
@@ -76,15 +75,6 @@ void Distribute_elem(){
 			local::elem_range[i+1] = local::elem_range[i] + local_elem_number[i];
 		}
 
-
-		// adjust elem_range store the last element Hilbert index as the deepest refinement element Hilbert index
-		// one element split into 4, pow(double, double), need type cast
-		int adapt = (int)(pow(4, grid::hlevel_max) + 0.5);	
-		local::rank_indicator[0] = local_elem_number[0] * adapt - 1;
-		for(int i = 1; i < mpi::num_proc; ++i ){
-			local::rank_indicator[i] = (local_elem_number[i]) * adapt + local::rank_indicator[i-1];
-		}
-		
 	}
 	
 	// scatter local element number
@@ -100,7 +90,6 @@ void Distribute_elem(){
 	MPI_Scatterv(SortMesh::y_hilbert, sendcouts, displs, MPI_DOUBLE, local::y_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Scatterv(&SortMesh::status[0], sendcouts_status, displs_status, MPI_CHAR, local::status, local::local_elem_num, MPI_CHAR, 0, MPI_COMM_WORLD);
 	MPI_Bcast(local::elem_range, mpi::num_proc + 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(local::rank_indicator, mpi::num_proc, MPI_INT, 0, MPI_COMM_WORLD);
 
 	
 	// deallocate
