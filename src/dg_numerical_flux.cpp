@@ -25,7 +25,7 @@ void Numerical_flux_x(double t){
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		int pordery = temp -> m;
-		int size = dg_fun::num_of_equation * pordery;	// right now assume conforming interface
+		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
 
 		temp -> nflux_l = std::vector<double>(size);
 		temp -> nflux_r = std::vector<double>(size);
@@ -139,7 +139,7 @@ void Numerical_flux_y(double t){
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		int porderx = temp -> n;
-		int size = dg_fun::num_of_equation * porderx;	// right now assume conforming interface
+		int size = dg_fun::num_of_equation * (porderx + 1);	// right now assume conforming interface
 
 		temp -> nflux_l = std::vector<double>(size);
 		temp -> nflux_r = std::vector<double>(size);

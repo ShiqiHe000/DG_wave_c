@@ -81,10 +81,10 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 					
 						// recv info from target rank
 						int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
-						temp -> ghost[n_key] = std::vector<double>(recv_size);
+						temp -> ghost[it_face -> key] = std::vector<double>(recv_size);
 						
 						MPI_Status status;
-						MPI_Recv(&(temp -> ghost[n_key])[0], recv_size, MPI_DOUBLE, 
+						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
 	
 					}

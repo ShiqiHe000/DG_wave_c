@@ -6,6 +6,8 @@
 #include "dg_unit.h"
 #include "dg_numerical_flux.h"
 #include "dg_a_times_spatial_derivative.h"
+#include <iostream>	// test
+#include "dg_param.h"	// test
 
 /// @brief
 /// Compute the time derivative of all local element.
@@ -21,6 +23,26 @@ void DG_time_der(double t){
 
 		temp = temp -> next;
 	}
+
+//	if(mpi::rank == 0){
+//
+//		temp = local::head;
+//		std::vector<int> index{0, 7, 14};
+//
+//		for(int i = 0; i <= 7; ++i){
+//
+//			std::cout<< (temp -> solution_int_l[index[0]]) << " "
+//				<< (temp -> solution_int_l[index[1]]) << " "
+//				<< (temp -> solution_int_l[index[2]]) << "\n";
+//
+//			for(auto v : index){
+//
+//				++v;
+//			}
+//
+//		}
+//
+//	}
 
 	// exchange solution on the mpi boundaries
 	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');

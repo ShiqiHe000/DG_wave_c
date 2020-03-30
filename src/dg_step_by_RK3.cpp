@@ -4,6 +4,7 @@
 #include "dg_time_derivative.h"
 #include "dg_param.h"
 #include "dg_single_index.h"
+#include <iostream>	// test
 
 /// @brief
 /// The integration in time by using low storage third order Runge-Kutta.  
@@ -28,16 +29,15 @@ void DG_step_by_RK3(double tn, double delta_t){
 		// time derivative at current time step
 		DG_time_der(t);
 		
+//std::cout<< "rank "<<mpi::rank << "\n" ;
 		Unit* temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
-
-			std::unordered_map<int, std::vector<double>> G;
 
 			for(int l = 0; l < dg_fun::num_of_equation; ++l){
 
 				int size = (temp -> n + 1) * (temp -> m + 1);
 
-				G[l] = std::vector<double>(size);
+				std::vector<double> G(size);
 
 				for(int j = 0; j <= (temp -> m); ++j){
 
@@ -45,9 +45,9 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 						int nodei = Get_single_index(i, j, temp -> m + 1);
 
-						G[l][nodei] = am[k] * G[l][nodei] + (temp -> solution_time_der)[l][nodei];
+						G[nodei] = am[k] * G[nodei] + (temp -> solution_time_der)[l][nodei];
 
-						(temp -> solution)[l][nodei] += gm[k] * delta_t * G[l][nodei];
+						(temp -> solution)[l][nodei] += gm[k] * delta_t * G[nodei];
 	
 					}
 

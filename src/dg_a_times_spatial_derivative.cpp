@@ -20,7 +20,6 @@ void A_times_spatial_derivative_x(){
 
 		double del_x = temp -> xcoords[1] - temp -> xcoords[0];
 
-	
 		std::vector<int> index_equ{0, temp -> m + 1, (temp -> m + 1) * 2};
 		for(int j = 0; j <= (temp -> m); ++j){
 
@@ -60,6 +59,8 @@ void A_times_spatial_derivative_x(){
 		// deallocate solutions on the element boundaries
 		(temp -> solution_int_l).clear();
 		(temp -> solution_int_r).clear();
+		(temp -> nflux_l).clear();
+		(temp -> nflux_r).clear();
 
 		temp = temp -> next;
 	}
@@ -76,17 +77,16 @@ void A_times_spatial_derivative_y(){
 
 		double del_y = temp -> ycoords[1] - temp -> ycoords[0];
 	
-		int index{};
 		std::vector<int> index_equ{0, temp -> n + 1, (temp -> n + 1) * 2};
 		for(int i = 0; i <= (temp -> n); ++i){
 
 			std::unordered_map<int, std::vector<double>> flux_y; // horizontal fluxes <equation_num, xflux>
-			std::unordered_map<int, std::vector<double>> flux_der; // <equation_num, flux_der>
+			std::unordered_map<int, std::vector<double>> flux_der; // <equation_num, flux_der (m + 1)>
 
 			for(int j = 0; j <= (temp -> m); ++j){
 
+				int index = Get_single_index(i, j, (temp -> m + 1));
 				yflux(temp -> solution, flux_y, index);			
-				++index;
 			}
 			
 			// flux_der
@@ -112,6 +112,8 @@ void A_times_spatial_derivative_y(){
 		// deallocate solutions on the element boundaries
 		(temp -> solution_int_l).clear();
 		(temp -> solution_int_r).clear();
+		(temp -> nflux_l).clear();
+		(temp -> nflux_r).clear();
 
 		temp = temp -> next;
 	}

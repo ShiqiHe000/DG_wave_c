@@ -50,7 +50,7 @@ void Driver_for_DG_approximation(){
 
 //		Adapt(k);
 //		Write_faces_all();
-     		Serial_io(tn);		
+     	//	Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
 //		Load_balancing(k);
@@ -61,7 +61,7 @@ void Driver_for_DG_approximation(){
 
 	      	Clear_tables();
 
-      		Serial_io(tn);		
+      	//	Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 
 	}
