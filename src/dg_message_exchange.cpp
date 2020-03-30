@@ -129,7 +129,10 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 }
 
 /// @brief
-///
+/// Get flux on the right interface. 
+/// @param sender MPI boundary table of the sender.
+/// @param face_s sender's face number.
+/// @param face_r receiver's face number. 
 void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s, int face_r){
 
 	// first send out the fluxes on the south mpi interfaces

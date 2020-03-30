@@ -3,5 +3,6 @@
 
 
 void A_times_spatial_derivative_x();
+void A_times_spatial_derivative_y();
 
 #endif

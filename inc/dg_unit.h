@@ -37,6 +37,8 @@ public:
 	std::vector<double> nflux_l;	// numerical flux on the left interface
 	std::vector<double> nflux_r;	// numerical flux on the right interface
 
+	std::unordered_map<int, std::vector<double>> solution_time_der;	// solution time derivative
+
 	Unit* next = nullptr;	// pointer to the next Unit
 
 	bool hrefine = false;	// refinemnt 

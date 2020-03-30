@@ -1,5 +1,6 @@
 #include "dg_flux_vector.h"
 #include <vector>
+#include "dg_param.h"
 
 /// @brief
 /// Compute the horizontal fluxes. X direction. 
