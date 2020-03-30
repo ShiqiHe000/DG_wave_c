@@ -6,6 +6,13 @@
 #include "dg_nodal_2d_storage.h"
 #include <unordered_map>
 
+
+/// @brief
+/// Compute the first spatial derivative given by the interior points and two boundary points.
+/// @param flux Flux.
+/// @param flux_der flux derivatives
+/// @param temp pointer to the current element.
+/// @param index node index for boundary numerical fluxes. 
 void Spatial_derivative(int porder, std::unordered_map<int, std::vector<double>>& flux, 
 			std::unordered_map<int, std::vector<double>>& flux_der, 
 			Unit* temp, std::vector<int>& index){

@@ -19,12 +19,13 @@ void A_times_spatial_derivative_x(){
 	for(int k = 0; k < local::local_elem_num; ++k){
 
 		double del_x = temp -> xcoords[1] - temp -> xcoords[0];
+
 	
 		std::vector<int> index_equ{0, temp -> m + 1, (temp -> m + 1) * 2};
 		for(int j = 0; j <= (temp -> m); ++j){
 
 			std::unordered_map<int, std::vector<double>> flux_x; // horizontal fluxes <equation_num, xflux>
-			std::unordered_map<int, std::vector<double>> flux_der; // <equation_num, flux_der>
+			std::unordered_map<int, std::vector<double>> flux_der; // <equation_num, flux_der (n + 1)>
 
 			for(int i = 0; i <= (temp -> n); ++i){
 
@@ -41,11 +42,15 @@ void A_times_spatial_derivative_x(){
 			
 			for(int s = 0; s < dg_fun::num_of_equation; ++s){
 
+				temp -> solution_time_der[s] = std::vector<double> ((temp -> n + 1) * (temp -> m + 1));
+
 				for(int i = 0; i <= (temp -> n); ++i){
 
 					double inter = - (2.0 / del_x) * flux_der[s][i];
 
-					temp -> solution_time_der[s].push_back(inter);
+					int index = Get_single_index(i, j, (temp -> m + 1));
+
+					temp -> solution_time_der[s][index] = inter;
 
 				}
 			}
