@@ -8,6 +8,7 @@
 #include "dg_param.h"
 #include "dg_affine_map.h"
 #include "dg_numerical_flux.h"
+#include <iostream>	//test
 
 // forward declaration-----------------------------------------------------
 void Numerical_flux_x(double t);
@@ -87,6 +88,8 @@ void Numerical_flux_x(double t){
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}
+
+
 			}
 		}
 
@@ -121,6 +124,15 @@ void Numerical_flux_x(double t){
 				std::transform(index.begin(), index.end(), index.begin(), 
 						[](int x){return (x + 1);});		// increment 1
 			}
+//if(mpi::rank == 1){
+//
+//	for(int i = 0; i < size; ++i){
+//
+//		std::cout<< "num " << i << " "<< (temp -> nflux_r)[i] << "\n";
+//
+//	}
+//
+//}
 
 		}
 

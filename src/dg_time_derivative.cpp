@@ -46,13 +46,14 @@ void DG_time_der(double t){
 
 	// exchange solution on the mpi boundaries
 	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');
-//std::cout<< "rank "<< mpi::rank << "\n";
+
 	// compute the numberical flux
 	Numerical_flux_x(t);
 
 	// exchange numerical flux on the mpi boundaries
 	Exchange_flux(hrefinement::south, 0, 1);
 
+//std::cout<< "rank "<< mpi::rank << "\n";
 	// spatial derivative
 	A_times_spatial_derivative_x();
 

@@ -185,7 +185,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 	// North interface get numerical flux from neighbours
 	Unit* temp = local::head;
-	for(int k; k < local::local_elem_num; ++k){
+	for(int k = 0; k < local::local_elem_num; ++k){
 
 		// loop north interface
 		for(auto it_face = temp -> facen[face_r].begin(); 
@@ -208,7 +208,15 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 					 it_face -> key, MPI_COMM_WORLD, &status);	
 				
 				Unary_minus(temp -> nflux_r, temp -> nflux_r);				
-
+//if(mpi::rank == 0){
+//
+//
+//	for(int i = 0; i < 21; ++i){
+//
+//		std::cout<< i << " " << (temp -> nflux_r)[i] << "\n";
+//
+//	}
+//}
 			}	// 'B' skip
 		}
 
