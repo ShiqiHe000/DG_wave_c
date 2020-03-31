@@ -46,7 +46,6 @@ void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<dou
 			int m = Get_single_index(i, j, n + 1);
 
 			t += d[m] * f[j];
-			++m;
 		}
 		
 		out[i] = t;

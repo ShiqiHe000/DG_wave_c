@@ -27,6 +27,7 @@ namespace nodal{
 	extern std::unordered_map<int, std::vector<double>> gl_weights;
 
 	extern std::unordered_map<int, std::vector<double>> first_der;
+	extern std::unordered_map<int, std::vector<double>> mfirst_der;
 
 	extern std::unordered_map<int, std::vector<double>> lagrange_l;
 	extern std::unordered_map<int, std::vector<double>> lagrange_r;

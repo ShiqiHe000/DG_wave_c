@@ -33,6 +33,7 @@ namespace SortMesh{
 /// @param gl_points Hash table for Gauss points. Key: polynoial order, value: vector of guass points.
 /// @param gl_weights Hash table for Gauss weights. Key: polynoliam order, value: Gauss weigths. 
 /// @param first_der First derivative matrix. Key: poynomial order. 
+/// @param mfirst_der Modified first derivative matrix. Key: poynomial order. 
 /// @param lagrange_l Lagrange interpolating polynomial on the left boundary. Key: poynomial order.
 /// @param lagrange_r Lagrange interpolating polynomial on the right boundary. Key: poynomial order.
 namespace nodal{
@@ -41,6 +42,7 @@ namespace nodal{
 	std::unordered_map<int, std::vector<double>> gl_weights;
 
 	std::unordered_map<int, std::vector<double>> first_der;
+	std::unordered_map<int, std::vector<double>> mfirst_der;
 
 	std::unordered_map<int, std::vector<double>> lagrange_l;
 	std::unordered_map<int, std::vector<double>> lagrange_r;

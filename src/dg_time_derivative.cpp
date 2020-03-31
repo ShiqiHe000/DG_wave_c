@@ -53,10 +53,10 @@ void DG_time_der(double t){
 	// exchange numerical flux on the mpi boundaries
 	Exchange_flux(hrefinement::south, 0, 1);
 
-//std::cout<< "rank "<< mpi::rank << "\n";
 	// spatial derivative
 	A_times_spatial_derivative_x();
 
+//std::cout<< "rank "<< mpi::rank << "\n";
 	//===============================================================================================
 
 	// y direction ==================================================================================

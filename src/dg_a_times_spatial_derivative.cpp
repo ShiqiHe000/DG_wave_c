@@ -8,6 +8,7 @@
 #include "dg_param.h"
 #include "dg_flux_vector.h"
 #include "dg_single_index.h"
+#include <iostream>
 
 /// @brief
 /// Compute spactial derivetive in x direction. 
@@ -32,7 +33,15 @@ void A_times_spatial_derivative_x(){
 			
 				xflux(temp -> solution, flux_x, index);			
 			}
-			
+//if(mpi::rank == 0){
+//
+////	if(j == 0){
+//		for(int h = 0; h <= 6; ++h){
+//			std::cout<<j <<" "<< h << " "<< flux_x[0][h] << " "<< flux_x[1][h]<<" "<<flux_x[2][h] << "\n";
+//		}
+////	} 
+//
+//}
 			// flux_der
 			Spatial_derivative(temp -> n, flux_x, flux_der, temp, index_equ);
 

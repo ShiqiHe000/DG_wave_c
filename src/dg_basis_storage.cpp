@@ -3,6 +3,7 @@
 #include "dg_param.h"
 #include "dg_basis.h"
 #include "dg_basis_storage.h"
+#include "dg_single_index.h"
 #include <iostream>	// test
 
 
@@ -25,6 +26,7 @@ void Construct_basis_storage(){
 	
 		int der_size = (n + 1) * (n + 1);
 		nodal::first_der[n] = std::vector<double>(der_size);
+		nodal::mfirst_der[n] = std::vector<double>(der_size);
 	
 		// generate current gl_p, gl_w
 		GL(n, nodal::gl_points[n], nodal::gl_weights[n]);
@@ -35,6 +37,24 @@ void Construct_basis_storage(){
 	
 		// first order derivative matrix
 		Mth_order_polynomial_derivative_matrix(n, 1, nodal::gl_points[n], nodal::first_der[n], bary);
+
+		// Modify first derivative
+		for(int j = 0; j <= n; ++j){
+
+			for(int i = 0; i <= n; ++i){
+
+				int index1 = Get_single_index(i, j, n + 1);
+				int index2 = Get_single_index(j, i, n + 1);
+
+				nodal::mfirst_der[n][index1] = - nodal::first_der[n][index2] * nodal::gl_weights[n][j] / 
+								nodal::gl_weights[n][i];
+
+			}
+
+		}
+
+		// first der matrix is not needed anymore.
+		nodal::first_der.clear();
 
 		// Lagrange interpolates on the boundaries. 
 		nodal::lagrange_l[n] = std::vector<double>(n + 1);

@@ -12,7 +12,6 @@ namespace local{
 	extern int local_elem_num;
 
         extern int* elem_range;
-	extern int* rank_indicator;
 	
 	extern double* x_local; 
 	extern double* y_local; 

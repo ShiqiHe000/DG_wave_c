@@ -5,6 +5,8 @@
 #include "dg_basis.h"
 #include "dg_nodal_2d_storage.h"
 #include <unordered_map>
+#include <iostream>	// test
+#include "dg_single_index.h"	// test
 
 
 /// @brief
@@ -16,14 +18,47 @@
 void Spatial_derivative(int porder, std::unordered_map<int, std::vector<double>>& flux, 
 			std::unordered_map<int, std::vector<double>>& flux_der, 
 			Unit* temp, std::vector<int>& index){
-
 	// compute flux derivatives
 	for(int s = 0; s < dg_fun::num_of_equation; ++s){
 
 		flux_der[s] = std::vector<double>(porder + 1);
-		Matrix_vector_multiplication(porder, nodal::first_der[s], flux[s], flux_der[s]);
+		Matrix_vector_multiplication(porder, nodal::mfirst_der[porder], flux[s], flux_der[s]);
+
+//if(mpi::rank == 0){
+//
+//	for(int i = 0; i <= porder; ++i){
+//		std::cout << i << " euq "<< s << " flux_x " << flux[s][i] <<" flux_der "<<flux_der[s][i]<< "\n";
+	//	}
+//
+//
+//}
+	}
+if(mpi::rank == 0){
+
+	for(int i = 0; i<=porder; ++i){
+
+		for(int j = 0; j <= porder; ++j){
+
+			int index = Get_single_index(i, j, porder + 1);
+
+			std::cout << index << " "<< nodal::mfirst_der[porder][index]<< " ";
+		}
+
+		std::cout<< "\n";
 
 	}
+}
+
+
+//if(mpi::rank == 0){
+//
+//	for(int s = 0; s <= porder; ++s ){
+//
+//		std::cout << s << " "<< flux_der[0][s]<< " "<<flux_der[1][s] << " "<< flux_der[2][s]<< "\n";
+//
+//	}
+//
+//}
 
 	for(int s = 0; s < dg_fun::num_of_equation; ++s){
 
