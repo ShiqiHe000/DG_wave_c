@@ -124,15 +124,6 @@ void Numerical_flux_x(double t){
 				std::transform(index.begin(), index.end(), index.begin(), 
 						[](int x){return (x + 1);});		// increment 1
 			}
-//if(mpi::rank == 1){
-//
-//	for(int i = 0; i < size; ++i){
-//
-//		std::cout<< "num " << i << " "<< (temp -> nflux_r)[i] << "\n";
-//
-//	}
-//
-//}
 
 		}
 
@@ -221,7 +212,7 @@ void Numerical_flux_y(double t){
 
 		}
 
-		// compute numerical flux on the north interface (only elements face the physical boundary)
+		// compute numerical flux on the east interface (only elements face the physical boundary)
 		auto it_face = temp -> facen[3].begin();
 		if(it_face -> face_type == 'B'){
 
@@ -247,6 +238,15 @@ void Numerical_flux_y(double t){
 						[](int x){return (x + 1);});		// increment 1
 			}
 
+//if(mpi::rank == 2){
+//
+//	for(int i = 0; i < size; ++i){
+//
+//		std::cout<< "num " << i << " "<< (temp -> nflux_r)[i] << "\n";
+//
+//	}
+//
+//}
 		}
 
 

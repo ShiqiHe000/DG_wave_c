@@ -26,15 +26,6 @@ void Spatial_derivative(int porder, std::unordered_map<int, std::vector<double>>
 
 	}
 
-//if(mpi::rank == 0){
-//
-//	for(int s = 0; s <= porder; ++s ){
-//
-//		std::cout << s << " "<< flux_der[0][s]<< " "<<flux_der[1][s] << " "<< flux_der[2][s]<< "\n";
-//
-//	}
-//
-//}
 
 	for(int s = 0; s < dg_fun::num_of_equation; ++s){
 
@@ -49,5 +40,14 @@ void Spatial_derivative(int porder, std::unordered_map<int, std::vector<double>>
 	}
 
 	
+//if(mpi::rank == 0){
+//
+//	for(int s = 0; s <= porder; ++s ){
+//
+//		std::cout << s << " "<< flux_der[0][s]<< " "<<flux_der[1][s] << " "<< flux_der[2][s]<< "\n";
+//
+//	}
+//
+//}
 	
 }
