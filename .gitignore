@@ -6,3 +6,5 @@ send_info/
 recv_info/
 recv_face_info/
 send_face_info/
+*.swp
+

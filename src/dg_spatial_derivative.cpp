@@ -24,31 +24,7 @@ void Spatial_derivative(int porder, std::unordered_map<int, std::vector<double>>
 		flux_der[s] = std::vector<double>(porder + 1);
 		Matrix_vector_multiplication(porder, nodal::mfirst_der[porder], flux[s], flux_der[s]);
 
-//if(mpi::rank == 0){
-//
-//	for(int i = 0; i <= porder; ++i){
-//		std::cout << i << " euq "<< s << " flux_x " << flux[s][i] <<" flux_der "<<flux_der[s][i]<< "\n";
-	//	}
-//
-//
-//}
 	}
-if(mpi::rank == 0){
-
-	for(int i = 0; i<=porder; ++i){
-
-		for(int j = 0; j <= porder; ++j){
-
-			int index = Get_single_index(i, j, porder + 1);
-
-			std::cout << index << " "<< nodal::mfirst_der[porder][index]<< " ";
-		}
-
-		std::cout<< "\n";
-
-	}
-}
-
 
 //if(mpi::rank == 0){
 //
