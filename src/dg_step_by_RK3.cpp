@@ -4,7 +4,6 @@
 #include "dg_time_derivative.h"
 #include "dg_param.h"
 #include "dg_single_index.h"
-#include <iostream>	// test
 
 /// @brief
 /// The integration in time by using low storage third order Runge-Kutta.  
@@ -19,7 +18,22 @@ void DG_step_by_RK3(double tn, double delta_t){
 	static const double bm[3]{0.0, 1.0/3.0, 3.0/4.0};
 	static const double gm[3]{1.0/3.0, 15.0/16.0, 8.0/15.0};
 
-	// equivalent to k
+	// allocate G for each elem
+	Unit* temp = local::head;
+	for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
+
+		int size = (temp -> n + 1) * (temp -> m + 1);
+
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+			temp -> G[equ] = std::vector<double>(size);
+
+		}
+
+		temp = temp -> next;
+	}
+
+
 	
 	// thrid order RK
 	for(int k = 0; k < 3; ++k){
@@ -28,16 +42,11 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 		// time derivative at current time step
 		DG_time_der(t);
-		
-//std::cout<< "rank "<<mpi::rank << "\n" ;
-		Unit* temp = local::head;
+
+		temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
 
 			for(int l = 0; l < dg_fun::num_of_equation; ++l){
-
-				int size = (temp -> n + 1) * (temp -> m + 1);
-
-				std::vector<double> G(size);
 
 				for(int j = 0; j <= (temp -> m); ++j){
 
@@ -45,10 +54,10 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 						int nodei = Get_single_index(i, j, temp -> m + 1);
 
-						G[nodei] = am[k] * G[nodei] + (temp -> solution_time_der)[l][nodei];
+						temp ->G[l][nodei] = am[k] * ( temp -> G[l][nodei]) + 
+									(temp -> solution_time_der)[l][nodei];
 
-						(temp -> solution)[l][nodei] += gm[k] * delta_t * G[nodei];
-	
+						(temp -> solution)[l][nodei] += gm[k] * delta_t * (temp -> G[l][nodei]);
 					}
 
 				}
@@ -59,5 +68,13 @@ void DG_step_by_RK3(double tn, double delta_t){
 			temp = temp -> next;
 		}
 
+	}
+	
+	// deallocate G
+	temp = local::head;
+	for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
+
+		(temp -> G).clear();
+		temp = temp -> next;
 	}
 }

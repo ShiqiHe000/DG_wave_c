@@ -47,7 +47,6 @@ void Driver_for_DG_approximation(){
 
 		DG_step_by_RK3(tn, delta_t);
 
-
 //		Adapt(k);
 //		Write_faces_all();
      	//	Serial_io(tn);		
@@ -59,7 +58,7 @@ void Driver_for_DG_approximation(){
 
 //		Simple_test(k);
 
-	      	Clear_tables();
+//	      	Clear_tables();
 
       	//	Serial_io(tn);		
 		tn = (k + 1) * delta_t;

@@ -28,7 +28,7 @@ public:
 
 	std::unordered_map<int, std::vector<double>> solution;	// solutions
 
-	std::vector<double> solution_int_l;	// solution on the element left interface
+	std::vector<double> solution_int_l;	// solution on the element left interface (porder + 1)
 	std::vector<double> solution_int_r;	// solution on the element right interface
 
 	std::unordered_map<int, std::vector<double>> ghost; // ghost space to store the neighbours' solutions on the interface
@@ -37,7 +37,9 @@ public:
 	std::vector<double> nflux_l;	// numerical flux on the left interface
 	std::vector<double> nflux_r;	// numerical flux on the right interface
 
-	std::unordered_map<int, std::vector<double>> solution_time_der;	// solution time derivative
+	std::unordered_map<int, std::vector<double>> solution_time_der;	// solution time derivative <equ, (n + 1) * (m + 1)>
+
+	std::unordered_map<int, std::vector<double>> G; 	// Runge-Kutta 3rd <equ, (n + 1) * (m + 1)>
 
 	Unit* next = nullptr;	// pointer to the next Unit
 

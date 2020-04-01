@@ -8,7 +8,6 @@
 #include "dg_param.h"
 #include "dg_flux_vector.h"
 #include "dg_single_index.h"
-#include <iostream>
 
 /// @brief
 /// Compute spactial derivetive in x direction. 
@@ -54,24 +53,12 @@ void A_times_spatial_derivative_x(){
 					int index = Get_single_index(i, j, (temp -> m + 1));
 
 					(temp -> solution_time_der[s])[index] = inter;
-//if(mpi::rank == 0){
-////	std::cout<< "index "<< index<< "\n";
-////	std::cout<< "i "<< i << " j "<< j << " equ "<< s << " "<< temp -> solution_time_der[s][index] << "\n";
-//
-//	std::cout<< "inside "<< temp -> solution_time_der[0][0] << "\n";
-//	std::cout<< " ------------------------------------- \n";
-//}
 
 				}
 			}
 
 		}
 		
-//if(mpi::rank == 0){
-////	std::cout<< "index "<< index<< "\n";
-//	std::cout<< temp -> solution_time_der[0][0] << "\n";
-//
-//}
 		// deallocate solutions on the element boundaries
 		(temp -> solution_int_l).clear();
 		(temp -> solution_int_r).clear();
@@ -80,14 +67,6 @@ void A_times_spatial_derivative_x(){
 
 		temp = temp -> next;
 	}
-//if(mpi::rank == 0){
-//	std::cout <<"-------------------------------------------- \n";
-//	temp = local::head;
-//	std::cout<< "outside "<<temp -> solution_time_der[0][0] << "\n";
-//
-////	std::cout<< "i "<< i << " j "<< j << " equ "<< s << " "<< temp -> solution_time_der[s][index] << "\n";
-//
-//}
 }
 
 /// @brief
@@ -113,22 +92,9 @@ void A_times_spatial_derivative_y(){
 				yflux(temp -> solution, flux_y, index);			
 			}
 			
-//if(mpi::rank == 0){
-//	std::cout << " y below------------------------------------------------ \n";
-//
-//}
 			// flux_der
 			Spatial_derivative(temp -> m, flux_y, flux_der, temp, index_equ);
 
-//if(mpi::rank == 0){
-//
-////	if(j == 0){
-//		for(int h = 0; h <= 6; ++h){
-//			std::cout<<i <<" "<< h << " "<< flux_y[0][h] << " "<< flux_y[1][h]<<" "<<flux_y[2][h] << "\n";
-//		}
-////	} 
-//
-//}
 			std::transform(index_equ.begin(), index_equ.end(), index_equ.begin(),
 					 [](int x){return (x + 1);});
 			
@@ -140,20 +106,8 @@ void A_times_spatial_derivative_y(){
 
 					int nodei = Get_single_index(i, j, (temp -> m + 1));
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "i "<< i << " j "<< j << " s "<< s << " "<< temp -> solution_time_der[s][nodei]<< " inter "<< inter<< "\n";
-//}
 	
 					(temp -> solution_time_der[s])[nodei] += inter;
-//if(mpi::rank == 0){
-//
-////	for(int h = 0; h <= 6; ++h){
-//		std::cout<<i <<" "<< j << " "<< s << " "<< temp -> solution_time_der[s][nodei]<< " flux_der "
-//			<< flux_der[s][j]<< "\n";
-////	}
-//
-//}
 				}
 			}
 
