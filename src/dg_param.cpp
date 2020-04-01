@@ -29,8 +29,8 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 6;	// x direction
-	const int nmax = 6;
+	const int nmin = 8;	// x direction
+	const int nmax = 8;
 
 	const int hlevel_max = 3;	
 };
