@@ -40,6 +40,14 @@ namespace local{
 
 /// @brief
 /// The variables that will be used in h-refinement
+/// @param north north mpi table.
+/// @param south south mpi table.
+/// @param west west mpi table.
+/// @param east east mpi table.
+/// @param neighbours_north Hash table to store all the possible neighbours in north direction. <key, all neighbours' key>
+/// @param neighbours_south Hash table to store all the possible neighbours in south direction. <key, all neighbours' key>
+/// @param neighbours_east Hash table to store all the possible neighbours in east direction. <key, all neighbours' key>
+/// @param neighbours_west Hash table to store all the possible neighbours in west direction. <key, all neighbours' key>
 namespace hrefinement{
 
 	std::unordered_map<int, std::vector<mpi_table>> north;

@@ -11,6 +11,9 @@ void Adapt(int kt){
 
 	h_refinement();
 	
+	// clear the old mpi tables before construct the new ones
+	Clear_tables();
+
 	// x direction
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);

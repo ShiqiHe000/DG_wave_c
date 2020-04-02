@@ -140,9 +140,10 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 /// Construct MPI boundary tables. Only in x direction. 
 /// @param north MPI boundary table (one direction).
 /// @param face_north The face direction of the first MPI boudary table.
+/// @param neighbours_north Hash table to store all the possible neighbours (direction north). 
 /// @param south MPI boundary table (one direction).
 /// @param face_south The face direction of the second MPI boundary table. 
-/// @param neighbours Hash table to store all the possible neighbours. 
+/// @param neighbours_south Hash table to store all the possible neighbours (direction south). 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
 				std::unordered_map<int, std::vector<int>>& neighbours_north, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south, 
@@ -208,8 +209,10 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 /// Updates MPI boundaries
 /// @param north MPI boundary table.
 /// @param facen Face direction of the first table. 
+/// @param neighbours_north Hash table to store all the possible neighbours (direction north). 
 /// @param south MPI boundary table. 
 /// @param faces Face direction of the second table. 
+/// @param neighbours_south Hash table to store all the possible neighbours (direction south). 
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen,
 				std::unordered_map<int, std::vector<int>>& neighbours_north,
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces, 
@@ -227,6 +230,7 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 /// @param south sender's MPI boundary table. 
 /// @param north recver's MPI boundary table. 
 /// @param update_dir update_direaction. Should be the recver's direction.
+/// @param neighbours_north Hash table of recver's all possible neighbours. 
 void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south, 
 					std::unordered_map<int, std::vector<mpi_table>>& north, int update_dir, 
 					std::unordered_map<int, std::vector<int>>& neighbours_north){
@@ -295,9 +299,9 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 /// @param recv_info recieved information vector.
 /// @param table MPI direction table.
 /// @param facei element ith face to be updates
-/// @param num recieved element number * 4.
-/// @param it MPI direction table iterator.
+/// @param num1 recieved element number * 5.
 /// @param target_rank The rank number of the info sender.
+/// @param neighbours possible neighbours hash table. 
 void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num1, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
 	
