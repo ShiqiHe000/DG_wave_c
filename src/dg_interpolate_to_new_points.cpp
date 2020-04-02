@@ -53,7 +53,8 @@ void Solutions_to_child(int key, int p_key){
 
 		// interpolate to new sets of points
 		std::vector<double> T; 	// interpolation matrix
-		Polynomial_interpolate_matrix(y, nodal::gl_points[temp -> m], T);
+		// note: children porder == parent porder, so old points use child's poly order
+		Polynomial_interpolate_matrix(nodal::gl_points[temp -> m], y, T);
 
 		int start = Get_single_index(i, 0, temp -> m + 1);
 
@@ -86,6 +87,12 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 
 	BARW(n - 1, x, w);
 
+//for(auto& v : w){
+//	std::cout<< "porder " << n - 1 << " bary "<< v << "\n";
+//}
+//std::cout << " ------------------ \n";
+
+
 	for(int k = 0; k < m; ++k){
 
 		bool row_match = false;
@@ -117,7 +124,7 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 				T[index] = t;
 
 				s += t;
-
+//std::cout << "k" << k << " j "<< j<< " weight "<< w[j]<< " x[j] " << x[j] << " t = "<< t << " s = "<< s << "\n";
 			}
 
 			for(int j = 0; j < n; ++j){
@@ -132,6 +139,19 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 
 		}
 	}
+
+//for(int i = 0; i < m; ++i){
+//
+//
+//	for(int j = 0; j < n; ++j){
+//
+//		int index = Get_single_index(i, j, n);
+//		std::cout<< i << " " << j << " "<< T[index] << "\n";
+//
+//	}
+//	
+//}
+//std::cout << " ========================= \n";
 
 }
 
