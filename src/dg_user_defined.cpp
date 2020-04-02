@@ -14,6 +14,9 @@ namespace user{
 	const double D = 0.2 / (2.0 * sqrt(log(2.0)));
 	const double xx0 = 0.0;
 	const double yy0 = 0.0; 
+
+	const double pi = 4.0 * std::atan(1.0);	// testing
+
 };
 
 
@@ -48,6 +51,33 @@ void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 			e[0][nodei] = inter;
 			e[1][nodei]= user::kx / dg_fun::C * inter;
 			e[2][nodei]= user::ky / dg_fun::C * inter;
+		}
+
+	}
+	
+
+}
+
+
+// test case
+void Exact_solution_sin(int n, int m, double x_l, double y_d,
+				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t){
+
+	for(int j = 0; j <= m; ++j ){
+
+		double y = Affine_mapping(nodal::gl_points[m][j], y_d, del_y);
+		
+		for(int i = 0; i <= n; ++i){
+
+			double x = Affine_mapping(nodal::gl_points[n][i], x_l, del_x);
+
+			double inter = std::sin(user::pi * x) + std::sin(user::pi * y);
+	
+			int nodei = Get_single_index(i, j, m + 1);
+
+			e[0][nodei] = inter;
+			e[1][nodei] = inter;
+			e[2][nodei] = inter;
 		}
 
 	}

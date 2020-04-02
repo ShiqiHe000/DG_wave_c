@@ -29,7 +29,7 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 8;	// x direction
+	const int nmin = 2;	// x direction
 	const int nmax = 8;
 
 	const int hlevel_max = 3;	
@@ -46,7 +46,7 @@ namespace grid{
 namespace dg_time{
 	const double t_total = 1;
 
-	const int nt = 10000;
+	const int nt = 1;
 
 };
 

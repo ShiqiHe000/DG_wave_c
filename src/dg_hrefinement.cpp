@@ -12,8 +12,10 @@
 #include "dg_elem_length.h"
 #include "dg_neighbour_list.h"
 #include <algorithm>
+#include "dg_interpolate_to_new_points.h"
 #include <iostream>	// test
-#include "dg_test.h"
+#include "dg_test.h"	// test
+#include "dg_single_index.h"	// test
 
 /// global variable
 double xcoord_new[3]{};
@@ -35,7 +37,8 @@ void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
 void Change_neighbour_coasen_case1(int c1, int facen, int p_key);
 void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key);
 bool First_child(Unit* temp);
-void Coarsen_results(Unit* temp, bool pass);	// test
+// void Coarsen_results(Unit* temp, bool pass);	// test
+void Print_inter(int new_key, int old_key); // test
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -146,7 +149,9 @@ void h_refinement(){
 					
 
 				// interpolate solutions
-				local::Hash_elem[new_key] -> var = temp -> var;
+//				local::Hash_elem[new_key] -> var = temp -> var;
+				Solutions_to_child(new_key, old_key);	
+//				Print_inter(new_key, old_key); // test
 				
 
 				// form link
@@ -253,16 +258,16 @@ void h_refinement(){
 	
 }
 
-// test function, trivial
-void Coarsen_results(Unit* temp, bool pass){
-
-	if(pass){
-
-		std::cout<< "rank "<< mpi::rank<<" coord " << temp -> index[0] << temp -> index[1]<< temp -> index[2]<< 
-			" state "<< temp -> status << " child_position "<< temp -> child_position <<"\n";
-	}
-
-}
+//// test function, trivial
+//void Coarsen_results(Unit* temp, bool pass){
+//
+//	if(pass){
+//
+//		std::cout<< "rank "<< mpi::rank<<" coord " << temp -> index[0] << temp -> index[1]<< temp -> index[2]<< 
+//			" state "<< temp -> status << " child_position "<< temp -> child_position <<"\n";
+//	}
+//
+//}
 
 
 /// @brief 
@@ -885,3 +890,33 @@ void Get_coordinates(int ith, double* xcoord, double* ycoord){
 	}
 
 }
+
+/// @brief
+/// test function
+/// Print out the interpolants
+/// @parma new_key child's key
+/// @param old_key parent's key
+void Print_inter(int new_key, int old_key){
+
+	Unit* temp_p = local::Hash_elem[old_key];
+	Unit* temp_c = local::Hash_elem[new_key];
+
+	// parent's solution
+	std::cout<< "===========parent " << old_key << " child " << new_key <<"=============== \n";
+	for(int i = 0; i <= (temp_p -> n); ++i){
+
+		for(int j = 0; j <= (temp_p -> m); ++j){
+
+			int index = Get_single_index(i, j, temp_p -> m + 1);
+
+			std::cout<< i << " " << j <<" " <<temp_p -> solution[0][index] 
+				<< " "<< temp_c -> solution[0][index]<< "\n" ;
+
+		}
+	}
+
+
+	
+
+}
+

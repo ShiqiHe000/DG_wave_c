@@ -8,11 +8,12 @@
 #include <vector>
 #include "dg_param.h"
 #include "dg_basis.h"
+#include <iostream>	// test
 
 // forward declaration------------------------------------------------------------------------------------------
 void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& xi, std::vector<double>& T);
 
-void Solutions_on_child(int key, int p_key);
+void Solutions_to_child(int key, int p_key);
 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
 				std::vector<double>& f, std::vector<double>& new_f, int start, int interval);
@@ -23,21 +24,31 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 ///
 /// @param key child's key.
 /// @parma p_key parent's key. 
-void Solutions_on_child(int key, int p_key){
+void Solutions_to_child(int key, int p_key){
 
 	Unit* temp = local::Hash_elem[key];	// pointer to this elem
 
-	double del_y = (temp ->ycoords[1]) - (temp -> ycoords[0]);
+	double y_start{};
+
+	if((temp -> child_position) == 0 || (temp -> child_position) == 1){
+
+		y_start = -1.0;
+
+	}
+	else{
+
+		y_start = 0.0;
+	}
 
 	for(int i = 0; i <= (temp -> n); ++i){
 
 		std::vector<double> y(temp -> m + 1);	// location on parent
 
-		// generate new sets of poitns
+		// generate new sets of points
 		for(int j = 0; j <= (temp -> m); ++j){
-
-			y[j] = Affine_mapping(nodal::gl_points[temp -> m][j], temp -> ycoords[0], del_y);
-			
+			// delta_y == 1.0 
+			y[j] = Affine_mapping(nodal::gl_points[temp -> m][j], y_start, 1.0);
+//std::cout<< "c_key "<< key << " j "<< j << " points " << y[j] << "\n";
 		}
 
 		// interpolate to new sets of points

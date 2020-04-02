@@ -9,9 +9,17 @@
 #include <fstream>	// read and write to file
 #include "dg_unit.h"
 #include "dg_cantor_pairing.h"
+#include <vector>
+#include <unordered_map>
+#include "dg_interface_construct.h"
+#include "dg_nodal_2d_storage.h"
+#include "dg_basis.h"
 
-// forward declaration
+// forward declaration-----------------------------------------------------------------------------------
 void Write_mesh(double t, int pre_elem);
+
+void Interpolate_to_four_corner(Unit* temp, std::unordered_map<int, std::vector<double>>& four);
+//-------------------------------------------------------------------------------------------------------
 
 /// @brief
 /// Output data in serial order.
@@ -66,7 +74,7 @@ void Write_mesh(double t, int pre_elem){
 
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
-		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"VAR\", \"KEY\", \n";
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"KEY\", \"PRESSURE\", \n";
 		
 	}
 	else{
@@ -86,17 +94,34 @@ void Write_mesh(double t, int pre_elem){
 		
 		++elem;
 		
+		// interpolate solution to the four corner----------------------------------------------------
+		std::unordered_map<int, std::vector<double>> four;
+		Interpolate_to_four_corner(temp, four);
+		//--------------------------------------------------------------------------------------------
+
+
 	//	myfile << std::fixed;
 	//	myfile << std::setprecision(5);
 		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  " <<temp -> var <<"  "<< key_now <<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< key_now 
+			<< "  " << four[0][0] <<"\n";
+
+
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "  "<< key_now<<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< key_now
+			<< "  " << four[0][1] <<"\n";
+
+
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<< "  "<<key_now <<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<<key_now 
+			<< "  " << four[0][2] <<"\n";
+
+
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
-			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< temp -> var<<"  "<<key_now<<"\n";
+			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<<key_now
+			<< "  " << four[0][3] <<"\n";
 		
 		temp = temp -> next;
 	}
@@ -107,3 +132,61 @@ void Write_mesh(double t, int pre_elem){
 	++file_num;
 
 }
+
+/// @brief
+/// Interpolates the interior solutions to four corner points
+/// @param temp pointer to the current element.
+/// @param four solutions on the four corner points. <equ, four solutions>
+// four solution sequnece
+//     2 --------- 3
+//     |           |
+//     |           |
+//     |           |
+//     |           |
+//     0 --------- 1
+void Interpolate_to_four_corner(Unit* temp, std::unordered_map<int, std::vector<double>>& four){
+
+	// construct interface in y direction.
+	Construct_interface_y(temp);
+
+	int a{};
+	
+	// then interpolates to the four corners
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		// copy the vector
+		std::vector<double> s_left(temp -> n + 1);
+		std::vector<double> s_right(temp -> n + 1);
+
+		for(int i = 0; i <= (temp -> n); ++i){
+
+			s_left[i] = temp -> solution_int_l[a];
+			s_right[i] = temp -> solution_int_r[a];
+			++a;	
+
+		}
+
+		// allocate space for corner hash
+		four[equ] = std::vector<double> (4);
+
+		// lower left
+		four[equ][0] = Interpolate_to_boundary(temp -> n, s_left, nodal::lagrange_l[temp -> n]);		
+
+		// lower right
+		four[equ][1] = Interpolate_to_boundary(temp -> n, s_right, nodal::lagrange_l[temp -> n]);		
+
+		// upper left
+		four[equ][2] = Interpolate_to_boundary(temp -> n, s_left, nodal::lagrange_r[temp -> n]);		
+
+		// upper right
+		four[equ][3] = Interpolate_to_boundary(temp -> n, s_right, nodal::lagrange_r[temp -> n]);		
+
+	}
+
+
+	// clear solution_int_l/r
+	(temp -> solution_int_l).clear();
+	(temp -> solution_int_r).clear();
+}
+
+

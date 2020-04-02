@@ -63,6 +63,17 @@ void Construct_basis_storage(){
 		Lagrange_interpolating_polynomial(n,  1.0, nodal::gl_points[n], bary, nodal::lagrange_r[n]);
 
 	}
-	
+
+//if(mpi::rank == 0){
+//
+//
+//		for(int j = 0; j <= 2; ++j){
+//			std::cout << j  << " " << nodal::gl_points[2][j] << "\n";
+//
+//		}
+//
+//
+//
+//}
 }
 
