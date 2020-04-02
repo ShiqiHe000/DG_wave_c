@@ -26,7 +26,7 @@ public:
 	double xcoords[2]{0.0, 0.0};	// x coordinates
 	double ycoords[2]{0.0, 0.0};	// y coordinates
 
-	std::unordered_map<int, std::vector<double>> solution;	// solutions
+	std::unordered_map<int, std::vector<double>> solution;	// solutions <equ, (n + 1) * (m + 1)>
 
 	std::vector<double> solution_int_l;	// solution on the element left interface (porder + 1)
 	std::vector<double> solution_int_r;	// solution on the element right interface

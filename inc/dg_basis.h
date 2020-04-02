@@ -3,6 +3,8 @@
 
 #include <vector>
 
+bool Almost_equal(double a, double b);
+
 void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
 						std::vector<double>& bary);
 
