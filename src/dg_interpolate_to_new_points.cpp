@@ -47,21 +47,20 @@ void Solutions_to_child(int key, int p_key){
 
 	}
 
+	std::vector<double> y(temp -> m + 1);	// location on parent
+
+	// generate new sets of points
+	for(int j = 0; j <= (temp -> m); ++j){
+		// delta_y == 1.0 
+		y[j] = Affine_mapping(nodal::gl_points[temp -> m][j], y_start, 1.0);
+	}
+
+	// interpolate to new sets of points
+	std::vector<double> T; 	// interpolation matrix
+	// note: children porder == parent porder, so old points use child's poly order
+	Polynomial_interpolate_matrix(nodal::gl_points[temp -> m], y, T);
+
 	for(int i = 0; i <= (temp -> n); ++i){
-
-		std::vector<double> y(temp -> m + 1);	// location on parent
-
-		// generate new sets of points
-		for(int j = 0; j <= (temp -> m); ++j){
-			// delta_y == 1.0 
-			y[j] = Affine_mapping(nodal::gl_points[temp -> m][j], y_start, 1.0);
-//std::cout<< "c_key "<< key << " j "<< j << " points " << y[j] << "\n";
-		}
-
-		// interpolate to new sets of points
-		std::vector<double> T; 	// interpolation matrix
-		// note: children porder == parent porder, so old points use child's poly order
-		Polynomial_interpolate_matrix(nodal::gl_points[temp -> m], y, T);
 
 		int start = Get_single_index(i, 0, temp -> m + 1);
 

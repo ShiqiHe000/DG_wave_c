@@ -45,7 +45,7 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 
-		DG_step_by_RK3(tn, delta_t);
+	//	DG_step_by_RK3(tn, delta_t);
 
 		Adapt(k);
 		Write_faces_all();
