@@ -8,10 +8,12 @@
 #include "dg_param.h"
 #include "dg_affine_map.h"
 #include "dg_numerical_flux.h"
+#include <functional>	// std::plus
 
 // forward declaration-----------------------------------------------------
 void Numerical_flux_x(double t);
 void Numerical_flux_y(double t);
+void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);
 //------------------------------------------------------------------------
 
 
@@ -40,17 +42,23 @@ void Numerical_flux_x(double t){
 				
 				int n_key = it_face -> key;	// neighbour's key
 
+				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
+
 				for(int s = 0; s <= pordery; ++s){
 
-					//now conforming interface=========================================================
+					//now functionally conforming interface==========================================
 					// Riemann solver
 					Riemann_solver_x(local::Hash_elem[n_key] -> solution_int_r, temp -> solution_int_l, 
-							temp -> nflux_l, -1, index);
+							temp -> ghost[n_key], -1, index);
 					//=================================================================================
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}	
+
+				// add up the numerical flux 
+				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
+
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
 
@@ -85,24 +93,30 @@ void Numerical_flux_x(double t){
 
 				for(int s = 0; s <= pordery; ++s){
 
-					// Riemann solver
+					// assuming functionally conforming------------------------------------------------
+					// Riemann solver, 
+					// use ghost layer to store the nflux_l, so that we can send the corresponding one
+					// to its neighbour. 
 					Riemann_solver_x((temp -> ghost[n_key]), temp -> solution_int_l, 
-							temp -> nflux_l, -1, index);
-					
+							temp -> ghost[n_key], -1, index);
+					//---------------------------------------------------------------------------------
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}
 
+				// add up the numerical flux 
+				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
+
 
 			}
 		}
 
-		if((temp -> ghost).size() > 0){	// if this element has remote neighbours, clear the ghost layer
-
-			(temp -> ghost).clear();
-
-		}
+//		if((temp -> ghost).size() > 0){	// if this element has remote neighbours, clear the ghost layer
+//
+//			(temp -> ghost).clear();
+//
+//		}
 
 		// compute numerical flux on the north interface (only elements face the physical boundary)
 		auto it_face = temp -> facen[1].begin();
@@ -136,6 +150,18 @@ void Numerical_flux_x(double t){
 		temp = temp -> next;
 	}
 }
+
+/// @brief
+/// Compute the sum of two vectors a and b, and store the result in vector b. 
+/// @note The two vectors should have same size.
+/// @param a vector a.
+/// @param b vector b.
+void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b){
+
+	std::transform(b.begin(), b.end(), a.begin(), b.begin(), std::plus<double> ());
+
+}
+
 
 /// @brief
 /// Compute the numerical fluxes on the x direction interfaces for all the elements.  
