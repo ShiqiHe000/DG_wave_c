@@ -40,6 +40,13 @@ void Solutions_to_child(int key, int p_key){
 		y_start = 0.0;
 	}
 
+	
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+		// allocate space
+		temp -> solution[equ] = std::vector<double> ((temp -> n + 1) * (temp -> m + 1));
+
+	}
+
 	for(int i = 0; i <= (temp -> n); ++i){
 
 		std::vector<double> y(temp -> m + 1);	// location on parent
@@ -59,8 +66,6 @@ void Solutions_to_child(int key, int p_key){
 		int start = Get_single_index(i, 0, temp -> m + 1);
 
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-			// allocate space
-			temp -> solution[equ] = std::vector<double> ((temp -> n + 1) * (temp -> m + 1));
 
 			// interval == 1 since we are in teh y direction
 			// restriction: children inderit parent's polynomial order. 
@@ -179,11 +184,14 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 			int index = Get_single_index(i, j, n);
 
 			t += T[index] * f[fi];
-
+//std::cout<< "i" << i << " j "<< j << " fi " << fi << " solution_old " << f[fi] << " T " << T[index] << "\n";
 			fi += interval;
 		}
 
 		new_f[ni] = t;
+
+//std::cout << "------------new " << new_f[ni] << "----------------- \n";
+
 		ni += interval;
 
 	}

@@ -151,7 +151,7 @@ void h_refinement(){
 				// interpolate solutions
 //				local::Hash_elem[new_key] -> var = temp -> var;
 				Solutions_to_child(new_key, old_key);	
-			//	Print_inter(new_key, old_key); // test
+				Print_inter(new_key, old_key); // test
 				
 
 				// form link
