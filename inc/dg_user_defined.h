@@ -11,9 +11,14 @@ namespace user{
 	extern const double D;
 	extern const double xx0;
 	extern const double yy0; 
+	
+	extern const double pi;	// testing
 };
 //------------------------------------------------------
 
 void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
+				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t);
+
+void Exact_solution_sin(int n, int m, double x_l, double y_d,
 				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t);
 #endif
