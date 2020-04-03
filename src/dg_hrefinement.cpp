@@ -26,7 +26,7 @@ void Get_coordinates(int ith, double* xcoord, double* ycoord);
 void Gen_index(int ith, int* index, int* index_new);
 void Two_siblings(int new_key, int position);
 void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children);
-void Non_sibling_interfaces(Unit* last, int parent);
+void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children);
 void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
 void Flag_elem(int kt);
@@ -147,13 +147,6 @@ void h_refinement(){
 				// faces(here we construct between siblings)
 				Two_siblings(new_key, position);
 					
-
-				// interpolate solutions
-//				local::Hash_elem[new_key] -> var = temp -> var;
-				Solutions_to_child(new_key, old_key);	
-				Print_inter(new_key, old_key); // test
-				
-
 				// form link
 				if(i > 0){
 					local::Hash_elem[pre_key] -> next = local::Hash_elem[new_key];
@@ -165,7 +158,12 @@ void h_refinement(){
 				
 			}	
 			// form then external interfaces between 4 children and updates their neighbour's faces			
-			Non_sibling_interfaces(temp2, old_key);
+			std::array<int, 4> children;	// four siblings' keys
+			Non_sibling_interfaces(temp2, old_key, children);
+
+			// interpolate solution to four children
+			Solutions_to_children(children, old_key);
+
 			temp2 -> next = temp -> next;
 
 			// erase the parent
@@ -552,14 +550,16 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 }
 
 
+
+
 /// @brief
 /// Form the non-sibling interfaces of 4 children. 
 /// @param last pointer to the 3th child.
 /// @param parent parent key.
-void Non_sibling_interfaces(Unit* last, int parent){
+/// @param children four children's keys. 
+void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children){
 
 	// get four children's keys
-	std::array<int, 4> children; 
 	Four_children(last -> child_position, last -> index[0], last -> index[1], last -> index[2], children);
 
 	// south

@@ -8,72 +8,143 @@
 #include <vector>
 #include "dg_param.h"
 #include "dg_basis.h"
+#include <array>
+#include <unordered_map>
 #include <iostream>	// test
 
 // forward declaration------------------------------------------------------------------------------------------
 void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& xi, std::vector<double>& T);
 
-void Solutions_to_child(int key, int p_key);
+void Solutions_to_children(std::array<int, 4>& keys, int p_key);
 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
 				std::vector<double>& f, std::vector<double>& new_f, int start, int interval);
+
+void Form_new_set_of_points(int m, int start, std::vector<double>& y);
+
+void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m);
 //--------------------------------------------------------------------------------------------------------------
 
 
 /// @brief
 ///
-/// @param key child's key.
+/// @param keys four children key. Sequence: SW -- NW -- NE -- SE
 /// @parma p_key parent's key. 
-void Solutions_to_child(int key, int p_key){
+void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 
-	Unit* temp = local::Hash_elem[key];	// pointer to this elem
 
-	double y_start{};
+	// pointers to the four children
+	Unit* c0 = local::Hash_elem[keys[0]];
+	Unit* c1 = local::Hash_elem[keys[1]];
+	Unit* c2 = local::Hash_elem[keys[2]];
+	Unit* c3 = local::Hash_elem[keys[3]];
 
-	if((temp -> child_position) == 0 || (temp -> child_position) == 1){
+	// poly order (four children are the same)
+	int n = c0 -> n;
+	int m = c0 -> m;
 
-		y_start = -1.0;
-
-	}
-	else{
-
-		y_start = 0.0;
-	}
-
-	
+	// allocate solution space
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 		// allocate space
-		temp -> solution[equ] = std::vector<double> ((temp -> n + 1) * (temp -> m + 1));
+		c0 -> solution[equ] = std::vector<double> ((n + 1) * ( m + 1));
+		c1 -> solution[equ] = std::vector<double> ((n + 1) * ( m + 1));
+		c2 -> solution[equ] = std::vector<double> ((n + 1) * ( m + 1));
+		c3 -> solution[equ] = std::vector<double> ((n + 1) * ( m + 1));
 
 	}
 
-	std::vector<double> y(temp -> m + 1);	// location on parent
+	// four new sets of points---------------------------------------------------
+	std::vector<double> xl(n + 1);	// location on parent
+	std::vector<double> xr(n + 1);	// location on parent
+	std::vector<double> yl(m + 1);	// location on parent
+	std::vector<double> yr(m + 1);	// location on parent
 
-	// generate new sets of points
-	for(int j = 0; j <= (temp -> m); ++j){
-		// delta_y == 1.0 
-		y[j] = Affine_mapping(nodal::gl_points[temp -> m][j], y_start, 1.0);
-	}
+	Form_new_set_of_points(n, -1.0, xl);	// left boundary is -1.0, right boundary is 0. 
+	Form_new_set_of_points(n,  0.0, xr);
+	Form_new_set_of_points(m, -1.0, yl);
+	Form_new_set_of_points(m,  0.0, yr);
+	//---------------------------------------------------------------------------
 
-	// interpolate to new sets of points
-	std::vector<double> T; 	// interpolation matrix
+	// form interpolation matrix------------------------------------------------------
+	std::vector<double> T_xl; 	// interpolation matrix
+	std::vector<double> T_xr; 	// interpolation matrix
+	std::vector<double> T_yl; 	// interpolation matrix
+	std::vector<double> T_yr; 	// interpolation matrix
+
 	// note: children porder == parent porder, so old points use child's poly order
-	Polynomial_interpolate_matrix(nodal::gl_points[temp -> m], y, T);
+	Polynomial_interpolate_matrix(nodal::gl_points[n], xl, T_xl);
+	Polynomial_interpolate_matrix(nodal::gl_points[n], xr, T_xr);
+	Polynomial_interpolate_matrix(nodal::gl_points[m], yl, T_yl);
+	Polynomial_interpolate_matrix(nodal::gl_points[n], yr, T_yr);
+	//--------------------------------------------------------------------------------
 
-	for(int i = 0; i <= (temp -> n); ++i){
+	// c0
+	Two_dir_inter(p_key, c0, T_xl, T_yl, n, m);
+	// c1
+	Two_dir_inter(p_key, c0, T_xr, T_yl, n, m);
+	// c2
+	Two_dir_inter(p_key, c0, T_xr, T_yr, n, m);
+	// c3
+	Two_dir_inter(p_key, c0, T_xl, T_yr, n, m);
+}
 
-		int start = Get_single_index(i, 0, temp -> m + 1);
+/// @brief
+/// Use the interpolation matrix in x and y direction and obtain the interpolated solutions.
+/// @param p_key parents key.
+/// @param c pointer to the current child.
+/// @param T_x interpolation matrix in x direction.
+/// @param T_y interpolation matrix in y direction.
+/// @param n polynomial order in x direction.
+/// @param m polynomial order in y direction.
+void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m){
+
+	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix. 
+
+	// y direction
+	for(int i = 0; i <= n; ++i){
+
+		int start = Get_single_index(i, 0, m + 1);
 
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+			
+			middle[equ] = std::vector<double> ((n + 1) * (m + 1));
 
 			// interval == 1 since we are in teh y direction
 			// restriction: children inderit parent's polynomial order. 
-			Interpolate_to_new_points(temp -> m + 1, temp -> m + 1, T,
-					local::Hash_elem[p_key] -> solution[equ], temp -> solution[equ], start, 1);
+			Interpolate_to_new_points(m + 1,  m + 1, T_y,
+					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, 1);
 		}
 	}
 
+
+	// x direction
+	for(int j = 0; j <= m; ++j){
+
+		int start = Get_single_index(0, j, m + 1);
+		
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+			Interpolate_to_new_points(n + 1,  n + 1, T_x,
+					middle[equ], c -> solution[equ], start, m + 1);
+			
+		}
+	}
 }
+
+
+/// @brief
+/// Map the new set of points from the reference space [-1, 1] to the space after h-refinement. 
+/// @param m polynomial order.
+/// @param start element left boundary coordinate.
+/// @param y new set of points' coordinate. 
+void Form_new_set_of_points(int m, int start, std::vector<double>& y){
+
+	for(int j = 0; j <= m; ++j){
+		
+		y[j] = Affine_mapping(nodal::gl_points[m][j], start, 1.0);	// element size = 1.0
+	}
+}
+
 
 /// @brief
 /// Matrix for inerpolation between two sets of points
