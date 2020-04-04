@@ -64,7 +64,11 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	Form_new_set_of_points(m, -1.0, yl);
 	Form_new_set_of_points(m,  0.0, yr);
 	//---------------------------------------------------------------------------
-
+//for(auto& v : yr){
+//
+//	std::cout<< v << "\n";
+//
+//}
 	// form interpolation matrix------------------------------------------------------
 	std::vector<double> T_xl; 	// interpolation matrix
 	std::vector<double> T_xr; 	// interpolation matrix
@@ -81,11 +85,11 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	// c0
 	Two_dir_inter(p_key, c0, T_xl, T_yl, n, m);
 	// c1
-	Two_dir_inter(p_key, c0, T_xr, T_yl, n, m);
+	Two_dir_inter(p_key, c1, T_xr, T_yl, n, m);
 	// c2
-	Two_dir_inter(p_key, c0, T_xr, T_yr, n, m);
+	Two_dir_inter(p_key, c2, T_xr, T_yr, n, m);
 	// c3
-	Two_dir_inter(p_key, c0, T_xl, T_yr, n, m);
+	Two_dir_inter(p_key, c3, T_xl, T_yr, n, m);
 }
 
 /// @brief
@@ -101,13 +105,13 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix. 
 
 	// y direction
-	for(int i = 0; i <= n; ++i){
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+		
+		middle[equ] = std::vector<double> ((n + 1) * (m + 1));
+		
+		for(int i = 0; i <= n; ++i){
 
-		int start = Get_single_index(i, 0, m + 1);
-
-		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-			
-			middle[equ] = std::vector<double> ((n + 1) * (m + 1));
+			int start = Get_single_index(i, 0, m + 1);
 
 			// interval == 1 since we are in teh y direction
 			// restriction: children inderit parent's polynomial order. 
@@ -115,20 +119,41 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, 1);
 		}
 	}
-
-
+//for(int i = 0; i <= n; ++i){
+//
+//	for(int j = 0; j <= m; ++j){
+//
+//		int start = Get_single_index(i, j, m + 1);
+//		std::cout<< i << " " << j  << " "<< middle[0][start] << "\n";
+//	}
+//
+//}
+//std::cout<< " ---------------------------- \n";
+//std::cout << "***************************** x dir ***************************** \n";
 	// x direction
-	for(int j = 0; j <= m; ++j){
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
-		int start = Get_single_index(0, j, m + 1);
-		
-		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+		for(int j = 0; j <= m; ++j){
+
+			int start = Get_single_index(0, j, m + 1);
 
 			Interpolate_to_new_points(n + 1,  n + 1, T_x,
 					middle[equ], c -> solution[equ], start, m + 1);
 			
 		}
 	}
+
+//for(int i = 0; i <= n; ++i){
+//
+//	for(int j = 0; j <= m; ++j){
+//
+//		int start = Get_single_index(i, j, m + 1);
+//		std::cout<< i << " " << j  << " "<< c -> solution[0][start] << "\n";
+//	}
+//
+//}
+//std::cout<< " ---------------------------- \n";
+
 }
 
 
@@ -199,7 +224,8 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 				T[index] = t;
 
 				s += t;
-//std::cout << "k" << k << " j "<< j<< " weight "<< w[j]<< " x[j] " << x[j] << " t = "<< t << " s = "<< s << "\n";
+//std::cout << "k" << k << " j "<< j<< " weight "<< w[j]<< " x[j] " << x[j] << " xi[k] " 
+//			<< xi[k]<< " t = "<< t << " s = "<< s << "\n";
 			}
 
 			for(int j = 0; j < n; ++j){
@@ -265,4 +291,5 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 		ni += interval;
 
 	}
+//std::cout << "================================================= \n";
 }

@@ -160,10 +160,13 @@ void h_refinement(){
 			// form then external interfaces between 4 children and updates their neighbour's faces			
 			std::array<int, 4> children;	// four siblings' keys
 			Non_sibling_interfaces(temp2, old_key, children);
-
 			// interpolate solution to four children
 			Solutions_to_children(children, old_key);
 
+for(int h = 0; h < 4; ++h){
+      Print_inter(children[h], old_key);
+//      std::cout<< children[h] << "\n";
+}
 			temp2 -> next = temp -> next;
 
 			// erase the parent
@@ -728,7 +731,8 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 
 /// @brief
 /// Input the last child's element index, then returns the array 
-/// of 4 children's key in ascending child_position sequence.
+/// of 4 children's key in ascending child_position sequence. 
+/// The children key sequence is: SW, NW, NE, SE (irrelevent of curve orientation.)
 /// @param ith ith children (only support 1 and 3).
 /// @param i integer coordinate in x direction.
 /// @param j integer coordinate in y direction.
