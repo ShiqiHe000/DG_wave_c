@@ -51,7 +51,7 @@ void Flag_elem(int kt){
 
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
-if(mpi::rank == 0){
+if(mpi::rank == 0 && kt == 0){
 
 	rand_num = 1;
 }
@@ -163,10 +163,10 @@ void h_refinement(){
 			// interpolate solution to four children
 			Solutions_to_children(children, old_key);
 
-for(int h = 0; h < 4; ++h){
-      Print_inter(children[h], old_key);
-//      std::cout<< children[h] << "\n";
-}
+//for(int h = 0; h < 4; ++h){
+//      Print_inter(children[h], old_key);
+////      std::cout<< children[h] << "\n";
+//}
 			temp2 -> next = temp -> next;
 
 			// erase the parent
