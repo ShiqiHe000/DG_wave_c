@@ -4,6 +4,7 @@
 #include "dg_time_derivative.h"
 #include "dg_param.h"
 #include "dg_single_index.h"
+#include <iostream>	// test
 
 /// @brief
 /// The integration in time by using low storage third order Runge-Kutta.  
@@ -42,7 +43,7 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 		// time derivative at current time step
 		DG_time_der(t);
-
+		
 		temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
 

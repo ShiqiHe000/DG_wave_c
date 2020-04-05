@@ -44,11 +44,12 @@ void DG_init(){
 				
 
 				// test case sin(pi * x) + sin(pi * y) --------------------------------------------------
-				double inter = std::sin(user::pi * x) + std::sin(user::pi * y);
+				double inter1 = std::sin(user::pi * x);
+				double inter2 = std::sin(user::pi * y);
 
-				temp -> solution[0][num_p] = inter;
-				temp -> solution[1][num_p] = inter;
-				temp -> solution[2][num_p] = inter;
+				temp -> solution[0][num_p] = - 1.0 / user::pi * inter1 - 1.0 / user::pi * inter2;
+				temp -> solution[1][num_p] = inter1;
+				temp -> solution[2][num_p] = inter2;
 				
 				//----------------------------------------------------------------------------------------
 

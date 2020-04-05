@@ -71,13 +71,14 @@ void Exact_solution_sin(int n, int m, double x_l, double y_d,
 
 			double x = Affine_mapping(nodal::gl_points[n][i], x_l, del_x);
 
-			double inter = std::sin(user::pi * x + t) + std::sin(user::pi * y + t);
+			double inter1 = std::sin(user::pi * x + t);
+			double inter2 = std::sin(user::pi * y + t);
 	
 			int nodei = Get_single_index(i, j, m + 1);
 
-			e[0][nodei] = inter;
-			e[1][nodei] = inter;
-			e[2][nodei] = inter;
+			e[0][nodei] = - 1.0 / user::pi * inter1 - 1.0 / user::pi * inter2;
+			e[1][nodei] = inter1;
+			e[2][nodei] = inter2;
 		}
 
 	}

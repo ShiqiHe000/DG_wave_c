@@ -26,11 +26,12 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 // test
 void External_state_sin_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
 
-	double inter = std::sin(user::pi * x + t) + std::sin(user::pi * y + t);
+	double inter1 = std::sin(user::pi * x + t);
+	double inter2 = std::sin(user::pi * y + t);
 
-	q_ext[index[0]] = inter;
+	q_ext[index[0]] = -1.0 / user::pi * inter1 - 1.0 / user::pi * inter2;
 
-	q_ext[index[1]] = inter;
+	q_ext[index[1]] = inter1;
 
-	q_ext[index[2]] = inter;
+	q_ext[index[2]] = inter2;
 }
