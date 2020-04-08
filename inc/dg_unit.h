@@ -40,6 +40,9 @@ public:
 	std::unordered_map<int, std::vector<double>> solution_time_der;	// solution time derivative <equ, (n + 1) * (m + 1)>
 
 	std::unordered_map<int, std::vector<double>> G; 	// Runge-Kutta 3rd <equ, (n + 1) * (m + 1)>
+	
+	std::vector<double> ref_x;		// element boundary in x direction
+	std::vector<double> ref_y;		// element boundary in y direction
 
 	Unit* next = nullptr;	// pointer to the next Unit
 

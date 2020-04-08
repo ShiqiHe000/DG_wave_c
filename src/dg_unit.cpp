@@ -1,7 +1,6 @@
 #include "dg_unit.h"
 #include "dg_param.h"
 #include <vector>
-#include <algorithm>
 
 
 /// @brief
@@ -12,6 +11,14 @@
 Unit::Unit() : n(grid::nmin), m(grid::nmin)
 {
 	facen = std::vector<std::vector<Face>>(4);
+
+	ref_x = std::vector<double>(2);
+	ref_y = std::vector<double>(2);
+
+	// initialize element reference boudaries. Reference space [-1, 1]
+	ref_x[0] = -1.0; ref_y[0] = -1.0;
+	ref_x[1] =  1.0; ref_y[1] =  1.0;
+
 }
 
 

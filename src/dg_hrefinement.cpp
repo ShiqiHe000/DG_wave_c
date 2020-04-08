@@ -37,6 +37,8 @@ void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
 void Change_neighbour_coasen_case1(int c1, int facen, int p_key);
 void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key);
 bool First_child(Unit* temp);
+void Ref_coods_x(int key, int position, Unit* temp);
+void Ref_coods_y(int key, int position, Unit* temp);
 // void Coarsen_results(Unit* temp, bool pass);	// test
 void Print_inter(int new_key, int old_key); // test
 // --------------------------------------------------------------------------------------------------
@@ -139,6 +141,10 @@ void h_refinement(){
 
 				// ith child
 				local::Hash_elem[new_key] -> child_position = position;
+				
+				// reference coods
+				Ref_coods_x(new_key, position, temp);
+				Ref_coods_y(new_key, position, temp);
 
 				// poly order
 				local::Hash_elem[new_key] -> n = temp -> n;
@@ -270,6 +276,53 @@ void h_refinement(){
 //
 //}
 
+/// @brief
+/// Generate the reference boundary coordinate in x direciton.
+/// @param key current child's key.
+/// @param temp pointer to the parent element.
+void Ref_coods_x(int key, int position, Unit* temp){
+
+	assert(position >= 0 && position <= 3 && "position should be inside [0, 3]");
+
+	double avg = ((temp -> ref_x[0]) + (temp -> ref_x[1])) / 2.0;
+
+	if(position == 1 || position == 2){
+		
+		local::Hash_elem[key] -> ref_x[0] = avg;
+		local::Hash_elem[key] -> ref_x[1] = temp -> ref_x[1];
+	
+	}
+	else{	//position == 0 || position == 3
+
+		local::Hash_elem[key] -> ref_x[0] = temp -> ref_x[0];
+		local::Hash_elem[key] -> ref_x[1] = avg;
+
+	}
+}
+
+/// @brief
+/// Generate the reference boundary coordinate in y direciton.
+/// @param key current child's key.
+/// @param temp pointer to the parent element.
+void Ref_coods_y(int key, int position, Unit* temp){
+
+	assert(position >= 0 && position <= 3 && "position should be inside [0, 3]");
+
+	double avg = ((temp -> ref_y[0]) + (temp -> ref_y[1])) / 2.0;
+
+	if(position == 2 || position == 3){
+		
+		local::Hash_elem[key] -> ref_y[0] = avg;
+		local::Hash_elem[key] -> ref_y[1] = temp -> ref_y[1];
+	
+	}
+	else{	//position == 0 || position == 1
+
+		local::Hash_elem[key] -> ref_y[0] = temp -> ref_y[0];
+		local::Hash_elem[key] -> ref_y[1] = avg;
+
+	}
+}
 
 /// @brief 
 /// Record the neighbours info of new parent (4 sides). 
@@ -913,8 +966,8 @@ void Print_inter(int new_key, int old_key){
 
 			int index = Get_single_index(i, j, temp_p -> m + 1);
 
-			std::cout<< i << " " << j <<" " <<temp_p -> solution[0][index] 
-				<< " "<< temp_c -> solution[0][index]<< "\n" ;
+			std::cout<< i << " " << j <<" " <<temp_p -> solution[1][index] 
+				<< " "<< temp_c -> solution[1][index]<< "\n" ;
 
 		}
 	}

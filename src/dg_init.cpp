@@ -6,6 +6,7 @@
 #include <cmath>	// exp
 #include "dg_single_index.h"
 #include "dg_user_defined.h"
+#include <iostream>	// test
 
 /// @brief
 /// Initialization all local elements based on the initial conditions.
@@ -52,7 +53,11 @@ void DG_init(){
 				temp -> solution[2][num_p] = inter2;
 				
 				//----------------------------------------------------------------------------------------
+if(mpi::rank == 3){
 
+	std::cout << "i " << i << " j "<< j << " u " << inter1 << "\n";
+	std::cout << "x " << x << " y " << y << "\n";
+}
 
 			}
 		}
