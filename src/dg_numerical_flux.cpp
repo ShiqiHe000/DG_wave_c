@@ -27,7 +27,7 @@ void Numerical_flux_x(double t){
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		int pordery = temp -> m;
-		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
+//		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
 
 		temp -> nflux_l = std::vector<double>(size);
 		temp -> nflux_r = std::vector<double>(size);
@@ -42,7 +42,7 @@ void Numerical_flux_x(double t){
 				
 				int n_key = it_face -> key;	// neighbour's key
 
-				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
+//				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
 
 				for(int s = 0; s <= pordery; ++s){
 
@@ -150,6 +150,65 @@ void Numerical_flux_x(double t){
 		temp = temp -> next;
 	}
 }
+
+
+
+/// @param temp pointer to the current element.
+/// @param 
+void Form_mortar_x(Unit* temp, int n_key){
+
+	temp -> mortar.n_max = std::max(local::Hash_elem[n_key] -> n, temp -> n);	// maximum poly order
+
+	temp -> mortar.l_max = std::max(local::Hash_elem[n_key] -> index[2], temp -> index[2]);	// maximum level
+
+	// left element coordinate mapping
+	if((local::Hash_elem[n_key] -> index[2]) == (temp -> mortar.l_max)){	// left element is the smallest
+
+		// smallest element's coordinate does not need to scale
+		temp -> mortar.a_l = 0.0;
+		temp -> mortar.b_l = 1.0;	
+	}
+	else{	// right element is smaller
+
+		double p = - ((temp -> ref_x[0] + (temp -> ref_x[1]))) / 2.0;
+
+		double q = 2.0 / ((temp -> ref_x[1] - temp -> ref_x[0]));
+
+		double s_d = ((local::Hash_elem[n_key] -> ref_x[0]) + p) * q;
+		double s_u = ((local::Hash_elem[n_key] -> ref_x[1]) + p) * q;
+
+		temp -> mortar.a_l = (s_u + s_d) / 2.0;
+		temp -> mortar.b_l = s_u - (temp -> mortar.a_l);
+	}
+
+	// right element coordinate mapping
+	if((temp -> index[2]) == (temp -> mortar.l_max)){	// right element is the smallest
+
+		temp -> mortar.a_r = 0.0;
+		temp -> mortar.b_r = 1.0;	
+		
+	}
+	else{	// left element is smaller
+
+		double p = - ((local::Hash_elem[n_key] -> ref_x[0]) + (local::Hash_elem[n_key] -> ref_x[1])) / 2.0;
+
+		double q = 2.0 / (local::Hash_elem[n_key] -> ref_x[1] - local::Hash_elem[n_key] -> ref_x[0]);
+
+		double s_d = ((temp -> ref_x[0]) + p) * q;
+		double s_u = ((temp -> ref_x[1]) + p) * q;
+
+		temp -> mortar.a_r = (s_u + s_d) / 2.0;
+		temp -> mortar.b_r = s_u - (temp -> mortar.a_r);
+
+	}
+
+
+	// allocate the space for psi
+	int size = (temp -> mortar.n_max + 1) * dg_fun::num_of_equation; 	// 1d array for mortar
+	temp -> mortar.psi_l = std::vector<double>(size);
+	temp -> mortar.psi_r = std::vector<double>(size);
+}
+
 
 /// @brief
 /// Compute the sum of two vectors a and b, and store the result in vector b. 
