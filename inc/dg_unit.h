@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+//#include <array>
 
 
 /// @brief
@@ -18,6 +19,8 @@ struct Mortar{
 
 	std::vector<double> psi_l;	// L2 projection on the left interface of the mortar
 	std::vector<double> psi_r; 	// L2 projection on the right interface of the mortar
+
+	std::vector<double> nflux;	// numerical flux on the right element interface
 };
 
 /// @brief
@@ -102,6 +105,38 @@ struct Unit::Face{
 	int key;
 	
 	int rank;
+
+	std::vector<double> ref_x; 
+	std::vector<double> ref_y;
+
+
+	// default construtor
+	Face() : hlevel{}, porderx{}, pordery{}, key{}, rank{}
+	{
+
+		ref_x = std::vector<double> {-1.0, 1.0};
+		ref_y = std::vector<double> {-1.0, 1.0};
+
+	}
+	
+	// copy constructor
+	Face(const Face& face){
+
+		face_type = face.face_type;
+
+		hlevel = face.hlevel;
+
+		porderx = face.porderx;
+		pordery = face.pordery;
+
+		key = face.key;
+
+		rank = face.rank;
+
+		ref_x = face.ref_x;
+		ref_y = face.ref_y;
+		
+	}
 };
 
 

@@ -833,6 +833,9 @@ void Two_siblings(int new_key, int position){
 			local::Hash_elem[new_key] -> facen[i][0].porderx = local::Hash_elem[new_key] -> n;
 			local::Hash_elem[new_key] -> facen[i][0].pordery = local::Hash_elem[new_key] -> m;
 			local::Hash_elem[new_key] -> facen[i][0].rank = mpi::rank;
+			// conforming interface between siblings
+			local::Hash_elem[new_key] -> facen[i][0].ref_x = local::Hash_elem[new_key] -> ref_x;
+			local::Hash_elem[new_key] -> facen[i][0].ref_y = local::Hash_elem[new_key] -> ref_y;
 			
 			// key
 			if(i == 0){	// south

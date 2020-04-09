@@ -9,6 +9,7 @@
 #include "dg_affine_map.h"
 #include "dg_numerical_flux.h"
 #include <functional>	// std::plus
+#include "dg_mortar_construction.h"
 
 // forward declaration-----------------------------------------------------
 void Numerical_flux_x(double t);
@@ -28,7 +29,7 @@ void Numerical_flux_x(double t){
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		int pordery = temp -> m;
-		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
+		int size = dg_fun::num_of_equation * (pordery + 1);	// right element interface
 
 		temp -> nflux_l = std::vector<double>(size);
 		temp -> nflux_r = std::vector<double>(size);
@@ -37,33 +38,61 @@ void Numerical_flux_x(double t){
 		for(auto it_face = temp -> facen[0].begin(); it_face != temp -> facen[0].end(); ++it_face){
 
 			// index for three current points (three equations).
-			std::vector<int> index{0, pordery + 1, (pordery + 1) * 2};	
+//			std::vector<int> index{0, pordery + 1, (pordery + 1) * 2};	
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
 				int n_key = it_face -> key;	// neighbour's key
 
-				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
+				int size_n = (it_face -> pordery + 1) * dg_fun::num_of_equation; // left element interface
 
-				Form_mortar_x(temp, n_key);
+				temp -> ghost[n_key] = std::vector<double> (size_n);	// store neighbour's solution in ghost
 
-				// left element, form L2 projection matrix
-//				if(it_face -> hlevel == (temp -> mortar.l_max) && )
+				Form_mortar_x(temp, n_key);	// allocate space on the mortar
+
+				// left element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+					 		local::Hash_elem[n_key] -> solution_int_r, 
+							temp -> mortar.psi_l);
+
+				// right element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+					 		temp -> solution_int_l, 
+							temp -> mortar.psi_r);
+			
+				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
 
 					//now functionally conforming interface==========================================
 					// Riemann solver
-					Riemann_solver_x(local::Hash_elem[n_key] -> solution_int_r, temp -> solution_int_l, 
-							temp -> ghost[n_key], -1, index);
+					Riemann_solver_x(temp -> mortar.psi_l, temp -> mortar.psi_r, 
+							temp -> mortar.nlux, -1, index);
 					//=================================================================================
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}	
 
+
+				// L2 project back to element, right element
+				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux);
+
+				// L2 projection from mortar to left element	
+				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux);
+
 				// add up the numerical flux 
-				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
+//				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
 
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
@@ -164,7 +193,11 @@ void Numerical_flux_x(double t){
 /// @param n_key neighbour's key.
 void Form_mortar_x(Unit* temp, int n_key){
 
-	temp -> mortar.n_max = std::max(local::Hash_elem[n_key] -> n, temp -> n);	// maximum poly order
+	// first clear the former info
+	temp -> mortar = {}; 	// reset
+
+
+	temp -> mortar.n_max = std::max(local::Hash_elem[n_key] -> m, temp -> m);	// maximum poly order
 
 	temp -> mortar.l_max = std::max(local::Hash_elem[n_key] -> index[2], temp -> index[2]);	// maximum level
 
@@ -214,6 +247,7 @@ void Form_mortar_x(Unit* temp, int n_key){
 	int size = (temp -> mortar.n_max + 1) * dg_fun::num_of_equation; 	// 1d array for mortar
 	temp -> mortar.psi_l = std::vector<double>(size);
 	temp -> mortar.psi_r = std::vector<double>(size);
+	temp -> mortar.nflux = std::vector<double>(size);
 }
 
 
