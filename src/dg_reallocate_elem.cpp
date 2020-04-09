@@ -9,6 +9,8 @@
 #include <fstream>	// test
 
 // forward declaration-------------------------------------------------------------------
+void Reallocate_elem(int kt);
+
 void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
 
 void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count);

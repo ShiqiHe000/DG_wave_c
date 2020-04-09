@@ -11,6 +11,7 @@
 #include "dg_neighbour_list.h"
 #include "dg_boundary_table.h"
 #include "dg_put_into_mpi_table.h"
+#include "dg_derived_datatype.h"
 #include <cassert>	// test
 #include <iostream>	// test
 
@@ -28,7 +29,7 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 				std::unordered_map<int, std::vector<int>>& neighbours_south);
 
 void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
-			int facei, int num1, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours);
+			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours);
 
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
 
@@ -59,42 +60,6 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 	}
 
 }
-
-/// @brief 
-/// Insert the current MPI boundary element to the MPI boundary table. 
-/// @param temp Pointer to the current unit. 
-/// @param facen_it Iterator on the element face info vector.
-/// @param mpi_table The relevent MPI bountary table. 
-/// @param target_rank The neighbour's rank. 
-//void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it, 
-//			std::unordered_map<int, std::vector<mpi_table>>& table){
-//
-//	if(table.count(facen_it -> rank) == 0){	// if this rank has not been not record yet
-//
-//		table[facen_it -> rank] = std::vector<mpi_table>();
-//
-//		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//
-//		// mpi_length and owners_rank will be recorded later
-//		table[facen_it -> rank].push_back({local_key, 0, 0});
-//	}
-//	else{ // this rank is already been record
-//
-//		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//
-//		// avoid duplication
-//		auto it = std::find_if(table[facen_it -> rank].begin(), table[facen_it -> rank].end(),
-//					[local_key] (const mpi_table& v) {return v.local_key == local_key;});
-//
-//		if(it == table[facen_it -> rank].end()){	// if not find
-//
-//			table[facen_it -> rank].push_back({local_key, 0, 0});
-//		}
-//
-//	}
-//
-//}
-
 
 /// @brief
 /// Form the possible neighbours array based on the face number.
@@ -248,20 +213,24 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 			int target_rank = v.first;
 			int num_elem = v.second.size();
 
-			std::vector<int> send_info(num_elem * 5);
 			auto it = v.second.begin();
-	
-			// serialize the struct
+
+			std::vector<facen_pack> send_info(num_elem);
+
+			// pack the sending info
 			for(int k = 0; k < num_elem; ++k){
 	
-				send_info[5 * k] = it -> local_key;	// key
-				send_info[5 * k + 1] = local::Hash_elem[it -> local_key] -> index[2];	// hlevel
-				send_info[5 * k + 2] = local::Hash_elem[it -> local_key] -> n;	// porderx
-				send_info[5 * k + 3] = local::Hash_elem[it -> local_key] -> m;	// pordery
-				send_info[5 * k + 4] = it -> mpi_length;
+				send_info[k].local_key = it -> local_key;	// key
+				send_info[k].hlevel = local::Hash_elem[it -> local_key] -> index[2];	// hlevel
+				send_info[k].porderx = local::Hash_elem[it -> local_key] -> n;	// porderx
+				send_info[k].pordery = local::Hash_elem[it -> local_key] -> m;	// pordery
+				send_info[k].mpi_length = it -> mpi_length;
+				send_info[k].ref_x = local::Hash_elem[it -> local_key] -> ref_x;	
+				send_info[k].ref_y = local::Hash_elem[it -> local_key] -> ref_y;	
 				++it;
 			}
-			MPI_Isend(&send_info[0], num_elem * 5, MPI_INT, target_rank, mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
+			MPI_Isend(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
+					mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
 		}
 		MPI_Waitall(s, s_request, s_status);
@@ -280,11 +249,11 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 			MPI_Probe(v.first, v.first, MPI_COMM_WORLD, &status1);
 
-			MPI_Get_count(&status1, MPI_INT, &num);
+			MPI_Get_count(&status1, Hash::Facen_type, &num);
 			
-			std::vector<int> recv_info(num);	
+			std::vector<facen_pack> recv_info(num);	
 	
-			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
+			MPI_Recv(&recv_info[0], num, Hash::Facen_type, v.first, v.first, MPI_COMM_WORLD, &status2);
 			Update_hash(recv_info, north, update_dir, num, v.first, neighbours_north);
 		}
 
@@ -295,7 +264,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 }
 
 /// @brief
-/// Update facen in hash table.
+/// Update facen in Unit hash table.
 /// @param recv_info recieved information vector.
 /// @param table MPI direction table.
 /// @param facei element ith face to be updates
@@ -303,10 +272,8 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 /// @param target_rank The rank number of the info sender.
 /// @param neighbours possible neighbours hash table. 
 void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
-			int facei, int num1, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
+			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
 	
-	int num = num1 / 5;
-
 	for(auto it = table[target_rank].begin(); it != table[target_rank].end(); ++it){
 
 		// delete old face info			
@@ -319,21 +286,17 @@ void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vecto
 		for(auto itn = neighbours[it -> local_key].begin();
 			itn != neighbours[it -> local_key].end(); ++itn){
 
-
 			for(int k = 0; k < num; ++k){
 	
-				if(recv_info[5 * k] == *(itn)){	// find it!
+				if(recv_info[k].local_key == *(itn)){	// find it!
 	
-					// type, hlevel, porder, key, rank	
-					Unit::Face obj = {'M', recv_info[5 * k + 1], recv_info[5 * k + 2], 
-								recv_info[5 * k + 3], 
-								recv_info[5 * k], target_rank};	
-			
-					it_face = local::Hash_elem[it -> local_key] -> 
-							facen[facei].emplace(it_face, obj); 
-					++it_face;
-				
-					l_tol += recv_info[5 * k + 4];	// record neighbour's length
+					local::Hash_elem[it -> local_key] -> facen[facei].emplace_back('M', 
+								recv_info[k].hlevel, recv_info[k].porderx, 
+								recv_info[k].pordery, recv_info[k].local_key,
+								target_rank, recv_info[k].ref_x, 
+								recv_info[k].ref_y);
+
+					l_tol += recv_info[k].mpi_length;	// record neighbour's length
 	
 					break;
 				}

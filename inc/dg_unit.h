@@ -118,9 +118,18 @@ struct Unit::Face{
 		ref_y = std::vector<double> {-1.0, 1.0};
 
 	}
+
+	// constructor
+	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
+		: face_typy(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
+	{
+
+		ref_x = ref1;
+		ref_y = ref2;
+	}
 	
-	// copy constructor
-	Face(const Face& face){
+	// copy constructor ------------------------------------------------
+	Face(const Face& face){	// copy another instance
 
 		face_type = face.face_type;
 
@@ -137,7 +146,31 @@ struct Unit::Face{
 		ref_y = face.ref_y;
 		
 	}
+
+
+	Face(const Face* p){	// copy by pointer
+
+
+		face_type = p -> face_type;
+
+		hlevel = p -> hlevel;
+
+		porderx = p -> porderx;
+		pordery = p -> pordery;
+
+		key = p -> key;
+
+		rank = p -> rank;
+
+		ref_x = p -> ref_x;
+		ref_y = p -> ref_y;
+
+	}
+
+	//-------------------------------------------------------------------
+	
 };
+	
 
 
 #endif

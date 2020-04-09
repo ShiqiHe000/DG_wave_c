@@ -650,10 +650,7 @@ void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& ne
 
 		if(it_n != neighbours.end()){	// if find, stores
 			
-			Unit::Face obj = {it -> face_type, it -> hlevel, it -> porderx, it -> pordery, 
-						it -> key, it -> rank};
-				
-			local::Hash_elem[local_key] -> facen[facen].emplace_back(obj);
+			local::Hash_elem[local_key] -> facen[facen].emplace_back(it);
 
 			// update neighbours face info
 			if(it -> face_type == 'L'){	// only local element
@@ -673,11 +670,14 @@ void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& ne
 
 				}
 				// child info
-				Unit::Face obj2 = {'L', local::Hash_elem[local_key] -> index[2], 
-							local::Hash_elem[local_key] -> n, 
-							local::Hash_elem[local_key] -> m, 
-							local_key, mpi::rank};
-				local::Hash_elem[n_key] -> facen[n_dir].emplace_back(obj2);
+				local::Hash_elem[n_key] -> facen[n_dir].emplace_back('L', 
+									local::Hash_elem[local_key] -> index[2], 
+									local::Hash_elem[local_key] -> n, 
+									local::Hash_elem[local_key] -> m, 
+									local_key, mpi::rank
+									local::Hash_elem[local_key] -> ref_x,
+									local::Hash_elem[local_key] -> ref_y);
+
 			}
 			
 

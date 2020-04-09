@@ -5,6 +5,8 @@
 
 namespace Hash{
 
+	MPI_Datatype Facen_type;
+
 	MPI_Datatype Elem_type;
 
 	MPI_Datatype Face_type;
@@ -13,19 +15,60 @@ namespace Hash{
 // forward declaration-----------------------------------------
 void MPI_Elem_type();
 void MPI_Face_type();
-void MPI_Elem_type_new();
+void MPI_Facen_type();
 //--------------------------------------------------------------
 
 /// @brief 
 /// Construct data type to send the target element together.
 void Construct_data_type(){
 
-//	MPI_Elem_type();
-	MPI_Elem_type_new();
+	MPI_Facen_type();
+
+	MPI_Elem_type();
 
 	MPI_Face_type();
 
 }
+
+
+
+/// @brief
+/// Construct Face_type for sending info of element neighbours.  
+void MPI_Facen_type(){
+
+	int num = 3;
+
+	int elem_blocklength[num]{5, 2, 2};
+
+	MPI_Datatype array_of_types[num]{MPI_INT, MPI_DOUBLE, MPI_DOUBLE};
+	
+	MPI_Aint array_of_offsets[num];
+	MPI_Aint baseadd, add1, add2;
+	
+	std::vector<facen_pack> myface(1);
+
+	MPI_Get_address(&(myface[0].local_key), &baseadd);
+	MPI_Get_address(&(myface[0].ref_x.front()), &add1);
+	MPI_Get_address(&(myface[0].ref_y.front()), &add2);
+
+	array_of_offsets[0] = 0;
+	array_of_offsets[1] = add1 - baseadd;
+	array_of_offsets[2] = add2 - baseadd;
+
+	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Facen_type);	
+
+	// check that the extent is correct
+	MPI_Aint lb, extent;
+	MPI_Type_get_extent(Hash::Facen_type, &lb, &extent);	
+	if(extent != sizeof(myface[0])){
+		MPI_Datatype old = Hash::Facen_type;
+		MPI_Type_create_resized(old, 0, sizeof(myface[0]), &Hash::Facen_type);
+		MPI_Type_free(&old);
+	}
+	MPI_Type_commit(&Hash::Facen_type);
+}
+
+
 
 /// @brief
 /// Construct Face_type for sending info of element neighbours.  
@@ -63,7 +106,7 @@ void MPI_Face_type(){
 	MPI_Type_commit(&Hash::Face_type);
 }
 
-void MPI_Elem_type_new(){
+void MPI_Elem_type(){
 
 	int num = 5;
 
@@ -101,43 +144,10 @@ void MPI_Elem_type_new(){
 }
 
 /// @brief
-/// Construct Elem_type for sending info of element variables.  
-void MPI_Elem_type(){
-
-
-	int num = 7;	// number of primitive MPI datatype
-
-	// Number of elements in each block (array of integers)
-	int elem_blocklength[num]{1, 3, 1, 1, 2, 2, 1};
-	
-	// Byte displacement of each block (array of integers).
-	MPI_Aint array_of_offsets[num];
-	MPI_Aint intex, charex, doubleex;
-	MPI_Aint lb;
-	MPI_Type_get_extent(MPI_INT, &lb, &intex);
-	MPI_Type_get_extent(MPI_CHAR, &lb, &charex);
-	MPI_Type_get_extent(MPI_DOUBLE, &lb, &doubleex);
-
-	array_of_offsets[0] = (MPI_Aint) 0;
-	array_of_offsets[1] = array_of_offsets[0] + intex;
-	array_of_offsets[2] = array_of_offsets[1] + intex * 3;
-	array_of_offsets[3] = array_of_offsets[2] + charex;
-	array_of_offsets[4] = array_of_offsets[3] + intex;
-	array_of_offsets[5] = array_of_offsets[4] + doubleex * 2;
-	array_of_offsets[6] = array_of_offsets[5] + doubleex * 2;
-
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE, MPI_DOUBLE, MPI_INT};
-
-	// create and MPI datatype
-	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Elem_type);	
-	MPI_Type_commit(&Hash::Elem_type);
-
-
-}
-
-/// @brief
 /// Free up the derived data type. 
 void Free_type(){
+	MPI_Type_free(&Hash::Facen_type);	
+
 	MPI_Type_free(&Hash::Elem_type);	
 
 	MPI_Type_free(&Hash::Face_type);	

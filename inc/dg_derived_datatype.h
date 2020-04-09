@@ -2,7 +2,32 @@
 #define DG_DERIVED_DATA_TYPE_H
 
 #include <mpi.h>
-#include <stdio.h>
+#include <vector>
+
+struct facen_pack{
+
+	int local_key;	// neighbour element's key
+
+	int hlevel;
+
+	int porderx;
+	int pordery;
+
+	int mpi_length;
+
+	std::vector<double> ref_x;
+	std::vector<double> ref_y;
+
+	// default constructure
+	face_pack() : local_key{}, hlevel{}, porderx{}, pordery{}, mpi_length{}
+	{
+		ref_x = std::vector<double> (2);
+		ref_y = std::vector<double> (2);
+	}
+
+
+};
+
 
 /// @brief
 /// Pack all the element information together and send together.
@@ -29,7 +54,6 @@ struct info_pack{
 /// Variables without annotation refer to the same one as class Unit. 
 /// @param owners_key The key of the owner element.
 /// @param facei face direction (0, 1, 2, 3). 
-//#pragma pack(push, 1)
 struct face_pack{
 
 	int owners_key;	// the key of the owner element
@@ -49,9 +73,10 @@ struct face_pack{
 	int rank;
 
 };
-//#pragma pack(pop)
 
 namespace Hash{
+
+	extern MPI_Datatype Facen_type;
 
 	extern MPI_Datatype Elem_type;
 	

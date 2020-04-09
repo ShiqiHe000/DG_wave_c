@@ -59,8 +59,6 @@ void Driver_for_DG_approximation(){
 
 //		Simple_test(k);
 
-//	      	Clear_tables();
-
       	//	Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 
