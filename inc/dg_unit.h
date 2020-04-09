@@ -4,9 +4,21 @@
 #include <vector>
 #include <unordered_map>
 
-// forward declare
-struct Mortar;
-struct Face;	
+
+/// @brief
+/// Structure to deal with the mortar.
+struct Mortar{
+
+	int n_max;	// maximum poly order between left and right element
+	
+	int l_max;	// maximum h-refinement level between left and rigth elemnt. 
+
+	double a_l, a_r;	// offset of the mortar with respect to the larger element.
+	double b_l, b_r;	// scale of the mortar with respect to the larger element. 
+
+	std::vector<double> psi_l;	// L2 projection on the left interface of the mortar
+	std::vector<double> psi_r; 	// L2 projection on the right interface of the mortar
+};
 
 /// @brief
 /// Element unit. All the needed information is stored as a unit.
@@ -23,6 +35,7 @@ public:
 
 	int child_position{};	// ith-child
 	
+	struct Face;	
 	std::vector<std::vector<Face>> facen;	// a structure for the neighbour on each face, initialized in dg_unit.cpp
 
 	double xcoords[2]{0.0, 0.0};	// x coordinates
@@ -52,7 +65,7 @@ public:
 	bool coarsen = false; 
 
 	// mortar ---------------------------------------------
-	Mortar mortar();	
+	Mortar mortar;	// mortar struct instance	
 	//-----------------------------------------------------
 
 
@@ -69,20 +82,6 @@ public:
 		
 };
 
-/// @brief
-/// Structure to deal with the mortar.
-struct Mortar{
-
-	int n_max;	// maximum poly order between left and right element
-	
-	int l_max;	// maximum h-refinement level between left and rigth elemnt. 
-
-	double a_l, a_r;	// offset of the mortar with respect to the larger element.
-	double b_l, b_r;	// scale of the mortar with respect to the larger element. 
-
-	std::vector<double> psi_l;	// L2 projection on the left interface of the mortar
-	std::vector<double> psi_r; 	// L2 projection on the right interface of the mortar
-};
 
 /// @param face_type interface type of current direction.
 /// @param hlevel hlevel of neighbour element.

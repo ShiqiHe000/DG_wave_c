@@ -14,6 +14,7 @@
 void Numerical_flux_x(double t);
 void Numerical_flux_y(double t);
 void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);
+void Form_mortar_x(Unit* temp, int n_key);
 //------------------------------------------------------------------------
 
 
@@ -27,7 +28,7 @@ void Numerical_flux_x(double t){
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		int pordery = temp -> m;
-//		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
+		int size = dg_fun::num_of_equation * (pordery + 1);	// right now assume conforming interface
 
 		temp -> nflux_l = std::vector<double>(size);
 		temp -> nflux_r = std::vector<double>(size);
@@ -42,7 +43,12 @@ void Numerical_flux_x(double t){
 				
 				int n_key = it_face -> key;	// neighbour's key
 
-//				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
+				temp -> ghost[n_key] = std::vector<double> (size);	// store neighbour's solution in ghost
+
+				Form_mortar_x(temp, n_key);
+
+				// left element, form L2 projection matrix
+//				if(it_face -> hlevel == (temp -> mortar.l_max) && )
 
 				for(int s = 0; s <= pordery; ++s){
 
@@ -152,9 +158,10 @@ void Numerical_flux_x(double t){
 }
 
 
-
+/// @brief
+/// Form mortar structure for x direciton.
 /// @param temp pointer to the current element.
-/// @param 
+/// @param n_key neighbour's key.
 void Form_mortar_x(Unit* temp, int n_key){
 
 	temp -> mortar.n_max = std::max(local::Hash_elem[n_key] -> n, temp -> n);	// maximum poly order
