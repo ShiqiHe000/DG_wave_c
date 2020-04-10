@@ -3,6 +3,16 @@
 #include <vector>
 #include <iostream>
 
+// memeber function of struct facen_pack
+void facen_pack::Copy_ref(std::vector<double>& rx, std::vector<double>& ry){
+		
+	for(int i = 0; i < 2; ++i){
+
+		ref_x[i] = rx[i];
+		ref_y[i] = ry[i];
+	}
+}
+
 namespace Hash{
 
 	MPI_Datatype Facen_type;
@@ -48,8 +58,8 @@ void MPI_Facen_type(){
 	std::vector<facen_pack> myface(1);
 
 	MPI_Get_address(&(myface[0].local_key), &baseadd);
-	MPI_Get_address(&(myface[0].ref_x.front()), &add1);
-	MPI_Get_address(&(myface[0].ref_y.front()), &add2);
+	MPI_Get_address(&(myface[0].ref_x[0]), &add1);
+	MPI_Get_address(&(myface[0].ref_y[0]), &add2);
 
 	array_of_offsets[0] = 0;
 	array_of_offsets[1] = add1 - baseadd;

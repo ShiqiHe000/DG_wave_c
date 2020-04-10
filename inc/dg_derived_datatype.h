@@ -15,17 +15,11 @@ struct facen_pack{
 
 	int mpi_length;
 
-	std::vector<double> ref_x;
-	std::vector<double> ref_y;
+	double ref_x[2];
+	double ref_y[2];
 
-	// default constructure
-	facen_pack() : local_key{}, hlevel{}, porderx{}, pordery{}, mpi_length{}
-	{
-		ref_x = std::vector<double> (2);
-		ref_y = std::vector<double> (2);
-	}
-
-
+	// member function
+	void Copy_ref(std::vector<double>& rx, std::vector<double>& ry);
 };
 
 

@@ -110,7 +110,7 @@ struct Unit::Face{
 	std::vector<double> ref_y;
 
 
-	// default construtor
+	// default construtor1
 	Face() : hlevel{}, porderx{}, pordery{}, key{}, rank{}
 	{
 
@@ -119,7 +119,16 @@ struct Unit::Face{
 
 	}
 
-	// constructor
+	// constructor2
+	Face(char c, int h, int nx, int ny, int k, int r, double* ref1, double* ref2)
+		: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
+	{
+
+		ref_x = std::vector<double> {ref1[0], ref1[1]};
+		ref_y = std::vector<double> {ref2[0], ref2[1]};
+	}
+
+	// constructor3
 	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
 		: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
 	{
