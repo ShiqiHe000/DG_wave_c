@@ -222,6 +222,14 @@ void h_refinement(){
 					local::Hash_elem[key_p] -> n = temp -> n; // now assume four siblings share same n, m
 					local::Hash_elem[key_p] -> m = temp -> m; // now assume four siblings share same n, m
 
+
+					// element boundary in reference space
+					local::Hash_elem[key_p] -> ref_x[0] = local::Hash_elem[four_keys[0]] -> ref_x[0];
+					local::Hash_elem[key_p] -> ref_x[1] = local::Hash_elem[four_keys[1]] -> ref_x[1];
+
+					local::Hash_elem[key_p] -> ref_y[0] = local::Hash_elem[four_keys[0]] -> ref_y[0];
+					local::Hash_elem[key_p] -> ref_y[1] = local::Hash_elem[four_keys[3]] -> ref_y[1];
+
 					// adjust linked list
 					if(k == 0){	// first elem
 						local::head = local::Hash_elem[key_p];	
@@ -379,17 +387,18 @@ void Inherit_from_children(int c1, int c2, int p_key, int facen){
 
 	if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'B'){	// if on the physical boundary
 
-		local::Hash_elem[p_key] -> facen[facen].push_back({'B', 0, 0, 0, 0, 0});
+		local::Hash_elem[p_key] -> facen[facen].emplace_back();
+		local::Hash_elem[p_key] -> facen[facen].back().face_type = 'B';
 
 		return;
 	}
 
-	// if not physical boundary, then c1 and c2 must be facing same size neighbour or larger neighbour. 
+	// if not physical boundary. Compare children and their neighbour's size. 
 	// If same size, record both. If larger, then they are facing the same one, record one. 
 	int c_level = local::Hash_elem[c1] -> index[2];
 	int n_level = local::Hash_elem[c1] -> facen[facen].front().hlevel;
 
-	if(c_level > n_level){	// neighbour is larger. erase two children + insert parent
+	if(c_level > n_level){	// neighbour is larger than children. erase two children + insert parent
 
 		// copy the info
 		local::Hash_elem[p_key] -> facen[facen] = local::Hash_elem[c1] -> facen[facen];
@@ -401,7 +410,7 @@ void Inherit_from_children(int c1, int c2, int p_key, int facen){
 		}
 
 	}
-	else{	// neighbours are smaller or equaled in size. Erase children + insert parent.
+	else{	// neighbours are smaller or equaled in size (compare with children). Erase children + insert parent.
 
 		local::Hash_elem[p_key]	-> facen[facen] = local::Hash_elem[c1] -> facen[facen];
 
@@ -440,6 +449,9 @@ void Change_neighbour_coasen_case1(int c1, int facen, int p_key){
 			local::Hash_elem[n_key] -> facen[n_dir].front().pordery = local::Hash_elem[p_key] -> m;
 			
 			local::Hash_elem[n_key] -> facen[n_dir].front().key = p_key;
+
+			local::Hash_elem[n_key] -> facen[n_dir].front().ref_x = local::Hash_elem[p_key] -> ref_x;
+			local::Hash_elem[n_key] -> facen[n_dir].front().ref_y = local::Hash_elem[p_key] -> ref_y;
 			
 		}
 
@@ -476,10 +488,10 @@ void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key){
 	}
 
 	// append parent's info at the end
-	Unit::Face obj = {'L', local::Hash_elem[p_key] -> index[2], local::Hash_elem[p_key] -> n, 
-			local::Hash_elem[p_key] -> m, p_key, mpi::rank};
-	
-	local::Hash_elem[n_key] -> facen[n_dir].emplace_back(obj);
+	local::Hash_elem[n_key] -> facen[n_dir].emplace_back('L', local::Hash_elem[p_key] -> index[2], 
+								local::Hash_elem[p_key] -> n, local::Hash_elem[p_key] -> m, 
+								p_key, mpi::rank, local::Hash_elem[p_key] -> ref_x, 
+								local::Hash_elem[p_key] -> ref_y);
 }
 /// @brief
 /// Generate parent relative position base on the position of the first child.
@@ -674,7 +686,7 @@ void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& ne
 									local::Hash_elem[local_key] -> index[2], 
 									local::Hash_elem[local_key] -> n, 
 									local::Hash_elem[local_key] -> m, 
-									local_key, mpi::rank
+									local_key, mpi::rank,
 									local::Hash_elem[local_key] -> ref_x,
 									local::Hash_elem[local_key] -> ref_y);
 

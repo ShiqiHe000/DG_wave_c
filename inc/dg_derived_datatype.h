@@ -19,7 +19,7 @@ struct facen_pack{
 	std::vector<double> ref_y;
 
 	// default constructure
-	face_pack() : local_key{}, hlevel{}, porderx{}, pordery{}, mpi_length{}
+	facen_pack() : local_key{}, hlevel{}, porderx{}, pordery{}, mpi_length{}
 	{
 		ref_x = std::vector<double> (2);
 		ref_y = std::vector<double> (2);

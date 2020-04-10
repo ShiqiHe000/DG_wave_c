@@ -85,7 +85,7 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 	if(J == n && level == l_max){	// direct copy
 
 		// U = psi
-		nflux_elem = uflux_mortar;	
+		nflux_elem = nflux_mortar;	
 	}
 	else{
 

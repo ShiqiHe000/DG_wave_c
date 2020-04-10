@@ -15,7 +15,7 @@
 void Numerical_flux_x(double t);
 void Numerical_flux_y(double t);
 void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);
-void Form_mortar_x(Unit* temp, int n_key);
+void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face);
 //------------------------------------------------------------------------
 
 
@@ -37,8 +37,6 @@ void Numerical_flux_x(double t){
 		// compute numerical flux on the south interface
 		for(auto it_face = temp -> facen[0].begin(); it_face != temp -> facen[0].end(); ++it_face){
 
-			// index for three current points (three equations).
-//			std::vector<int> index{0, pordery + 1, (pordery + 1) * 2};	
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
@@ -48,7 +46,7 @@ void Numerical_flux_x(double t){
 
 				temp -> ghost[n_key] = std::vector<double> (size_n);	// store neighbour's solution in ghost
 
-				Form_mortar_x(temp, n_key);	// allocate space on the mortar
+				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
@@ -71,7 +69,7 @@ void Numerical_flux_x(double t){
 					//now functionally conforming interface==========================================
 					// Riemann solver
 					Riemann_solver_x(temp -> mortar.psi_l, temp -> mortar.psi_r, 
-							temp -> mortar.nlux, -1, index);
+							temp -> mortar.nflux, -1, index);
 					//=================================================================================
 
 					std::transform(index.begin(), index.end(), index.begin(), 
@@ -91,8 +89,6 @@ void Numerical_flux_x(double t){
 							temp -> mortar.a_l, temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux);
 
-				// add up the numerical flux 
-//				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
 
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
@@ -125,6 +121,24 @@ void Numerical_flux_x(double t){
 			else{	// mpi boundary
 
 				int n_key = it_face -> key;
+				
+				Form_mortar_x(temp, it_face); // allocate space on the mortar
+
+				// left element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+					 		temp -> ghost[n_key], 
+							temp -> mortar.psi_l);
+
+				// right element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+					 		temp -> solution_int_l, 
+							temp -> mortar.psi_r);
+
+				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
 
@@ -132,26 +146,36 @@ void Numerical_flux_x(double t){
 					// Riemann solver, 
 					// use ghost layer to store the nflux_l, so that we can send the corresponding one
 					// to its neighbour. 
-					Riemann_solver_x((temp -> ghost[n_key]), temp -> solution_int_l, 
-							temp -> ghost[n_key], -1, index);
+					Riemann_solver_x(temp -> mortar.psi_l, temp -> mortar.psi_r, 
+							temp -> mortar.nflux, -1, index);
 					//---------------------------------------------------------------------------------
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}
 
-				// add up the numerical flux 
-				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
+				// L2 project back to element, right element
+				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux);
+
+				// L2 projection from mortar to left element	
+				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
+				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
+
+				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux);
+
+//				// add up the numerical flux 
+//				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
 
 
 			}
 		}
 
-//		if((temp -> ghost).size() > 0){	// if this element has remote neighbours, clear the ghost layer
-//
-//			(temp -> ghost).clear();
-//
-//		}
 
 		// compute numerical flux on the north interface (only elements face the physical boundary)
 		auto it_face = temp -> facen[1].begin();
@@ -189,20 +213,19 @@ void Numerical_flux_x(double t){
 
 /// @brief
 /// Form mortar structure for x direciton.
-/// @param temp pointer to the current element.
-/// @param n_key neighbour's key.
-void Form_mortar_x(Unit* temp, int n_key){
+/// @param temp pointer to the current element (right element).
+/// @param it_face iterator points to the neighbour info in facen (left element).
+void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 
 	// first clear the former info
 	temp -> mortar = {}; 	// reset
 
+	temp -> mortar.n_max = std::max(it_face -> pordery, temp -> m);	// maximum poly order
 
-	temp -> mortar.n_max = std::max(local::Hash_elem[n_key] -> m, temp -> m);	// maximum poly order
-
-	temp -> mortar.l_max = std::max(local::Hash_elem[n_key] -> index[2], temp -> index[2]);	// maximum level
+	temp -> mortar.l_max = std::max(it_face -> hlevel, temp -> index[2]);	// maximum level
 
 	// left element coordinate mapping
-	if((local::Hash_elem[n_key] -> index[2]) == (temp -> mortar.l_max)){	// left element is the smallest
+	if((it_face -> hlevel) == (temp -> mortar.l_max)){	// left element is the smallest
 
 		// smallest element's coordinate does not need to scale
 		temp -> mortar.a_l = 0.0;
@@ -214,8 +237,8 @@ void Form_mortar_x(Unit* temp, int n_key){
 
 		double q = 2.0 / ((temp -> ref_x[1] - temp -> ref_x[0]));
 
-		double s_d = ((local::Hash_elem[n_key] -> ref_x[0]) + p) * q;
-		double s_u = ((local::Hash_elem[n_key] -> ref_x[1]) + p) * q;
+		double s_d = ((it_face -> ref_x[0]) + p) * q;
+		double s_u = ((it_face -> ref_x[1]) + p) * q;
 
 		temp -> mortar.a_l = (s_u + s_d) / 2.0;
 		temp -> mortar.b_l = s_u - (temp -> mortar.a_l);
@@ -230,9 +253,9 @@ void Form_mortar_x(Unit* temp, int n_key){
 	}
 	else{	// left element is smaller
 
-		double p = - ((local::Hash_elem[n_key] -> ref_x[0]) + (local::Hash_elem[n_key] -> ref_x[1])) / 2.0;
+		double p = - ((it_face -> ref_x[0]) + (it_face -> ref_x[1])) / 2.0;
 
-		double q = 2.0 / (local::Hash_elem[n_key] -> ref_x[1] - local::Hash_elem[n_key] -> ref_x[0]);
+		double q = 2.0 / (it_face -> ref_x[1] - it_face -> ref_x[0]);
 
 		double s_d = ((temp -> ref_x[0]) + p) * q;
 		double s_u = ((temp -> ref_x[1]) + p) * q;
@@ -250,6 +273,67 @@ void Form_mortar_x(Unit* temp, int n_key){
 	temp -> mortar.nflux = std::vector<double>(size);
 }
 
+/// @brief
+/// Form mortar structure for y direciton.
+/// @param temp pointer to the current element (right element).
+/// @param it_face iterator points to the neighbour info in facen (left element).
+void Form_mortar_y(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
+
+	// first clear the former info
+	temp -> mortar = {}; 	// reset
+
+	temp -> mortar.n_max = std::max(it_face -> porderx, temp -> n);	// maximum poly order
+
+	temp -> mortar.l_max = std::max(it_face -> hlevel, temp -> index[2]);	// maximum level
+
+	// left element coordinate mapping
+	if((it_face -> hlevel) == (temp -> mortar.l_max)){	// left element is the smallest
+
+		// smallest element's coordinate does not need to scale
+		temp -> mortar.a_l = 0.0;
+		temp -> mortar.b_l = 1.0;	
+	}
+	else{	// right element is smaller
+
+		double p = - ((temp -> ref_y[0] + (temp -> ref_y[1]))) / 2.0;
+
+		double q = 2.0 / ((temp -> ref_y[1] - temp -> ref_y[0]));
+
+		double s_d = ((it_face -> ref_y[0]) + p) * q;
+		double s_u = ((it_face -> ref_y[1]) + p) * q;
+
+		temp -> mortar.a_l = (s_u + s_d) / 2.0;
+		temp -> mortar.b_l = s_u - (temp -> mortar.a_l);
+	}
+
+	// right element coordinate mapping
+	if((temp -> index[2]) == (temp -> mortar.l_max)){	// right element is the smallest
+
+		temp -> mortar.a_r = 0.0;
+		temp -> mortar.b_r = 1.0;	
+		
+	}
+	else{	// left element is smaller
+
+		double p = - ((it_face -> ref_y[0]) + (it_face -> ref_y[1])) / 2.0;
+
+		double q = 2.0 / (it_face -> ref_y[1] - it_face -> ref_y[0]);
+
+		double s_d = ((temp -> ref_y[0]) + p) * q;
+		double s_u = ((temp -> ref_y[1]) + p) * q;
+
+		temp -> mortar.a_r = (s_u + s_d) / 2.0;
+		temp -> mortar.b_r = s_u - (temp -> mortar.a_r);
+
+	}
+
+
+	// allocate the space for psi
+	int size = (temp -> mortar.n_max + 1) * dg_fun::num_of_equation; 	// 1d array for mortar
+	temp -> mortar.psi_l = std::vector<double>(size);
+	temp -> mortar.psi_r = std::vector<double>(size);
+	temp -> mortar.nflux = std::vector<double>(size);
+}
 
 /// @brief
 /// Compute the sum of two vectors a and b, and store the result in vector b. 
@@ -281,23 +365,57 @@ void Numerical_flux_y(double t){
 		// compute numerical flux on the west interface
 		for(auto it_face = temp -> facen[2].begin(); it_face != temp -> facen[2].end(); ++it_face){
 
-			// index for three current points (three equations).
-			std::vector<int> index{0, porderx + 1, (porderx + 1) * 2};	
+//			// index for three current points (three equations).
+//			std::vector<int> index{0, porderx + 1, (porderx + 1) * 2};	
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
 				int n_key = it_face -> key;	// neighbour's key
 
+				int size_n = (it_face -> pordery + 1) * dg_fun::num_of_equation; // left element interface
+
+				temp -> ghost[n_key] = std::vector<double> (size_n);	// store neighbour's solution in ghost
+
+				Form_mortar_y(temp, it_face); // allocate space on the mortar
+
+				// left element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+					 		local::Hash_elem[n_key] -> solution_int_r, 
+							temp -> mortar.psi_l);
+
+				// right element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+					 		temp -> solution_int_l, 
+							temp -> mortar.psi_r);
+			
+				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
+
 				for(int s = 0; s <= porderx; ++s){
 
 					// Riemann solver
-					Riemann_solver_y(local::Hash_elem[n_key] -> solution_int_r, temp -> solution_int_l, 
-							temp -> nflux_l, -1, index);
-
+					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
+							temp -> mortar.nflux, -1, index);
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}	
+
+				// L2 project back to element, right element
+				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux);
+
+				// L2 projection from mortar to left element	
+				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux);
+
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
 
@@ -324,23 +442,50 @@ void Numerical_flux_y(double t){
 
 				int n_key = it_face -> key;
 
+				Form_mortar_y(temp, it_face); // allocate space on the mortar
+
+				// left element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+					 		temp -> ghost[n_key], 
+							temp -> mortar.psi_l);
+
+				// right element, L2 projection
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+					 		temp -> solution_int_l, 
+							temp -> mortar.psi_r);
+
+				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
+
 				for(int s = 0; s <= porderx; ++s){
 
 					// Riemann solver
-					Riemann_solver_y((temp -> ghost[n_key]), temp -> solution_int_l, 
+					Riemann_solver_y((temp -> mortar.psi_l, temp -> mortar.psi_r, 
 							temp -> nflux_l, -1, index);
 					
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}
+
+				// L2 project back to element, right element
+				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
+							temp -> index[2], temp -> mortar.l_max, 
+							temp -> mortar.a_r, temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux);
+
+				// L2 projection from mortar to left element	
+				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
+				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
+
+				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
+							it_face -> hlevel, temp -> mortar.l_max, 
+							temp -> mortar.a_l, temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux);
 			}
-		}
-
-		if((temp -> ghost).size() > 0){	// if this element has remote neighbours, clear the ghost layer
-
-			(temp -> ghost).clear();
-
 		}
 
 		// compute numerical flux on the east interface (only elements face the physical boundary)

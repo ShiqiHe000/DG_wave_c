@@ -8,7 +8,7 @@
 #include <cassert>
 #include "dg_message_exchange.h" 
 #include "dg_param.h"
-#include "dg_unary_minus.h"
+#include "dg_vector_operation.h"
 
 // forward declaration ----------------------------------------------------------------
 
@@ -148,12 +148,12 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 				
 				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 				
-					int count = (temp -> nflux_l).size();
+					int n_key = it_face -> key;
 
-					// future interpolate to neighbour's porder
+					int count = (temp -> ghost[n_key]).size();
 
 					// tag == sender's key
-					MPI_Send(&(temp -> nflux_l)[0], count, MPI_DOUBLE, 
+					MPI_Send(&(temp -> ghost[n_key])[0], count, MPI_DOUBLE, 
 							target_rank, local_key, MPI_COMM_WORLD);
 	
 				}
@@ -168,6 +168,8 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 	Unit* temp = local::head;
 	for(int k = 0; k < local::local_elem_num; ++k){
 
+		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+
 		// loop north interface
 		for(auto it_face = temp -> facen[face_r].begin(); 
 			it_face != temp -> facen[face_r].end(); ++it_face){
@@ -176,19 +178,23 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 			if(it_face -> face_type == 'L'){	// local neighbour
 
 				int n_key = it_face -> key;
-				// numerical flux == - neighbours numerical flux
-				Unary_minus(local::Hash_elem[n_key] -> nflux_l, temp -> nflux_r);				
+
+				// numerical flux -= neighbours numerical flux
+				Vector_minus(local::Hash_elem[n_key] -> ghost[local_key], temp -> nflux_r);
 
 			}
 			else if(it_face -> face_type == 'M'){	// remote neighbour
 		
 				int count = (temp -> nflux_r).size();
+
+				std::vector<double> inter(count); // intermediate vector to store the recv info
+
 				MPI_Status status;
 
-				MPI_Recv(&(temp -> nflux_r)[0], count, MPI_DOUBLE, it_face -> rank,
+				MPI_Recv(&inter[0], count, MPI_DOUBLE, it_face -> rank,
 					 it_face -> key, MPI_COMM_WORLD, &status);	
 				
-				Unary_minus(temp -> nflux_r, temp -> nflux_r);				
+				Vector_minus(inter, temp -> nflux_r);
 			}	// 'B' skip
 		}
 

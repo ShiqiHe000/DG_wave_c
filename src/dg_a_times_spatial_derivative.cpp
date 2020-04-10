@@ -64,6 +64,7 @@ void A_times_spatial_derivative_x(){
 		(temp -> solution_int_r).clear();
 		(temp -> nflux_l).clear();
 		(temp -> nflux_r).clear();
+		(temp -> ghost).clear();
 
 		temp = temp -> next;
 	}
@@ -118,6 +119,7 @@ void A_times_spatial_derivative_y(){
 		(temp -> solution_int_r).clear();
 		(temp -> nflux_l).clear();
 		(temp -> nflux_r).clear();
+		(temp -> ghost).clear();
 
 		temp = temp -> next;
 	}

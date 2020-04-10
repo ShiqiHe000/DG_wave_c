@@ -121,7 +121,7 @@ struct Unit::Face{
 
 	// constructor
 	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
-		: face_typy(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
+		: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
 	{
 
 		ref_x = ref1;
@@ -148,7 +148,7 @@ struct Unit::Face{
 	}
 
 
-	Face(const Face* p){	// copy by pointer
+	Face(const std::vector<Face>::iterator p){	// copy by pointer
 
 
 		face_type = p -> face_type;
