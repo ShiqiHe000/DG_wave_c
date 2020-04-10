@@ -845,9 +845,6 @@ void Two_siblings(int new_key, int position){
 			local::Hash_elem[new_key] -> facen[i][0].porderx = local::Hash_elem[new_key] -> n;
 			local::Hash_elem[new_key] -> facen[i][0].pordery = local::Hash_elem[new_key] -> m;
 			local::Hash_elem[new_key] -> facen[i][0].rank = mpi::rank;
-			// conforming interface between siblings
-			local::Hash_elem[new_key] -> facen[i][0].ref_x = local::Hash_elem[new_key] -> ref_x;
-			local::Hash_elem[new_key] -> facen[i][0].ref_y = local::Hash_elem[new_key] -> ref_y;
 			
 			// key
 			if(i == 0){	// south
@@ -856,31 +853,61 @@ void Two_siblings(int new_key, int position){
 										local::Hash_elem[new_key] -> index[0] - 1, 
 											local::Hash_elem[new_key] -> index[1], 
 											local::Hash_elem[new_key] -> index[2]);
+
+				double x0 = local::Hash_elem[new_key] -> ref_x[0];
+				double x1 = local::Hash_elem[new_key] -> ref_x[1];
+				double del_x = x1 -x0;
+				
+				local::Hash_elem[new_key] -> facen[i][0].ref_x[0] = x0 - del_x;
+				local::Hash_elem[new_key] -> facen[i][0].ref_x[1] = x0;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y = local::Hash_elem[new_key] -> ref_y;
 		
 
 			}
 			else if(i == 1){	// north
 				
-				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0] + 1, 
+				local::Hash_elem[new_key] -> facen[i][0].key = 
+									Get_key_fun(local::Hash_elem[new_key] -> index[0] + 1, 
 											local::Hash_elem[new_key] -> index[1], 
 											local::Hash_elem[new_key] -> index[2]);
 		
+				double x0 = local::Hash_elem[new_key] -> ref_x[0];
+				double x1 = local::Hash_elem[new_key] -> ref_x[1];
+				double del_x = x1 - x0;
+				
+				local::Hash_elem[new_key] -> facen[i][0].ref_x[0] = x1;
+				local::Hash_elem[new_key] -> facen[i][0].ref_x[1] = x1 + del_x;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y = local::Hash_elem[new_key] -> ref_y;
 
 			}
 			else if(i == 2){	// west
 				
-				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0], 
-											local::Hash_elem[new_key] -> index[1] - 1, 
-											local::Hash_elem[new_key] -> index[2]);
+				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0],
+										local::Hash_elem[new_key] -> index[1] - 1, 
+										local::Hash_elem[new_key] -> index[2]);
 		
+				double y0 = local::Hash_elem[new_key] -> ref_y[0];
+				double y1 = local::Hash_elem[new_key] -> ref_y[1];
+				double del_y = y1 - y0;
+				
+				local::Hash_elem[new_key] -> facen[i][0].ref_x = local::Hash_elem[new_key] -> ref_x;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y[0] = y0 - del_y;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y[1] = y0;
 
 			}
 			else{	// east
 				
-				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0], 
-											local::Hash_elem[new_key] -> index[1] + 1, 
-											local::Hash_elem[new_key] -> index[2]);
+				local::Hash_elem[new_key] -> facen[i][0].key = Get_key_fun(local::Hash_elem[new_key] -> index[0],
+										local::Hash_elem[new_key] -> index[1] + 1, 
+										local::Hash_elem[new_key] -> index[2]);
 		
+				double y0 = local::Hash_elem[new_key] -> ref_y[0];
+				double y1 = local::Hash_elem[new_key] -> ref_y[1];
+				double del_y = y1 - y0;
+				
+				local::Hash_elem[new_key] -> facen[i][0].ref_x = local::Hash_elem[new_key] -> ref_x;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y[0] = y1;
+				local::Hash_elem[new_key] -> facen[i][0].ref_y[1] = y1 + del_y;
 
 			}
 		}

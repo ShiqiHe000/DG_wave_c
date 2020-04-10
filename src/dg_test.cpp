@@ -148,7 +148,10 @@ void Write_faces(){
 				
 				// rank
 				myfile << "rank: " << v.rank << "\n";
-	
+				
+				// ref
+				myfile << "ref_x: " << v.ref_x[0] << " "<< v.ref_x[1] << "\n";
+				myfile << "ref_y: " << v.ref_y[0] << " "<< v.ref_y[1] << "\n";
 			}
 	
 	
