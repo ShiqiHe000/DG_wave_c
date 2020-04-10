@@ -28,7 +28,7 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces, 
 				std::unordered_map<int, std::vector<int>>& neighbours_south);
 
-void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
+void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours);
 
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
@@ -271,7 +271,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 /// @param num1 recieved element number * 5.
 /// @param target_rank The rank number of the info sender.
 /// @param neighbours possible neighbours hash table. 
-void Update_hash(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
+void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
 			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
 	
 	for(auto it = table[target_rank].begin(); it != table[target_rank].end(); ++it){

@@ -2,6 +2,7 @@
 #include "dg_vector_operation.h"
 #include <cassert>
 #include <algorithm>
+#include <functional>
 
 /// @brief
 /// Vector b = - vector a (same size)
@@ -23,5 +24,5 @@ void Vector_minus(std::vector<double>& a, std::vector<double>& b){
 
 	assert(a.size() == b.size() && "The size of the two vector should be equal. ");
 
-	std::transform(b.begin(), b.end(), a.begin(), b.begin(), std::minus<double> ());
+	std::transform(b.begin(), b.end(), a.begin(), b.begin(), std::minus<double>());
 }

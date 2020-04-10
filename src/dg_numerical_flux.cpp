@@ -97,6 +97,8 @@ void Numerical_flux_x(double t){
 
 				double del_y = ((temp -> ycoords[1]) - (temp -> ycoords[0]));
 
+				std::vector<int> index{0, (pordery + 1), (pordery + 1) * 2};	
+
 				for(int s = 0; s <= pordery; ++s){
 					// map to physical plane
 					double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
@@ -423,6 +425,8 @@ void Numerical_flux_y(double t){
 
 				double del_x = ((temp -> xcoords[1]) - (temp -> xcoords[0]));
 
+				std::vector<int> index{0, (porderx + 1), (porderx + 1) * 2};	
+
 				for(int s = 0; s <= porderx; ++s){
 					// map to physical plane
 					double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
@@ -463,9 +467,8 @@ void Numerical_flux_y(double t){
 				for(int s = 0; s <= porderx; ++s){
 
 					// Riemann solver
-					Riemann_solver_y((temp -> mortar.psi_l, temp -> mortar.psi_r, 
+					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
 							temp -> nflux_l, -1, index);
-					
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1

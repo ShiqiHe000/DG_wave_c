@@ -9,6 +9,7 @@
 #include "dg_message_exchange.h" 
 #include "dg_param.h"
 #include "dg_vector_operation.h"
+#include "dg_cantor_pairing.h"
 
 // forward declaration ----------------------------------------------------------------
 
