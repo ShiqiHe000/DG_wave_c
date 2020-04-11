@@ -6,6 +6,7 @@
 #include "dg_basis.h"
 #include "dg_nodal_2d_storage.h"
 #include "dg_single_index.h"
+#include <iostream>
 
 /// @brief
 /// Use Lagrange interpolants to obtain the solution on the element left and right boundaries. X direction.
@@ -36,6 +37,16 @@ void Construct_interface_x(Unit* temp){
 			}
 			temp -> solution_int_l[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
 			temp -> solution_int_r[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
+
+//if(mpi::rank == 3){
+//
+//	if(equ == 1){
+//		std::cout<< "j = "<< j << " nodei " << now << " " << temp -> solution_int_l[now] << " "
+//				<< temp -> solution_int_r[now] << "\n";
+//	}
+//
+//}
+
 			++now;	
 		}
 

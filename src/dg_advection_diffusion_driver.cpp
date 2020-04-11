@@ -46,9 +46,8 @@ void Driver_for_DG_approximation(){
 	for(int k = 0; k < dg_time::nt; ++k){
 
 		Adapt(k);
-//std::c//out<< "rank " << mpi::rank << "\n";
 
-	//	DG_step_by_RK3(tn, delta_t);
+		DG_step_by_RK3(tn, delta_t);
 
 		Write_faces_all();
      		Serial_io(tn);		

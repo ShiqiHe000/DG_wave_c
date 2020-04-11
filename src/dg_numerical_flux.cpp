@@ -10,12 +10,15 @@
 #include "dg_numerical_flux.h"
 #include <functional>	// std::plus
 #include "dg_mortar_construction.h"
+#include <iostream>	// test
 
 // forward declaration-----------------------------------------------------
 void Numerical_flux_x(double t);
 void Numerical_flux_y(double t);
 void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);
 void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face);
+void Form_mortar_y(Unit* temp, const std::vector<Unit::Face>::iterator it_face);
+void Gen_a_and_b(double zd, double zu, double sd, double su, double& a, double& b);
 //------------------------------------------------------------------------
 
 
@@ -133,6 +136,17 @@ void Numerical_flux_x(double t){
 					 		temp -> ghost[n_key], 
 							temp -> mortar.psi_l);
 
+//if(mpi::rank == 1){
+//
+//	std::cout << "neighbour "<< it_face -> key << "\n";
+//	for(auto& psi : temp -> mortar.psi_l){
+//
+//		std::cout<< psi << " ";
+//
+//	}
+//	std::cout << "\n";
+//
+//}
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
 							temp -> index[2], temp -> mortar.l_max, 
@@ -140,6 +154,18 @@ void Numerical_flux_x(double t){
 					 		temp -> solution_int_l, 
 							temp -> mortar.psi_r);
 
+if(mpi::rank == 1){
+
+	std::cout << "neighbour "<< it_face -> key << "\n";
+	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+	for(auto& psi : temp -> mortar.psi_r){
+
+		std::cout<< psi << " ";
+
+	}
+	std::cout << "\n";
+
+}
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
@@ -226,24 +252,26 @@ void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 
 	temp -> mortar.l_max = std::max(it_face -> hlevel, temp -> index[2]);	// maximum level
 
+	double zd, zu;	// mortar coord
+
 	// left element coordinate mapping
 	if((it_face -> hlevel) == (temp -> mortar.l_max)){	// left element is the smallest
 
 		// smallest element's coordinate does not need to scale
 		temp -> mortar.a_l = 0.0;
 		temp -> mortar.b_l = 1.0;	
+
+		zd = it_face -> ref_y[0];
+		zu = it_face -> ref_y[1];
+
 	}
 	else{	// right element is smaller
 
-		double p = - ((temp -> ref_x[0] + (temp -> ref_x[1]))) / 2.0;
+		zd = temp -> ref_y[0];
+		zu = temp -> ref_y[1];
 
-		double q = 2.0 / ((temp -> ref_x[1] - temp -> ref_x[0]));
-
-		double s_d = ((it_face -> ref_x[0]) + p) * q;
-		double s_u = ((it_face -> ref_x[1]) + p) * q;
-
-		temp -> mortar.a_l = (s_u + s_d) / 2.0;
-		temp -> mortar.b_l = s_u - (temp -> mortar.a_l);
+		Gen_a_and_b(zd, zu, it_face -> ref_y[0], it_face -> ref_y[1], temp -> mortar.a_l, temp -> mortar.b_l);
+	
 	}
 
 	// right element coordinate mapping
@@ -255,15 +283,7 @@ void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 	}
 	else{	// left element is smaller
 
-		double p = - ((it_face -> ref_x[0]) + (it_face -> ref_x[1])) / 2.0;
-
-		double q = 2.0 / (it_face -> ref_x[1] - it_face -> ref_x[0]);
-
-		double s_d = ((temp -> ref_x[0]) + p) * q;
-		double s_u = ((temp -> ref_x[1]) + p) * q;
-
-		temp -> mortar.a_r = (s_u + s_d) / 2.0;
-		temp -> mortar.b_r = s_u - (temp -> mortar.a_r);
+		Gen_a_and_b(zd, zu, temp -> ref_y[0], temp -> ref_y[1], temp -> mortar.a_r, temp -> mortar.b_r);
 
 	}
 
@@ -274,6 +294,23 @@ void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 	temp -> mortar.psi_r = std::vector<double>(size);
 	temp -> mortar.nflux = std::vector<double>(size);
 }
+
+/// @brief
+/// Generate the offset a and scaling coefficient b.
+/// @param zd lower boundary of the mortar element.
+/// @param zu Upper boundary of the mortar element.
+/// @param sd Upper boundary of the actual element.
+/// @param su Upper boundary of the actual element.
+/// @param a offset a.
+/// @param b scaling ceofficient b. 
+void Gen_a_and_b(double zd, double zu, double sd, double su, double& a, double& b){
+
+	b = (sd - su) / (zd - zu);
+
+	a = sd - zd * b;
+
+}
+
 
 /// @brief
 /// Form mortar structure for y direciton.
@@ -288,24 +325,23 @@ void Form_mortar_y(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 
 	temp -> mortar.l_max = std::max(it_face -> hlevel, temp -> index[2]);	// maximum level
 
+	double zd, zu;
+	
 	// left element coordinate mapping
 	if((it_face -> hlevel) == (temp -> mortar.l_max)){	// left element is the smallest
 
 		// smallest element's coordinate does not need to scale
 		temp -> mortar.a_l = 0.0;
 		temp -> mortar.b_l = 1.0;	
+
+		zd = it_face -> ref_x[0];
+		zu = it_face -> ref_x[1];
 	}
 	else{	// right element is smaller
+		zd = temp -> ref_x[0];
+		zu = temp -> ref_x[1];
 
-		double p = - ((temp -> ref_y[0] + (temp -> ref_y[1]))) / 2.0;
-
-		double q = 2.0 / ((temp -> ref_y[1] - temp -> ref_y[0]));
-
-		double s_d = ((it_face -> ref_y[0]) + p) * q;
-		double s_u = ((it_face -> ref_y[1]) + p) * q;
-
-		temp -> mortar.a_l = (s_u + s_d) / 2.0;
-		temp -> mortar.b_l = s_u - (temp -> mortar.a_l);
+		Gen_a_and_b(zd, zu, it_face -> ref_x[0], it_face -> ref_x[1], temp -> mortar.a_l, temp -> mortar.b_l);
 	}
 
 	// right element coordinate mapping
@@ -317,16 +353,7 @@ void Form_mortar_y(Unit* temp, const std::vector<Unit::Face>::iterator it_face){
 	}
 	else{	// left element is smaller
 
-		double p = - ((it_face -> ref_y[0]) + (it_face -> ref_y[1])) / 2.0;
-
-		double q = 2.0 / (it_face -> ref_y[1] - it_face -> ref_y[0]);
-
-		double s_d = ((temp -> ref_y[0]) + p) * q;
-		double s_u = ((temp -> ref_y[1]) + p) * q;
-
-		temp -> mortar.a_r = (s_u + s_d) / 2.0;
-		temp -> mortar.b_r = s_u - (temp -> mortar.a_r);
-
+		Gen_a_and_b(zd, zu, temp -> ref_x[0], temp -> ref_x[1], temp -> mortar.a_r, temp -> mortar.b_r);
 	}
 
 
