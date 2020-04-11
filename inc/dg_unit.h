@@ -111,71 +111,18 @@ struct Unit::Face{
 
 
 	// default construtor1
-	Face() : hlevel{}, porderx{}, pordery{}, key{}, rank{}
-	{
-
-		ref_x = std::vector<double> {-1.0, 1.0};
-		ref_y = std::vector<double> {-1.0, 1.0};
-
-	}
+	Face(); 
 
 	// constructor2
-	Face(char c, int h, int nx, int ny, int k, int r, double* ref1, double* ref2)
-		: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
-	{
-
-		ref_x = std::vector<double> {ref1[0], ref1[1]};
-		ref_y = std::vector<double> {ref2[0], ref2[1]};
-	}
+	Face(char c, int h, int nx, int ny, int k, int r, double* ref1, double* ref2);
 
 	// constructor3
-	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
-		: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
-	{
-
-		ref_x = ref1;
-		ref_y = ref2;
-	}
+	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2);
 	
 	// copy constructor ------------------------------------------------
-	Face(const Face& face){	// copy another instance
+	Face(const Face& face);	// copy another instance
 
-		face_type = face.face_type;
-
-		hlevel = face.hlevel;
-
-		porderx = face.porderx;
-		pordery = face.pordery;
-
-		key = face.key;
-
-		rank = face.rank;
-
-		ref_x = face.ref_x;
-		ref_y = face.ref_y;
-		
-	}
-
-
-	Face(const std::vector<Face>::iterator p){	// copy by pointer
-
-
-		face_type = p -> face_type;
-
-		hlevel = p -> hlevel;
-
-		porderx = p -> porderx;
-		pordery = p -> pordery;
-
-		key = p -> key;
-
-		rank = p -> rank;
-
-		ref_x = p -> ref_x;
-		ref_y = p -> ref_y;
-
-	}
-
+	Face(const std::vector<Face>::iterator p);	// copy by pointer
 	//-------------------------------------------------------------------
 	
 };
