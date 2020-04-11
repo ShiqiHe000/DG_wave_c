@@ -74,7 +74,7 @@ void Write_mesh(double t, int pre_elem){
 
 		// headers
 		myfile<< "TITLE = \"MESH AND SOLUTIONS\" \n";
-		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"KEY\", \"PRESSURE\", \n";
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"KEY\", \"PRESSURE\", \"U\", \"V\",\n";
 		
 	}
 	else{
@@ -106,22 +106,22 @@ void Write_mesh(double t, int pre_elem){
 
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
 			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< key_now 
-			<< "  " << four[0][0] <<"\n";
+			<< "  " << four[0][0]<< "  " << four[1][0] << "  "<< four[2][0] <<"\n";
 
 
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
 			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<< key_now
-			<< "  " << four[0][1] <<"\n";
+			<< "  " << four[0][1] <<"  " << four[1][1] <<"  "<< four[2][1]<<"\n";
 
 
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
 			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<<key_now 
-			<< "  " << four[0][2] <<"\n";
+			<< "  " << four[0][2] << "  "<< four[1][2] << "  "<< four[2][2]<<"\n";
 
 
 		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
 			<< "  " << mpi::rank << "  " << temp -> index[2]<< "  "<<key_now
-			<< "  " << four[0][3] <<"\n";
+			<< "  " << four[0][3] << "  " << four[1][3] << "  " << four[2][3]<<"\n";
 		
 		temp = temp -> next;
 	}
