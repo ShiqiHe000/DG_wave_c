@@ -86,22 +86,22 @@ void Construct_interface_y(Unit* temp){
 			++num;	
 		}
 
-if(mpi::rank == 0){
-std::cout << "equ " << equ << "\n";
-	if(equ == 2){
-//		std::cout<< "i = "<< i << " nodei " << num << " " << temp -> solution_int_l[num] << " "
-//				<< temp -> solution_int_r[num] << "\n";
-
-		std::cout << "i " << temp -> index[0] << " j "<< temp -> index[1]<< "\n";
-		for(auto& v : temp -> solution_int_l){
-
-			std::cout<< v << " ";
-
-		}
-		std::cout << "\n";
-	}
-
-}
+//if(mpi::rank == 0){
+////std::cout << "equ " << equ << "\n";
+//	if(equ == 2){
+////		std::cout<< "i = "<< i << " nodei " << num << " " << temp -> solution_int_l[num] << " "
+////				<< temp -> solution_int_r[num] << "\n";
+//
+//		std::cout << "i " << temp -> index[0] << " j "<< temp -> index[1]<< "\n";
+//		for(auto& v : temp -> solution_int_r){
+//
+//			std::cout<< v << " ";
+//
+//		}
+//		std::cout << "\n";
+//	}
+//
+//}
 	}
 
 

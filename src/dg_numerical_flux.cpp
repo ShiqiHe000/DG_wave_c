@@ -436,9 +436,6 @@ void Numerical_flux_y(double t){
 		// compute numerical flux on the west interface
 		for(auto it_face = temp -> facen[2].begin(); it_face != temp -> facen[2].end(); ++it_face){
 
-//			// index for three current points (three equations).
-//			std::vector<int> index{0, porderx + 1, (porderx + 1) * 2};	
-
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
 				int n_key = it_face -> key;	// neighbour's key
@@ -516,14 +513,18 @@ void Numerical_flux_y(double t){
 				int n_key = it_face -> key;
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
-
+//if(mpi::rank == 3){
+//
+//	std::cout << n_key << " al = " << temp -> mortar.a_l << " bl = "<< temp -> mortar.b_l 
+//		<< " ar = "<< temp -> mortar.a_r << " br = "<< temp -> mortar.b_r<< "\n";
+//
+//}
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.a_l, temp -> mortar.b_l,
 					 		temp -> ghost[n_key], 
 							temp -> mortar.psi_l);
-
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
 							temp -> index[2], temp -> mortar.l_max, 
@@ -537,7 +538,7 @@ void Numerical_flux_y(double t){
 
 					// Riemann solver
 					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
-							temp -> nflux_l, -1, index);
+							temp -> mortar.nflux, -1, index);
 
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
@@ -549,6 +550,17 @@ void Numerical_flux_y(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux);
 
+if(mpi::rank == 3){
+
+	std::cout<< n_key << "\n";
+
+	for(auto& solu : temp -> nflux_l){
+
+		std::cout<< solu << " ";
+	}
+	std::cout<< "\n";
+
+}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
