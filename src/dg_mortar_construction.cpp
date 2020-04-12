@@ -127,7 +127,6 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 	else{
 
 		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
-//		std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
 
 		std::vector<double> bary(J + 1);
 
@@ -146,8 +145,6 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
 
 			for(int j = 0; j <= J; ++j){
-
-//				double inter = lag[j] * std::pow(nodal::gl_weights[n][i], 2);
 
 				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 

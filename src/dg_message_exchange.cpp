@@ -167,7 +167,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 					// tag == sender's key
 					MPI_Send(&(temp -> ghost[n_key])[0], count, MPI_DOUBLE, 
-							target_rank, n_key, MPI_COMM_WORLD);
+						target_rank, n_key, MPI_COMM_WORLD);
 	
 				}
 			}
