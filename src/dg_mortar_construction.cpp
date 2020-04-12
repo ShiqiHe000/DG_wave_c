@@ -6,6 +6,7 @@
 #include <cmath>	// pow
 #include <algorithm>
 #include "dg_nodal_2d_storage.h"
+#include <iostream>	// test
 
 /// @brief
 /// L2 projection from element to mortar.
@@ -27,32 +28,68 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 	}
 	else{
 
-		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
 		std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
 
 		std::vector<double> bary(n + 1);
 
 		BARW(n, nodal::gl_points[n], bary);
-		
+
+//if(mpi::rank == 1){
+//
+//	for(auto& a : bary){
+//
+//		std::cout << a << " ";
+//	}
+//	std::cout<< "\n";
+//
+//}
 		// L2 projection
 		for(int i = 0; i <= J; ++i){	
 
-			double s = a + b * nodal::gl_points[J][i];	// map GL point from mortar to element
+			double s = (nodal::gl_points[J][i] - a) / b;	// map GL point from mortar to element
 
 			std::vector<double> lag(n + 1);
 
 			// get the lagrange interpolation value at this point (s).
 			Lagrange_interpolating_polynomial(n, s, nodal::gl_points[n], bary, lag);
+//if(mpi::rank == 1){
+//
+////	std::cout<< "i " << i << " gl_point_mortar " << nodal::gl_points[J][i] <<" s = "<< s << "\n";
+//
+//	std::cout<< "s = " << s << "gl_w " << nodal::gl_weights[J][i] << "\n";
+//
+//	for(auto& v : lag){
+//
+//		std::cout << v << " ";
+//	}
+//	std::cout << "\n";
+//}
+
+
+			std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
 
 			for(int j = 0; j <= n; ++j){
 
 				double inter = lag[j] * std::pow(nodal::gl_weights[J][i], 2);
-
+//if(mpi::rank == 1){
+//
+//	std::cout<< "j = "<< j << " gl_w "<< nodal::gl_weights[J][i] << " inter " << inter 
+//				<< " lag " << lag[j] << "\n";
+//}
 				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 					psi[index_mortar[equ]] += inter * solution_int[index_elem[equ]];
-				}
+//if(mpi::rank == 1){
+//	if(equ == 1){
+////		std::cout << "equ = " << equ << " psi " << psi[index_mortar[equ]] << "\n";
+//
+//		std::cout << "lag " << lag[j] << " gl_w " << nodal::gl_weights[J][i] << 
+//				" solu " << solution_int[index_elem[equ]] << " psi " <<
+//				psi[index_mortar[equ]] << "\n";
+//	}
+//}
 
+				}
 				std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
 						[](int x){return x + 1;});
 			}

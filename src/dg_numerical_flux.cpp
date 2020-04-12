@@ -22,7 +22,7 @@ void Gen_a_and_b(double zd, double zu, double sd, double su, double& a, double& 
 //------------------------------------------------------------------------
 
 
-/// @brief
+	/// @brief
 /// Compute the numerical fluxes on the x direction interfaces for all the elements.  
 /// @param t time.
 void Numerical_flux_x(double t){
@@ -154,18 +154,18 @@ void Numerical_flux_x(double t){
 					 		temp -> solution_int_l, 
 							temp -> mortar.psi_r);
 
-if(mpi::rank == 1){
-
-	std::cout << "neighbour "<< it_face -> key << "\n";
-	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
-	for(auto& psi : temp -> mortar.psi_r){
-
-		std::cout<< psi << " ";
-
-	}
-	std::cout << "\n";
-
-}
+//if(mpi::rank == 1){
+//
+//	std::cout << "neighbour "<< it_face -> key << "\n";
+//	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+//	for(auto& psi : temp -> mortar.psi_r){
+//
+//		std::cout<< psi << " ";
+//
+//	}
+//	std::cout << "\n";
+//
+//}
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
