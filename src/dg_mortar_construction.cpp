@@ -19,7 +19,8 @@
 /// @parma solution_int Element interface solution. 
 /// @param psi Mortar solution. 
 void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, double b,
-			 	std::vector<double>& solution_int, std::vector<double>& psi){
+			 	std::vector<double>& solution_int, std::vector<double>& psi, 
+				std::vector<double>& mapped_points){
 
 	if(J == n && level == l_max){	// direct copy
 
@@ -34,6 +35,8 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 
 		BARW(n, nodal::gl_points[n], bary);
 
+		mapped_points = std::vector<double>(J + 1);
+
 //if(mpi::rank == 1){
 //
 //	for(auto& a : bary){
@@ -47,6 +50,8 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 		for(int i = 0; i <= J; ++i){	
 
 			double s = (nodal::gl_points[J][i] - a) / b;	// map GL point from mortar to element
+
+			mapped_points[i] = s;	// record the points (useful when mapping back form mortar to element)
 
 			std::vector<double> lag(n + 1);
 
@@ -117,7 +122,8 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 /// @parma solution_int Element interface solution. 
 /// @param psi Mortar solution. 
 void L2_projection_to_element(int J, int n, int level, int l_max, double a, double b,
-			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar){
+			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
+				std::vector<double>& mapped_points){
 
 	if(J == n && level == l_max){	// direct copy
 
@@ -130,8 +136,17 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 
 		std::vector<double> bary(J + 1);
 
-		BARW(n, nodal::gl_points[J], bary);
-		
+//		BARW(J, nodal::gl_points[J], bary);
+		BARW(J, mapped_points, bary);
+
+//if(mpi::rank == 1){
+//
+//	for(auto& v : bary){
+//
+//		std::cout<< v << " " ;
+//	}
+//	std::cout<< "\n";
+//}
 		// L2 projection
 		for(int i = 0; i <= n; ++i){	
 
@@ -141,7 +156,17 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 
 			// get the lagrange interpolation value at this point (s).
 			Lagrange_interpolating_polynomial(J, z, nodal::gl_points[J], bary, lag);
-
+//if(mpi::rank == 1){
+//
+//	std::cout<< z << "\n";
+//
+//	for(auto& a : lag){
+//
+//		std::cout<< a << " ";
+//	}
+//	std::cout << "\n";
+//
+//}
 			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
 
 			for(int j = 0; j <= J; ++j){

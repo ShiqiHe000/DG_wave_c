@@ -38,18 +38,27 @@ void Construct_interface_x(Unit* temp){
 			temp -> solution_int_l[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
 			temp -> solution_int_r[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
 
-//if(mpi::rank == 3){
-//
-//	if(equ == 1){
-//		std::cout<< "j = "<< j << " nodei " << now << " " << temp -> solution_int_l[now] << " "
-//				<< temp -> solution_int_r[now] << "\n";
-//	}
-//
-//}
 
 			++now;	
 		}
 
+//if(mpi::rank == 0){
+//
+//
+//	if(equ == 1){
+//	
+//
+//		std::cout << temp -> index[0] << temp -> index[1]<< "\n";
+//
+//		for(auto& solu : temp -> solution_int_l){
+//
+//			std::cout<< solu << " ";
+//
+//		}
+//		std::cout<< "\n";
+//	}
+//
+//}
 	}
 
 
