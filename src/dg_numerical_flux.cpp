@@ -177,7 +177,20 @@ void Numerical_flux_x(double t){
 					Riemann_solver_x(temp -> mortar.psi_l, temp -> mortar.psi_r, 
 							temp -> mortar.nflux, -1, index);
 					//---------------------------------------------------------------------------------
-
+//if(mpi::rank == 1){
+//
+//	std::cout << "elem " << it_face -> key << "\n";
+//
+//	for(auto& v : index){
+//		std::cout<< v << "\n";
+//		std::cout << "mortar_l " << temp -> mortar.psi_l[v] << " mortar_r " << temp -> mortar.psi_r[v] 
+//			<< " nflux_l " << temp -> mortar.nflux[v] << "\n";
+//
+//
+//	}
+//	std::cout<< "\n";
+//
+//}
 					std::transform(index.begin(), index.end(), index.begin(), 
 							[](int x){return (x + 1);});		// increment 1
 				}
@@ -188,6 +201,23 @@ void Numerical_flux_x(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux);
 
+//if(mpi::rank == 1){
+//
+//	std::cout << "neighbour "<< it_face -> key << "\n";
+////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+//
+//	int i{};
+//
+//	for(auto& elem : temp -> nflux_l){		
+//
+//		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
+//
+//		++i;
+//
+//	}
+//	std::cout << "\n";
+//
+//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -196,7 +226,19 @@ void Numerical_flux_x(double t){
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.a_l, temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux);
-
+//if(mpi::rank == 1){
+//
+//
+//	std::cout <<n_key << "\n";
+//
+//	for(auto& v : temp -> ghost[n_key]){
+//		std::cout << v << " ";
+//
+//	}
+//
+//	std::cout << "\n";
+//
+//}
 //				// add up the numerical flux 
 //				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
 

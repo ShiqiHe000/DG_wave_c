@@ -167,7 +167,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 					// tag == sender's key
 					MPI_Send(&(temp -> ghost[n_key])[0], count, MPI_DOUBLE, 
-							target_rank, local_key, MPI_COMM_WORLD);
+							target_rank, n_key, MPI_COMM_WORLD);
 	
 				}
 			}
@@ -205,8 +205,18 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 				MPI_Status status;
 
 				MPI_Recv(&inter[0], count, MPI_DOUBLE, it_face -> rank,
-					 it_face -> key, MPI_COMM_WORLD, &status);	
-				
+					 local_key, MPI_COMM_WORLD, &status);	
+//if(mpi::rank == 0){
+//
+//	std::cout<< "local_key " << local_key << "\n";
+//
+//	for(auto& v : inter){
+//
+//		std::cout << v << " "; 
+//
+//	}
+//	std::cout<< "\n";
+//}				
 				Vector_minus(inter, temp -> nflux_r);
 			}	// 'B' skip
 		}
