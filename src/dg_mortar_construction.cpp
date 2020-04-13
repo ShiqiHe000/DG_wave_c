@@ -150,12 +150,12 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		// L2 projection
 		for(int i = 0; i <= n; ++i){	
 
-			double z = nodal::gl_points[n][i];	// map GL point from elem to mortar
+			double z = nodal::gl_points[n][i];	// GL point on the element
 
 			std::vector<double> lag(J + 1);
 
 			// get the lagrange interpolation value at this point (s).
-			Lagrange_interpolating_polynomial(J, z, nodal::gl_points[J], bary, lag);
+			Lagrange_interpolating_polynomial(J, z, mapped_points, bary, lag);
 //if(mpi::rank == 1){
 //
 //	std::cout<< z << "\n";
@@ -170,6 +170,7 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
 
 			for(int j = 0; j <= J; ++j){
+
 
 				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
