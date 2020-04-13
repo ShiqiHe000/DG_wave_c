@@ -65,6 +65,16 @@ void DG_step_by_RK3(double tn, double delta_t){
 			
 
 			}
+//if(mpi::rank == 1){
+//
+//	for(auto& a : temp -> solution[1]){
+//
+//		std::cout<< a << " ";
+//
+//	}
+//	std::cout<< "\n";
+//	
+//}
 			(temp -> solution_time_der).clear();
 			temp = temp -> next;
 		}

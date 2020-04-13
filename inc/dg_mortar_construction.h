@@ -9,5 +9,5 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 
 void L2_projection_to_element(int J, int n, int level, int l_max, double a, double b,
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
-				std::vector<double>& mapped_points);
+				 std::vector<double>& mapped_points);
 #endif
