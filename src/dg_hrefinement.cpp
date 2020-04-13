@@ -55,7 +55,7 @@ void Flag_elem(int kt){
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 if(mpi::rank == 0 && kt == 0){
 
-	rand_num = 4;
+	rand_num = 1;
 }
 else{
 	rand_num = 4;

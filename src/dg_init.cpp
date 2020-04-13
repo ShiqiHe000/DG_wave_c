@@ -35,12 +35,12 @@ void DG_init(){
 				int num_p = Get_single_index(i, j, grid::nmin + 1);
 
 				// wave --------------------------------------------------------------------------------	
-//				double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
-//							user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
-				
-//				temp -> solution[0][num_p] = inter;
-//				temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
-//				temp -> solution[2][num_p] = user::ky / dg_fun::C * inter;
+			//	double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
+			//				user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
+      			//
+			//	temp -> solution[0][num_p] = inter;
+			//	temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
+			//	temp -> solution[2][num_p] = user::ky / dg_fun::C * inter;
 				// -------------------------------------------------------------------------------------
 				
 

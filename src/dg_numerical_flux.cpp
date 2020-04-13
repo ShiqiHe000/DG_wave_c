@@ -266,8 +266,13 @@ void Numerical_flux_x(double t){
 				// map to physical plane
 				double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 	
-				// impose boundary conditions
-				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				// impose boundary conditions (test) ------------------------------------------------
+				External_state_sin_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				// ----------------------------------------------------------------------------------
+
+				// impose boundary conditions--------------------------------------------------------
+//				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				// ----------------------------------------------------------------------------------
 	
 				// Riemann solver
 				Riemann_solver_x(temp -> solution_int_r, solution_ext,
@@ -503,8 +508,13 @@ void Numerical_flux_y(double t){
 					// map to physical plane
 					double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 
-					// impose boundary conditions
-					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					// impose boundary conditions (test) ------------------------------------------------
+					External_state_sin_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					// ----------------------------------------------------------------------------------
+
+					// impose boundary conditions-------------------------------------------------------
+//					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
 					Riemann_solver_y(solution_ext, temp -> solution_int_l, 
@@ -606,14 +616,14 @@ void Numerical_flux_y(double t){
 				// map to physical plane
 				double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 	
+				// test -------------------------------------------------------------------------------
+				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+				//------------------------------------------------------------------------------------
+
 				// impose boundary conditions --------------------------------------------------------
 //				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
-				// test -------------------------------------------------------------------------------
-				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
-				//------------------------------------------------------------------------------------
-	
 				// Riemann solver
 				Riemann_solver_y(temp -> solution_int_r, solution_ext, 
 						temp -> nflux_r, 1, index);

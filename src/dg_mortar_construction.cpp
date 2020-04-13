@@ -151,6 +151,7 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		for(int i = 0; i <= n; ++i){	
 
 			double z = nodal::gl_points[n][i];	// GL point on the element
+//			double z = nodal::gl_points[n][i] * b + a;
 
 			std::vector<double> lag(J + 1);
 
