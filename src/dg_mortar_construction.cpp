@@ -6,6 +6,7 @@
 #include <cmath>	// pow
 #include <algorithm>
 #include "dg_nodal_2d_storage.h"
+#include "dg_interpolate_to_new_points.h"
 #include <iostream>	// test
 
 /// @brief
@@ -130,13 +131,80 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		// U = psi
 		nflux_elem = nflux_mortar;	
 	}
-	else{
+	else if(level == l_max && J != n){	// functionally non-conforming, geo conforming
+		
+		// only need to peoject solution from J to N
+		std::vector<double> T;	// interpolation matrix
+		Polynomial_interpolate_matrix(nodal::gl_points[J], nodal::gl_points[n], T);		
+
+		int start{};
+
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+	
+			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, nflux_elem, start, 1);
+			start += J + 1;	
+		}
+
+
+
+	}
+	else if(level != l_max && J == n){	// geometrically nonconforming, functionally conforming
+	
+		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
+		std::vector<double> bary(n + 1);
+		BARW(n, mapped_points, bary);
+
+		// interpolate the solution from the mortar to the element
+		for(int i = 0; i <= n; ++i){
+
+			double z = nodal::gl_points[n][i];	// GL point on the element
+
+			std::vector<double> lag(n + 1);
+
+			// get the lagrange interpolation value at this point (s).
+			Lagrange_interpolating_polynomial(n, z, mapped_points, bary, lag);
+
+			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
+
+			for(int j = 0; j <= J; ++j){
+
+				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+					nflux_elem[index_elem[equ]] += lag[j] * nflux_mortar[index_mortar[equ]];
+				}
+
+				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
+						[](int x){return x + 1;});
+			}
+
+			std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
+					[](int x){return x + 1;});
+
+
+			}
+
+		}
+
+	}
+	else{	// fun and geo non-conforming
+
+		
+		// first project from J to N on mortar
+		std::vector<double> T;	// interpolation matrix
+		Polynomial_interpolate_matrix(nodal::gl_points[J], nodal::gl_points[n], T);		
+
+		int start{};
+
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+	
+			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, nflux_elem, start, 1);
+			start += J + 1;	
+		}
 
 		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
 
 		std::vector<double> bary(J + 1);
 
-//		BARW(J, nodal::gl_points[J], bary);
 		BARW(J, mapped_points, bary);
 
 //if(mpi::rank == 1){
@@ -151,12 +219,11 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		for(int i = 0; i <= n; ++i){	
 
 			double z = nodal::gl_points[n][i];	// GL point on the element
-//			double z = nodal::gl_points[n][i] * b + a;
 
-			std::vector<double> lag(J + 1);
+			std::vector<double> lag(n + 1);
 
 			// get the lagrange interpolation value at this point (s).
-			Lagrange_interpolating_polynomial(J, z, mapped_points, bary, lag);
+			Lagrange_interpolating_polynomial(n, z, mapped_points, bary, lag);
 //if(mpi::rank == 1){
 //
 //	std::cout<< z << "\n";
