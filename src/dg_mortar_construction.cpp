@@ -120,8 +120,9 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 /// @param l_max Maximum h-refinement level between two elements. 
 /// @parma a Mortar coorindate offset. 
 /// @parma b Mortar coorindate scaling. 
-/// @parma solution_int Element interface solution. 
-/// @param psi Mortar solution. 
+/// @parma nflux_elem Element interface numerical flux. 
+/// @param nflux_mortar Mortar interface numerical flux.
+/// @param mapped_points collocation points mapped from mortar to element.
 void L2_projection_to_element(int J, int n, int level, int l_max, double a, double b,
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
 				std::vector<double>& mapped_points){
@@ -141,7 +142,6 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		int start_e{};
 
 		std::vector<double> middle(nflux_elem.size());
-
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 	
 			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, middle, start_m, start_e, 1);
@@ -156,15 +156,17 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 		int i{};
 		for(auto& v : middle){
 
+//			std::cout<< v << " ";
+			
 			nflux_elem[i] += v / b;
 			++i;
 		}
+//		std::cout<< "\n";
+//		std::cout<< "\n";
 	
 //		std::transform(nflux_elem.begin(), nflux_elem.end(), nflux_elem.begin(),
 //				 [b](double x){return x / b;});		
 
-//				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
-//						[](int x){return x + 1;});
 	}
 
 //		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation

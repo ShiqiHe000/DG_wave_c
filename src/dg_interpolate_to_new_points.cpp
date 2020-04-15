@@ -286,7 +286,7 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 			fi += interval;
 		}
 
-		new_f[ni] += t;
+		new_f[ni] = t;
 
 //std::cout << "------------new " << new_f[ni] << "----------------- \n";
 

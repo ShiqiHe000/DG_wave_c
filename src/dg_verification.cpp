@@ -33,13 +33,13 @@ void Get_error(){
 		double del_y = (temp -> ycoords[1]) - (temp -> ycoords[0]);  
 
 		// wave ---------------------------------------------------------------------------------------		
-		Exact_solution_Gaussian(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
-					del_x, del_y, result::exact, dg_time::t_total);
+//		Exact_solution_Gaussian(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
+//					del_x, del_y, result::exact, dg_time::t_total);
 		// --------------------------------------------------------------------------------------------
 
 		// test ---------------------------------------------------------------------------------------
-//		Exact_solution_sin(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
-//					del_x, del_y, result::exact, dg_time::t_total);
+		Exact_solution_sin(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
+					del_x, del_y, result::exact, dg_time::t_total);
 		//----------------------------------------------------------------------------------------------
 
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){

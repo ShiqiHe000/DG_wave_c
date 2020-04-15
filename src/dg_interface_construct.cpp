@@ -42,7 +42,7 @@ void Construct_interface_x(Unit* temp){
 			++now;	
 		}
 
-//if(mpi::rank == 0){
+//if(mpi::rank == 1){
 //
 //
 //	if(equ == 1){

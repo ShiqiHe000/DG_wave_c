@@ -109,12 +109,12 @@ void Numerical_flux_x(double t){
 					double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 
 					// impose boundary conditions (wave) ------------------------------------------------
-					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
+//					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 
 					// test -----------------------------------------------------------------------------
-//					External_state_sin_exact(t, temp -> xcoords[0], y, solution_ext, index);
+					External_state_sin_exact(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
@@ -181,47 +181,48 @@ void Numerical_flux_x(double t){
 					Riemann_solver_x(temp -> mortar.psi_l, temp -> mortar.psi_r, 
 							temp -> mortar.nflux, -1, index);
 					//---------------------------------------------------------------------------------
+					std::transform(index.begin(), index.end(), index.begin(), 
+							[](int x){return (x + 1);});		// increment 1
+				}
+
 //if(mpi::rank == 1){
 //
 //	std::cout << "elem " << it_face -> key << "\n";
 //
-//	for(auto& v : index){
-//		std::cout<< v << "\n";
-//		std::cout << "mortar_l " << temp -> mortar.psi_l[v] << " mortar_r " << temp -> mortar.psi_r[v] 
-//			<< " nflux_l " << temp -> mortar.nflux[v] << "\n";
+//	int h{};
 //
+//	for(auto& v : temp -> mortar.nflux){
+//		std::cout << "mortar_l " << temp -> mortar.psi_l[h] << " mortar_r " << temp -> mortar.psi_r[h] 
+//			<< " nflux_l " << v << "\n";
+//		++h;
 //
 //	}
 //	std::cout<< "\n";
 //
 //}
-					std::transform(index.begin(), index.end(), index.begin(), 
-							[](int x){return (x + 1);});		// increment 1
-				}
-
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
 
-if(mpi::rank == 1){
-
-	std::cout << "neighbour "<< it_face -> key << "\n";
-//	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
-
-	int i{};
-
-	for(auto& elem : temp -> nflux_l){		
-
-		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
-
-		++i;
-
-	}
-	std::cout << "\n";
-
-}
+//if(mpi::rank == 1){
+//
+//	std::cout << "neighbour "<< it_face -> key << "\n";
+////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+//
+//	int i{};
+//
+//	for(auto& elem : temp -> nflux_l){		
+//
+//		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
+//
+//		++i;
+//
+//	}
+//	std::cout << "\n";
+//
+//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -267,11 +268,11 @@ if(mpi::rank == 1){
 				double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 	
 				// impose boundary conditions (test) ------------------------------------------------
-//				External_state_sin_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				External_state_sin_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+//				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 	
 				// Riemann solver
@@ -509,11 +510,11 @@ void Numerical_flux_y(double t){
 					double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 
 					// impose boundary conditions (test) ------------------------------------------------
-//					External_state_sin_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					External_state_sin_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// impose boundary conditions-------------------------------------------------------
-					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+//					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
@@ -568,17 +569,19 @@ void Numerical_flux_y(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
 
-//if(mpi::rank == 3){
-//
-//	std::cout<< n_key << "\n";
-//
-//	for(auto& solu : temp -> nflux_l){
-//
-//		std::cout<< solu << " ";
-//	}
-//	std::cout<< "\n";
-//
-//}
+if(mpi::rank == 3){
+
+	std::cout<< n_key << "\n";
+	
+	int h{};
+	for(auto& solu : temp -> nflux_l){
+
+		std::cout<< "mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
+		++h;
+	}
+	std::cout<< "\n";
+
+}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -617,11 +620,11 @@ void Numerical_flux_y(double t){
 				double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 	
 				// test -------------------------------------------------------------------------------
-//				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
 				// impose boundary conditions --------------------------------------------------------
-				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+//				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
 				// Riemann solver
