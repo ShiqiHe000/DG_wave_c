@@ -126,135 +126,80 @@ void L2_projection_to_element(int J, int n, int level, int l_max, double a, doub
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
 				std::vector<double>& mapped_points){
 
-	if(J == n && level == l_max){	// direct copy
+	if(J == n && level == l_max){	// direct copy (fun and geo are conforming)
 
 		// U = psi
 		nflux_elem = nflux_mortar;	
 	}
-	else if(level == l_max && J != n){	// functionally non-conforming, geo conforming
-		
-		// only need to peoject solution from J to N
-		std::vector<double> T;	// interpolation matrix
-		Polynomial_interpolate_matrix(nodal::gl_points[J], nodal::gl_points[n], T);		
+	else{	// fun or geo non-conforming
 
-		int start{};
+		
+		std::vector<double> T;	// interpolation matrix
+		Polynomial_interpolate_matrix(mapped_points, nodal::gl_points[n], T);		
+
+		int start_m{};
+		int start_e{};
+
+		std::vector<double> middle(nflux_elem.size());
 
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 	
-			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, nflux_elem, start, 1);
-			start += J + 1;	
+			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, middle, start_m, start_e, 1);
+			start_m += J + 1;	
+			start_e += n + 1;
 		}
-
-
-
-	}
-	else if(level != l_max && J == n){	// geometrically nonconforming, functionally conforming
-	
-		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
-		std::vector<double> bary(n + 1);
-		BARW(n, mapped_points, bary);
-
-		// interpolate the solution from the mortar to the element
-		for(int i = 0; i <= n; ++i){
-
-			double z = nodal::gl_points[n][i];	// GL point on the element
-
-			std::vector<double> lag(n + 1);
-
-			// get the lagrange interpolation value at this point (s).
-			Lagrange_interpolating_polynomial(n, z, mapped_points, bary, lag);
-
-			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
-
-			for(int j = 0; j <= J; ++j){
-
-				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-
-					nflux_elem[index_elem[equ]] += lag[j] * nflux_mortar[index_mortar[equ]];
-				}
-
-				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
-						[](int x){return x + 1;});
-			}
-
-			std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
-					[](int x){return x + 1;});
-
-
-			}
-
-		}
-
-	}
-	else{	// fun and geo non-conforming
-
-		
-		// first project from J to N on mortar
-		std::vector<double> T;	// interpolation matrix
-		Polynomial_interpolate_matrix(nodal::gl_points[J], nodal::gl_points[n], T);		
-
-		int start{};
-
-		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-	
-			Interpolate_to_new_points(n + 1, J + 1, T, nflux_mortar, nflux_elem, start, 1);
-			start += J + 1;	
-		}
-
-		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
-
-		std::vector<double> bary(J + 1);
-
-		BARW(J, mapped_points, bary);
-
 //if(mpi::rank == 1){
 //
-//	for(auto& v : bary){
-//
-//		std::cout<< v << " " ;
-//	}
-//	std::cout<< "\n";
+//	std::cout << "a " << a << " b " << b << "\n";
 //}
-		// L2 projection
-		for(int i = 0; i <= n; ++i){	
+		// scaling the nflux on element
+		int i{};
+		for(auto& v : middle){
 
-			double z = nodal::gl_points[n][i];	// GL point on the element
-
-			std::vector<double> lag(n + 1);
-
-			// get the lagrange interpolation value at this point (s).
-			Lagrange_interpolating_polynomial(n, z, mapped_points, bary, lag);
-//if(mpi::rank == 1){
-//
-//	std::cout<< z << "\n";
-//
-//	for(auto& a : lag){
-//
-//		std::cout<< a << " ";
-//	}
-//	std::cout << "\n";
-//
-//}
-			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
-
-			for(int j = 0; j <= J; ++j){
-
-
-				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-
-					nflux_elem[index_elem[equ]] += lag[j] * nflux_mortar[index_mortar[equ]];
-				}
-
-				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
-						[](int x){return x + 1;});
-			}
-
-			std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
-					[](int x){return x + 1;});
+			nflux_elem[i] += v / b;
+			++i;
 		}
+	
+//		std::transform(nflux_elem.begin(), nflux_elem.end(), nflux_elem.begin(),
+//				 [b](double x){return x / b;});		
 
-
+//				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
+//						[](int x){return x + 1;});
 	}
 
+//		std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
+//		std::vector<double> bary(n + 1);
+//		BARW(n, mapped_points, bary);
+//
+//		// interpolate the solution from the mortar to the element
+//		for(int i = 0; i <= n; ++i){
+//
+//			double z = nodal::gl_points[n][i];	// GL point on the element
+//
+//			std::vector<double> lag(n + 1);
+//
+//			// get the lagrange interpolation value at this point (s).
+//			Lagrange_interpolating_polynomial(n, z, mapped_points, bary, lag);
+//
+//			std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
+//
+//			for(int j = 0; j <= J; ++j){
+//
+//				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+//
+//					nflux_elem[index_elem[equ]] += lag[j] * nflux_mortar[index_mortar[equ]];
+//				}
+//
+//				std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
+//						[](int x){return x + 1;});
+//			}
+//
+//			std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
+//					[](int x){return x + 1;});
+//
+//
+//			}
+//
+//		}
 
 }

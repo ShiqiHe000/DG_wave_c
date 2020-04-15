@@ -18,7 +18,7 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 void Solutions_to_children(std::array<int, 4>& keys, int p_key);
 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
-				std::vector<double>& f, std::vector<double>& new_f, int start, int interval);
+				std::vector<double>& f, std::vector<double>& new_f, int start_old, int start_new, int interval);
 
 void Form_new_set_of_points(int m, int start, std::vector<double>& y);
 
@@ -116,7 +116,7 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 			// interval == 1 since we are in teh y direction
 			// restriction: children inderit parent's polynomial order. 
 			Interpolate_to_new_points(m + 1,  m + 1, T_y,
-					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, 1);
+					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, start, 1);
 		}
 	}
 //for(int i = 0; i <= n; ++i){
@@ -138,7 +138,7 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 			int start = Get_single_index(0, j, m + 1);
 
 			Interpolate_to_new_points(n + 1,  n + 1, T_x,
-					middle[equ], c -> solution[equ], start, m + 1);
+					middle[equ], c -> solution[equ], start, start, m + 1);
 			
 		}
 	}
@@ -263,17 +263,19 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 /// @param T Interpolating matrix. Size m * n.
 /// @param f Solutions on the old set of points.
 /// @param new_f Solusion on the new set of points. Size m. 
-/// @param start The node number of the first value in new_f.
+/// @param start_old The node number of the first value in f.
+/// @param start_new The node number of the first value in new_f.
 /// @param interval node index interval.
+/// @note new_f the new interpolant will be added to the new_f (not erasing it's old value). 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
-				std::vector<double>& f, std::vector<double>& new_f, int start, int interval){
+				std::vector<double>& f, std::vector<double>& new_f, int start_old, int start_new, int interval){
 
-	int ni = start;	
+	int ni = start_new;	
 	for(int i = 0; i < m; ++i){
 
 		double t{};
 
-		int fi = start;
+		int fi = start_old;
 
 		for(int j = 0; j < n; ++j){
 
@@ -284,7 +286,7 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 			fi += interval;
 		}
 
-		new_f[ni] = t;
+		new_f[ni] += t;
 
 //std::cout << "------------new " << new_f[ni] << "----------------- \n";
 

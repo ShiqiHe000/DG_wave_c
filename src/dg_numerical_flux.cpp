@@ -205,23 +205,23 @@ void Numerical_flux_x(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
 
-//if(mpi::rank == 1){
-//
-//	std::cout << "neighbour "<< it_face -> key << "\n";
-////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
-//
-//	int i{};
-//
-//	for(auto& elem : temp -> nflux_l){		
-//
-//		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
-//
-//		++i;
-//
-//	}
-//	std::cout << "\n";
-//
-//}
+if(mpi::rank == 1){
+
+	std::cout << "neighbour "<< it_face -> key << "\n";
+//	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+
+	int i{};
+
+	for(auto& elem : temp -> nflux_l){		
+
+		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
+
+		++i;
+
+	}
+	std::cout << "\n";
+
+}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
