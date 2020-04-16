@@ -57,6 +57,13 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 						temp ->G[l][nodei] = am[k] * ( temp -> G[l][nodei]) + 
 									(temp -> solution_time_der)[l][nodei];
+//if(mpi::rank == 0){
+//
+//	std::cout<< temp -> index[0] << " "<< temp -> index[1] << "\n";
+//
+//	std::cout<< "time_der "<< temp -> solution_time_der[l][nodei]<< "\n";
+//
+//}
 
 						(temp -> solution)[l][nodei] += gm[k] * delta_t * (temp -> G[l][nodei]);
 					}
@@ -65,14 +72,15 @@ void DG_step_by_RK3(double tn, double delta_t){
 			
 
 			}
-//if(mpi::rank == 1){
+//if(mpi::rank == 0){
 //
+//	std::cout<< temp -> index[0] << " " << temp -> index[1] << "\n";
 //	for(auto& a : temp -> solution[1]){
 //
 //		std::cout<< a << " ";
 //
 //	}
-//	std::cout<< "\n";
+//	std::cout<< "\n \n";
 //	
 //}
 			(temp -> solution_time_der).clear();

@@ -66,7 +66,26 @@ void Numerical_flux_x(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 					 		temp -> solution_int_l, 
 							temp -> mortar.psi_r, mapped_points);
-			
+//if(mpi::rank == 0){
+//
+//	std::cout<< n_key << "\n";
+//	int h{};
+//
+//	for(auto& v : local::Hash_elem[n_key] -> solution_int_r){
+//
+//		std::cout<< v << "\n";
+//
+//	}
+//
+////	for(auto& v : temp -> mortar.psi_l){
+////
+////		std::cout<< "left "<< v << " right "<< temp -> mortar.psi_r[h]<< " \n";
+////		++h;
+////
+////	}
+//	std::cout<< "\n";
+//
+//}
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
@@ -81,7 +100,17 @@ void Numerical_flux_x(double t){
 							[](int x){return (x + 1);});		// increment 1
 				}	
 
-
+//if(mpi::rank == 0){
+//
+//	std::cout<< n_key << "\n";
+//	
+//	for(auto& v : temp -> mortar.nflux){
+//
+//		std::cout<< v << " ";
+//
+//	}
+//	std::cout<< "\n";
+//}
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
@@ -569,19 +598,19 @@ void Numerical_flux_y(double t){
 							temp -> mortar.a_r, temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
 
-if(mpi::rank == 3){
-
-	std::cout<< n_key << "\n";
-	
-	int h{};
-	for(auto& solu : temp -> nflux_l){
-
-		std::cout<< "mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
-		++h;
-	}
-	std::cout<< "\n";
-
-}
+//if(mpi::rank == 3){
+//
+//	std::cout<< n_key << "\n";
+//	
+//	int h{};
+//	for(auto& solu : temp -> nflux_l){
+//
+//		std::cout<< "mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
+//		++h;
+//	}
+//	std::cout<< "\n";
+//
+//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);

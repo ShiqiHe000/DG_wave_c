@@ -8,6 +8,7 @@
 #include "dg_param.h"
 #include "dg_flux_vector.h"
 #include "dg_single_index.h"
+#include <iostream>	// test
 
 /// @brief
 /// Compute spactial derivetive in x direction. 

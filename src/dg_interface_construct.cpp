@@ -42,7 +42,7 @@ void Construct_interface_x(Unit* temp){
 			++now;	
 		}
 
-//if(mpi::rank == 1){
+//if(mpi::rank == 0){
 //
 //
 //	if(equ == 1){
@@ -50,7 +50,7 @@ void Construct_interface_x(Unit* temp){
 //
 //		std::cout << temp -> index[0] << temp -> index[1]<< "\n";
 //
-//		for(auto& solu : temp -> solution_int_l){
+//		for(auto& solu : temp -> solution_int_r){
 //
 //			std::cout<< solu << " ";
 //
