@@ -53,9 +53,11 @@ void DG_init(){
 				temp -> solution[2][num_p] = inter2;
 				
 				//----------------------------------------------------------------------------------------
-//if(mpi::rank == 3){
+//if(mpi::rank == 0){
 //
-//	std::cout << "i " << i << " j "<< j << " u " << inter1 << "\n";
+//	std::cout.precision(17);
+//	std::cout<< temp -> index[0] << temp -> index[1]<< "\n";
+//	std::cout << "i " << i << " j "<< j << " u "<< std::fixed << inter1 << "\n";
 //	std::cout << "x " << x << " y " << y << "\n";
 //}
 

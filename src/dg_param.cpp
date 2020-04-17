@@ -8,7 +8,7 @@
 /// @param fileplace The path of mesh file and mesh file name
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-	const std::string fileplace = "../gmsh_files/4_elements.msh";
+	const std::string fileplace = "../gmsh_files/4_elem_small_domain.msh";
 }
 
 /// @brief Domain size
@@ -26,11 +26,11 @@ namespace grid{
 	const int exp_y = 1; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 1.0; 
+	const double gx_r = 0.1; 
 	const double gy_l = 0.0;
-	const double gy_r = 1.0; 
+	const double gy_r = 0.1; 
 
-	const int nmin = 2;	// x direction
+	const int nmin = 4;	// x direction
 	const int nmax = 6;
 
 	const int hlevel_max = 3;	
@@ -45,10 +45,10 @@ namespace grid{
 /// @param t_total total time integal
 /// @param nt time step number
 namespace dg_time{
-	const double t_total = 0.0002;
-//	const double t_total = 1;
+//	const double t_total = 0.0010;
+	const double t_total = 1;
 
-	const int nt = 2;
+	const int nt = 10;
 
 };
 

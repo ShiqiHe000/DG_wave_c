@@ -1008,8 +1008,8 @@ void Print_inter(int new_key, int old_key){
 
 			int index = Get_single_index(i, j, temp_p -> m + 1);
 
-			std::cout<< i << " " << j <<" " <<temp_p -> solution[1][index] 
-				<< " "<< temp_c -> solution[1][index]<< "\n" ;
+			std::cout<< i << " " << j <<" " <<temp_p -> solution[0][index] 
+				<< " "<< temp_c -> solution[0][index]<< "\n" ;
 
 		}
 	}

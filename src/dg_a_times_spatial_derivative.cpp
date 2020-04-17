@@ -39,6 +39,18 @@ void A_times_spatial_derivative_x(){
 			
 				xflux(temp -> solution, flux_x, index);			
 			}
+//if(mpi::rank == 0){
+//
+//	std::cout<< "j " << j << " coord " << temp -> index[0] << temp -> index[1]<< "\n";
+//
+//	for(auto& h : flux_x[0]){
+//
+//		std::cout<< h << "\n";
+//
+//	}
+//	std::cout << "\n";
+//
+//}
 			// flux_der
 			Spatial_derivative(temp -> n, flux_x, flux_der, temp, index_equ);
 
@@ -59,7 +71,18 @@ void A_times_spatial_derivative_x(){
 			}
 
 		}
-		
+//if(mpi::rank == 0){
+//
+//	std::cout << temp -> index[0] << " " << temp -> index[1] << "\n";
+//	std::cout.precision(17);
+//	for(auto& v : temp -> solution_time_der[0]){
+//
+//		std::cout<< std::fixed<<v << "\n";
+//		
+//	}
+//	std::cout << "\n";
+//
+//}
 		// deallocate solutions on the element boundaries
 		(temp -> solution_int_l).clear();
 		(temp -> solution_int_r).clear();

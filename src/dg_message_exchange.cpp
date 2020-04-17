@@ -194,7 +194,18 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 				// numerical flux -= neighbours numerical flux
 				Vector_minus(local::Hash_elem[n_key] -> ghost[local_key], temp -> nflux_r);
-
+//if(mpi::rank == 0){
+//
+//
+//	std::cout<< n_key << "\n";
+//	std::cout.precision(17);
+//	for(auto& h : temp -> nflux_r){
+//
+//		std::cout<< std::fixed << h << "\n";
+//
+//	}
+//	std::cout<< "\n";
+//}
 			}
 			else if(it_face -> face_type == 'M'){	// remote neighbour
 		

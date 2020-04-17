@@ -49,7 +49,7 @@ void Driver_for_DG_approximation(){
 
 		DG_step_by_RK3(tn, delta_t);
 
-		Write_faces_all();
+	//	Write_faces_all();
      		Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
