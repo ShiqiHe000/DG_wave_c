@@ -66,9 +66,11 @@ void Get_error(){
 	MPI_Reduce(&result::L2_norm[0], &L2_recv[0], dg_fun::num_of_equation, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
 	if(mpi::rank == 0){
+		//std::cout.precision(17);
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 			result::L2_norm[equ] = sqrt(L2_recv[equ]);
-			std::cout<< result::L2_norm[equ] << "\n";
+//			std::cout<< std::fixed <<result::L2_norm[equ] << "\n";
+			std::cout << result::L2_norm[equ] << "\n";
 		}
 	}
 

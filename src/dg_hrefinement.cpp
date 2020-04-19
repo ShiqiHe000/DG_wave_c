@@ -53,7 +53,9 @@ void Flag_elem(int kt){
 
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
-if(mpi::rank == 0 && kt == 0){
+
+int key_test = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+if(mpi::rank == 0 && kt == 0 && key_test == 0){
 
 	rand_num = 1;
 }

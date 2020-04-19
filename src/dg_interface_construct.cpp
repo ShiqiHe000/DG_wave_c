@@ -58,14 +58,15 @@ void Construct_interface_x(Unit* temp){
 
 	}
 
-//if(mpi::rank == 0){
+//if(mpi::rank == 1){
 //
 //		std::cout << temp -> index[0] << temp -> index[1]<< "\n";
 //		std::cout.precision(17);
 //
 //		for(auto& solu : temp -> solution_int_l){
 //
-//			std::cout<< std::fixed<< solu << " ";
+//			std::cout<< std::fixed<< solu << "\n";
+////			std::cout<<solu << " ";
 //
 //		}
 //		std::cout<< "\n";

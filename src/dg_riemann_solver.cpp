@@ -26,8 +26,8 @@ void Riemann_solver_x(std::vector<double>& q_l, std::vector<double>& q_r,
 	w_l = (p_l + dg_fun::C * u_l) / 2.0;
 	w_r = (p_r - dg_fun::C * u_r) / 2.0;
 
-	n_flux[index[0]] = dg_fun::C * (w_l - w_r) * normal;
-	n_flux[index[1]] = (w_l + w_r) * normal;
+	n_flux[index[0]] = dg_fun::C * (w_l - w_r) * (double)normal;
+	n_flux[index[1]] = (w_l + w_r) * (double)normal;
 	n_flux[index[2]] = 0.0;
 	
 
@@ -57,9 +57,9 @@ void Riemann_solver_y(std::vector<double>& q_l, std::vector<double>& q_r,
 	w_l = (p_l + dg_fun::C * v_l) / 2.0;
 	w_r = (p_r - dg_fun::C * v_r) / 2.0;
 
-	n_flux[index[0]] = dg_fun::C * (w_l - w_r) * normal;
+	n_flux[index[0]] = dg_fun::C * (w_l - w_r) * (double)normal;
 	n_flux[index[1]] = 0.0;
-	n_flux[index[2]] = (w_l + w_r) * normal;
+	n_flux[index[2]] = (w_l + w_r) * (double)normal;
 	
 
 }

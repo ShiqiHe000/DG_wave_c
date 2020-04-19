@@ -79,7 +79,12 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	Polynomial_interpolate_matrix(nodal::gl_points[n], xl, T_xl);
 	Polynomial_interpolate_matrix(nodal::gl_points[n], xr, T_xr);
 	Polynomial_interpolate_matrix(nodal::gl_points[m], yl, T_yl);
-	Polynomial_interpolate_matrix(nodal::gl_points[n], yr, T_yr);
+	Polynomial_interpolate_matrix(nodal::gl_points[m], yr, T_yr);
+//for(auto& v : T_xr){
+//
+//	std::cout<< v << "\n";
+//
+//}
 	//--------------------------------------------------------------------------------
 
 	// c0
@@ -118,6 +123,16 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 			Interpolate_to_new_points(m + 1,  m + 1, T_y,
 					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, start, 1);
 		}
+//if(equ == 0){
+//
+//	
+//	for(auto& v : middle[0]){
+//
+//		std::cout<< v << "\n";
+//	}
+//
+//	std::cout << "---------------------- \n";
+//}
 	}
 //for(int i = 0; i <= n; ++i){
 //

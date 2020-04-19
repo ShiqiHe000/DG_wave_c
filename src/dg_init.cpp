@@ -57,7 +57,7 @@ void DG_init(){
 //
 //	std::cout.precision(17);
 //	std::cout<< temp -> index[0] << temp -> index[1]<< "\n";
-//	std::cout << "i " << i << " j "<< j << " u "<< std::fixed << inter1 << "\n";
+//	std::cout << "i " << i << " j "<< j << " u "<< std::fixed << inter << "\n";
 //	std::cout << "x " << x << " y " << y << "\n";
 //}
 

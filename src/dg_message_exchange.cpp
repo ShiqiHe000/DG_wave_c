@@ -86,6 +86,16 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 						MPI_Status status;
 						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
+//if(mpi::rank == 1){
+//
+//	std::cout<< it_face -> key << "\n";
+//	for(auto& h : temp -> ghost[it_face -> key]){
+//		
+//		std::cout<< h << "\n";
+//
+//	}
+//	std::cout<< "\n";
+//}
 					}
 				}
 			}
