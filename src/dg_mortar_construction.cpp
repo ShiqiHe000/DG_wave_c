@@ -4,7 +4,7 @@
 #include "dg_param.h"
 #include "dg_basis.h"
 #include <cmath>	// pow
-#include <algorithm>
+//#include <algorithm>
 #include "dg_nodal_2d_storage.h"
 #include "dg_interpolate_to_new_points.h"
 #include "dg_single_index.h"
@@ -15,18 +15,16 @@ void Mortar_to_elem_interpolation(int J, int n, int level, int l_max, double b,
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
 				std::vector<double>& mapped_points);
 
-void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, double b,
-			 	std::vector<double>& solution_int, std::vector<double>& psi, 
-				std::vector<double>& mapped_points);
-
 void L2_projection_to_element(int J, int n, int level, int l_max, double b,
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
 				std::vector<double>& T);
 
-void L2_projection_to_mortar_new(int J, int n, int level, int l_max, double a, double b,
+void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, double b,
 			 	std::vector<double>& solution_int, std::vector<double>& psi, 
 				std::vector<double>& T);
 //-------------------------------------------------------------------------------------------------------------
+
+
 
 /// @brief
 /// L2 projection from element to mortar.
@@ -39,98 +37,6 @@ void L2_projection_to_mortar_new(int J, int n, int level, int l_max, double a, d
 /// @parma solution_int Element interface solution. 
 /// @param psi Mortar solution. 
 void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, double b,
-			 	std::vector<double>& solution_int, std::vector<double>& psi, 
-				std::vector<double>& mapped_points){
-
-	if(J == n && level == l_max){	// direct copy
-
-		// U = psi
-		psi = solution_int;	
-	}
-	else{
-
-		std::vector<int> index_mortar{0, J + 1, (J + 1) * 2}; // 3 equation
-
-		std::vector<double> bary(n + 1);
-
-		BARW(n, nodal::gl_points[n], bary);
-
-		mapped_points = std::vector<double>(J + 1);
-
-//if(mpi::rank == 1){
-//
-//	for(auto& a : bary){
-//
-//		std::cout << a << " ";
-//	}
-//	std::cout<< "\n";
-//
-//}
-		// L2 projection
-		for(int i = 0; i <= J; ++i){	
-
-			double s = (nodal::gl_points[J][i] - a) / b;	// map GL point from mortar to element
-
-			mapped_points[i] = s;	// record the points (useful when mapping back form mortar to element)
-
-			std::vector<double> lag(n + 1);
-
-			// get the lagrange interpolation value at this point (s).
-			Lagrange_interpolating_polynomial(n, s, nodal::gl_points[n], bary, lag);
-//if(mpi::rank == 1){
-//
-////	std::cout<< "i " << i << " gl_point_mortar " << nodal::gl_points[J][i] <<" s = "<< s << "\n";
-//
-//	std::cout<< "s = " << s << "gl_w " << nodal::gl_weights[J][i] << "\n";
-//
-//	for(auto& v : lag){
-//
-//		std::cout << v << " ";
-//	}
-//	std::cout << "\n";
-//}
-
-
-			std::vector<int> index_elem{0, n + 1, (n + 1) * 2}; // 3 equation
-
-			for(int j = 0; j <= n; ++j){
-
-
-//if(mpi::rank == 1){
-//
-//	std::cout<< "j = "<< j << " gl_w "<< nodal::gl_weights[J][i] << " inter " << inter 
-//				<< " lag " << lag[j] << "\n";
-//}
-				for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-
-					psi[index_mortar[equ]] += lag[j] * solution_int[index_elem[equ]];
-//if(mpi::rank == 1){
-//	if(equ == 1){
-////		std::cout << "equ = " << equ << " psi " << psi[index_mortar[equ]] << "\n";
-//
-//		std::cout << "lag " << lag[j] << " gl_w " << nodal::gl_weights[J][i] << 
-//				" solu " << solution_int[index_elem[equ]] << " psi " <<
-//				psi[index_mortar[equ]] << "\n";
-//	}
-//}
-
-				}
-				std::transform(index_elem.begin(), index_elem.end(), index_elem.begin(), 
-						[](int x){return x + 1;});
-			}
-
-			std::transform(index_mortar.begin(), index_mortar.end(), index_mortar.begin(), 
-					[](int x){return x + 1;});
-		}
-
-
-	}
-
-
-}
-
-
-void L2_projection_to_mortar_new(int J, int n, int level, int l_max, double a, double b,
 			 	std::vector<double>& solution_int, std::vector<double>& psi, 
 				std::vector<double>& T){
 
@@ -147,20 +53,19 @@ void L2_projection_to_mortar_new(int J, int n, int level, int l_max, double a, d
 			mapped_points[i] = (nodal::gl_points[J][i] - a) / b;	// map GL point from mortar to element
 
 		}
-//for(auto& h : mapped_points){
-//	std::cout<< h << "\n";
-//}
+
 		// form interpolation matrix to interpolate value on the GL points on the element to the corresponding 
 		// points facing the mortar.
 		Polynomial_interpolate_matrix(nodal::gl_points[n], mapped_points, T);
 		
 		int start_e{};
 		int start_m{};
+		// interpolate the solution on GL points on the element to the points that coincode with the GL points on mortar
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 			int num{};
 			for(int i = 0; i <= J; ++i){
-	
+
 				for(int j = 0; j <= n; ++j){
 	
 					psi[i + start_m] += T[num] * solution_int[start_e + j];
@@ -251,21 +156,10 @@ void Mortar_to_elem_interpolation(int J, int n, int level, int l_max, double b,
 		
 		std::vector<double> T;	// interpolation matrix
 		Polynomial_interpolate_matrix(mapped_points, nodal::gl_points[n], T);		
-//for(auto& h : mapped_points){
-//
-//	std::cout << h << "\n";
-//}
-//std::cout<< "\n";
-//for(auto& h : T){
-//
-//	std::cout<< h << "\n";
-//
-//}
-//std::cout<< "\n";
 
 		int start_m{};
 		int start_e{};
-//std::cout<< "*********************************************************************** \n";
+
 		std::vector<double> middle(nflux_elem.size());
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 	
@@ -277,10 +171,8 @@ void Mortar_to_elem_interpolation(int J, int n, int level, int l_max, double b,
 		int i{};
 		for(auto& v : middle){
 
-//			std::cout<< v << " ";
 			
 			nflux_elem[i] += v / b;
-//			std::cout<< v << " " << b << "\n";
 
 			++i;
 		}

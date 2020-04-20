@@ -35,23 +35,23 @@ void DG_init(){
 				int num_p = Get_single_index(i, j, grid::nmin + 1);
 
 				// wave --------------------------------------------------------------------------------	
-//				double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
-//							user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
-//      			
-//				temp -> solution[0][num_p] = inter;
-//				temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
-//				temp -> solution[2][num_p] = user::ky / dg_fun::C * inter;
+				double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
+							user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
+      			
+				temp -> solution[0][num_p] = inter;
+				temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
+				temp -> solution[2][num_p] = user::ky / dg_fun::C * inter;
 				// -------------------------------------------------------------------------------------
 				
 
 				// test case sin(pi * x) + sin(pi * y) --------------------------------------------------
-				double inter1 = std::sin(user::pi * x);
-				double inter2 = std::sin(user::pi * y);
-
-				temp -> solution[0][num_p] = - 1.0 / user::pi * inter1 - 1.0 / user::pi * inter2;
-				temp -> solution[1][num_p] = inter1;
-				temp -> solution[2][num_p] = inter2;
-				
+//				double inter1 = std::sin(user::pi * x);
+//				double inter2 = std::sin(user::pi * y);
+//
+//				temp -> solution[0][num_p] = - 1.0 / user::pi * inter1 - 1.0 / user::pi * inter2;
+//				temp -> solution[1][num_p] = inter1;
+//				temp -> solution[2][num_p] = inter2;
+//				
 				//----------------------------------------------------------------------------------------
 //if(mpi::rank == 0){
 //

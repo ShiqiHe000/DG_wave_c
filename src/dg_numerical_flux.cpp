@@ -15,7 +15,7 @@
 // forward declaration-----------------------------------------------------
 void Numerical_flux_x(double t);
 void Numerical_flux_y(double t);
-void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);
+void Two_vectors_sum(std::vector<double>& a, std::vector<double>& b);	// useless
 void Form_mortar_x(Unit* temp, const std::vector<Unit::Face>::iterator it_face);
 void Form_mortar_y(Unit* temp, const std::vector<Unit::Face>::iterator it_face);
 void Gen_a_and_b(double zd, double zu, double sd, double su, double& a, double& b);
@@ -54,38 +54,18 @@ void Numerical_flux_x(double t){
 				std::vector<double> T;	// interpolaiton matrix
 
 				// left element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> pordery,
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 					 			local::Hash_elem[n_key] -> solution_int_r, 
 								temp -> mortar.psi_l, T);
 
 				// right element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> m,
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
 								temp -> mortar.psi_r, T);
-//if(mpi::rank == 1){
-//
-//	std::cout<< n_key << "\n";
-//	int h{};
-////
-////	for(auto& v : local::Hash_elem[n_key] -> solution_int_r){
-////
-////		std::cout<< v << "\n";
-////
-////	}
-//
-//	for(auto& v : temp -> mortar.psi_l){
-//
-//		std::cout<< "left "<< v << " right "<< temp -> mortar.psi_r[h]<< " \n";
-//		++h;
-//
-//	}
-//	std::cout<< "\n";
-//
-//}
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
@@ -100,17 +80,6 @@ void Numerical_flux_x(double t){
 							[](int x){return (x + 1);});		// increment 1
 				}	
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< n_key << "\n";
-//	
-//	for(auto& v : temp -> mortar.nflux){
-//
-//		std::cout<< v << " ";
-//
-//	}
-//	std::cout<< "\n";
-//}
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
@@ -138,12 +107,12 @@ void Numerical_flux_x(double t){
 					double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 
 					// impose boundary conditions (wave) ------------------------------------------------
-//					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
+					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 
 					// test -----------------------------------------------------------------------------
-					External_state_sin_exact(t, temp -> xcoords[0], y, solution_ext, index);
+					//External_state_sin_exact(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
@@ -163,62 +132,19 @@ void Numerical_flux_x(double t){
 				std::vector<double> T;	// only one side needs to be mapped
 
 				// left element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> pordery,
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		temp -> ghost[n_key], 
 								temp -> mortar.psi_l, T);
 
-//if(mpi::rank == 1){
-//
-//	std::cout<< n_key << "\n";
-//	std::cout.precision(17);
-//
-//	for(auto& v : temp -> mortar.psi_l){
-//
-//		std::cout<< std::fixed <<v << " \n";
-//
-//	}
-//	std::cout<< "\n";
-//
-//}
 				// right element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> m,
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
 								temp -> mortar.psi_r, T);
 
-//if(mpi::rank == 1){
-//
-//	std::cout << "neighbour "<< it_face -> key << "\n";
-//	std::cout.precision(17);
-//
-//	int s{};
-//	for(auto& psi : temp -> mortar.psi_r){
-//
-//		std::cout<< std::fixed<< temp -> solution_int_l[s] << " "<< psi << "\n";
-//
-//		++s;
-//
-//	}	
-//	std::cout << "\n";
-//
-//}
-//if(mpi::rank == 1){
-//
-//	std::cout << "neighbour "<< it_face -> key << "\n";
-////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
-//	std::cout.precision(17);
-//	int h{};
-//	for(auto& psi : temp -> mortar.psi_r){
-//
-//		std::cout<< std::fixed << "left " << temp -> mortar.psi_l[h] << " right "<< psi << "\n ";
-//		++h;
-//	}
-//	std::cout << "\n";
-//
-//}
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= pordery; ++s){
@@ -234,21 +160,6 @@ void Numerical_flux_x(double t){
 							[](int x){return (x + 1);});		// increment 1
 				}
 
-//if(mpi::rank == 1){
-//
-//	std::cout << "elem " << it_face -> key << "\n";
-//	std::cout.precision(17);
-//	int h{};
-//
-//	for(auto& v : temp -> mortar.nflux){
-//		std::cout<< std::fixed << "mortar_l " << temp -> mortar.psi_l[h] << " mortar_r " << temp -> mortar.psi_r[h] 
-//			<< " nflux_l " << v << "\n";
-//		++h;
-//
-//	}
-//	std::cout<< "\n";
-//
-//}
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
@@ -256,23 +167,6 @@ void Numerical_flux_x(double t){
 			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
 
-//if(mpi::rank == 1){
-//
-//	std::cout << "neighbour "<< it_face -> key << "\n";
-////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
-//
-//	int i{};
-//	std::cout.precision(17);
-//	for(auto& elem : temp -> nflux_l){		
-//
-//		std::cout<< "i "<< i << " mortar " << std::fixed<< temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
-//
-//		++i;
-//
-//	}
-//	std::cout << "\n";
-//
-//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -281,22 +175,6 @@ void Numerical_flux_x(double t){
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
-//if(mpi::rank == 1){
-//
-//
-//	std::cout <<n_key << "\n";
-//
-//	for(auto& v : temp -> ghost[n_key]){
-//		std::cout << v << " ";
-//
-//	}
-//
-//	std::cout << "\n";
-//
-//}
-//				// add up the numerical flux 
-//				Two_vectors_sum(temp -> ghost[n_key], temp -> nflux_l);
-
 
 			}
 		}
@@ -318,11 +196,11 @@ void Numerical_flux_x(double t){
 				double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 	
 				// impose boundary conditions (test) ------------------------------------------------
-				External_state_sin_exact(t, temp -> xcoords[1], y, solution_ext, index);
+//				External_state_sin_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-//				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 	
 				// Riemann solver
@@ -509,14 +387,14 @@ void Numerical_flux_y(double t){
 				std::vector<double> T;
 
 				// left element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> porderx,
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		local::Hash_elem[n_key] -> solution_int_r, 
 								temp -> mortar.psi_l, T);
 
 				// right element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> n,
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
@@ -560,11 +438,11 @@ void Numerical_flux_y(double t){
 					double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 
 					// impose boundary conditions (test) ------------------------------------------------
-					External_state_sin_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+//					External_state_sin_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// impose boundary conditions-------------------------------------------------------
-//					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
@@ -580,33 +458,16 @@ void Numerical_flux_y(double t){
 				int n_key = it_face -> key;
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
-//if(mpi::rank == 3){
-//
-//	std::cout << n_key << " al = " << temp -> mortar.a_l << " bl = "<< temp -> mortar.b_l 
-//		<< " ar = "<< temp -> mortar.a_r << " br = "<< temp -> mortar.b_r<< "\n";
-//
-//}
 				std::vector<double> T;
 
 				// left element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> porderx,
+				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		temp -> ghost[n_key], 
 								temp -> mortar.psi_l, T);
-//if(mpi::rank == 3){
-//
-//	std::cout<< n_key << "\n";
-//	std::cout.precision(17);
-//	for(auto& solu : temp -> mortar.psi_l){
-//
-//		std::cout<< std::fixed<< solu << "\n";
-//	}
-//	std::cout<< "\n";
-//
-//}
 				// right element, L2 projection
-				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> n,
+				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
@@ -630,19 +491,6 @@ void Numerical_flux_y(double t){
 							temp -> mortar.b_r,
 			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
-//if(mpi::rank == 3){
-//
-//	std::cout<< n_key << "\n";
-//	std::cout.precision(17);
-//	int h{};
-//	for(auto& solu : temp -> nflux_l){
-//
-//		std::cout<< std::fixed<<"mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
-//		++h;
-//	}
-//	std::cout<< "\n";
-//
-//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -651,17 +499,6 @@ void Numerical_flux_y(double t){
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
-//if(mpi::rank == 3){
-//
-//	std::cout<< n_key << "\n";
-//
-//	for(auto& solu : temp -> ghost[n_key]){
-//
-//		std::cout<< solu << " ";
-//	}
-//	std::cout<< "\n";
-//
-//}
 			}
 		}
 
@@ -681,11 +518,11 @@ void Numerical_flux_y(double t){
 				double x = Affine_mapping(nodal::gl_points[porderx][s], (temp -> xcoords[0]), del_x);
 	
 				// test -------------------------------------------------------------------------------
-				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+//				External_state_sin_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
 				// impose boundary conditions --------------------------------------------------------
-//				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
 				// Riemann solver
