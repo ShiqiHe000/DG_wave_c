@@ -51,21 +51,21 @@ void Numerical_flux_x(double t){
 
 				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> mapped_points;
+				std::vector<double> T;	// interpolaiton matrix
 
 				// left element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
-							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-					 		local::Hash_elem[n_key] -> solution_int_r, 
-							temp -> mortar.psi_l, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> pordery,
+								it_face -> hlevel, temp -> mortar.l_max, 
+								temp -> mortar.a_l, temp -> mortar.b_l,
+					 			local::Hash_elem[n_key] -> solution_int_r, 
+								temp -> mortar.psi_l, T);
 
 				// right element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
-							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-					 		temp -> solution_int_l, 
-							temp -> mortar.psi_r, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> m,
+								temp -> index[2], temp -> mortar.l_max, 
+								temp -> mortar.a_r, temp -> mortar.b_r,
+						 		temp -> solution_int_l, 
+								temp -> mortar.psi_r, T);
 //if(mpi::rank == 1){
 //
 //	std::cout<< n_key << "\n";
@@ -114,14 +114,14 @@ void Numerical_flux_x(double t){
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
 				// L2 projection from mortar to left element	
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
 							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
 
 
 			}
@@ -160,42 +160,61 @@ void Numerical_flux_x(double t){
 				
 				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> mapped_points;	// only one side needs to be mapped
+				std::vector<double> T;	// only one side needs to be mapped
 
 				// left element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
-							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-					 		temp -> ghost[n_key], 
-							temp -> mortar.psi_l, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> pordery,
+								it_face -> hlevel, temp -> mortar.l_max, 
+								temp -> mortar.a_l, temp -> mortar.b_l,
+						 		temp -> ghost[n_key], 
+								temp -> mortar.psi_l, T);
 
+//if(mpi::rank == 1){
+//
+//	std::cout<< n_key << "\n";
+//	std::cout.precision(17);
+//
+//	for(auto& v : temp -> mortar.psi_l){
+//
+//		std::cout<< std::fixed <<v << " \n";
+//
+//	}
+//	std::cout<< "\n";
+//
+//}
 				// right element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
-							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-					 		temp -> solution_int_l, 
-							temp -> mortar.psi_r, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> m,
+								temp -> index[2], temp -> mortar.l_max, 
+								temp -> mortar.a_r, temp -> mortar.b_r,
+						 		temp -> solution_int_l, 
+								temp -> mortar.psi_r, T);
 
 //if(mpi::rank == 1){
 //
 //	std::cout << "neighbour "<< it_face -> key << "\n";
 //	std::cout.precision(17);
+//
+//	int s{};
 //	for(auto& psi : temp -> mortar.psi_r){
 //
-//		std::cout<< std::fixed<<psi << "\n";
+//		std::cout<< std::fixed<< temp -> solution_int_l[s] << " "<< psi << "\n";
 //
-//	}
+//		++s;
+//
+//	}	
 //	std::cout << "\n";
 //
 //}
 //if(mpi::rank == 1){
 //
 //	std::cout << "neighbour "<< it_face -> key << "\n";
-//	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
+//	std::cout.precision(17);
+//	int h{};
 //	for(auto& psi : temp -> mortar.psi_r){
 //
-//		std::cout<< psi << " ";
-//
+//		std::cout<< std::fixed << "left " << temp -> mortar.psi_l[h] << " right "<< psi << "\n ";
+//		++h;
 //	}
 //	std::cout << "\n";
 //
@@ -215,26 +234,27 @@ void Numerical_flux_x(double t){
 							[](int x){return (x + 1);});		// increment 1
 				}
 
-if(mpi::rank == 1){
-
-	std::cout << "elem " << it_face -> key << "\n";
-	std::cout.precision(17);
-	int h{};
-
-	for(auto& v : temp -> mortar.nflux){
-		std::cout<< std::fixed << "mortar_l " << temp -> mortar.psi_l[h] << " mortar_r " << temp -> mortar.psi_r[h] 
-			<< " nflux_l " << v << "\n";
-		++h;
-
-	}
-	std::cout<< "\n";
-
-}
+//if(mpi::rank == 1){
+//
+//	std::cout << "elem " << it_face -> key << "\n";
+//	std::cout.precision(17);
+//	int h{};
+//
+//	for(auto& v : temp -> mortar.nflux){
+//		std::cout<< std::fixed << "mortar_l " << temp -> mortar.psi_l[h] << " mortar_r " << temp -> mortar.psi_r[h] 
+//			<< " nflux_l " << v << "\n";
+//		++h;
+//
+//	}
+//	std::cout<< "\n";
+//
+//}
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux, T);
+
 
 //if(mpi::rank == 1){
 //
@@ -242,10 +262,10 @@ if(mpi::rank == 1){
 ////	std::cout<< "a_r " <<temp -> mortar.a_r << " b_r "<< temp -> mortar.b_r << "\n";
 //
 //	int i{};
-//
+//	std::cout.precision(17);
 //	for(auto& elem : temp -> nflux_l){		
 //
-//		std::cout<< "i "<< i << " mortar " << temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
+//		std::cout<< "i "<< i << " mortar " << std::fixed<< temp -> mortar.nflux[i] << " elem " << elem << "\n"; 
 //
 //		++i;
 //
@@ -259,8 +279,8 @@ if(mpi::rank == 1){
 
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
 							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
 //if(mpi::rank == 1){
 //
 //
@@ -486,21 +506,21 @@ void Numerical_flux_y(double t){
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> mapped_points;
+				std::vector<double> T;
 
 				// left element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
-							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-					 		local::Hash_elem[n_key] -> solution_int_r, 
-							temp -> mortar.psi_l, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> porderx,
+								it_face -> hlevel, temp -> mortar.l_max, 
+								temp -> mortar.a_l, temp -> mortar.b_l,
+						 		local::Hash_elem[n_key] -> solution_int_r, 
+								temp -> mortar.psi_l, T);
 
 				// right element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
-							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-					 		temp -> solution_int_l, 
-							temp -> mortar.psi_r, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> n,
+								temp -> index[2], temp -> mortar.l_max, 
+								temp -> mortar.a_r, temp -> mortar.b_r,
+						 		temp -> solution_int_l, 
+								temp -> mortar.psi_r, T);
 			
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
@@ -517,14 +537,14 @@ void Numerical_flux_y(double t){
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
 							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
 				// L2 projection from mortar to left element	
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
 							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
 
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
@@ -566,20 +586,31 @@ void Numerical_flux_y(double t){
 //		<< " ar = "<< temp -> mortar.a_r << " br = "<< temp -> mortar.b_r<< "\n";
 //
 //}
-				std::vector<double> mapped_points;
+				std::vector<double> T;
 
 				// left element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
-							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-					 		temp -> ghost[n_key], 
-							temp -> mortar.psi_l, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, it_face -> porderx,
+								it_face -> hlevel, temp -> mortar.l_max, 
+								temp -> mortar.a_l, temp -> mortar.b_l,
+						 		temp -> ghost[n_key], 
+								temp -> mortar.psi_l, T);
+//if(mpi::rank == 3){
+//
+//	std::cout<< n_key << "\n";
+//	std::cout.precision(17);
+//	for(auto& solu : temp -> mortar.psi_l){
+//
+//		std::cout<< std::fixed<< solu << "\n";
+//	}
+//	std::cout<< "\n";
+//
+//}
 				// right element, L2 projection
-				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
-							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-					 		temp -> solution_int_l, 
-							temp -> mortar.psi_r, mapped_points);
+				L2_projection_to_mortar_new(temp -> mortar.n_max, temp -> n,
+								temp -> index[2], temp -> mortar.l_max, 
+								temp -> mortar.a_r, temp -> mortar.b_r,
+						 		temp -> solution_int_l, 
+								temp -> mortar.psi_r, T);
 
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
@@ -596,17 +627,17 @@ void Numerical_flux_y(double t){
 				// L2 project back to element, right element
 				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
 							temp -> index[2], temp -> mortar.l_max, 
-							temp -> mortar.a_r, temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_r,
+			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
 //if(mpi::rank == 3){
 //
 //	std::cout<< n_key << "\n";
-//	
+//	std::cout.precision(17);
 //	int h{};
 //	for(auto& solu : temp -> nflux_l){
 //
-//		std::cout<< "mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
+//		std::cout<< std::fixed<<"mortar "<<temp -> mortar.nflux[h] << " nflux "<< solu << "\n";
 //		++h;
 //	}
 //	std::cout<< "\n";
@@ -618,8 +649,8 @@ void Numerical_flux_y(double t){
 
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
 							it_face -> hlevel, temp -> mortar.l_max, 
-							temp -> mortar.a_l, temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, mapped_points);
+							temp -> mortar.b_l,
+			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
 //if(mpi::rank == 3){
 //
 //	std::cout<< n_key << "\n";

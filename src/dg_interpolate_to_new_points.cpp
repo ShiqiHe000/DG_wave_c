@@ -297,10 +297,10 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 			int index = Get_single_index(i, j, n);
 
 			t += T[index] * f[fi];
-//std::cout<< "i" << i << " j "<< j << " fi " << fi << " solution_old " << f[fi] << " T " << T[index] << "\n";
+//			std::cout<< "T "<< T[index] << " f " << f[fi] << " t " << t<<"\n";
 			fi += interval;
 		}
-
+		
 		new_f[ni] = t;
 
 //std::cout << "------------new " << new_f[ni] << "----------------- \n";
