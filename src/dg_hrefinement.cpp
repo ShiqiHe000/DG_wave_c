@@ -54,22 +54,16 @@ void Flag_elem(int kt){
 		// generate random number
 		int rand_num = rand() % 10 + 1;	// random number between [1, 10]
 
-int key_test = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-if(mpi::rank == 0 && kt == 0 && key_test == 0){
-
-	rand_num = 1;
-}
-else{
-	rand_num = 4;
-}
-//if(kt == 0){
-//	rand_num = 1;
+//int key_test = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//if(mpi::rank == 1 && kt == 0 ){
 //
+//	rand_num = 1;
 //}
 //else{
-//
 //	rand_num = 4;
 //}
+rand_num = 4;
+
 		bool check_h = ((temp -> index[2]) < grid::hlevel_max ) ? true : false;
 		bool check_c = ((temp -> index[2]) > 0)	 ? true : false;
 

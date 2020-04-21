@@ -64,11 +64,7 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	Form_new_set_of_points(m, -1.0, yl);
 	Form_new_set_of_points(m,  0.0, yr);
 	//---------------------------------------------------------------------------
-//for(auto& v : yr){
-//
-//	std::cout<< v << "\n";
-//
-//}
+
 	// form interpolation matrix------------------------------------------------------
 	std::vector<double> T_xl; 	// interpolation matrix
 	std::vector<double> T_xr; 	// interpolation matrix
@@ -80,11 +76,6 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	Polynomial_interpolate_matrix(nodal::gl_points[n], xr, T_xr);
 	Polynomial_interpolate_matrix(nodal::gl_points[m], yl, T_yl);
 	Polynomial_interpolate_matrix(nodal::gl_points[m], yr, T_yr);
-//for(auto& v : T_xr){
-//
-//	std::cout<< v << "\n";
-//
-//}
 	//--------------------------------------------------------------------------------
 
 	// c0
@@ -123,28 +114,8 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 			Interpolate_to_new_points(m + 1,  m + 1, T_y,
 					local::Hash_elem[p_key] -> solution[equ], middle[equ], start, start, 1);
 		}
-//if(equ == 0){
-//
-//	
-//	for(auto& v : middle[0]){
-//
-//		std::cout<< v << "\n";
-//	}
-//
-//	std::cout << "---------------------- \n";
-//}
 	}
-//for(int i = 0; i <= n; ++i){
-//
-//	for(int j = 0; j <= m; ++j){
-//
-//		int start = Get_single_index(i, j, m + 1);
-//		std::cout<< i << " " << j  << " "<< middle[0][start] << "\n";
-//	}
-//
-//}
-//std::cout<< " ---------------------------- \n";
-//std::cout << "***************************** x dir ***************************** \n";
+
 	// x direction
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
@@ -158,16 +129,6 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 		}
 	}
 
-//for(int i = 0; i <= n; ++i){
-//
-//	for(int j = 0; j <= m; ++j){
-//
-//		int start = Get_single_index(i, j, m + 1);
-//		std::cout<< i << " " << j  << " "<< c -> solution[0][start] << "\n";
-//	}
-//
-//}
-//std::cout<< " ---------------------------- \n";
 
 }
 
@@ -202,12 +163,6 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 
 	BARW(n - 1, x, w);
 
-//for(auto& v : w){
-//	std::cout<< "porder " << n - 1 << " bary "<< v << "\n";
-//}
-//std::cout << " ------------------ \n";
-
-
 	for(int k = 0; k < m; ++k){
 
 		bool row_match = false;
@@ -239,8 +194,6 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 				T[index] = t;
 
 				s += t;
-//std::cout << "k" << k << " j "<< j<< " weight "<< w[j]<< " x[j] " << x[j] << " xi[k] " 
-//			<< xi[k]<< " t = "<< t << " s = "<< s << "\n";
 			}
 
 			for(int j = 0; j < n; ++j){
@@ -256,18 +209,6 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 		}
 	}
 
-//for(int i = 0; i < m; ++i){
-//
-//
-//	for(int j = 0; j < n; ++j){
-//
-//		int index = Get_single_index(i, j, n);
-//		std::cout<< i << " " << j << " "<< T[index] << "\n";
-//
-//	}
-//	
-//}
-//std::cout << " ========================= \n";
 
 }
 
@@ -281,7 +222,6 @@ void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& 
 /// @param start_old The node number of the first value in f.
 /// @param start_new The node number of the first value in new_f.
 /// @param interval node index interval.
-/// @note new_f the new interpolant will be added to the new_f (not erasing it's old value). 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
 				std::vector<double>& f, std::vector<double>& new_f, int start_old, int start_new, int interval){
 
@@ -297,16 +237,13 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 			int index = Get_single_index(i, j, n);
 
 			t += T[index] * f[fi];
-//			std::cout<< "T "<< T[index] << " f " << f[fi] << " t " << t<<"\n";
 			fi += interval;
 		}
 		
 		new_f[ni] = t;
 
-//std::cout << "------------new " << new_f[ni] << "----------------- \n";
 
 		ni += interval;
 
 	}
-//std::cout << "================================================= \n";
 }
