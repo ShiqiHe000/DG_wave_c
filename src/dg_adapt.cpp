@@ -12,7 +12,7 @@ void Adapt(int kt){
 
 	h_refinement();
 
-	p_refinement();
+//	p_refinement();
 	
 	// clear the old mpi tables before construct the new ones
 	Clear_tables();
