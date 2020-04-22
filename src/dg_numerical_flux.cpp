@@ -68,7 +68,7 @@ void Numerical_flux_x(double t){
 								temp -> mortar.psi_r, T);
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
-				for(int s = 0; s <= pordery; ++s){
+				for(int s = 0; s <= temp -> mortar.n_max; ++s){
 
 					//now functionally conforming interface==========================================
 					// Riemann solver
@@ -147,9 +147,10 @@ void Numerical_flux_x(double t){
 //if(mpi::rank == 1){
 //
 //	std::cout<< n_key << "\n";
-//	for(auto& h : T){
+//	std::cout.precision(17);
+//	for(auto& h : temp -> mortar.psi_l){
 //
-//		std::cout<< h << "\n";
+//		std::cout<< std::fixed <<h << "\n";
 //
 //	}
 //	std::cout<< "\n";
@@ -158,7 +159,7 @@ void Numerical_flux_x(double t){
 
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
-				for(int s = 0; s <= pordery; ++s){
+				for(int s = 0; s <= temp -> mortar.n_max; ++s){
 
 					// assuming functionally conforming------------------------------------------------
 					// Riemann solver, 
@@ -178,6 +179,18 @@ void Numerical_flux_x(double t){
 			 				temp -> nflux_l, temp -> mortar.nflux, T);
 
 
+//if(mpi::rank == 1){
+//
+//	std::cout<< n_key << "\n";
+//	std::cout.precision(17);
+//	for(auto& h : temp -> nflux_l){
+//
+//		std::cout<< std::fixed <<h << "\n";
+//
+//	}
+//	std::cout<< "\n";
+//
+//}
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
 				std::fill(temp -> ghost[n_key].begin(), temp -> ghost[n_key].end(), 0);
@@ -187,6 +200,18 @@ void Numerical_flux_x(double t){
 							temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
 
+//if(mpi::rank == 1){
+//
+//	std::cout<< n_key << "\n";
+//	std::cout.precision(17);
+//	for(auto& h : temp -> ghost[n_key]){
+//
+//		std::cout<< std::fixed <<h << "\n";
+//
+//	}
+//	std::cout<< "\n";
+//
+//}
 			}
 		}
 
@@ -413,7 +438,7 @@ void Numerical_flux_y(double t){
 			
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
-				for(int s = 0; s <= porderx; ++s){
+				for(int s = 0; s <= mortar.n_max; ++s){
 
 					// Riemann solver
 					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
@@ -486,7 +511,7 @@ void Numerical_flux_y(double t){
 
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
-				for(int s = 0; s <= porderx; ++s){
+				for(int s = 0; s <= temp -> mortar.n_max; ++s){
 
 					// Riemann solver
 					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
