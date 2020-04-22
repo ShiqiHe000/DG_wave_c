@@ -6,13 +6,16 @@
 #include "dg_nodal_2d_storage.h"
 #include <unordered_map>
 #include "dg_local_storage.h"
-#include "dg_cantor_pairing.h"	// test
+#include "dg_status_table.h"
+#include "dg_cantor_pairing.h"	
 #include <iostream>	// test
 
 // forward declaration----------------------------------------
 void p_refinement_apply(Unit* temp);
 
 void p_refinement();
+
+void Update_neighbours_facen(Unit* temp);
 //------------------------------------------------------------
 
 /// @brief
@@ -104,15 +107,44 @@ void p_refinement_apply(Unit* temp){
 		temp -> m = new_order;
 
 		// updates local neighbours face info
-		
+		Update_neighbours_facen(temp);
 
 	}	
 }
 
 /// @brief
 /// Since the current element's polynomial order changes, we need to update it's neighbours records.
+/// @param temp Pointer to the current element.
 void Update_neighbours_facen(Unit* temp){
 
+	int my_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
+	// loop through four faces
+	for(int i = 0; i < 4; ++i){
+
+		auto it_face = temp -> facen[i].begin();
+		
+		for(; it_face != temp -> facen[i].end(); ++it_face){
+	
+			int opp_dir = Opposite_dir(i);
+
+			// only change local neighbours
+			if(it_face -> face_type == 'L'){
+
+				// go to neighbour and updates the orders
+				for(auto it_n = local::Hash_elem[it_face -> key] -> facen[opp_dir].begin();
+					it_n != local::Hash_elem[it_face -> key] -> facen[opp_dir].end(); ++it_n ){
+
+					if(it_n -> key == my_key){	// find it
+
+						it_n -> porderx = temp -> n;
+						it_n -> pordery = temp -> m;
+					}
+				}
+			}
+			
+		}
+
+	}
 
 }
