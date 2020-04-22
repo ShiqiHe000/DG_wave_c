@@ -438,7 +438,7 @@ void Numerical_flux_y(double t){
 			
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
-				for(int s = 0; s <= mortar.n_max; ++s){
+				for(int s = 0; s <= temp -> mortar.n_max; ++s){
 
 					// Riemann solver
 					Riemann_solver_y(temp -> mortar.psi_l, temp -> mortar.psi_r, 
