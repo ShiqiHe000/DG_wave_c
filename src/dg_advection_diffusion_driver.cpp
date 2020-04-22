@@ -49,7 +49,7 @@ void Driver_for_DG_approximation(){
 			Adapt(k);
 //			DG_init();	
 //		}
-
+//std::cout<< "rank " << mpi::rank << "\n";
 		DG_step_by_RK3(tn, delta_t);
 
      //		Serial_io(tn);		

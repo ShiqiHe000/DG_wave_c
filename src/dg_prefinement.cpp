@@ -79,6 +79,18 @@ void p_refinement_apply(Unit* temp){
 
 		}
 
+//for(auto& v : temp -> solution[1]){
+//
+//	std::cout<< v << "\n";
+//}
+//std::cout<< "\n";
+
+//for(auto& v :  middle[1]){
+//
+//	std::cout<< v << "\n";
+//}
+//std::cout<< "\n";
+
 		// clear the old solutions
 		temp -> solution.clear();
 
@@ -94,13 +106,18 @@ void p_refinement_apply(Unit* temp){
 			for(int j = 0; j <= new_order; ++j){
 	
 				Interpolate_to_new_points(new_order + 1,  temp -> n + 1, T,
-						middle[equ], temp -> solution[equ], start_old, start_old, new_order + 1);
+						middle[equ], temp -> solution[equ], start_old, start_new, new_order + 1);
 				
 				start_old += (temp -> n + 1);
 				start_new += (new_order + 1);
 			}
 		}
 	
+//for(auto& v : temp -> solution[1]){
+//
+//	std::cout<< v << "\n";
+//}
+//std::cout<< "\n";
 	
 		// update the polynomial order
 		temp -> n = new_order;

@@ -11,9 +11,9 @@ void Adapt(int kt){
 	Flag_elem(kt);
 
 	h_refinement();
-
-//	p_refinement();
+	p_refinement();
 	
+//std::cout<< mpi::rank << "\n";
 	// clear the old mpi tables before construct the new ones
 	Clear_tables();
 
