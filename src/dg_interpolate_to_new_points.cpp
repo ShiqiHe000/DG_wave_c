@@ -238,7 +238,7 @@ void Interpolate_to_new_points(int m, int n, std::vector<double>& T,
 
 			t += T[index] * f[fi];
 
-std::cout<<"f_old " << f[fi] << "\n";
+//std::cout<<"f_old " << f[fi] << "\n";
 
 			fi += interval;
 		}
@@ -250,5 +250,5 @@ std::cout<<"f_old " << f[fi] << "\n";
 
 	}
 
-std::cout<< "\n";
+//std::cout<< "\n";
 }

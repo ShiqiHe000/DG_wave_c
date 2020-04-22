@@ -108,16 +108,12 @@ void p_refinement_apply(Unit* temp){
 				Interpolate_to_new_points(new_order + 1,  temp -> n + 1, T,
 						middle[equ], temp -> solution[equ], start_old, start_new, new_order + 1);
 				
-				start_old += (temp -> n + 1);
-				start_new += (new_order + 1);
+				++start_old;
+				++start_new;
 			}
+
 		}
 	
-//for(auto& v : temp -> solution[1]){
-//
-//	std::cout<< v << "\n";
-//}
-//std::cout<< "\n";
 	
 		// update the polynomial order
 		temp -> n = new_order;
