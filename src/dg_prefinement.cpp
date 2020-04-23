@@ -13,14 +13,14 @@
 // forward declaration----------------------------------------
 void p_refinement_apply(Unit* temp);
 
-void p_refinement();
+void p_refinement(int kt);
 
 void Update_neighbours_facen(Unit* temp);
 //------------------------------------------------------------
 
 /// @brief
 /// Apply p-refinement to the elements
-void p_refinement(){
+void p_refinement(int kt){
 
 	Unit* temp = local::head;
 
@@ -28,7 +28,7 @@ void p_refinement(){
 
 		int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
-		if(key == 0){
+		if(key == 0 && kt == 0){
 
 			p_refinement_apply(temp);
 

@@ -148,7 +148,7 @@ void Numerical_flux_x(double t){
 //
 //	std::cout<< n_key << "\n";
 //	std::cout.precision(17);
-//	for(auto& h : temp -> mortar.psi_l){
+//	for(auto& h : temp -> mortar.psi_r){
 //
 //		std::cout<< std::fixed <<h << "\n";
 //
@@ -204,7 +204,7 @@ void Numerical_flux_x(double t){
 //
 //	std::cout<< n_key << "\n";
 //	std::cout.precision(17);
-//	for(auto& h : temp -> ghost[n_key]){
+//	for(auto& h : temp -> mortar.nflux){
 //
 //		std::cout<< std::fixed <<h << "\n";
 //
@@ -535,6 +535,18 @@ void Numerical_flux_y(double t){
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
 			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
+//if(mpi::rank == 3){
+//
+//	std::cout.precision(17);
+//
+//	for(auto& h : temp -> ghost[n_key]){
+//
+//		std::cout<< std::fixed<< h << "\n";
+//	}
+//	std::cout<< "\n";
+//}
+
+
 			}
 		}
 
