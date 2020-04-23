@@ -13,11 +13,6 @@ void Adapt(int kt){
 	h_refinement();
 	p_refinement(kt);
 	
-//if(mpi::rank == 0){
-//
-//	std::cout<< local::Hash_elem[0] -> n << "\n";
-//}
-//std::cout<< mpi::rank << "\n";
 	// clear the old mpi tables before construct the new ones
 	Clear_tables();
 
