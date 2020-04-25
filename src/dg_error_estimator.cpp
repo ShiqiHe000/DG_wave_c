@@ -9,6 +9,6 @@
 /// @param temp pointer to the estimated element.
 double Error_indicator(int num, Unit* temp){
 
-//	assert();
+	assert((temp -> n > 6) && "Polynomial order is too low to estimate error.");
 
 }
