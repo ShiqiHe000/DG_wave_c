@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 5000;
+	const double t_total = 1.0e-5 * 1;
 //	const double t_total = 0.5;
 
-	const int nt = 5000;
+	const int nt = 1;
 
 };
 
@@ -64,6 +64,14 @@ namespace dg_fun{
 
 //	const double C = 1.0;
 	const double C =  1.0 / (4.0 * std::atan(1.0));
+};
+
+/// @brief
+/// refinement (hp) refinement swtich.
+/// @param adapt refinement switch. 
+namespace dg_refine{
+
+	const bool adapt = false;
 };
 
 //----------------------------------------------------------------------

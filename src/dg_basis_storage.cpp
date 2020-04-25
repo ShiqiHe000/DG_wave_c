@@ -64,16 +64,40 @@ void Construct_basis_storage(){
 
 	}
 
-//if(mpi::rank == 0){
-//
-//
-//		for(int j = 0; j <= 2; ++j){
-//			std::cout << j  << " " << nodal::gl_points[2][j] << "\n";
-//
-//		}
-//
-//
-//
-//}
+	// if we apply refinement, we need the value of Legendre polynomial 
+	if(dg_refine::adapt){
+
+		for(int n = grid::nmin; n <= grid::nmax; n+=2){	// k = poly order
+			
+			nodal::legendre[n] = std::vector<double>(n + 1);	// legendre polynomial for error estimator
+
+			// Legendre polynomial value at GL points
+			for(int i = 0; i <= n; ++i ){
+				double dq{}; 	// legendre poly derivative, useless here.
+				Legendre_polynomial_and_derivative(n, nodal::gl_points[n][i], nodal::legendre[n][i], dq);
+			}
+		}
+
+
+		int n = grid::nmin - 2;
+
+		for(; n >= 1; n-=2 ){
+
+			std::vector<double> gl_p(n + 1);
+			std::vector<double> gl_w(n + 1);
+			nodal::legendre[n] = std::vector<double>(n + 1);	// legendre polynomial for error estimator
+
+			// generate current gl_p, gl_w
+			GL(n, gl_p, gl_w);
+
+			for(int i = 0; i <= n; ++i ){
+				double dq{}; 	// legendre poly derivative, useless here.
+				Legendre_polynomial_and_derivative(n, gl_p[i], nodal::legendre[n][i], dq);
+			}
+		}
+
+	}
+
+
 }
 

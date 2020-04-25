@@ -36,6 +36,7 @@ namespace SortMesh{
 /// @param mfirst_der Modified first derivative matrix. Key: poynomial order. 
 /// @param lagrange_l Lagrange interpolating polynomial on the left boundary. Key: poynomial order.
 /// @param lagrange_r Lagrange interpolating polynomial on the right boundary. Key: poynomial order.
+/// @param legendre Legendre polynomial value at GL points. Key: polynomial order. 
 namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> gl_points;
@@ -46,5 +47,7 @@ namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> lagrange_l;
 	std::unordered_map<int, std::vector<double>> lagrange_r;
+
+	std::unordered_map<int, std::vector<double>> legendre;
 
 }

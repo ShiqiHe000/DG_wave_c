@@ -32,6 +32,7 @@ namespace nodal{
 	extern std::unordered_map<int, std::vector<double>> lagrange_l;
 	extern std::unordered_map<int, std::vector<double>> lagrange_r;
 
+	extern std::unordered_map<int, std::vector<double>> legendre;
 }
 
 #endif
