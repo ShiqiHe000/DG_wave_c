@@ -48,6 +48,6 @@ namespace nodal{
 	std::unordered_map<int, std::vector<double>> lagrange_l;
 	std::unordered_map<int, std::vector<double>> lagrange_r;
 
-	std::unordered_map<int, std::vector<double>> legendre;
+	std::unordered_map<int, std::vector<double>> legendre;	// useless
 
 }

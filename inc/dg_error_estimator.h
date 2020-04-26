@@ -3,6 +3,6 @@
 
 #include "dg_unit.h"
 
-double Error_indicator(int num, Unit* temp);
+double Error_indicator(Unit* temp);
 
 #endif

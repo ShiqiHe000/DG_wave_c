@@ -50,6 +50,8 @@ namespace dg_fun{
 namespace dg_refine{
 
 	extern const bool adapt;
+
+	extern const int fit_point_num;
 };
 //---------------------------------------------------
 
