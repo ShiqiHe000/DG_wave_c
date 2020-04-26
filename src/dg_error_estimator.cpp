@@ -7,6 +7,14 @@
 #include <unordered_map>
 #include "dg_basis.h"
 #include "dg_nodal_2d_storage.h"
+#include <cmath>
+
+// forward declaration---------------------------------------------------------
+double Decay_rate(std::vecor<int>& porder, std::vector<double>& ap);
+
+double Error_indicator(Unit* temp);
+//-----------------------------------------------------------------------------
+
 
 /// @brief
 /// 
@@ -27,7 +35,11 @@ double Error_indicator(Unit* temp){
 	int M = temp -> m;
 	int p = N;	// assume N == M
 
+	std::vector<int> porder(dg_refine::fit_point_num);	// record the poilynomial order
+
 	for(int node = dg_refine::fit_point_num - 1; node >= 0; --node){
+
+		porder[node] = p;
 
 		// x direction-----------------------------------------------------
 		for(int i = 0; i <= p; ++i ){	// compute sum of coefficients: sum(a(i, p))
@@ -112,4 +124,47 @@ double Error_indicator(Unit* temp){
 		p -= 2;
 	}
 		
+	// get decay indicator
+	std::vector<double> sigma(dg_fun::num_of_equation);
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+		sigma[equ] = Decay_rate(porder, ap[equ]);
+	}
+}
+
+/// @brief
+/// Assume the decaying spectrum ap is an exponential function ( ap  = const * exp ^ (-sigma * n)).
+/// Apply log arithmetic to the two side of the function and fit the ap by a linear regression line.
+/// Then we get the decay factor (the absolute value of the line). 
+/// @param porder the corresponding order of ap. (x)
+/// @param ap the decaying spectrums. (y)
+double Decay_rate(std::vecor<int>& porder, std::vector<double>& ap){
+
+	double x_avg{}; double y_avg{};
+
+	for(int i = 0; i < dg_refine::fit_point_num; ++i){
+
+		x_avg += (double)porder[i];
+		y_avg += ap[i];
+
+	}
+	x_avg /= (double)dg_refine::fit_point_num;
+	y_avg /= (double)dg_refine::fit_point_num;
+
+	
+	double sigma{};
+	double numer{};
+	double denumer{};
+
+	for(int i = 0; i < dg_refine::fit_point_num; ++i){
+		
+		numer += ((double)porder[i] - x_avg) * (ap[i] - y_avg);
+		denumer += std::pow(((double)porder[i] - x_avg), 2);
+	
+	}
+		
+	sigma = std::abs(numer / denumer);
+
+
+	return sigma;
+
 }
