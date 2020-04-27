@@ -46,7 +46,7 @@ void Refinement_flag(){
 	
 			}
 			else{
-	
+
 				temp -> prefine = true;
 			}
 		}
@@ -196,7 +196,7 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		
 //if(mpi::rank == 0){
 //
-//	for(auto& v : ap[2]){
+//	for(auto& v : ap[0]){
 //
 //		std::cout << v << "\n";
 //
