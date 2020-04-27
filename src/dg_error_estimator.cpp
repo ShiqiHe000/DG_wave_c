@@ -9,6 +9,7 @@
 #include "dg_nodal_2d_storage.h"
 #include <cmath>
 #include "dg_local_storage.h"
+#include <iostream>	// test
 
 // forward declaration---------------------------------------------------------
 double Decay_rate(std::vector<int>& porder, std::vector<double>& ap);
@@ -31,6 +32,12 @@ void Refinement_flag(){
 
 		Error_indicator(temp, sigma, flag);
 		
+//if(mpi::rank == 0){
+//
+//	std::cout<< flag.front() << sigma.front() << "\n";
+//
+//
+//}
 		// now refine depends on pressure--------------
 		if(flag.front()){
 			if(sigma.front() < 1){	// h-refinemnt
@@ -69,6 +76,8 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 	int M = temp -> m;
 	int p = N;	// assume N == M
 
+	assert((M == N) && "Right now the error estimator only works for same order in 2D. ");
+
 	std::vector<int> porder(dg_refine::fit_point_num);	// record the poilynomial order
 
 	for(int node = dg_refine::fit_point_num - 1; node >= 0; --node){
@@ -80,6 +89,8 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 			
 			// a(n, m) = a(i, p), apply Gauss quadrature
 			for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+				double ap_now{};
 
 				for(int k = 0; k <= N; ++k){	// x dir
 	
@@ -100,26 +111,47 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 						Legendre_polynomial_and_derivative(p, nodal::gl_points[M][l], 
 										legendre_y, legendre_dir);
 
-						ap[equ][node] += (temp -> solution[equ][index]) * 
+//						ap[equ][node] += (2.0 * (double)i + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
+//								(temp -> solution[equ][index]) * 
+//								legendre_x * legendre_y * 
+//								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
+//								
+						ap_now += (2.0 * (double)i + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
+								(temp -> solution[equ][index]) * 
 								legendre_x * legendre_y * 
 								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
-								
-						
+//if(mpi::rank == 0){
+//
+//	std::cout << ap[equ][node] << "\n";
+//
+//}
 					}
 					
 				}
+	
+				ap[equ][node] += std::abs(ap_now);
+//if(mpi::rank == 0){
+//
+//	std::cout << "equ "<< equ << " node " << node << " " <<ap[equ][node] << " " << ap_now<< "\n";
+//
+//}
 
-				ap[equ][node] *= (2.0 * (double)i + 1.0) * (2.0 * (double)p + 1.0) / 4.0;
 			}
 
 		}
 		//-----------------------------------------------------------------
-
+//if(mpi::rank == 0){
+//
+//	std::cout << "================================= \n";
+//
+//}
 		// y direction-----------------------------------------------------
 		for(int j = 0; j < p; ++j ){	// here does not need to include the last point (j < p)
 			
 					
 			for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+				double ap_now{};
 
 				for(int k = 0; k <= N; ++k){	// x dir
 	
@@ -140,17 +172,21 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 						Legendre_polynomial_and_derivative(j, nodal::gl_points[M][l], 
 										legendre_y, legendre_dir);
 
-						ap[equ][node] += (temp -> solution[equ][index]) * 
+//						ap[equ][node] += (2.0 * (double)j + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
+//								(temp -> solution[equ][index]) * 
+//								legendre_x * legendre_y * 
+//								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
+								
+						ap_now += (2.0 * (double)j + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
+								(temp -> solution[equ][index]) * 
 								legendre_x * legendre_y * 
 								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
-								
 						
 					}
 					
 				}
 
-				ap[equ][node] *= (2.0 * (double)j + 1.0) * (2.0 * (double)p + 1.0) / 4.0;
-
+				ap[equ][node] += std::abs(ap_now);
 			}
 
 		}
@@ -158,6 +194,17 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		p -= 2;
 	}
 		
+if(mpi::rank == 0){
+
+	for(auto& v : ap[0]){
+
+		std::cout << v << "\n";
+
+	}
+
+}
+
+
 	// refinment criteria: if exceed the acceptable level then flag as needed refinement. 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 

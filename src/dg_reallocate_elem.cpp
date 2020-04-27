@@ -371,8 +371,6 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
 		}
 
 		
-		local::Hash_elem[key] -> var = (*it).var;
-		
 		if(it != recv_info.begin()){
 			local::Hash_elem[pre_key] -> next = local::Hash_elem[key];
 
@@ -497,8 +495,6 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 			v.xcoords[i] = local::Hash_elem[*it] -> xcoords[i];
 			v.ycoords[i] = local::Hash_elem[*it] -> ycoords[i];
 		}
-
-		v.var = local::Hash_elem[*it] -> var;
 
 		++it;
 	}
