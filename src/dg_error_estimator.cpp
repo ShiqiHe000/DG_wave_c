@@ -34,7 +34,7 @@ void Refinement_flag(){
 		
 //if(mpi::rank == 0){
 //
-//	std::cout<< flag.front() << sigma.front() << "\n";
+//	std::cout<< flag.front() << " "<< sigma[0] << " " << sigma[1] << "\n";
 //
 //
 //}
@@ -44,13 +44,16 @@ void Refinement_flag(){
 //std::cout<< "rank " << mpi::rank << "\n";
 
 			if(sigma.front() < 1){	// h-refinemnt
-				
-				temp -> hrefine = true;
+			
+				if(temp -> index[2] < grid::hlevel_max){ // if no exceed the max hlevel
+					temp -> hrefine = true;
+				}
 	
 			}
 			else{
-
-				temp -> prefine = true;
+				if(temp -> n < grid::nmax){	// not exceed the max poly order
+					temp -> prefine = true;
+				}
 			}
 		}
 		//-------------------------------------------------
