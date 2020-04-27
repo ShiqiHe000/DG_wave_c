@@ -72,14 +72,6 @@ public:
 	Mortar mortar;	// mortar struct instance	
 	//-----------------------------------------------------
 
-
-	// for testing-----------------------------------------
-	int var{};
-	double n_interface{};
-	double s_interface{};
-	//-----------------------------------------------------
-
-
 	// constructor (default)
 	Unit();
 

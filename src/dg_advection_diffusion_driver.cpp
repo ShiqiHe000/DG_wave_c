@@ -10,7 +10,6 @@
 #include "dg_load_balancing.h"
 #include "dg_derived_datatype.h"
 #include "dg_step_by_RK3.h"
-#include "dg_simple_test.h"	// test
 #include "dg_test.h"	// test
 #include <iostream>	// test
 
@@ -49,7 +48,6 @@ void Driver_for_DG_approximation(){
 //			Adapt(k);
 //			DG_init();	
 //		}
-//std::cout<< "rank " << mpi::rank << "\n";
 		DG_step_by_RK3(tn, delta_t);
 
      //		Serial_io(tn);		
