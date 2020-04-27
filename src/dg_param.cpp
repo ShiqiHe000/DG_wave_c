@@ -77,7 +77,7 @@ namespace dg_refine{
 
 	const int fit_point_num = 4;
 
-	const double tolerance = 1.0e-3;
+	const double tolerance = 1.0e-9;
 
 };
 

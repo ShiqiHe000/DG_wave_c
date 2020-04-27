@@ -194,15 +194,15 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		p -= 2;
 	}
 		
-if(mpi::rank == 0){
-
-	for(auto& v : ap[0]){
-
-		std::cout << v << "\n";
-
-	}
-
-}
+//if(mpi::rank == 0){
+//
+//	for(auto& v : ap[2]){
+//
+//		std::cout << v << "\n";
+//
+//	}
+//
+//}
 
 
 	// refinment criteria: if exceed the acceptable level then flag as needed refinement. 
@@ -211,14 +211,28 @@ if(mpi::rank == 0){
 		// L2 norm of the current element 
 		double u_norm = Solution_l2_norm(equ, temp);
 
+		u_norm *= dg_refine::tolerance;
+
 		double sum = ap[equ].back();	// sum of the last spectrum
 
+//if(mpi::rank == 0){
+//
+//	std::cout << "equ "<< equ << " " << "tolerance "<< u_norm  <<" sum " << sum << "\n";
+//
+//}
 		if(sum > u_norm){	// need refine
 
 			flag[equ] = true;
 
 			// get decay indicator
 			sigma[equ] = Decay_rate(porder, ap[equ]);
+//if(mpi::rank == 0){
+//
+//	std::cout<< "equ "<< equ << " decay rate "<< sigma[equ] << "\n";
+//
+//}
+
+
 		}
 		else{
 
@@ -271,12 +285,23 @@ double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 	for(int i = 0; i < dg_refine::fit_point_num; ++i){
 
 		x_avg += (double)porder[i];
-		y_avg += ap[i];
-
+		y_avg += std::log(ap[i]);
+//if(mpi::rank == 0){
+//
+//	std::cout.precision(17);
+//
+//	std::cout<< std::fixed<<"ap "<< ap[i] << " log(ap) " << std::log(ap[i]) << "\n";
+//
+//}
 	}
 	x_avg /= (double)dg_refine::fit_point_num;
 	y_avg /= (double)dg_refine::fit_point_num;
 
+//if(mpi::rank == 0){
+//
+//	std::cout << "x_avg " << x_avg << " y_avg "<< y_avg << "\n";
+//
+//}
 	
 	double sigma{};
 	double numer{};
@@ -284,13 +309,17 @@ double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 
 	for(int i = 0; i < dg_refine::fit_point_num; ++i){
 		
-		numer += ((double)porder[i] - x_avg) * (ap[i] - y_avg);
+		numer += ((double)porder[i] - x_avg) * (std::log(ap[i]) - y_avg);
 		denumer += std::pow(((double)porder[i] - x_avg), 2);
 	
 	}
 		
 	sigma = std::abs(numer / denumer);
-
+//if(mpi::rank == 0){
+//
+//	std::cout << sigma << "\n";
+//
+//}
 
 	return sigma;
 
