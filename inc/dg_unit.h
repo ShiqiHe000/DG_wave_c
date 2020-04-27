@@ -64,7 +64,8 @@ public:
 
 	Unit* next = nullptr;	// pointer to the next Unit
 
-	bool hrefine = false;	// refinemnt 
+	bool hrefine = false;	// h-refinemnt 
+	bool prefine = false;	// p-refinemnt 
 	bool coarsen = false; 
 
 	// mortar ---------------------------------------------

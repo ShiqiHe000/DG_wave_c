@@ -26,11 +26,21 @@ void p_refinement(int kt){
 
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		// test==============================================================================
+//		int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//
+//		if(key == 16 && kt == 0){
+//
+//			p_refinement_apply(temp);
+//
+//		}
+		//====================================================================================
 
-		if(key == 16 && kt == 0){
+		if(temp -> prefine){
 
 			p_refinement_apply(temp);
+
+			temp -> prefine = false;	// turn off the switch after refine the element
 
 		}
 

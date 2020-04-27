@@ -70,11 +70,14 @@ namespace dg_fun{
 /// refinement (hp) refinement swtich.
 /// @param adapt refinement switch. 
 /// @param fit_point_num The number of points that are used to compute least square fit
+/// @param tolerance the tolerance of global error. 
 namespace dg_refine{
 
 	const bool adapt = false;
 
 	const int fit_point_num = 4;
+
+	const double tolerance = 1.0e-3;
 
 };
 

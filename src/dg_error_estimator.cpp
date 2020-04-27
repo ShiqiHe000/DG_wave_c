@@ -8,19 +8,53 @@
 #include "dg_basis.h"
 #include "dg_nodal_2d_storage.h"
 #include <cmath>
+#include "dg_local_storage.h"
 
 // forward declaration---------------------------------------------------------
-double Decay_rate(std::vecor<int>& porder, std::vector<double>& ap);
+double Decay_rate(std::vector<int>& porder, std::vector<double>& ap);
 
-double Error_indicator(Unit* temp);
+void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag);
+
+double Solution_l2_norm(int equ, Unit* temp);
+
+void Refinement_flag();
 //-----------------------------------------------------------------------------
 
+void Refinement_flag(){
+
+	Unit* temp = local::head;
+
+	for(int k = 0; k < local::local_elem_num; ++k){
+
+		std::vector<double> sigma(dg_fun::num_of_equation);
+		std::vector<bool> flag(dg_fun::num_of_equation);
+
+		Error_indicator(temp, sigma, flag);
+		
+		// now refine depends on pressure--------------
+		if(flag.front()){
+			if(sigma.front() < 1){	// h-refinemnt
+				
+				temp -> hrefine = true;
+	
+			}
+			else{
+	
+				temp -> prefine = true;
+			}
+		}
+		//-------------------------------------------------
+		temp = temp -> next;
+	}
+
+}
 
 /// @brief
-/// 
+/// Calculate the error indicator sigma, if sigma < 1 apply h-refinemnt, 
+/// if sigma >= 1 apply prefinement. 
 /// @param temp pointer to the estimated element.
 /// @note The polynomial order in x and y direction should be identical.
-double Error_indicator(Unit* temp){
+void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag){
 
 	assert((temp -> n > 6) && "Polynomial order is too low to estimate error.");
 
@@ -124,12 +158,58 @@ double Error_indicator(Unit* temp){
 		p -= 2;
 	}
 		
-	// get decay indicator
-	std::vector<double> sigma(dg_fun::num_of_equation);
+	// refinment criteria: if exceed the acceptable level then flag as needed refinement. 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-		sigma[equ] = Decay_rate(porder, ap[equ]);
+
+		// L2 norm of the current element 
+		double u_norm = Solution_l2_norm(equ, temp);
+
+		double sum = ap[equ].back();	// sum of the last spectrum
+
+		if(sum > u_norm){	// need refine
+
+			flag[equ] = true;
+
+			// get decay indicator
+			sigma[equ] = Decay_rate(porder, ap[equ]);
+		}
+		else{
+
+			flag[equ] = false;
+		}
+
+
 	}
+	
+
 }
+
+/// @brief
+/// Calculate the L2 norm of solution of the current element of the demanding equaiton.
+/// @param equ the equation number
+/// @param temp pointer to the Current element.
+double Solution_l2_norm(int equ, Unit* temp){
+
+	double norm{};
+
+	int nodei{};
+
+	for(int i = 0; i <= temp -> n; ++i){
+
+		for(int j = 0; j <= temp -> m; ++j){
+
+			norm += std::pow(temp -> solution[equ][nodei], 2);
+			++nodei;
+		}
+
+	}
+
+
+	return (std::sqrt(norm));
+
+}
+
+
 
 /// @brief
 /// Assume the decaying spectrum ap is an exponential function ( ap  = const * exp ^ (-sigma * n)).
@@ -137,7 +217,7 @@ double Error_indicator(Unit* temp){
 /// Then we get the decay factor (the absolute value of the line). 
 /// @param porder the corresponding order of ap. (x)
 /// @param ap the decaying spectrums. (y)
-double Decay_rate(std::vecor<int>& porder, std::vector<double>& ap){
+double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 
 	double x_avg{}; double y_avg{};
 

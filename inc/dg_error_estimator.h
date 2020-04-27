@@ -3,6 +3,6 @@
 
 #include "dg_unit.h"
 
-double Error_indicator(Unit* temp);
+void Refinement_flag();
 
 #endif
