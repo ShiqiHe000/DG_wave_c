@@ -40,6 +40,9 @@ void Refinement_flag(){
 //}
 		// now refine depends on pressure--------------
 		if(flag.front()){
+
+//std::cout<< "rank " << mpi::rank << "\n";
+
 			if(sigma.front() < 1){	// h-refinemnt
 				
 				temp -> hrefine = true;

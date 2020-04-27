@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 2;
+	const double t_total = 1.0e-5 * 1000;
 //	const double t_total = 0.5;
 
-	const int nt = 2;
+	const int nt = 1000;
 
 };
 

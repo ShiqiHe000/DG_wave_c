@@ -36,7 +36,7 @@ void p_refinement(int kt){
 //		}
 		//====================================================================================
 
-		if(temp -> prefine){
+		if(temp -> prefine && (temp -> n < grid::nmax)){	// if flag refine and not exceed the maximum poly order
 
 			p_refinement_apply(temp);
 
