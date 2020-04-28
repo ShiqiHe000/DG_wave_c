@@ -69,7 +69,7 @@ void Refinement_flag(){
 /// @note The polynomial order in x and y direction should be identical.
 void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag){
 
-	assert((temp -> n > 6) && "Polynomial order is too low to estimate error.");
+	assert((temp -> n >= 4) && "Polynomial order is too low to estimate error.");
 
 	std::unordered_map<int, std::vector<double>> ap;	// discrete spectrum ap
 	for(int i = 0; i < dg_fun::num_of_equation; ++i){	// allocate space
@@ -197,7 +197,7 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 
 		}
 		//-----------------------------------------------------------------
-		p -= 2;
+		--p;
 	}
 		
 //if(mpi::rank == 0){
