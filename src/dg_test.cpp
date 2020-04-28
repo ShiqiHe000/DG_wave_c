@@ -12,54 +12,6 @@
 
 void Write_faces();
 
-
-void Test(){
-
-	if(mpi::rank == 2){
-
-		for(auto& a : LB::proc_mapping_table){
-		
-			std::cout<< "rank "<<a.irank <<" gnum " << a.gnum << "\n" ;
-
-		}
-
-	}
-//	for(int i = 0; i <= mpi::num_proc; ++i){
-//
-//		std::cout<< mpi::rank << " " << local::elem_range[i] << "\n";
-//
-//	}
-
-
-//	if(mpi::rank == 0){
-//
-//		std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(4);
-//
-//
-//		if(got == local::Hash_elem.end()){
-//
-//			std::cout<< "not find" << "\n";
-//
-//		}
-//
-//	}
-
-//	Unit* temp =local::head;
-//	if(mpi::rank == 0){
-//
-//		for(int k = 0; k < local::local_elem_num; ++k){
-//			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
-//						
-//
-//			Write_faces(key, nt);
-//			
-//			temp = temp -> next;
-//		}
-//
-//	}
-
-}
-
 int file_num1 = 1;
 
 void Write_faces_all(){

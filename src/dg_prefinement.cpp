@@ -89,17 +89,6 @@ void p_refinement_apply(Unit* temp){
 
 		}
 
-//for(auto& v : temp -> solution[1]){
-//
-//	std::cout<< v << "\n";
-//}
-//std::cout<< "\n";
-
-//for(auto& v :  middle[1]){
-//
-//	std::cout<< v << "\n";
-//}
-//std::cout<< "\n";
 
 		// clear the old solutions
 		temp -> solution.clear();
@@ -123,12 +112,6 @@ void p_refinement_apply(Unit* temp){
 			}
 
 		}
-	
-//for(auto& v : temp -> solution[1]){
-//
-//	std::cout<< v << "\n";
-//}
-//std::cout<< "\n";
 	
 		// update the polynomial order
 		temp -> n = new_order;

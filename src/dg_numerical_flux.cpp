@@ -51,21 +51,22 @@ void Numerical_flux_x(double t){
 
 				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> T;	// interpolaiton matrix
+				std::vector<double> Tl;	// interpolaiton matrix, left
+				std::vector<double> Tr;	// interpolaiton matrix. right
 
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 					 			local::Hash_elem[n_key] -> solution_int_r, 
-								temp -> mortar.psi_l, T);
+								temp -> mortar.psi_l, Tl);
 
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
-								temp -> mortar.psi_r, T);
+								temp -> mortar.psi_r, Tr);
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
 				for(int s = 0; s <= temp -> mortar.n_max; ++s){
@@ -84,13 +85,13 @@ void Numerical_flux_x(double t){
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
 							temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, T);
+			 				temp -> nflux_l, temp -> mortar.nflux, Tr);
 
 				// L2 projection from mortar to left element	
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
+			 				temp -> ghost[n_key], temp -> mortar.nflux, Tl);
 
 
 			}
@@ -129,21 +130,22 @@ void Numerical_flux_x(double t){
 				
 				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> T;	// only one side needs to be mapped
+				std::vector<double> Tl;	
+				std::vector<double> Tr;	
 
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> pordery,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		temp -> ghost[n_key], 
-								temp -> mortar.psi_l, T);
+								temp -> mortar.psi_l, Tl);
 
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> m,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
-								temp -> mortar.psi_r, T);
+								temp -> mortar.psi_r, Tr);
 //if(mpi::rank == 1){
 //
 //	std::cout<< n_key << "\n";
@@ -176,7 +178,7 @@ void Numerical_flux_x(double t){
 				L2_projection_to_element(temp -> mortar.n_max, temp -> m, 
 							temp -> index[2], temp -> mortar.l_max, 
 							temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, T);
+			 				temp -> nflux_l, temp -> mortar.nflux, Tr);
 
 
 //if(mpi::rank == 1){
@@ -198,7 +200,7 @@ void Numerical_flux_x(double t){
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> pordery, 
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
+			 				temp -> ghost[n_key], temp -> mortar.nflux, Tl);
 
 //if(mpi::rank == 1){
 //
@@ -420,21 +422,22 @@ void Numerical_flux_y(double t){
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
 
-				std::vector<double> T;
+				std::vector<double> Tl;
+				std::vector<double> Tr;
 
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		local::Hash_elem[n_key] -> solution_int_r, 
-								temp -> mortar.psi_l, T);
+								temp -> mortar.psi_l, Tl);
 
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
-								temp -> mortar.psi_r, T);
+								temp -> mortar.psi_r, Tr);
 			
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
@@ -452,13 +455,13 @@ void Numerical_flux_y(double t){
 				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
 							temp -> index[2], temp -> mortar.l_max, 
 							temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, T);
+			 				temp -> nflux_l, temp -> mortar.nflux, Tr);
 
 				// L2 projection from mortar to left element	
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
+			 				temp -> ghost[n_key], temp -> mortar.nflux, Tl);
 
 			}
 			else if(it_face -> face_type == 'B'){	// phsical boundary
@@ -494,20 +497,21 @@ void Numerical_flux_y(double t){
 				int n_key = it_face -> key;
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
-				std::vector<double> T;
+				std::vector<double> Tl;
+				std::vector<double> Tr;
 
 				// left element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, it_face -> porderx,
 								it_face -> hlevel, temp -> mortar.l_max, 
 								temp -> mortar.a_l, temp -> mortar.b_l,
 						 		temp -> ghost[n_key], 
-								temp -> mortar.psi_l, T);
+								temp -> mortar.psi_l, Tl);
 				// right element, L2 projection
 				L2_projection_to_mortar(temp -> mortar.n_max, temp -> n,
 								temp -> index[2], temp -> mortar.l_max, 
 								temp -> mortar.a_r, temp -> mortar.b_r,
 						 		temp -> solution_int_l, 
-								temp -> mortar.psi_r, T);
+								temp -> mortar.psi_r, Tr);
 
 				std::vector<int> index{0, (temp -> mortar.n_max + 1), (temp -> mortar.n_max + 1) * 2};	
 
@@ -525,7 +529,7 @@ void Numerical_flux_y(double t){
 				L2_projection_to_element(temp -> mortar.n_max, temp -> n, 
 							temp -> index[2], temp -> mortar.l_max, 
 							temp -> mortar.b_r,
-			 				temp -> nflux_l, temp -> mortar.nflux, T);
+			 				temp -> nflux_l, temp -> mortar.nflux, Tr);
 
 				// L2 projection from mortar to left element	
 				// store remote element's nunerical flux in ghost layer. But first clean up ghost layer.
@@ -534,7 +538,7 @@ void Numerical_flux_y(double t){
 				L2_projection_to_element(temp -> mortar.n_max, it_face -> porderx, 
 							it_face -> hlevel, temp -> mortar.l_max, 
 							temp -> mortar.b_l,
-			 				temp -> ghost[n_key], temp -> mortar.nflux, T);
+			 				temp -> ghost[n_key], temp -> mortar.nflux, Tl);
 //if(mpi::rank == 3){
 //
 //	std::cout.precision(17);

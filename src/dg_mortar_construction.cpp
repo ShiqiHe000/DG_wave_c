@@ -4,7 +4,6 @@
 #include "dg_param.h"
 #include "dg_basis.h"
 #include <cmath>	// pow
-//#include <algorithm>
 #include "dg_nodal_2d_storage.h"
 #include "dg_interpolate_to_new_points.h"
 #include "dg_single_index.h"
