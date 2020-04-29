@@ -8,11 +8,11 @@
 
 void Adapt(int kt){
 
-	Refinement_flag();
+	Flag_elem(kt);
+
+//	Refinement_flag();
 	
 	hpc_refinement();
-
-//	Flag_elem(kt);
 
 //	h_refinement();
 //	p_refinement(kt);

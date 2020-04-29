@@ -61,6 +61,10 @@ if(mpi::rank == 0 && kt == 0 ){
 
 	rand_num = 1;
 }
+else if(mpi::rank == 0 && kt != 0){
+
+	rand_num = 9;
+}
 else{
 	rand_num = 4;
 }
@@ -199,7 +203,6 @@ void hpc_refinement(){
 				// p-coarsening
 				p_coarsening(temp);
 			
-
 			}
 			else{	// h-coasrening
 
@@ -277,7 +280,14 @@ void hpc_refinement(){
 						temp = local::Hash_elem[key_p];	// move pointer to the last 
 					
 						k += 3;	// skip other siblings 
-						
+
+						// L2 project back to parent 						
+						Solution_back_to_parent(four_keys, key_p);
+
+//if(mpi::rank == 0){
+//
+//	std::cout << "check \n";
+//}
 						// form the face info + change neighbours faces
 						Form_parent_faces(four_keys, key_p);
 
@@ -1067,8 +1077,8 @@ void Print_inter(int new_key, int old_key){
 
 			int index = Get_single_index(i, j, temp_p -> m + 1);
 
-			std::cout<< i << " " << j <<" " <<temp_p -> solution[0][index] 
-				<< " "<< temp_c -> solution[0][index]<< "\n" ;
+			std::cout<< i << " " << j <<" " <<temp_p -> solution[1][index] 
+				<< " "<< temp_c -> solution[1][index]<< "\n" ;
 
 		}
 	}

@@ -31,7 +31,7 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 6;	
+	const int nmin = 2;	
 	const int nmax = 14;
 
 	const int hlevel_max = 3;	
@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 5;
+	const double t_total = 1.0e-5 * 2;
 //	const double t_total = 0.5;
 
-	const int nt = 5;
+	const int nt = 2;
 
 };
 
@@ -62,8 +62,8 @@ namespace dg_fun{
 
 	const int num_of_equation = 3;
 
-	const double C = 1.0;
-//	const double C =  1.0 / (4.0 * std::atan(1.0));
+//	const double C = 1.0;
+	const double C =  1.0 / (4.0 * std::atan(1.0));
 };
 
 /// @brief
