@@ -14,7 +14,7 @@
 // forward declaration---------------------------------------------------------
 double Decay_rate(std::vector<int>& porder, std::vector<double>& ap);
 
-void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag);
+void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag_refine, std::vector<bool>& flag_coarsen);
 
 double Solution_l2_norm(int equ, Unit* temp);
 
@@ -28,20 +28,13 @@ void Refinement_flag(){
 	for(int k = 0; k < local::local_elem_num; ++k){
 
 		std::vector<double> sigma(dg_fun::num_of_equation);
-		std::vector<bool> flag(dg_fun::num_of_equation);
+		std::vector<bool> flag_refine(dg_fun::num_of_equation);
+		std::vector<bool> flag_coarsen(dg_fun::num_of_equation);
 
-		Error_indicator(temp, sigma, flag);
+		Error_indicator(temp, sigma, flag_refine, flag_coarsen);
 		
-//if(mpi::rank == 0){
-//
-//	std::cout<< flag.front() << " "<< sigma[0] << " " << sigma[1] << "\n";
-//
-//
-//}
 		// now refine depends on pressure--------------
-		if(flag.front()){
-
-//std::cout<< "rank " << mpi::rank << "\n";
+		if(flag_refine.front()){	// refine depends on pressure
 
 			if(sigma.front() < 1){	// h-refinemnt
 			
@@ -56,6 +49,11 @@ void Refinement_flag(){
 				}
 			}
 		}
+		else if(flag_coarsen.front()){
+
+//			temp -> coarsen = true;	// coarsening
+
+		}
 		//-------------------------------------------------
 		temp = temp -> next;
 	}
@@ -66,8 +64,11 @@ void Refinement_flag(){
 /// Calculate the error indicator sigma, if sigma < 1 apply h-refinemnt, 
 /// if sigma >= 1 apply prefinement. 
 /// @param temp pointer to the estimated element.
+/// @param sigma the error indicator of each function. 
+/// @param flag_refine refinement flag.
+/// @param flag_coarsen coarsening flag.
 /// @note The polynomial order in x and y direction should be identical.
-void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag){
+void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag_refine, std::vector<bool>& flag_coarsen){
 
 	assert((temp -> n >= 4) && "Polynomial order is too low to estimate error.");
 
@@ -217,7 +218,9 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		// L2 norm of the current element 
 		double u_norm = Solution_l2_norm(equ, temp);
 
-		u_norm *= dg_refine::tolerance;
+		double tol_min = u_norm * dg_refine::tolerance_min;	// the threshold for refinement 
+		
+		double tol_max = u_norm * dg_refine::tolerance_max;	// the threshold for coarening		
 
 		double sum = ap[equ].back();	// sum of the last spectrum
 
@@ -226,9 +229,11 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 //	std::cout << "equ "<< equ << " " << "tolerance "<< u_norm  <<" sum " << sum << "\n";
 //
 //}
-		if(sum > u_norm){	// need refine
+		if(sum > tol_min){	// need refine
 
-			flag[equ] = true;
+			flag_refine[equ] = true;
+
+			flag_coarsen[equ] = false;
 
 			// get decay indicator
 			sigma[equ] = Decay_rate(porder, ap[equ]);
@@ -240,9 +245,19 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 
 
 		}
-		else{
+		else if(sum <= tol_max ){	// need coarsen
 
-			flag[equ] = false;
+			flag_refine[equ] = false;
+
+			flag_coarsen[equ] = true;
+			
+
+		}
+		else{	// if error in between then do nothing
+
+			flag_refine[equ] = false;
+
+			flag_coarsen[equ] = false;
 		}
 
 

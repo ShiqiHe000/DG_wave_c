@@ -31,7 +31,7 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 8;	// x direction
+	const int nmin = 6;	
 	const int nmax = 14;
 
 	const int hlevel_max = 3;	
@@ -70,14 +70,17 @@ namespace dg_fun{
 /// refinement (hp) refinement swtich.
 /// @param adapt refinement switch. 
 /// @param fit_point_num The number of points that are used to compute least square fit
-/// @param tolerance the tolerance of global error. 
+/// @param tolerance_min the minimum discretization tolerance . If the estimated error exceeds this, refine. 
+/// @param tolerance_max the maximum discretization tolerance. If the estimated error smaller than this, coarsen. 
 namespace dg_refine{
 
 	const bool adapt = false;
 
 	const int fit_point_num = 4;
 
-	const double tolerance = 1.0e-9;
+	const double tolerance_min = 1.0e-9;
+
+	const double tolerance_max = 1.0e-14;
 
 };
 

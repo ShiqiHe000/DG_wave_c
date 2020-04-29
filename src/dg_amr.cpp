@@ -1,4 +1,4 @@
-#include "dg_hrefinement.h"
+#include "dg_amr.h"
 #include "dg_unit.h"
 #include "dg_local_storage.h"
 #include <cstdlib>	// random number
@@ -13,6 +13,7 @@
 #include "dg_neighbour_list.h"
 #include <algorithm>
 #include "dg_interpolate_to_new_points.h"
+#include "dg_prefinement.h"
 #include <iostream>	// test
 #include "dg_test.h"	// test
 #include "dg_single_index.h"	// test
@@ -22,6 +23,7 @@ double xcoord_new[3]{};
 double ycoord_new[3]{};
 
 /// forward declaration ----------------------------------------------------------------------------
+void hpc_refinement();
 void Get_coordinates(int ith, double* xcoord, double* ycoord);
 void Gen_index(int ith, int* index, int* index_new);
 void Two_siblings(int new_key, int position);
@@ -30,7 +32,7 @@ void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children
 void Form_one_direction(int key1, int key2, int parent, int facen);
 void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
 void Flag_elem(int kt);
-void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
+void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
 int Parent_position(int i, int j);
 void Inherit_from_children(int c1, int c2, int p_key, int facen);
 void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
@@ -79,9 +81,11 @@ else{
 	}
 }
 
+
+
 /// @brief
 /// Random h-refinement scheme. Each element has 30% chance to split.
-void h_refinement(){
+void hpc_refinement(){
 
 	Unit* temp = local::head;
 	Unit* temp2 = temp;
@@ -91,7 +95,7 @@ void h_refinement(){
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		if(temp -> hrefine){	// refine
+		if(temp -> hrefine){	// h - refine======================================================================
 			
 			increment += 3; 
 			
@@ -183,84 +187,103 @@ void h_refinement(){
 			local::Hash_elem.erase(old_key);
 			temp = temp2;
 		}
-		else if(temp -> coarsen){
+		else if(temp -> prefine){	// p-refinement===============================================================
+
+			p_refinement_apply(temp);
+
+		}	
+		else if(temp -> coarsen){	// coarsening ===============================================================
 			
-			// only flaged element at the child posiiton 0 or 2 can croasen
-			bool first = First_child(temp);
+			if(temp -> n > grid::nmin){	// if polynomial order is larger then the minimum
+		
+				// p-coarsening
+			}
+			else{	// h-coasrening
 
-			if(first){
-				std::array<int, 4> four_keys;
-				bool pass; 	
-				Coarsen_critira(temp, pass, four_keys);
+				// only flaged element at the child posiiton 0 or 2 can croasen
+				bool first = First_child(temp);
 
-//				Coarsen_results(temp, pass);
+				if(first){
+					std::array<int, 4> four_keys;
+					bool pass; 	
+					Coarsen_criteria(temp, pass, four_keys);
 
-				if(pass){ // if four siblings all want to coarse
-					decrement += 3;	
+//					Coarsen_results(temp, pass);
+
+					if(pass){ // if four siblings all want to coarse
+						decrement += 3;	
 	
-					// generate parent's key
-					int key_p = Get_key_fun((temp->index[0]) / 2, (temp->index[1]) / 2, temp->index[2] - 1);
+						// generate parent's key
+						int key_p = Get_key_fun((temp->index[0]) / 2, 
+								(temp->index[1]) / 2, temp->index[2] - 1);
+						
+						local::Hash_elem[key_p] = new Unit();	// create parent
 					
-					local::Hash_elem[key_p] = new Unit();	// create parent
-				
-					// index	
-					local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
-					local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
-					local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
+						// index	
+						local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
+						local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
+						local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
 	
-					// status
-					local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
+						// status
+						local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
 
-					// coordinates (inherit from elements at position 0 and 2)
-					local::Hash_elem[key_p]	-> xcoords[0] = local::Hash_elem[four_keys[0]] -> xcoords[0];
-					local::Hash_elem[key_p]	-> ycoords[0] = local::Hash_elem[four_keys[0]] -> ycoords[0];
+						// coordinates (inherit from elements at position 0 and 2)
+						local::Hash_elem[key_p]	-> xcoords[0] = 
+										local::Hash_elem[four_keys[0]] -> xcoords[0];
 
-					local::Hash_elem[key_p]	-> xcoords[1] = local::Hash_elem[four_keys[2]] -> xcoords[1];
-					local::Hash_elem[key_p]	-> ycoords[1] = local::Hash_elem[four_keys[2]] -> ycoords[1];
+						local::Hash_elem[key_p]	-> ycoords[0] = 
+										local::Hash_elem[four_keys[0]] -> ycoords[0];
 
-					// relative position
-					local::Hash_elem[key_p] -> child_position = 
+						local::Hash_elem[key_p]	-> xcoords[1] = 
+										local::Hash_elem[four_keys[2]] -> xcoords[1];
+
+						local::Hash_elem[key_p]	-> ycoords[1] = 
+										local::Hash_elem[four_keys[2]] -> ycoords[1];
+
+						// relative position
+						local::Hash_elem[key_p] -> child_position = 
 									Parent_position(local::Hash_elem[key_p] -> index[0],
-									local::Hash_elem[key_p] -> index[1]);
-					// poly orders
-					local::Hash_elem[key_p] -> n = temp -> n; // now assume four siblings share same n, m
-					local::Hash_elem[key_p] -> m = temp -> m; // now assume four siblings share same n, m
+										local::Hash_elem[key_p] -> index[1]);
+						// poly orders
+						local::Hash_elem[key_p] -> n = temp -> n; // the sibling should share same n, m
+						local::Hash_elem[key_p] -> m = temp -> m; 
 
 
-					// element boundary in reference space
-					local::Hash_elem[key_p] -> ref_x[0] = local::Hash_elem[four_keys[0]] -> ref_x[0];
-					local::Hash_elem[key_p] -> ref_x[1] = local::Hash_elem[four_keys[1]] -> ref_x[1];
+						// element boundary in reference space
+						local::Hash_elem[key_p] -> ref_x[0] = local::Hash_elem[four_keys[0]] -> ref_x[0];
+						local::Hash_elem[key_p] -> ref_x[1] = local::Hash_elem[four_keys[1]] -> ref_x[1];
 
-					local::Hash_elem[key_p] -> ref_y[0] = local::Hash_elem[four_keys[0]] -> ref_y[0];
-					local::Hash_elem[key_p] -> ref_y[1] = local::Hash_elem[four_keys[3]] -> ref_y[1];
+						local::Hash_elem[key_p] -> ref_y[0] = local::Hash_elem[four_keys[0]] -> ref_y[0];
+						local::Hash_elem[key_p] -> ref_y[1] = local::Hash_elem[four_keys[3]] -> ref_y[1];
 
-					// adjust linked list
-					if(k == 0){	// first elem
-						local::head = local::Hash_elem[key_p];	
-					}
-					else{
+						// adjust linked list
+						if(k == 0){	// first elem
+							local::head = local::Hash_elem[key_p];	
+						}
+						else{
 
-						temp2 -> next = local::Hash_elem[key_p];
-					}
-					Unit* temp3 = temp;
-					for(int m = 0; m < 3; ++m){	// rearch last sibling
+							temp2 -> next = local::Hash_elem[key_p];
+						}
+						Unit* temp3 = temp;
+						for(int m = 0; m < 3; ++m){	// rearch last sibling
 
-						temp3 = temp3 -> next;
-					}
-					local::Hash_elem[key_p] -> next = temp3 -> next;
+							temp3 = temp3 -> next;
+						}
+						local::Hash_elem[key_p] -> next = temp3 -> next;
+						
+						temp = local::Hash_elem[key_p];	// move pointer to the last 
 					
-					temp = local::Hash_elem[key_p];	// move pointer to the last 
-				
-					k += 3;	// skip other siblings 
-					
-					// form the face info
-					Form_parent_faces(four_keys, key_p);
+						k += 3;	// skip other siblings 
+						
+						// form the face info
+						Form_parent_faces(four_keys, key_p);
 
-					// change neighbours faces
+						// change neighbours faces
 
-					// erase four siblings
-					for(int i = 0; i < 4; ++i){
-						local::Hash_elem.erase(four_keys[i]);
+						// erase four siblings
+						for(int i = 0; i < 4; ++i){
+							local::Hash_elem.erase(four_keys[i]);
+						}
 					}
 				}
 			}
@@ -526,11 +549,12 @@ int Parent_position(int i, int j){
 
 
 /// @brief
-/// Enable coarsening only if 4 siblings all agree to coarse. 
+/// Enable coarsening only if 4 siblings all agree to coarse, i.e., their are all flagged to be coaren, and they share
+/// same polynomial order and h-refinement level. 
 /// @param temp unit pointer to the current element.
 /// @param pass boolean variable. If true then coarse the grid. 
 /// @param four_keys array that stores the four siblings key (in relative position order 0 1 2 3).
-void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
+void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 
 	assert(temp -> child_position == 0 || temp -> child_position == 2 && "children position prob");
 
@@ -538,22 +562,35 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 	if(temp -> child_position == 0){	
 		
 		int my_level = temp -> index[2];
+		int my_order = temp -> n;
 
 		// first check north and east
 		if(temp -> facen[1].front().face_type != 'L') { // only neighbour are resided locally
 			pass = false;
 			return;
 		}
-		if(my_level != (temp -> facen[1].front().hlevel)) { // only neighbour is the same size
+		if(my_level != (temp -> facen[1].front().hlevel)) { // only my neighbour is the same size
 			pass = false;
 			return;
 		}	
+		if(my_order != (temp -> facen[1].front().porderx)){	// only neighbour is the same order
+									// right now assume element porderx == pordery
+
+			pass = false;
+			return;
+		}
 
 		if(temp -> facen[3].front().face_type != 'L'){
 			pass = false;
 			return;
 		}
 		if(my_level != (temp -> facen[3].front().hlevel)){
+			pass = false;
+			return;
+		}
+		if(my_order != (temp -> facen[3].front().porderx)){	// only neighbour is the same order
+									// right now assume element porderx == pordery
+
 			pass = false;
 			return;
 		}
@@ -568,6 +605,10 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 			pass = false;
 			return;
 		}
+		if(local::Hash_elem[north_key] -> facen[3].front().porderx != my_order){
+			pass = false;
+			return;
+		}
 		
 		// generate four childrens key (0 1 2 3)
 		four_keys[0] = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
@@ -579,6 +620,7 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 	else{	// child_position == 2
 
 		int my_level = temp -> index[2];
+		int my_order = temp -> n;
 
 		// first check south and west
 		if(temp -> facen[0].front().face_type != 'L'){
@@ -586,6 +628,10 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 			return;
 		}
 		if(my_level != (temp -> facen[0].front().hlevel)){
+			pass = false;
+			return;
+		}
+		if(my_order != (temp -> facen[0].front().porderx)){
 			pass = false;
 			return;
 		}
@@ -598,6 +644,10 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 			pass = false;
 			return;
 		}
+		if(my_order != (temp -> facen[2].front().porderx)){
+			pass = false;
+			return;
+		}
 		
 		// check the last sibling
 		int south_key = temp -> facen[0].front().key;
@@ -606,6 +656,10 @@ void Coarsen_critira(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 			return;
 		}
 		if(local::Hash_elem[south_key] -> facen[2].front().hlevel != my_level){
+			pass = false;
+			return;
+		}
+		if(local::Hash_elem[south_key] -> facen[2].front().porderx != my_order){
 			pass = false;
 			return;
 		}

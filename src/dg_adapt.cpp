@@ -1,8 +1,7 @@
 #include "dg_adapt.h"
-#include "dg_hrefinement.h"
 #include "dg_local_storage.h"
 #include "dg_mpi_table_construct.h"
-#include "dg_prefinement.h"
+#include "dg_amr.h"
 #include "dg_error_estimator.h"
 #include <iostream>	//test
 #include "dg_param.h"	//test
@@ -10,11 +9,13 @@
 void Adapt(int kt){
 
 	Refinement_flag();
+	
+	hpc_refinement();
 
 //	Flag_elem(kt);
 
-	h_refinement();
-	p_refinement(kt);
+//	h_refinement();
+//	p_refinement(kt);
 	
 	// clear the old mpi tables before construct the new ones
 	Clear_tables();
