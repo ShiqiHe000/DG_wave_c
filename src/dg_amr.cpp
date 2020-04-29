@@ -278,10 +278,8 @@ void hpc_refinement(){
 					
 						k += 3;	// skip other siblings 
 						
-						// form the face info
+						// form the face info + change neighbours faces
 						Form_parent_faces(four_keys, key_p);
-
-						// change neighbours faces
 
 						// erase four siblings
 						for(int i = 0; i < 4; ++i){

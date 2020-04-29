@@ -27,7 +27,7 @@ void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<dou
 
 
 /// @brief
-///
+/// Interpolate the solution from parent to four children.
 /// @param keys four children key. Sequence: SW -- NW -- NE -- SE
 /// @parma p_key parent's key. 
 void Solutions_to_children(std::array<int, 4>& keys, int p_key){
@@ -87,6 +87,99 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	// c3
 	Two_dir_inter(p_key, c3, T_xl, T_yr, n, m);
 }
+
+/// @brief
+/// Interpolate solution form four children back to parent. 
+/// Here we use L2 projection.
+/// @param keys four children key. Sequence: SW -- NW -- NE -- SE
+/// @parma p_key parent's key. 
+/// @note polynomial order should be identical in x and y direction. 
+void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
+
+	// pointers to the four children
+	Unit* c0 = local::Hash_elem[keys[0]];
+	Unit* c1 = local::Hash_elem[keys[1]];
+	Unit* c2 = local::Hash_elem[keys[2]];
+	Unit* c3 = local::Hash_elem[keys[3]];
+
+	// pointer to parent
+	Unit* temp = local::Hash_elem[p_key] ;
+
+	// poly order (four children are the same)
+	int n = temp -> n;
+	int m = temp -> m;
+
+	// allocate space for parent 
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		temp -> solution[equ] = std::vector<double>((n + 1) * (m + 1));
+
+	}
+
+	// four new sets of points---------------------------------------------------
+	std::vector<double> pl(n + 1);	// location on parent
+	std::vector<double> pr(n + 1);	// location on parent
+
+	Form_new_set_of_points(n, -1.0, pl);	// left boundary is -1.0, right boundary is 0. 
+	Form_new_set_of_points(n,  0.0, pr);
+	//---------------------------------------------------------------------------
+
+	// form interpolation matrix------------------------------------------------------
+	std::vector<double> T_l; 	// interpolation matrix
+	std::vector<double> T_r; 	// interpolation matrix
+
+	// note: children porder == parent porder, so old points use child's poly order
+	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], T_l);
+	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], T_r);
+	//--------------------------------------------------------------------------------
+
+//	std::unordered_map<int, std::vector<double>> middle;
+
+
+}
+
+/// @param c pointer to child.
+/// @param p pointer to parent.
+/// @param Ty y direction interpolatio matrix. 
+/// @param Tx x direction interpolatio matrix. 
+void Mortar_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b){
+
+	int n = p -> n;
+	int m = n;	// x, y dir poly order should be the same. 
+
+	std::unordered_map<int, std::vector<double>> middle;
+
+	// y direction
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		middle[equ] = std::vector<double>((n + 1) * (n + 1));
+
+		for(int xi = 0; xi <= n; ++xi ){	// loop in x direction
+
+			int nodes = Get_single_index(xi, 0, m + 1);
+
+			for(int i = 0; i <= n; ++i ){
+
+				for(int j = 0; j <= n; ++j){
+
+					int nodei = Get_single_index(i, j, n + 1);
+
+					middle[equ][nodes] += 1.0 / b * Ty[nodei] * 
+								(nodal::gl_weights[n][j] / nodal::gl_weights[n][i])
+								* (c -> solution[equ][nodes]);
+					++nodes;
+				}
+			}
+
+		}
+		
+
+	}
+
+
+}
+
+
 
 /// @brief
 /// Use the interpolation matrix in x and y direction and obtain the interpolated solutions.
