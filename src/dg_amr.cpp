@@ -197,6 +197,9 @@ void hpc_refinement(){
 			if(temp -> n > grid::nmin){	// if polynomial order is larger then the minimum
 		
 				// p-coarsening
+				p_coarsening(temp);
+			
+
 			}
 			else{	// h-coasrening
 

@@ -8,12 +8,15 @@
 #include "dg_local_storage.h"
 #include "dg_status_table.h"
 #include "dg_cantor_pairing.h"	
+#include <cassert>
 #include <iostream>	// test
 
 // forward declaration----------------------------------------
 void p_refinement_apply(Unit* temp);
 
 void p_refinement(int kt);
+
+void p_coarsening(Unit* temp);
 
 void Update_neighbours_facen(Unit* temp);
 //------------------------------------------------------------
@@ -122,6 +125,84 @@ void p_refinement_apply(Unit* temp){
 
 	}	
 }
+
+/// @brief
+/// Decrease polynomial order by 2. 
+/// @param temp pointer to the current element.
+/// @note Assuming the polynomial orders are identical in x and y direction. 
+void p_coarsening(Unit* temp){
+
+	assert((temp -> n - 2 >= grid::nmin) && 
+			"The functionally coarsening cannot be less than the predefined minimum plonomial order ");
+
+	assert((temp -> n == temp -> m) && "Only works for poly order equals in x and y direction. ");
+
+	int new_order = temp -> n - 2;	// assume the order in x and y direction are equal
+
+	// interpolate solution to new GL points
+	// form interpolation matrix in x and y direction (assume refinement in x and y driection)-------------
+	std::vector<double> T;	// only need one interpolation matrix (porderx = pordery)
+	Polynomial_interpolate_matrix(nodal::gl_points[temp -> n], nodal::gl_points[new_order], T);
+	// ----------------------------------------------------------------------------------------------------
+
+	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix
+
+	// y direction
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+		
+		int start_old{};
+		int start_new{};
+
+		middle[equ] = std::vector<double> ((new_order + 1) * (temp -> n + 1));
+		
+		for(int i = 0; i <= (temp -> n); ++i){
+
+			// interval == 1 since we are in teh y direction
+			// restriction: children inderit parent's polynomial order. 
+			Interpolate_to_new_points(new_order + 1, temp -> m + 1, T,
+					temp -> solution[equ], middle[equ], start_old, start_new, 1);
+
+			start_old += (temp -> m + 1);
+			start_new += (new_order + 1);
+		}
+
+	}
+
+
+	// clear the old solutions
+	temp -> solution.clear();
+
+	// x direction
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		int start_old{};
+		int start_new{};
+		
+		// allocate space
+		temp -> solution[equ] = std::vector<double> ((new_order + 1) * (new_order + 1));
+
+		for(int j = 0; j <= new_order; ++j){
+
+			Interpolate_to_new_points(new_order + 1,  temp -> n + 1, T,
+					middle[equ], temp -> solution[equ], start_old, start_new, new_order + 1);
+			
+			++start_old;
+			++start_new;
+		}
+
+	}
+
+	// update the polynomial order
+	temp -> n = new_order;
+	temp -> m = new_order;
+
+	// updates local neighbours face info
+	Update_neighbours_facen(temp);
+
+	temp -> coarsen = false;	// turn off the coarsening switch
+
+}
+
 
 /// @brief
 /// Since the current element's polynomial order changes, we need to update it's neighbours records.
