@@ -53,7 +53,9 @@ namespace dg_refine{
 
 	extern const int fit_point_num;
 	
-	extern const double tolerance;
+	extern const double tolerance_min;
+
+	extern const double tolerance_max;
 };
 //---------------------------------------------------
 
