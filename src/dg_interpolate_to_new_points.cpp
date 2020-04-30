@@ -112,7 +112,6 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 		
 		middle[equ] = std::vector<double> ((n + 1) * (m + 1));
-//std::cout << " ================equ " << equ << " =================\n";
 		for(int i = 0; i <= n; ++i){
 
 			int start = Get_single_index(i, 0, m + 1);
@@ -122,16 +121,7 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 			Interpolate_to_new_points(m + 1,  m + 1, Ty,
 					c -> solution[equ], middle[equ], start, start, 1);
 		}
-//std::cout<< "===================================== \n";
 	}
-
-//for(auto& h : middle[1]){
-//
-//	std::cout<< h << "\n";
-//
-//}
-//std::cout << "\n";
-
 
 	// x direction
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
@@ -208,22 +198,22 @@ void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
 	//--------------------------------------------------------------------------------
 
 	// project back to parent (L2 projection) =======================================
-	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
-	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
-
-	Mortar_inter_back(c0, temp, Tl, Tl, 0.25);
-	Mortar_inter_back(c1, temp, Tl, Tr, 0.25);
-	Mortar_inter_back(c2, temp, Tr, Tr, 0.25);
-	Mortar_inter_back(c3, temp, Tr, Tl, 0.25);
+//	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
+//	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
+//
+//	Mortar_inter_back(c0, temp, Tl, Tl, 0.25);
+//	Mortar_inter_back(c1, temp, Tl, Tr, 0.25);
+//	Mortar_inter_back(c2, temp, Tr, Tr, 0.25);
+//	Mortar_inter_back(c3, temp, Tr, Tl, 0.25);
 	// ===============================================================================
 
 	// use lagrange interpolation =====================================================
-//	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
-//	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
-//	Lagrange_inter_back(c0, temp, Tl, Tl, 0.25);
-//	Lagrange_inter_back(c1, temp, Tl, Tr, 0.25);
-//	Lagrange_inter_back(c2, temp, Tr, Tr, 0.25);
-//	Lagrange_inter_back(c3, temp, Tr, Tl, 0.25);
+	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
+	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
+	Lagrange_inter_back(c0, temp, Tl, Tl, 0.25);
+	Lagrange_inter_back(c1, temp, Tl, Tr, 0.25);
+	Lagrange_inter_back(c2, temp, Tr, Tr, 0.25);
+	Lagrange_inter_back(c3, temp, Tr, Tl, 0.25);
 
 
 //	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
@@ -233,23 +223,7 @@ void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
 //	Lagrange_inter_back_transpose(c2, temp, Tr, Tr, 0.25);
 //	Lagrange_inter_back_transpose(c3, temp, Tr, Tl, 0.25);
 
-//void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
 	// ===============================================================================
-
-//for(auto& h : c0 -> solution[1]){
-//
-//	std::cout << h << "\n";
-//	
-//}
-//std::cout << "\n";
-
-//std::cout.precision(17);
-//for(auto& h : temp -> solution[1]){
-//
-//	std::cout<< std::fixed<< h << "\n";
-//
-//}
-//std::cout<< "============================= \n";
 
 
 }

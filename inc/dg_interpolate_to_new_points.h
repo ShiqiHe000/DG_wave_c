@@ -11,4 +11,6 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key);
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
 				std::vector<double>& f, std::vector<double>& new_f, int start_old, int start_new, int interval);
 
+void Solution_back_to_parent(std::array<int, 4>& keys, int p_key);
+
 #endif
