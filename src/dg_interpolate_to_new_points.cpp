@@ -29,6 +29,8 @@ void Mortar_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<do
 void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
 
 void Solution_back_to_parent(std::array<int, 4>& keys, int p_key);
+
+void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
 //--------------------------------------------------------------------------------------------------------------
 
 
@@ -122,14 +124,6 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 		}
 	}
 
-
-//for(auto& h : middle[1]){
-//
-//	std::cout<< h << "\n";
-//
-//}
-//std::cout<< "\n";
-
 	// x direction
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
@@ -197,48 +191,41 @@ void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
 	Form_new_set_of_points(n, -1.0, pl);	// left boundary is -1.0, right boundary is 0. 
 	Form_new_set_of_points(n,  0.0, pr);
 	//---------------------------------------------------------------------------
-//for(auto& h : pr){
-//
-//	std::cout<< h << "\n";
-//}
+
 	// form interpolation matrix------------------------------------------------------
 	std::vector<double> Tl; 	// interpolation matrix
 	std::vector<double> Tr; 	// interpolation matrix
 
-	// note: children porder == parent porder, so old points use child's poly order
-//	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
-//	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
-
-	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
-	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
-//for(auto& h : Tl){
-//
-//	std::cout<< h << "\n";
-//	
-//}
-//std::cout << "\n";
 	//--------------------------------------------------------------------------------
 
-	// project back to parent (L2 projection)
-	Mortar_inter_back(c0, temp, Tl, Tl, 0.25);
-
-
-
-	Mortar_inter_back(c1, temp, Tl, Tr, 0.25);
-	Mortar_inter_back(c2, temp, Tr, Tr, 0.25);
-	Mortar_inter_back(c3, temp, Tr, Tl, 0.25);
-
-//for(auto& h : temp -> solution[1]){
+	// project back to parent (L2 projection) =======================================
+//	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
+//	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
 //
-//	std::cout<< h << "\n";
-//
-//}
-//std::cout<< "============================= \n";
-	// use lagrange interpolation
+//	Mortar_inter_back(c0, temp, Tl, Tl, 0.25);
+//	Mortar_inter_back(c1, temp, Tl, Tr, 0.25);
+//	Mortar_inter_back(c2, temp, Tr, Tr, 0.25);
+//	Mortar_inter_back(c3, temp, Tr, Tl, 0.25);
+	// ===============================================================================
+
+	// use lagrange interpolation =====================================================
+//	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
+//	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
 //	Lagrange_inter_back(c0, temp, Tl, Tl, 0.25);
 //	Lagrange_inter_back(c1, temp, Tl, Tr, 0.25);
 //	Lagrange_inter_back(c2, temp, Tr, Tr, 0.25);
 //	Lagrange_inter_back(c3, temp, Tr, Tl, 0.25);
+
+
+	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
+	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
+	Lagrange_inter_back_transpose(c0, temp, Tl, Tl, 0.25);
+	Lagrange_inter_back_transpose(c1, temp, Tl, Tr, 0.25);
+	Lagrange_inter_back_transpose(c2, temp, Tr, Tr, 0.25);
+	Lagrange_inter_back_transpose(c3, temp, Tr, Tl, 0.25);
+
+//void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
+	// ===============================================================================
 
 //std::cout.precision(17);
 //for(auto& h : temp -> solution[1]){
@@ -250,6 +237,65 @@ void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
 
 
 }
+
+/// @brief
+/// Use Lagrange interplation to interpolate solution back to parent. Use the transpose of the 
+/// forward interpolation matrix. 
+void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b){
+
+	
+	int n = p -> n; // x, y dir poly order should be the same. 
+
+	std::unordered_map<int, std::vector<double>> middle;
+
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		middle[equ] = std::vector<double>((n + 1) * (n + 1));
+
+		// y direction
+		for(int xi = 0; xi <= n; ++xi ){	// loop in x direction
+
+			for(int i = 0; i <= n; ++i ){
+
+				int nodep = Get_single_index(xi, i, n + 1);
+
+				for(int j = 0; j <= n; ++j){
+
+					int nodei = Get_single_index(j, i, n + 1);
+
+					int nodec = Get_single_index(xi, j, n + 1);
+
+					middle[equ][nodep] =  Ty[nodei] * (c -> solution[equ][nodec]);
+				}
+			}
+
+		}
+
+		// x dir
+		for(int yi = 0; yi <= n; ++yi){
+
+			for(int i = 0; i <= n; ++i){
+
+				int nodep = Get_single_index(i, yi, n + 1);
+
+				for(int j = 0; j <= n; ++j){
+				
+					int nodei = Get_single_index(j, i, n + 1);
+
+					int nodec = Get_single_index(j, yi, n + 1);
+
+					p -> solution[equ][nodep] +=  b * Tx[nodei] * (middle[equ][nodec]);
+
+				}
+			}
+
+		}
+		
+
+	}
+
+}
+
 
 /// @param c pointer to child.
 /// @param p pointer to parent.
