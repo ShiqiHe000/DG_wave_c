@@ -77,6 +77,7 @@ void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 	std::vector<double> T_yl; 	// interpolation matrix
 	std::vector<double> T_yr; 	// interpolation matrix
 
+
 	// note: children porder == parent porder, so old points use child's poly order
 	Polynomial_interpolate_matrix(nodal::gl_points[n], xl, T_xl);
 	Polynomial_interpolate_matrix(nodal::gl_points[n], xr, T_xr);
@@ -114,12 +115,20 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 
 			int start = Get_single_index(i, 0, m + 1);
 
-			// interval == 1 since we are in teh y direction
+			// interval == 1 since we are in the y direction
 			// restriction: children inderit parent's polynomial order. 
 			Interpolate_to_new_points(m + 1,  m + 1, Ty,
 					c -> solution[equ], middle[equ], start, start, 1);
 		}
 	}
+
+
+//for(auto& h : middle[1]){
+//
+//	std::cout<< h << "\n";
+//
+//}
+//std::cout<< "\n";
 
 	// x direction
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
@@ -197,30 +206,39 @@ void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
 	std::vector<double> Tr; 	// interpolation matrix
 
 	// note: children porder == parent porder, so old points use child's poly order
-	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
-	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
+//	Polynomial_interpolate_matrix(pl, nodal::gl_points[n], Tl);
+//	Polynomial_interpolate_matrix(pr, nodal::gl_points[n], Tr);
+
+	Polynomial_interpolate_matrix(nodal::gl_points[n], pl, Tl);
+	Polynomial_interpolate_matrix(nodal::gl_points[n], pr, Tr);
+//for(auto& h : Tl){
+//
+//	std::cout<< h << "\n";
+//	
+//}
+//std::cout << "\n";
 	//--------------------------------------------------------------------------------
 
 	// project back to parent (L2 projection)
-//	Mortar_inter_back(c0, temp, Tl, Tl, 0.5);
-//
+	Mortar_inter_back(c0, temp, Tl, Tl, 0.25);
+
+
+
+	Mortar_inter_back(c1, temp, Tl, Tr, 0.25);
+	Mortar_inter_back(c2, temp, Tr, Tr, 0.25);
+	Mortar_inter_back(c3, temp, Tr, Tl, 0.25);
+
 //for(auto& h : temp -> solution[1]){
 //
 //	std::cout<< h << "\n";
 //
 //}
 //std::cout<< "============================= \n";
-//
-//
-//	Mortar_inter_back(c1, temp, Tl, Tr, 0.5);
-//	Mortar_inter_back(c2, temp, Tr, Tr, 0.5);
-//	Mortar_inter_back(c3, temp, Tr, Tl, 0.5);
-
 	// use lagrange interpolation
-	Lagrange_inter_back(c0, temp, Tl, Tl, 0.25);
-	Lagrange_inter_back(c1, temp, Tl, Tr, 0.25);
-	Lagrange_inter_back(c2, temp, Tr, Tr, 0.25);
-	Lagrange_inter_back(c3, temp, Tr, Tl, 0.25);
+//	Lagrange_inter_back(c0, temp, Tl, Tl, 0.25);
+//	Lagrange_inter_back(c1, temp, Tl, Tr, 0.25);
+//	Lagrange_inter_back(c2, temp, Tr, Tr, 0.25);
+//	Lagrange_inter_back(c3, temp, Tr, Tl, 0.25);
 
 //std::cout.precision(17);
 //for(auto& h : temp -> solution[1]){
@@ -252,43 +270,69 @@ void Mortar_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<do
 
 			for(int i = 0; i <= n; ++i ){
 
-				int nodes = Get_single_index(xi, 0, n + 1);
+				int nodep = Get_single_index(xi, i, n + 1);
 
 				for(int j = 0; j <= n; ++j){
 
-					int nodei = Get_single_index(i, j, n + 1);
+					int nodei = Get_single_index(j, i, n + 1);
 
-					middle[equ][nodes] = b * Ty[nodei] * 
+					int nodec = Get_single_index(xi, j, n + 1);
+
+					middle[equ][nodep] =  Ty[nodei] * 
 								(nodal::gl_weights[n][j] / nodal::gl_weights[n][i])
-								* (c -> solution[equ][nodes]);
-//std::cout<< "nodes "<< nodes << 
-					++nodes;
+								* (c -> solution[equ][nodec]);
+//if(equ == 1){
+////	std::cout<< "nodes "<< nodes << " c_solu " << c -> solution[equ][nodes] << " Ty " << Ty[nodei] << "\n";
+//
+//	std::cout<< "nodec " << nodec << " nodep " << nodep << "\n";
+//}
 				}
 			}
 
 		}
+//if(equ == 1){
+//
+//	for(auto& h : middle[equ]){
+//
+//		std::cout << h << "\n";
+//
+//	}
+//	
+//	std::cout << "\n";
+//}
 
-
+		// x dir
 		for(int yi = 0; yi <= n; ++yi){
 
 			for(int i = 0; i <= n; ++i){
 
-				int nodes = Get_single_index(0, yi, n + 1);
+				int nodep = Get_single_index(i, yi, n + 1);
 
 				for(int j = 0; j <= n; ++j){
 				
-					int nodei = Get_single_index(i, j, n + 1);
+					int nodei = Get_single_index(j, i, n + 1);
 
-					p -> solution[equ][nodes] +=  b * Tx[nodei] * 
+					int nodec = Get_single_index(j, yi, n + 1);
+
+					p -> solution[equ][nodep] +=  b * Tx[nodei] * 
 								(nodal::gl_weights[n][j] / nodal::gl_weights[n][i])
-								* (middle[equ][nodes]);
+								* (middle[equ][nodec]);
 
-					nodes += (n + 1);
 				}
 			}
 
 		}
 		
+//if(equ == 1){
+//
+//	for(auto& h : middle[equ]){
+//
+//		std::cout << h << "\n";
+//
+//	}
+//	
+//	std::cout << "\n";
+//}
 
 	}
 
