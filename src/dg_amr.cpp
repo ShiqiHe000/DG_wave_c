@@ -59,11 +59,16 @@ void Flag_elem(int kt){
 //int key_test = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 if(mpi::rank == 0 && kt == 0 ){
 
-	rand_num = 1;
+	rand_num = 4;
+	
+	temp -> prefine = true;
+
 }
 else if(mpi::rank == 0 && kt != 0){
 
-	rand_num = 9;
+	rand_num = 4;
+	
+	temp -> coarsen = true;
 }
 else{
 	rand_num = 4;
@@ -98,6 +103,11 @@ void hpc_refinement(){
 	int decrement{};	// element decrement because coarening
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
+
+//if(mpi::rank == 0){
+//
+//	std::cout<< "p-refinement " << temp -> prefine << " coarsening " << temp -> coarsen << "\n";
+//}
 
 		if(temp -> hrefine){	// h - refine======================================================================
 			
@@ -203,6 +213,7 @@ void hpc_refinement(){
 				// p-coarsening
 				p_coarsening(temp);
 			
+//std::cout << "rank " << mpi::rank << "\n";
 			}
 			else{	// h-coasrening
 

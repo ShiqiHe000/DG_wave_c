@@ -124,6 +124,9 @@ void p_refinement_apply(Unit* temp){
 		Update_neighbours_facen(temp);
 
 	}	
+
+	temp -> prefinement = false;	// turn off the switch
+
 }
 
 /// @brief
