@@ -145,7 +145,6 @@ void p_coarsening_L2(Unit* temp){
 
 	int n = temp -> n;
 	int new_order = temp -> n - 2;	// assume the order in x and y direction are equal
-
 	
 	// interpolate solution to new GL points
 	// form interpolation matrix in x and y direction (assume refinement in x and y driection)-------------
@@ -184,6 +183,8 @@ void p_coarsening_L2(Unit* temp){
 	// clear old solution 
 	temp -> solution.clear();
 
+
+
 	// x dir
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
@@ -212,6 +213,13 @@ void p_coarsening_L2(Unit* temp){
 		
 
 	}
+
+	// update the polynomial order
+	temp -> n = new_order;
+	temp -> m = new_order;
+
+	// updates local neighbours face info
+	Update_neighbours_facen(temp);
 
 	temp -> coarsen = false;
 }

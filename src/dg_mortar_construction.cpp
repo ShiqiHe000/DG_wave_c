@@ -88,11 +88,10 @@ void L2_projection_to_mortar(int J, int n, int level, int l_max, double a, doubl
 /// @parma n Element polynomial order.
 /// @param level element h-refinement level.
 /// @param l_max Maximum h-refinement level between two elements. 
-/// @parma a Mortar coorindate offset. 
 /// @parma b Mortar coorindate scaling. 
 /// @parma nflux_elem Element interface numerical flux. 
 /// @param nflux_mortar Mortar interface numerical flux.
-/// @param mapped_points collocation points mapped from mortar to element.
+/// @param T projection matrix from element to mortar. 
 void L2_projection_to_element(int J, int n, int level, int l_max, double b,
 			 	std::vector<double>& nflux_elem, std::vector<double>& nflux_mortar, 
 				std::vector<double>& T){
