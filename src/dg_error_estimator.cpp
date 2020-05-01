@@ -51,7 +51,7 @@ void Refinement_flag(){
 		}
 		else if(flag_coarsen.front()){
 
-//			temp -> coarsen = true;	// coarsening
+			temp -> coarsen = true;	// coarsening
 
 		}
 		//-------------------------------------------------
@@ -118,40 +118,21 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 						Legendre_polynomial_and_derivative(p, nodal::gl_points[M][l], 
 										legendre_y, legendre_dir);
 
-//						ap[equ][node] += (2.0 * (double)i + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
-//								(temp -> solution[equ][index]) * 
-//								legendre_x * legendre_y * 
-//								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
-//								
 						ap_now += (2.0 * (double)i + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
 								(temp -> solution[equ][index]) * 
 								legendre_x * legendre_y * 
 								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
-//if(mpi::rank == 0){
-//
-//	std::cout << ap[equ][node] << "\n";
-//
-//}
 					}
 					
 				}
 	
 				ap[equ][node] += std::abs(ap_now);
-//if(mpi::rank == 0){
-//
-//	std::cout << "equ "<< equ << " node " << node << " " <<ap[equ][node] << " " << ap_now<< "\n";
-//
-//}
 
 			}
 
 		}
 		//-----------------------------------------------------------------
-//if(mpi::rank == 0){
-//
-//	std::cout << "================================= \n";
-//
-//}
+
 		// y direction-----------------------------------------------------
 		for(int j = 0; j < p; ++j ){	// here does not need to include the last point (j < p)
 			
@@ -179,11 +160,6 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 						Legendre_polynomial_and_derivative(j, nodal::gl_points[M][l], 
 										legendre_y, legendre_dir);
 
-//						ap[equ][node] += (2.0 * (double)j + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
-//								(temp -> solution[equ][index]) * 
-//								legendre_x * legendre_y * 
-//								nodal::gl_weights[N][k] * nodal::gl_weights[M][l];
-								
 						ap_now += (2.0 * (double)j + 1.0) * (2.0 * (double)p + 1.0) / 4.0 *
 								(temp -> solution[equ][index]) * 
 								legendre_x * legendre_y * 
@@ -201,16 +177,6 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		--p;
 	}
 		
-//if(mpi::rank == 0){
-//
-//	for(auto& v : ap[0]){
-//
-//		std::cout << v << "\n";
-//
-//	}
-//
-//}
-
 
 	// refinment criteria: if exceed the acceptable level then flag as needed refinement. 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
@@ -224,11 +190,6 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 
 		double sum = ap[equ].back();	// sum of the last spectrum
 
-//if(mpi::rank == 0){
-//
-//	std::cout << "equ "<< equ << " " << "tolerance "<< u_norm  <<" sum " << sum << "\n";
-//
-//}
 		if(sum > tol_min){	// need refine
 
 			flag_refine[equ] = true;
@@ -237,12 +198,6 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 
 			// get decay indicator
 			sigma[equ] = Decay_rate(porder, ap[equ]);
-//if(mpi::rank == 0){
-//
-//	std::cout<< "equ "<< equ << " decay rate "<< sigma[equ] << "\n";
-//
-//}
-
 
 		}
 		else if(sum <= tol_max ){	// need coarsen
@@ -307,23 +262,10 @@ double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 
 		x_avg += (double)porder[i];
 		y_avg += std::log(ap[i]);
-//if(mpi::rank == 0){
-//
-//	std::cout.precision(17);
-//
-//	std::cout<< std::fixed<<"ap "<< ap[i] << " log(ap) " << std::log(ap[i]) << "\n";
-//
-//}
 	}
 	x_avg /= (double)dg_refine::fit_point_num;
 	y_avg /= (double)dg_refine::fit_point_num;
 
-//if(mpi::rank == 0){
-//
-//	std::cout << "x_avg " << x_avg << " y_avg "<< y_avg << "\n";
-//
-//}
-	
 	double sigma{};
 	double numer{};
 	double denumer{};
@@ -336,11 +278,6 @@ double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 	}
 		
 	sigma = std::abs(numer / denumer);
-//if(mpi::rank == 0){
-//
-//	std::cout << sigma << "\n";
-//
-//}
 
 	return sigma;
 

@@ -38,6 +38,7 @@ void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, st
 /// Interpolate the solution from parent to four children.
 /// @param keys four children key. Sequence: SW -- NW -- NE -- SE
 /// @parma p_key parent's key. 
+/// @node this function can take care of different polynomial order in x and y direction. 
 void Solutions_to_children(std::array<int, 4>& keys, int p_key){
 
 
