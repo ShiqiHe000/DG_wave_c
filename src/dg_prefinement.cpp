@@ -16,7 +16,7 @@ void p_refinement_apply(Unit* temp);
 
 void p_refinement(int kt);
 
-void p_coarsening(Unit* temp);
+void p_coarsening_interpolate(Unit* temp);
 
 void Update_neighbours_facen(Unit* temp);
 //------------------------------------------------------------
@@ -125,7 +125,7 @@ void p_refinement_apply(Unit* temp){
 
 	}	
 
-	temp -> prefinement = false;	// turn off the switch
+	temp -> prefine = false;	// turn off the switch
 
 }
 
@@ -133,7 +133,7 @@ void p_refinement_apply(Unit* temp){
 /// Decrease polynomial order by 2. 
 /// @param temp pointer to the current element.
 /// @note Assuming the polynomial orders are identical in x and y direction. 
-void p_coarsening(Unit* temp){
+void p_coarsening_interpolate(Unit* temp){
 
 	assert((temp -> n - 2 >= grid::nmin) && 
 			"The functionally coarsening cannot be less than the predefined minimum plonomial order ");

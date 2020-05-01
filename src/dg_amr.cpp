@@ -211,7 +211,7 @@ void hpc_refinement(){
 			if(temp -> n > grid::nmin){	// if polynomial order is larger then the minimum
 		
 				// p-coarsening
-				p_coarsening(temp);
+				p_coarsening_interpolate(temp);
 			
 //std::cout << "rank " << mpi::rank << "\n";
 			}
