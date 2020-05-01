@@ -211,9 +211,10 @@ void hpc_refinement(){
 			if(temp -> n > grid::nmin){	// if polynomial order is larger then the minimum
 		
 				// p-coarsening
-				p_coarsening_interpolate(temp);
+//				p_coarsening_interpolate(temp);	// interpolation
+
+				p_coarsening_L2(temp);	// L2 projection
 			
-//std::cout << "rank " << mpi::rank << "\n";
 			}
 			else{	// h-coasrening
 

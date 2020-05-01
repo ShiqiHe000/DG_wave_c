@@ -9,6 +9,8 @@ void p_refinement(int kt);
 
 void p_coarsening_interpolate(Unit* temp);
 
+void p_coarsening_L2(Unit* temp);
+
 void Update_neighbours_facen(Unit* temp);
 
 #endif

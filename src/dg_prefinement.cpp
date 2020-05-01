@@ -9,6 +9,7 @@
 #include "dg_status_table.h"
 #include "dg_cantor_pairing.h"	
 #include <cassert>
+#include "dg_single_index.h"
 #include <iostream>	// test
 
 // forward declaration----------------------------------------
@@ -17,6 +18,8 @@ void p_refinement_apply(Unit* temp);
 void p_refinement(int kt);
 
 void p_coarsening_interpolate(Unit* temp);
+
+void p_coarsening_L2(Unit* temp);
 
 void Update_neighbours_facen(Unit* temp);
 //------------------------------------------------------------
@@ -130,7 +133,92 @@ void p_refinement_apply(Unit* temp){
 }
 
 /// @brief
-/// Decrease polynomial order by 2. 
+/// Decrease polynomial order by 2. Use L2 projection. 
+/// @param temp pointer to the current element.
+/// @note Assuming the polynomial orders are identical in x and y direction. 
+void p_coarsening_L2(Unit* temp){
+
+	assert((temp -> n - 2 >= grid::nmin) && 
+			"The functionally coarsening cannot be less than the predefined minimum plonomial order ");
+
+	assert((temp -> n == temp -> m) && "Only works for poly order equals in x and y direction. ");
+
+	int n = temp -> n;
+	int new_order = temp -> n - 2;	// assume the order in x and y direction are equal
+
+	
+	// interpolate solution to new GL points
+	// form interpolation matrix in x and y direction (assume refinement in x and y driection)-------------
+	std::vector<double> T;	// only need one interpolation matrix (porderx = pordery)
+	Polynomial_interpolate_matrix(nodal::gl_points[new_order], nodal::gl_points[n], T); // use the transpose late
+	// ----------------------------------------------------------------------------------------------------
+
+	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix
+
+	// y direciton
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		middle[equ] = std::vector<double>((new_order + 1) * (n + 1));
+
+		for(int xi = 0; xi <= n; ++xi ){	// loop in x direction
+
+			for(int i = 0; i <= new_order; ++i ){
+
+				int nodep = Get_single_index(xi, i, new_order + 1);
+
+				for(int j = 0; j <= n; ++j){
+
+					int nodei = Get_single_index(j, i, new_order + 1);
+
+					int nodec = Get_single_index(xi, j, n + 1);
+
+					middle[equ][nodep] +=  T[nodei] * 
+								(nodal::gl_weights[n][j] / nodal::gl_weights[new_order][i])
+								* (temp -> solution[equ][nodec]);
+				}
+			}
+
+		}
+	}
+
+	// clear old solution 
+	temp -> solution.clear();
+
+	// x dir
+	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+		temp -> solution[equ] = std::vector<double>((new_order + 1) * (new_order + 1));
+
+		for(int yi = 0; yi <= new_order; ++yi){
+
+			for(int i = 0; i <= new_order; ++i){
+
+				int nodep = Get_single_index(i, yi, new_order + 1);
+
+				for(int j = 0; j <= n; ++j){
+				
+					int nodei = Get_single_index(j, i, new_order + 1);
+
+					int nodec = Get_single_index(j, yi, new_order + 1);
+
+					temp -> solution[equ][nodep] += T[nodei] * 
+								(nodal::gl_weights[n][j] / nodal::gl_weights[new_order][i])
+								* (middle[equ][nodec]);
+
+				}
+			}
+
+		}
+		
+
+	}
+
+	temp -> coarsen = false;
+}
+
+
+/// @brief
+/// Decrease polynomial order by 2. Use lagrange interpolation. 
 /// @param temp pointer to the current element.
 /// @note Assuming the polynomial orders are identical in x and y direction. 
 void p_coarsening_interpolate(Unit* temp){
