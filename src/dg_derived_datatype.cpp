@@ -118,12 +118,12 @@ void MPI_Face_type(){
 
 void MPI_Elem_type(){
 
-	int num = 5;
+	int num = 4;
 
-	int elem_blocklength[num]{4, 1, 1, 4, 1};
+	int elem_blocklength[num]{4, 1, 1, 4};
 	
 	MPI_Aint array_of_offsets[num];
-	MPI_Aint baseadd, add1, add2, add3, add4;
+	MPI_Aint baseadd, add1, add2, add3;
 	
 	std::vector<info_pack> myinfo(1);
 
@@ -131,15 +131,13 @@ void MPI_Elem_type(){
 	MPI_Get_address(&(myinfo[0].status), &add1);
 	MPI_Get_address(&(myinfo[0].child_position), &add2);
 	MPI_Get_address(&(myinfo[0].xcoords), &add3);
-	MPI_Get_address(&(myinfo[0].var), &add4);
 
 	array_of_offsets[0] = 0;
 	array_of_offsets[1] = add1 - baseadd;
 	array_of_offsets[2] = add2 - baseadd;
 	array_of_offsets[3] = add3 - baseadd;
-	array_of_offsets[4] = add4 - baseadd;
 
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE, MPI_INT};
+	MPI_Datatype array_of_types[num]{MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE};
 
 	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Elem_type);	
 

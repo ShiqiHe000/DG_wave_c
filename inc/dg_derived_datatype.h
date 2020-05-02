@@ -39,8 +39,6 @@ struct info_pack{
 	double xcoords[2];
 	double ycoords[2];
 
-	int var;
-
 };
 
 /// @brief

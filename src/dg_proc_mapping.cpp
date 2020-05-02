@@ -191,17 +191,7 @@ void Build_mapping_table(){
 
 	}
 
-//if(mpi::rank == 1){
-//
-//	std::cout<< "--------------------------- \n";
-//	for(auto& a : LB::Send.pre){
-//		std::cout<< a << " ";
-//	}
-//	std::cout<<"local elem num "<< local::local_elem_num<< "\n";
-//	std::cout<< "\n";
-//	std::cout<< "--------------------------- \n";
-//}
-	// Updates local facen based on teh Sending list
+	// Updates local facen based on the Sending list
 	Update_neighbours();
 
 
@@ -383,7 +373,6 @@ void Update_mpi_boundary(int kt){
 	// east send and west recv
 	Send_recv_ownership(hrefinement::east, hrefinement::west, 2);
 	//-----------------------------------------------------------------------------------------------
-//std::cout<< "rank "<< mpi::rank<< " kt "<< kt<< "\n";
 }
 
 /// @brief
