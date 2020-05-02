@@ -11,7 +11,7 @@
 // forward declaration-------------------------------------------------------------------
 void Reallocate_elem(int kt);
 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it);
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, int& solu_num);
 
 void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count);
 
@@ -49,7 +49,9 @@ void Reallocate_elem(int kt){
 		std::vector<face_pack> face_info;
 
 		// pack info to send
-		Send_pack(send_elem, it);
+		int solu_num{};
+		Send_pack(send_elem, it, solu_num);
+
 		int num_n{};
 		Face_pack(face_info, LB::Send.pre, num_n);
 		
@@ -71,7 +73,9 @@ void Reallocate_elem(int kt){
 		auto it = LB::Send.next.begin();
 		std::vector<face_pack> face_info;
 
-		Send_pack(send_elem, it);
+		int solu_num{};
+		Send_pack(send_elem, it, solu_num);
+
 		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
@@ -475,12 +479,14 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 /// Pack sending information. 
 /// @param send_info The sending vector.
 /// @param it iterator at the beginning of Sending list (pre or next). 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it){
-
+/// @param solu_num solution number. For next step to transfer the solutions. 
+void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, int& solu_num){
 
 	for(auto& v : send_info){
 		
 		v.n = local::Hash_elem[*it] -> n;
+
+		solu_num += (v.n + 1) * (v.n + 1); 	// assume same poly order in x and y direction. 
 
 		for(int i = 0; i < 3; ++i){
 			v.index[i] = local::Hash_elem[*it] -> index[i];
@@ -499,6 +505,7 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 		++it;
 	}
 
+	solu_num *= dg_fun::num_of_equation;
 
 }
 
