@@ -44,19 +44,18 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 
-//		if(k == 0){
-//			Adapt(k);
-//			DG_init();	
-//		}
 		DG_step_by_RK3(tn, delta_t);
 
      		Serial_io(tn);		
 
-		Adapt(k);
+		if(dg_refine::adapt){	// hp-refinement
+
+			Adapt(k);
+     			Serial_io(tn);		
+		}
 
 //		Write_faces_all();
 
-     		Serial_io(tn);		
 
 		// load_balancing----------------------------------------------	
 //		Load_balancing(k);

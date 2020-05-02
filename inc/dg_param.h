@@ -51,6 +51,8 @@ namespace dg_refine{
 
 	extern const bool adapt;
 
+	extern const int refine_frequency;
+
 	extern const int fit_point_num;
 	
 	extern const double tolerance_min;

@@ -62,19 +62,22 @@ namespace dg_fun{
 
 	const int num_of_equation = 3;
 
-//	const double C = 1.0;
-	const double C =  1.0 / (4.0 * std::atan(1.0));
+	const double C = 1.0;
+//	const double C =  1.0 / (4.0 * std::atan(1.0));
 };
 
 /// @brief
 /// refinement (hp) refinement swtich.
 /// @param adapt refinement switch. 
+/// @param refine_frequency time step interval of refinement. 
 /// @param fit_point_num The number of points that are used to compute least square fit
 /// @param tolerance_min the minimum discretization tolerance . If the estimated error exceeds this, refine. 
 /// @param tolerance_max the maximum discretization tolerance. If the estimated error smaller than this, coarsen. 
 namespace dg_refine{
 
-	const bool adapt = false;
+	const bool adapt = true;
+
+	const int refine_frequency = 10;	// every time step refine once
 
 	const int fit_point_num = 4;
 
