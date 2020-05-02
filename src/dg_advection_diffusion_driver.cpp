@@ -33,7 +33,7 @@ void Driver_for_DG_approximation(){
 
 	// current time
 	double tn{};
-
+	
 	// Initialization
 	DG_init();	
 	
@@ -46,12 +46,19 @@ void Driver_for_DG_approximation(){
 
 		DG_step_by_RK3(tn, delta_t);
 
-     		Serial_io(tn);		
+
+		// output control
+		if((k + 1) % dg_io::output_frequency == 0){
+     			Serial_io(tn);		
+		}
 
 		if(dg_refine::adapt){	// hp-refinement
 
-			Adapt(k);
-     			Serial_io(tn);		
+			if((k + 1) % dg_refine::refine_frequency == 0){
+
+				Adapt(k);
+     				Serial_io(tn);		
+			}
 		}
 
 //		Write_faces_all();

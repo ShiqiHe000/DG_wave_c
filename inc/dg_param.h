@@ -61,6 +61,12 @@ namespace dg_refine{
 };
 //---------------------------------------------------
 
+// output variables --------------------------------
+namespace dg_io{
+
+	extern const int output_frequency;
+};
+//--------------------------------------------------
 
 // mpi variables-------------------------------------
 namespace mpi{
