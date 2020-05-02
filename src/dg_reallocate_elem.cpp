@@ -27,6 +27,8 @@ void Erase_elem_old(std::vector<int>& send, char dir, int num);
 
 void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double>& solu_packed);
 
+void Recv_solu(int source, int tag, std::vector<double>& solu);
+
 void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank); 	// test
 void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target_rank);	//test
 void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank);	// test
@@ -52,10 +54,13 @@ void Reallocate_elem(int kt){
 
 		// pack info to send
 		int solu_num{};
-		Send_pack(send_elem, it, solu_num);
+		Send_pack(send_elem, it, solu_num);	// element info
+
+		std::vector<double> solu_packed;
+		Solution_pack(LB::Send.pre, solu_num, solu_packed);	// solutions
 
 		int num_n{};
-		Face_pack(face_info, LB::Send.pre, num_n);
+		Face_pack(face_info, LB::Send.pre, num_n);	// face info
 		
 		// test--------------------------------------------------------------
 //		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
@@ -64,6 +69,9 @@ void Reallocate_elem(int kt){
 
 		// ready to send 
 		MPI_Send(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD);	// tag = rank
+
+		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank - 1, mpi::rank + 2, MPI_COMM_WORLD);
+
 		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD);
 
 		Erase_elem_old(LB::Send.pre, 'p', num_pre);
@@ -78,6 +86,9 @@ void Reallocate_elem(int kt){
 		int solu_num{};
 		Send_pack(send_elem, it, solu_num);
 
+		std::vector<double> solu_packed;
+		Solution_pack(LB::Send.next, solu_num, solu_packed);	// solutions
+
 		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
@@ -86,6 +97,7 @@ void Reallocate_elem(int kt){
 //		Write_send_face(kt, face_info, mpi::rank + 1);
 
 		MPI_Send(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD);
+		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank + 1, mpi::rank - 1, MPI_COMM_WORLD);
 		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
@@ -98,10 +110,12 @@ void Reallocate_elem(int kt){
 
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
+			std::vector<double> solu;
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 
+			Recv_solu(mpi::rank + 1, mpi::rank + 3, solu);
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -115,13 +129,15 @@ void Reallocate_elem(int kt){
 	else if(mpi::rank == mpi::num_proc - 1){
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
-			std::vector<info_pack> recv_info;
 
+			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
+			std::vector<double> solu;
 
 			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
+			Recv_solu(mpi::rank - 1, mpi::rank - 2, solu);
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -138,10 +154,13 @@ void Reallocate_elem(int kt){
 
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
+			std::vector<double> solu;
 
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 			
+			Recv_solu(mpi::rank + 1, mpi::rank + 3, solu);
+
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
 //			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
@@ -154,9 +173,12 @@ void Reallocate_elem(int kt){
 
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
+			std::vector<double> solu;
 			int recv_num{};	
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+
+			Recv_solu(mpi::rank - 1, mpi::rank - 2, solu);
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -436,6 +458,27 @@ void Fill_facen(std::vector<face_pack>& face_info){
 
 	}
 
+}
+
+
+/// @brief
+/// Receive element solution from sender. 
+/// @param source Sender's rank.
+/// @param tag Tag of the message. 
+/// @param solu Buffer for the message. 
+void Recv_solu(int source, int tag, std::vector<double>& solu){
+
+	int count{};
+
+	MPI_Status status1, status2;
+
+	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
+
+	MPI_Get_count(&status1, MPI_DOUBLE, &count);
+
+	solu = std::vector<double>(count);
+
+	MPI_Recv(&solu[0], count, MPI_DOUBLE, source, tag, MPI_COMM_WORLD, &status2);
 }
 
 /// @brief
