@@ -12,7 +12,7 @@
 #include <iostream>	// test
 
 // forward declaration---------------------------------------------------------
-double Decay_rate(std::vector<int>& porder, std::vector<double>& ap);
+double Decay_rate(std::vector<int>& porder, std::vector<double>& ap, double& C);
 
 void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& flag_refine, std::vector<bool>& flag_coarsen);
 
@@ -32,7 +32,7 @@ void Refinement_flag(){
 		std::vector<bool> flag_coarsen(dg_fun::num_of_equation);
 
 		Error_indicator(temp, sigma, flag_refine, flag_coarsen);
-		
+
 		// now refine depends on pressure--------------
 		if(flag_refine.front()){	// refine depends on pressure
 
@@ -43,7 +43,7 @@ void Refinement_flag(){
 				}
 	
 			}
-			else{
+			else{	// p-refinement
 				if(temp -> n < grid::nmax){	// not exceed the max poly order
 					temp -> prefine = true;
 				}
@@ -188,7 +188,20 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		
 		double tol_max = u_norm * dg_refine::tolerance_max;	// the threshold for coarening		
 
-		double sum = ap[equ].back();	// sum of the last spectrum
+		double C{};	// the const: C*exp(-sigma * n)
+
+		sigma[equ] = Decay_rate(porder, ap[equ], C);
+		
+		// sum of error
+		double sum = std::sqrt(std::pow(ap[equ].back(), 2) 
+				+ C * C / (2.0 * sigma[equ]) * std::exp(- 2.0 * sigma[equ] * (porder.back() + 1)));
+		
+//if(mpi::rank == 0){
+//
+//	std::cout<< "tol " << tol_min << " err_sum " << sum << "\n";
+//
+//}
+//		double sum = ap[equ].back();	// sum of the last spectrum
 
 		if(sum > tol_min){	// need refine
 
@@ -196,8 +209,8 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 
 			flag_coarsen[equ] = false;
 
-			// get decay indicator
-			sigma[equ] = Decay_rate(porder, ap[equ]);
+//			// get decay indicator
+//			sigma[equ] = Decay_rate(porder, ap[equ]);
 
 		}
 		else if(sum <= tol_max ){	// need coarsen
@@ -254,7 +267,8 @@ double Solution_l2_norm(int equ, Unit* temp){
 /// Then we get the decay factor (the absolute value of the line). 
 /// @param porder the corresponding order of ap. (x)
 /// @param ap the decaying spectrums. (y)
-double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
+/// @param C the constant in the exponential function. 
+double Decay_rate(std::vector<int>& porder, std::vector<double>& ap, double& C){
 
 	double x_avg{}; double y_avg{};
 
@@ -277,8 +291,12 @@ double Decay_rate(std::vector<int>& porder, std::vector<double>& ap){
 	
 	}
 		
-	sigma = std::abs(numer / denumer);
+	sigma = numer / denumer;
 
-	return sigma;
+	double alpha = y_avg - sigma * x_avg; // alpha = ln(C)
+
+	C = std::exp(alpha);
+
+	return std::abs(sigma);
 
 }
