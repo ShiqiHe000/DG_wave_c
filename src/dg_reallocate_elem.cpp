@@ -25,6 +25,8 @@ void Fill_facen(std::vector<face_pack>& face_info);
 
 void Erase_elem_old(std::vector<int>& send, char dir, int num);
 
+void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double>& solu_packed);
+
 void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target_rank); 	// test
 void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target_rank);	//test
 void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank);	// test
@@ -474,6 +476,32 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 	MPI_Recv(&recv_face[0], count, Hash::Face_type, source, tag, MPI_COMM_WORLD, &status2);
 }
 
+/// @brief
+/// Pack up the element solutions. No need to pre-allocate solu_packed. 
+/// @param send_list the list of element to be send.
+/// @param solu_num solution number, obtained by the Send_pack() function. 
+/// @param solu_packed Pack up the solutions of all the sending elements together.  
+void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double>& solu_packed){
+
+	// allocate solution package. 
+	solu_packed = std::vector<double>(solu_num);
+
+	int i{};
+
+	for(auto& key : send_list){
+
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+			for(auto& v : local::Hash_elem[key] -> solution[equ]){
+
+				solu_packed[i] = v;
+
+				++i;
+			}	
+		}
+	}
+
+}
 
 /// @brief
 /// Pack sending information. 
