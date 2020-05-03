@@ -55,18 +55,22 @@ void Driver_for_DG_approximation(){
 		if(dg_refine::adapt){	// hp-refinement
 
 			if((k + 1) % dg_refine::refine_frequency == 0){
-
+				
+				// hp-adaptive --------------------------------------------
 				Adapt(k);
+				// --------------------------------------------------------
+
      				Serial_io(tn);		
+
+				// load_balancing----------------------------------------------	
+				Load_balancing(k);
+				//-------------------------------------------------------------
 			}
 		}
 
 //		Write_faces_all();
 
 
-		// load_balancing----------------------------------------------	
-//		Load_balancing(k);
-		//-------------------------------------------------------------
 //		Write_faces_all();
 
 //		Simple_test(k);

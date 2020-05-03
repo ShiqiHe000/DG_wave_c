@@ -123,14 +123,14 @@ void MPI_Elem_type(){
 	int elem_blocklength[num]{4, 1, 1, 4};
 	
 	MPI_Aint array_of_offsets[num];
-	MPI_Aint baseadd, add1, add2, add3;
+	MPI_Aint baseadd, add1, add2, add3; 
 	
 	std::vector<info_pack> myinfo(1);
 
 	MPI_Get_address(&(myinfo[0].n), &baseadd);
 	MPI_Get_address(&(myinfo[0].status), &add1);
 	MPI_Get_address(&(myinfo[0].child_position), &add2);
-	MPI_Get_address(&(myinfo[0].xcoords), &add3);
+	MPI_Get_address(&(myinfo[0].xcoords[0]), &add3);
 
 	array_of_offsets[0] = 0;
 	array_of_offsets[1] = add1 - baseadd;
@@ -144,6 +144,7 @@ void MPI_Elem_type(){
 	MPI_Aint lb, extent;
 	MPI_Type_get_extent(Hash::Elem_type, &lb, &extent);	
 	if(extent != sizeof(myinfo[0])){
+//std::cout << "----------------- problem \n";
 		MPI_Datatype old = Hash::Elem_type;
 		MPI_Type_create_resized(old, 0, sizeof(myinfo[0]), &Hash::Elem_type);
 		MPI_Type_free(&old);

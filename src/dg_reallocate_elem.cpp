@@ -45,6 +45,11 @@ void Reallocate_elem(int kt){
 	int num_pre = LB::Send.pre.size();
 	int num_next = LB::Send.next.size();
 
+//if(mpi::rank == 0){
+//
+//	std::cout<< "pre " << num_pre << " next " << num_next << "\n";
+//}
+
 	if(num_pre > 0){	// something to send
 		std::vector<info_pack> send_elem(num_pre);
 
@@ -70,7 +75,7 @@ void Reallocate_elem(int kt){
 		// ready to send 
 		MPI_Send(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD);	// tag = rank
 
-		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank - 1, mpi::rank + 2, MPI_COMM_WORLD);
+		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank - 1, mpi::rank + 3, MPI_COMM_WORLD);
 
 		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD);
 
@@ -88,7 +93,7 @@ void Reallocate_elem(int kt){
 
 		std::vector<double> solu_packed;
 		Solution_pack(LB::Send.next, solu_num, solu_packed);	// solutions
-
+//std::cout<< "rank "<< mpi::rank << "\n";
 		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
@@ -97,7 +102,7 @@ void Reallocate_elem(int kt){
 //		Write_send_face(kt, face_info, mpi::rank + 1);
 
 		MPI_Send(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD);
-		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank + 1, mpi::rank - 1, MPI_COMM_WORLD);
+		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank + 1, mpi::rank + 4, MPI_COMM_WORLD);
 		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
@@ -115,7 +120,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 
-			Recv_solu(mpi::rank + 1, mpi::rank + 3, solu);
+			Recv_solu(mpi::rank + 1, mpi::rank + 4, solu);
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -137,7 +142,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 			
-			Recv_solu(mpi::rank - 1, mpi::rank - 2, solu);
+			Recv_solu(mpi::rank - 1, mpi::rank + 3, solu);
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -159,7 +164,7 @@ void Reallocate_elem(int kt){
 			int recv_num{};	
 			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
 			
-			Recv_solu(mpi::rank + 1, mpi::rank + 3, solu);
+			Recv_solu(mpi::rank + 1, mpi::rank + 4, solu);
 
 			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
 
@@ -170,15 +175,26 @@ void Reallocate_elem(int kt){
 		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
-
 			std::vector<info_pack> recv_info;
 			std::vector<face_pack> recv_face;
 			std::vector<double> solu;
 			int recv_num{};	
 		
-			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
+			Recv_elem(mpi::rank - 1, mpi::rank + 3, recv_info, recv_num);
 
+//std::cout << "-----------------------------" <<mpi::rank << "\n";
 			Recv_solu(mpi::rank - 1, mpi::rank - 2, solu);
+
+//if(mpi::rank == 1){
+//
+//	std::cout<< "from " << mpi::rank -1 << "\n";
+//	for(auto& h : solu){
+//
+//		std::cout << h << "\n";
+//
+//	}
+//
+//}
 
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
@@ -489,7 +505,11 @@ void Recv_solu(int source, int tag, std::vector<double>& solu){
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, MPI_DOUBLE, &count);
-
+//if(mpi::rank == 1){
+//
+//	std::cout<< count << "\n";
+//
+//}
 	solu = std::vector<double>(count);
 
 	MPI_Recv(&solu[0], count, MPI_DOUBLE, source, tag, MPI_COMM_WORLD, &status2);
@@ -508,7 +528,11 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, Hash::Elem_type, &count);
-
+//if(mpi::rank == 1){
+//
+//	std::cout << "======================= " << count << "\n";
+//
+//}
 	recv_info = std::vector<info_pack>(count);
 
 	MPI_Recv(&recv_info[0], count, Hash::Elem_type, source, tag, MPI_COMM_WORLD, &status2);
@@ -546,13 +570,20 @@ void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double
 	int i{};
 
 	for(auto& key : send_list){
-
+//if(mpi::rank == 0){
+//
+//	std::cout << "send " << key << "\n";
+//}
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 			for(auto& v : local::Hash_elem[key] -> solution[equ]){
 
 				solu_packed[i] = v;
-
+//if(mpi::rank == 0){
+//
+//	std::cout<< "i "  << i << " solu " << solu_packed[i] << "\n";
+//
+//}
 				++i;
 			}	
 		}
@@ -591,6 +622,10 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 	}
 
 	solu_num *= dg_fun::num_of_equation;
+//if(mpi::rank ==0){
+//
+//	std::cout << solu_num << "\n";
+//}
 
 }
 

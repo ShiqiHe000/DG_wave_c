@@ -59,16 +59,16 @@ void Flag_elem(int kt){
 //int key_test = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 if(mpi::rank == 0 && kt == 0 ){
 
-	rand_num = 4;
+	rand_num = 1;
 	
-	temp -> prefine = true;
+//	temp -> prefine = true;
 
 }
 else if(mpi::rank == 0 && kt != 0){
 
 	rand_num = 4;
 	
-	temp -> coarsen = true;
+//	temp -> coarsen = true;
 }
 else{
 	rand_num = 4;
