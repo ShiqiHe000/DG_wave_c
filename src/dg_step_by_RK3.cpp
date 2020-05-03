@@ -34,7 +34,6 @@ void DG_step_by_RK3(double tn, double delta_t){
 		temp = temp -> next;
 	}
 
-
 	
 	// thrid order RK
 	for(int k = 0; k < 3; ++k){
@@ -44,6 +43,7 @@ void DG_step_by_RK3(double tn, double delta_t){
 		// time derivative at current time step
 		DG_time_der(t);
 		
+//std::cout << "time " << t << " rank ============= "<< mpi::rank << "\n";
 		temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
 

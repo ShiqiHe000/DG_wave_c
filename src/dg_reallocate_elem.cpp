@@ -99,6 +99,11 @@ void Reallocate_elem(int kt){
 //			" status "<< h.status << " children_p "<< h.child_position << 
 //			" x " << h.xcoords[0] << " " << h.xcoords[1] << " y " << h.ycoords[0] << " "
 //			 << " " << h.ycoords[1] << "\n";
+//		
+//		std::cout << "ref_x " << h.ref_x[0] << " " << h.ref_x[1] << " ref_y " <<
+//				h.ref_y[0] << " " << h.ref_y[1] << "\n";
+//
+//
 //		std::cout << "\n";
 //	}
 //
@@ -208,10 +213,13 @@ void Reallocate_elem(int kt){
 //
 //}
 
+//			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
+
 			Recv_face(mpi::rank - 1, mpi::rank, recv_face);
 
 //			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
+//std::cout << "-----------------------------" <<mpi::rank << "\n";
 			Enlarge_hash(recv_info, 'p', recv_num, solu);
 			Fill_facen(recv_face);
 //std::cout << "-----------------------------" <<mpi::rank << "\n";
@@ -288,7 +296,9 @@ void Write_recv_face(int kt, std::vector<face_pack>& recv_face, int target_rank)
 //		" neighbour "<< v.key << " n_rank "<< v.rank<< "\n";
 
 		myfile << v.owners_key << " "<<v.facei << " "<< v.face_type << 
-		" "<< v.key << " "<< v.rank<< "\n";
+		" "<< v.key << " "<< v.rank << " ref_x " << v.ref_x[0] << " " << v.ref_x[1] 
+		<< " ref_y " << v.ref_y[0] << " " << v.ref_y[1] 
+		<< "\n";
 	}
 	
 
@@ -378,7 +388,10 @@ void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target
 		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
 
 		myfile << key << " status " << v.status<< " c position "<< v.child_position<< " x p "<< v.xcoords[0]
-			<< " " << v.xcoords[1] << " y "<< v.ycoords[0]<< v.ycoords[1] << "\n";
+			<< " " << v.xcoords[1] << " y "<< v.ycoords[0]<< v.ycoords[1] 
+			<< " ref_x " << v.ref_x[0] << " " << v.ref_x[1] << " ref_y " << v.ref_y[0] 
+			<< " " << v.ref_y[1] 
+			<< "\n";
 
 		
 	}

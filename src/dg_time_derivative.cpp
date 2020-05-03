@@ -28,8 +28,10 @@ void DG_time_der(double t){
 	// exchange solution on the mpi boundaries
 	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');
 
+//std::cout<< "t " << t << " rank " << mpi::rank << "\n";
 	// compute the numberical flux
 	Numerical_flux_x(t);
+
 
 	// exchange numerical flux on the mpi boundaries
 	Exchange_flux(hrefinement::south, 0, 1);
