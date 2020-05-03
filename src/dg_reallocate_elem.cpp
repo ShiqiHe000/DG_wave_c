@@ -15,7 +15,7 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 
 void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count);
 
-void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv);
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv, std::vector<double>& solu);
 
 void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& num);
 
@@ -121,7 +121,7 @@ void Reallocate_elem(int kt){
 
 		//	Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
 
-			Enlarge_hash(recv_info, 'n', recv_num);
+			Enlarge_hash(recv_info, 'n', recv_num, solu);
 			Fill_facen(recv_face);
 		}
 
@@ -143,7 +143,7 @@ void Reallocate_elem(int kt){
 
 //			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
-			Enlarge_hash(recv_info, 'p', recv_num);
+			Enlarge_hash(recv_info, 'p', recv_num, solu);
 			Fill_facen(recv_face);
 
 		}
@@ -165,7 +165,7 @@ void Reallocate_elem(int kt){
 
 //			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
 
-			Enlarge_hash(recv_info, 'n', recv_num);
+			Enlarge_hash(recv_info, 'n', recv_num, solu);
 			Fill_facen(recv_face);
 		}
 
@@ -184,7 +184,7 @@ void Reallocate_elem(int kt){
 
 //			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
-			Enlarge_hash(recv_info, 'p', recv_num);
+			Enlarge_hash(recv_info, 'p', recv_num, solu);
 			Fill_facen(recv_face);
 		}
 		
@@ -365,12 +365,14 @@ void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target
 /// @parma recv_info The received element info (without facen).
 /// @param dir The info coming direction (pre: p, next: 'n').
 /// @pram num_recv received element number. 
-void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
+/// @param solu solution vector. 
+void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv, std::vector<double>& solu){
 
 	assert((dir == 'p' || dir == 'n') && "The sendign direction can only be 'p' or 'n'.");
 
 	Unit* temp_head = nullptr;	// head pointer to the recved linked list 
 	int pre_key;
+	int nodei{};
 
 	for(auto it = recv_info.begin(); it != recv_info.end(); ++it){
 
@@ -398,7 +400,19 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv){
 			local::Hash_elem[key] -> ycoords[i] = (*it).ycoords[i]; 
 		}
 
-		
+		// solution	
+		int num_solu = ((*it).n + 1) * ((*it).n + 1);
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+
+			local::Hash_elem[key] -> solution[equ] = std::vector<double> (num_solu);	// allocate
+	
+			for(int i = 0; i < num_solu; ++i){
+				
+				local::Hash_elem[key] -> solution[equ][i] = solu[nodei];
+				++nodei;
+			}
+		}
+	
 		if(it != recv_info.begin()){
 			local::Hash_elem[pre_key] -> next = local::Hash_elem[key];
 
