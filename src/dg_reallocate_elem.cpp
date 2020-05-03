@@ -91,6 +91,18 @@ void Reallocate_elem(int kt){
 		int solu_num{};
 		Send_pack(send_elem, it, solu_num);
 
+//if(mpi::rank == 0){
+//
+//	for(auto& h : send_elem){
+//
+//		std::cout << "n " << h.n << " index " << h.index[0] << h.index[1] << h.index[2] << 
+//			" status "<< h.status << " children_p "<< h.child_position << 
+//			" x " << h.xcoords[0] << " " << h.xcoords[1] << " y " << h.ycoords[0] << " "
+//			 << " " << h.ycoords[1] << "\n";
+//		std::cout << "\n";
+//	}
+//
+//}
 		std::vector<double> solu_packed;
 		Solution_pack(LB::Send.next, solu_num, solu_packed);	// solutions
 //std::cout<< "rank "<< mpi::rank << "\n";
@@ -180,10 +192,10 @@ void Reallocate_elem(int kt){
 			std::vector<double> solu;
 			int recv_num{};	
 		
-			Recv_elem(mpi::rank - 1, mpi::rank + 3, recv_info, recv_num);
+			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 
 //std::cout << "-----------------------------" <<mpi::rank << "\n";
-			Recv_solu(mpi::rank - 1, mpi::rank - 2, solu);
+			Recv_solu(mpi::rank - 1, mpi::rank + 3, solu);
 
 //if(mpi::rank == 1){
 //
@@ -530,6 +542,8 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 	MPI_Get_count(&status1, Hash::Elem_type, &count);
 //if(mpi::rank == 1){
 //
+//	std::cout << "source " << source << " tag "<< tag << "\n";
+//	
 //	std::cout << "======================= " << count << "\n";
 //
 //}
