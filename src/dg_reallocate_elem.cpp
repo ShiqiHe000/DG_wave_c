@@ -427,6 +427,8 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv, std
 		for(int i = 0; i < 2; ++i){	
 			local::Hash_elem[key] -> xcoords[i] = (*it).xcoords[i]; 
 			local::Hash_elem[key] -> ycoords[i] = (*it).ycoords[i]; 
+			local::Hash_elem[key] -> ref_x[i] = (*it).ref_x[i]; 
+			local::Hash_elem[key] -> ref_y[i] = (*it).ref_y[i]; 
 		}
 
 		// solution	
@@ -636,6 +638,8 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 		
 			v.xcoords[i] = local::Hash_elem[*it] -> xcoords[i];
 			v.ycoords[i] = local::Hash_elem[*it] -> ycoords[i];
+			v.ref_x[i] = local::Hash_elem[*it] -> ref_x[i];
+			v.ref_y[i] = local::Hash_elem[*it] -> ref_y[i];
 		}
 
 		++it;

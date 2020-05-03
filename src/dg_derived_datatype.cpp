@@ -135,7 +135,7 @@ void MPI_Elem_type(){
 
 	int num = 4;
 
-	int elem_blocklength[num]{4, 1, 1, 4};
+	int elem_blocklength[num]{4, 1, 1, 8};
 	
 	MPI_Aint array_of_offsets[num];
 	MPI_Aint baseadd, add1, add2, add3; 
