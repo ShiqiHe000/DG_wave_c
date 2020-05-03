@@ -40,7 +40,46 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& neighbours, int facen);
 
+void Clear_tables();
+
+void MPI_table_rebuild();
 //---------------------------------------------------------------------------------------
+
+
+/// @breif
+/// Rebuild MPI table. 
+void MPI_table_rebuild(){
+
+	Clear_tables();
+
+	// x direction
+	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
+				 hrefinement::south, 0, hrefinement::neighbours_south);
+	
+	// y direction
+	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
+				 hrefinement::west, 2, hrefinement::neighbours_west);
+
+}
+
+
+/// @brief
+/// Remove all the elements inside the tables (MPI tables and accumlation table)
+void Clear_tables(){
+
+	hrefinement::south.clear();
+	hrefinement::north.clear();
+	hrefinement::west.clear();
+	hrefinement::east.clear();
+
+	hrefinement::neighbours_north.clear();	
+	hrefinement::neighbours_south.clear();	
+	hrefinement::neighbours_east.clear();	
+	hrefinement::neighbours_west.clear();	
+
+}
+
+
 
 /// @brief
 /// Record the element length that is exposed to a certain neighbour rank. 

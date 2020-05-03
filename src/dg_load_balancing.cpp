@@ -1,6 +1,7 @@
 #include "dg_load_balancing.h"
 #include "dg_reallocate_elem.h"
 #include "dg_proc_mapping.h"
+#include "dg_mpi_table_construct.h"
 #include "dg_local_storage.h"
 #include "dg_param.h"	// test
 #include <iostream>
@@ -20,6 +21,7 @@ void Load_balancing(int kt){
 
 	Clear_mapping_tables();
 
+	MPI_table_rebuild();	// rebuild mpi tables
 }
 
 void Clear_mapping_tables(){

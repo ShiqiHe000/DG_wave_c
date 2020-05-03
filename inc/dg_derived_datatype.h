@@ -4,6 +4,9 @@
 #include <mpi.h>
 #include <vector>
 
+/// @brief
+/// Packing the facen info and send it to neighbours to update MPI boundaries.
+/// Use after hp-refinement. 
 struct facen_pack{
 
 	int local_key;	// neighbour element's key
@@ -39,6 +42,8 @@ struct info_pack{
 	double xcoords[2];
 	double ycoords[2];
 
+	double ref_x[2];
+	double ref_y[2];
 };
 
 /// @brief
@@ -64,6 +69,11 @@ struct face_pack{
 
 	int rank;
 
+	double ref_x[2];
+	double ref_y[2];
+
+	// member function
+	void Copy_ref(std::vector<double>& rx, std::vector<double>& ry);
 };
 
 namespace Hash{

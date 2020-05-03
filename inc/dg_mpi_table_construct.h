@@ -16,4 +16,6 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 				std::unordered_map<int, std::vector<int>>& neighbours_south);
 
 void Clear_tables();
+
+void MPI_table_rebuild();
 #endif

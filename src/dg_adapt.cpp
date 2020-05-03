@@ -38,18 +38,18 @@ void Adapt(int kt){
 
 }
 
-/// @brief
-/// Remove all the elements inside the tables (MPI tables and accumlation table)
-void Clear_tables(){
-
-	hrefinement::south.clear();
-	hrefinement::north.clear();
-	hrefinement::west.clear();
-	hrefinement::east.clear();
-
-	hrefinement::neighbours_north.clear();	
-	hrefinement::neighbours_south.clear();	
-	hrefinement::neighbours_east.clear();	
-	hrefinement::neighbours_west.clear();	
-
-}
+///// @brief
+///// Remove all the elements inside the tables (MPI tables and accumlation table)
+//void Clear_tables(){
+//
+//	hrefinement::south.clear();
+//	hrefinement::north.clear();
+//	hrefinement::west.clear();
+//	hrefinement::east.clear();
+//
+//	hrefinement::neighbours_north.clear();	
+//	hrefinement::neighbours_south.clear();	
+//	hrefinement::neighbours_east.clear();	
+//	hrefinement::neighbours_west.clear();	
+//
+//}

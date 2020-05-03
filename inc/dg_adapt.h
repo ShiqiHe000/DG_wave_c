@@ -3,5 +3,4 @@
 
 void Adapt(int kt);
 
-void Clear_tables();
 #endif
