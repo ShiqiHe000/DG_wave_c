@@ -43,7 +43,6 @@ void DG_step_by_RK3(double tn, double delta_t){
 		// time derivative at current time step
 		DG_time_der(t);
 		
-//std::cout << "time " << t << " rank ============= "<< mpi::rank << "\n";
 		temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
 
@@ -57,13 +56,6 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 						temp ->G[l][nodei] = am[k] * ( temp -> G[l][nodei]) + 
 									(temp -> solution_time_der)[l][nodei];
-//if(mpi::rank == 0){
-//
-//	std::cout<< temp -> index[0] << " "<< temp -> index[1] << "\n";
-//
-//	std::cout<< "time_der "<< temp -> solution_time_der[l][nodei]<< "\n";
-//
-//}
 
 						(temp -> solution)[l][nodei] += gm[k] * delta_t * (temp -> G[l][nodei]);
 					}
@@ -72,17 +64,6 @@ void DG_step_by_RK3(double tn, double delta_t){
 			
 
 			}
-//if(mpi::rank == 0){
-//
-//	std::cout<< temp -> index[0] << " " << temp -> index[1] << "\n";
-//	for(auto& a : temp -> solution[1]){
-//
-//		std::cout<< a << " ";
-//
-//	}
-//	std::cout<< "\n \n";
-//	
-//}
 			(temp -> solution_time_der).clear();
 			temp = temp -> next;
 		}

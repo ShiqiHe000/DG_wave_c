@@ -46,8 +46,6 @@ void Driver_for_DG_approximation(){
 
 		DG_step_by_RK3(tn, delta_t);
 
-//std::cout << "rank " << mpi::rank << "\n";
-
 		// output control
 		if((k + 1) % dg_io::output_frequency == 0){
      			Serial_io(tn);		
@@ -67,7 +65,7 @@ void Driver_for_DG_approximation(){
 				Load_balancing(k);
 				//-------------------------------------------------------------
      				Serial_io(tn);		
-				Write_faces_all();
+			//	Write_faces_all();
 			}
 		}
 

@@ -45,11 +45,6 @@ void Reallocate_elem(int kt){
 	int num_pre = LB::Send.pre.size();
 	int num_next = LB::Send.next.size();
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "pre " << num_pre << " next " << num_next << "\n";
-//}
-
 	if(num_pre > 0){	// something to send
 		std::vector<info_pack> send_elem(num_pre);
 
@@ -91,26 +86,8 @@ void Reallocate_elem(int kt){
 		int solu_num{};
 		Send_pack(send_elem, it, solu_num);
 
-//if(mpi::rank == 0){
-//
-//	for(auto& h : send_elem){
-//
-//		std::cout << "n " << h.n << " index " << h.index[0] << h.index[1] << h.index[2] << 
-//			" status "<< h.status << " children_p "<< h.child_position << 
-//			" x " << h.xcoords[0] << " " << h.xcoords[1] << " y " << h.ycoords[0] << " "
-//			 << " " << h.ycoords[1] << "\n";
-//		
-//		std::cout << "ref_x " << h.ref_x[0] << " " << h.ref_x[1] << " ref_y " <<
-//				h.ref_y[0] << " " << h.ref_y[1] << "\n";
-//
-//
-//		std::cout << "\n";
-//	}
-//
-//}
 		std::vector<double> solu_packed;
 		Solution_pack(LB::Send.next, solu_num, solu_packed);	// solutions
-//std::cout<< "rank "<< mpi::rank << "\n";
 		int num_n{};
 		Face_pack(face_info, LB::Send.next, num_n);
 
@@ -199,19 +176,8 @@ void Reallocate_elem(int kt){
 		
 			Recv_elem(mpi::rank - 1, mpi::rank - 1, recv_info, recv_num);
 
-//std::cout << "-----------------------------" <<mpi::rank << "\n";
 			Recv_solu(mpi::rank - 1, mpi::rank + 3, solu);
 
-//if(mpi::rank == 1){
-//
-//	std::cout<< "from " << mpi::rank -1 << "\n";
-//	for(auto& h : solu){
-//
-//		std::cout << h << "\n";
-//
-//	}
-//
-//}
 
 //			Write_recv(kt, recv_info, recv_num, mpi::rank - 1);	//test
 
@@ -219,10 +185,8 @@ void Reallocate_elem(int kt){
 
 //			Write_recv_face(kt, recv_face, mpi::rank - 1);	// test
 
-//std::cout << "-----------------------------" <<mpi::rank << "\n";
 			Enlarge_hash(recv_info, 'p', recv_num, solu);
 			Fill_facen(recv_face);
-//std::cout << "-----------------------------" <<mpi::rank << "\n";
 		}
 		
 	}
@@ -605,20 +569,11 @@ void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double
 	int i{};
 
 	for(auto& key : send_list){
-//if(mpi::rank == 0){
-//
-//	std::cout << "send " << key << "\n";
-//}
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 			for(auto& v : local::Hash_elem[key] -> solution[equ]){
 
 				solu_packed[i] = v;
-//if(mpi::rank == 0){
-//
-//	std::cout<< "i "  << i << " solu " << solu_packed[i] << "\n";
-//
-//}
 				++i;
 			}	
 		}
@@ -659,10 +614,6 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 	}
 
 	solu_num *= dg_fun::num_of_equation;
-//if(mpi::rank ==0){
-//
-//	std::cout << solu_num << "\n";
-//}
 
 }
 
