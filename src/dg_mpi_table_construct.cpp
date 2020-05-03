@@ -227,15 +227,9 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 				send_info[k].mpi_length = it -> mpi_length;
 				send_info[k].Copy_ref(local::Hash_elem[it -> local_key] -> ref_x, 
 							local::Hash_elem[it -> local_key] -> ref_y);
-//				send_info[k].ref_x = local::Hash_elem[it -> local_key] -> ref_x;	
-//				send_info[k].ref_y = local::Hash_elem[it -> local_key] -> ref_y;	
+
 				++it;
 			}
-//if(mpi::rank == 3){
-//	std::cout<< "num_elem " << num_elem << "\n";
-//	std::cout<< "ref_x " << send_info.front().ref_x[0]  << " "<< send_info.front().ref_x[1] << "\n";
-//
-//}
 			MPI_Isend(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
 					mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
 			++i;
@@ -261,15 +255,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 			std::vector<facen_pack> recv_info(num);	
 	
 			MPI_Recv(&recv_info[0], num, Hash::Facen_type, v.first, v.first, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 0){
-//
-//	std::cout<< "num " << num << "\n";
-//	std::cout << recv_info[0].local_key << "\n";
-//	std::cout << recv_info[0].hlevel << "\n";
-//	std::cout << recv_info[0].porderx << "\n";
-//	std::cout << recv_info[0].mpi_length << "\n";
-//	std::cout<< recv_info.front().ref_x[0] << " "<<recv_info.front().ref_x[1] << "\n";
-//}
+
 			Update_hash(recv_info, north, update_dir, num, v.first, neighbours_north);
 		}
 

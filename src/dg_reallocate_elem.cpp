@@ -214,6 +214,7 @@ void Reallocate_elem(int kt){
 
 			Enlarge_hash(recv_info, 'p', recv_num, solu);
 			Fill_facen(recv_face);
+//std::cout << "-----------------------------" <<mpi::rank << "\n";
 		}
 		
 	}
@@ -495,7 +496,12 @@ void Fill_facen(std::vector<face_pack>& face_info){
 
 		local::Hash_elem[v.owners_key] -> facen[v.facei].back().rank = v.rank;
 
-		
+		for(int i = 0; i < 2; ++i){
+
+			local::Hash_elem[v.owners_key] -> facen[v.facei].back().ref_x[i] = v.ref_x[i];
+			local::Hash_elem[v.owners_key] -> facen[v.facei].back().ref_y[i] = v.ref_y[i];
+
+		}
 
 
 	}
@@ -668,6 +674,8 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 				face_info.back().pordery = it -> pordery;
 				face_info.back().key = it -> key;
 				face_info.back().rank = it -> rank;
+				face_info.back().Copy_ref(it -> ref_x, it -> ref_y);
+
 			}
 
 		}
