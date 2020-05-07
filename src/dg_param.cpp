@@ -9,7 +9,7 @@
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
 //	const std::string fileplace = "../gmsh_files/4_elem_small_domain.msh";
-	const std::string fileplace = "../gmsh_files/4_elements.msh";
+	const std::string fileplace = "../gmsh_files/64_elements.msh";
 }
 
 /// @brief Domain size
@@ -23,8 +23,8 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 1; 
-	const int exp_y = 1; 
+	const int exp_x = 3; 
+	const int exp_y = 3; 
 	
 	const double gx_l = 0.0;
 	const double gx_r = 1.0; 
@@ -32,7 +32,7 @@ namespace grid{
 	const double gy_r = 1.0; 
 
 	const int nmin = 6;	
-	const int nmax = 20;
+	const int nmax = 16;
 
 	const int hlevel_max = 3;	
 };
@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-4 * 10;
+	const double t_total = 1.0e-4 * 3;
 //	const double t_total = 0.5;
 
-	const int nt = 10;
+	const int nt = 3;
 
 };
 
@@ -73,11 +73,12 @@ namespace dg_fun{
 /// @param fit_point_num The number of points that are used to compute least square fit
 /// @param tolerance_min the minimum discretization tolerance . If the estimated error exceeds this, refine. 
 /// @param tolerance_max the maximum discretization tolerance. If the estimated error smaller than this, coarsen. 
+/// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
 	const bool adapt = true;
 
-	const int refine_frequency = 1;	// every time step refine once
+	const int refine_frequency = 10;	// every time step refine once
 
 	const int fit_point_num = 4;
 
@@ -85,6 +86,7 @@ namespace dg_refine{
 
 	const double tolerance_max = 1.0e-14;
 
+	const bool load_balancing = true;
 };
 
 //----------------------------------------------------------------------
@@ -94,7 +96,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 1;
+	const int output_frequency = 10;
 };
 
 

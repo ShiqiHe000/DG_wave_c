@@ -60,11 +60,13 @@ void Driver_for_DG_approximation(){
 				// --------------------------------------------------------
 
      				Serial_io(tn);		
-
-				// load_balancing----------------------------------------------	
-				Load_balancing(k);
-				//-------------------------------------------------------------
-     				Serial_io(tn);		
+		
+				if(dg_refine::load_balancing){	// repartitioning
+					// load_balancing----------------------------------------------	
+					Load_balancing(k);
+					//-------------------------------------------------------------
+     					Serial_io(tn);		
+				}
 			//	Write_faces_all();
 			}
 		}
