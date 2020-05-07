@@ -58,6 +58,8 @@ namespace dg_refine{
 	extern const double tolerance_min;
 
 	extern const double tolerance_max;
+
+	extern const bool load_balancing;
 };
 //---------------------------------------------------
 

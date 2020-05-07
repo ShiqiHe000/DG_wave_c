@@ -16,7 +16,7 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(main ${SOURCES})
 
 # set compiler warning flag
-set(GCC_COMPILER_FLAGS "-Wall -Wpedantic")
+set(GCC_COMPILER_FLAGS "-Wall -Wpedantic -O3 -pg")
 
 # set cmake compiler
 #set(CMAKE_CXX_COMPILER /home/travis/build/ShiqiHe000/DG_wave_c/openmpi-4.0.2/bin/mpicxx)
