@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.9)
 # name of the project + language
 project(2d_wave CXX)
 
-# have unit tets
-#enable_testing()
+# specify the c++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Bring the headers
 include_directories(inc)
@@ -28,12 +29,6 @@ find_package(MPI REQUIRED)
 if(MPI_NOFOUND)
 	message(ERROR "MPI is not found. Please check FindMPI.")
 endif(MPI_NOFOUND)
-
-#include_directories(/openmpi/include)
-#find_library(MPI NAMES openmpi HINTS /openmpi/lib)
-#if(MPI_NOTFOUND)
-#	message(ERROR "openmpi not found.")
-#endif(MPI_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
 
 # libraires links

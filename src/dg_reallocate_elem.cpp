@@ -7,6 +7,7 @@
 #include <cassert>
 #include <iostream> // test
 #include <fstream>	// test
+#include <cassert>	//test
 
 // forward declaration-------------------------------------------------------------------
 void Reallocate_elem(int kt);

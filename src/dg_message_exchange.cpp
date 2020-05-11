@@ -23,7 +23,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 
 /// @brief
-/// Exchange element interface info for those on the MPI boundaries. In x direction. 
+/// Exchange element interface info for those on the MPI boundaries. 
 /// North send, south recv.
 /// @param sender sender's mpi boundary table.
 /// @param face_s sender's face number.
@@ -38,7 +38,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 	for(auto& v : sender){	// North send
 
 		int target_rank = v.first;
-		auto it_local = v.second.begin();	// point to the members in vactor
+		auto it_local = v.second.begin();	// point to the members in vector
 
 		for(; it_local != v.second.end(); ++it_local){
 	
@@ -204,18 +204,6 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 				// numerical flux -= neighbours numerical flux
 				Vector_minus(local::Hash_elem[n_key] -> ghost[local_key], temp -> nflux_r);
-//if(mpi::rank == 0){
-//
-//
-//	std::cout<< n_key << "\n";
-//	std::cout.precision(17);
-//	for(auto& h : temp -> nflux_r){
-//
-//		std::cout<< std::fixed << h << "\n";
-//
-//	}
-//	std::cout<< "\n";
-//}
 			}
 			else if(it_face -> face_type == 'M'){	// remote neighbour
 		
