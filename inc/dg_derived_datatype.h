@@ -5,6 +5,18 @@
 #include <vector>
 
 /// @brief
+/// Neighbour pair. Use this structure to exchaneg boundary solutions. 
+/// @param sender_key Sender's key. 
+/// @param recver_key Recver's key. 
+struct neighbour_pair{
+
+	long long int sender_key;
+	
+	long long int recver_key;
+};
+
+
+/// @brief
 /// Packing the facen info and send it to neighbours to update MPI boundaries.
 /// Use after hp-refinement. 
 struct facen_pack{
