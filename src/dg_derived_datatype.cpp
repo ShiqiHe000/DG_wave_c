@@ -60,7 +60,7 @@ void MPI_Facen_type(){
 
 	int num = 3;
 
-	int elem_blocklength[num]{1, 4, 2};
+	int elem_blocklength[num]{1, 4, 4};
 
 	MPI_Datatype array_of_types[num]{MPI_LONG_LONG_INT, MPI_INT, MPI_DOUBLE};
 	
@@ -83,6 +83,7 @@ void MPI_Facen_type(){
 	MPI_Aint lb, extent;
 	MPI_Type_get_extent(Hash::Facen_type, &lb, &extent);	
 	if(extent != sizeof(myface[0])){
+//std::cout << "extent " << extent << " size " << sizeof(myface[0]) << "\n";
 		MPI_Datatype old = Hash::Facen_type;
 		MPI_Type_create_resized(old, 0, sizeof(myface[0]), &Hash::Facen_type);
 		MPI_Type_free(&old);
