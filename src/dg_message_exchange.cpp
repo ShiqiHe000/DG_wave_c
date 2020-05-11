@@ -42,7 +42,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 
 		for(; it_local != v.second.end(); ++it_local){
 	
-			int local_key = it_local -> local_key;	// sender's key
+			long long int local_key = it_local -> local_key;	// sender's key
 			Unit* temp = local::Hash_elem[local_key];
 
 			// go to this element, and loop through its facen[face_s]
@@ -70,7 +70,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 	
 			for(; it_local != v.second.end(); ++it_local){
 	
-				int local_key = it_local -> local_key;	// sender's key
+				long long int local_key = it_local -> local_key;	// sender's key
 				Unit* temp = local::Hash_elem[local_key];
 	
 				// go to this element, and loop through its facen[face_r]
@@ -110,7 +110,7 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 	
 			for(; it_local != v.second.end(); ++it_local){
 	
-				int local_key = it_local -> local_key;	// sender's key
+				long long int local_key = it_local -> local_key;	// sender's key
 				Unit* temp = local::Hash_elem[local_key];
 	
 				// go to this element, and loop through its facen[face_r]
@@ -162,7 +162,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 		for(; it_local != v.second.end(); ++it_local){
 	
-			int local_key = it_local -> local_key;	// sender's key
+			long long int local_key = it_local -> local_key;	// sender's key
 			Unit* temp = local::Hash_elem[local_key];
 
 			// go to this element, and loop through its facen[face_s]
@@ -171,7 +171,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 				
 				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 				
-					int n_key = it_face -> key;
+					long long int n_key = it_face -> key;
 
 					int count = (temp -> ghost[n_key]).size();
 
@@ -191,7 +191,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 	Unit* temp = local::head;
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		long long int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		// loop north interface
 		for(auto it_face = temp -> facen[face_r].begin(); 
@@ -200,7 +200,7 @@ void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int 
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 
-				int n_key = it_face -> key;
+				long long int n_key = it_face -> key;
 
 				// numerical flux -= neighbours numerical flux
 				Vector_minus(local::Hash_elem[n_key] -> ghost[local_key], temp -> nflux_r);

@@ -95,7 +95,7 @@ struct Unit::Face{
 
 	int pordery;
 	
-	int key;
+	long long int key;
 	
 	int rank;
 
@@ -107,10 +107,10 @@ struct Unit::Face{
 	Face(); 
 
 	// constructor2
-	Face(char c, int h, int nx, int ny, int k, int r, double* ref1, double* ref2);
+	Face(char c, int h, int nx, int ny, long long int k, int r, double* ref1, double* ref2);
 
 	// constructor3
-	Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2);
+	Face(char c, int h, int nx, int ny, long long int k, int r, std::vector<double>& ref1, std::vector<double>& ref2);
 	
 	// copy constructor ------------------------------------------------
 	Face(const Face& face);	// copy another instance

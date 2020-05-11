@@ -24,25 +24,42 @@ double ycoord_new[3]{};
 
 /// forward declaration ----------------------------------------------------------------------------
 void hpc_refinement();
+
 void Get_coordinates(int ith, double* xcoord, double* ycoord);
+
 void Gen_index(int ith, int* index, int* index_new);
-void Two_siblings(int new_key, int position);
-void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children);
-void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children);
-void Form_one_direction(int key1, int key2, int parent, int facen);
-void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours);
+
+void Two_siblings(long long int new_key, int position);
+
+void Four_children(int ith, int i, int j, int level, std::array<long long int, 4>& children);
+
+void Non_sibling_interfaces(Unit* last, long long int parent, std::array<long long int, 4>& children);
+
+void Form_one_direction(long long int key1, long long int key2, long long int parent, int facen);
+
+void Match_neighbours(long long int parent, long long int local_key, int facen, std::vector<long long int>& neighbours);
+
 void Flag_elem(int kt);
-void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys);
+
+void Coarsen_criteria(Unit* temp, bool& pass, std::array<long long int, 4>& four_keys);
+
 int Parent_position(int i, int j);
-void Inherit_from_children(int c1, int c2, int p_key, int facen);
-void Form_parent_faces(std::array<int, 4>& four_keys, int p_key);
-void Change_neighbour_coasen_case1(int c1, int facen, int p_key);
-void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key);
+
+void Inherit_from_children(long long int c1, long long int c2, long long int p_key, int facen);
+
+void Form_parent_faces(std::array<long long int, 4>& four_keys, long long int p_key);
+
+void Change_neighbour_coasen_case1(long long int c1, long long int facen, long long int p_key);
+
+void Change_neighbour_coarsen_case2(long long int c1, long long int c2, long long int facen, long long int p_key);
+
 bool First_child(Unit* temp);
-void Ref_coods_x(int key, int position, Unit* temp);
-void Ref_coods_y(int key, int position, Unit* temp);
+
+void Ref_coods_x(long long int key, int position, Unit* temp);
+void Ref_coods_y(long long int key, int position, Unit* temp);
+
 // void Coarsen_results(Unit* temp, bool pass);	// test
-void Print_inter(int new_key, int old_key); // test
+void Print_inter(long long int new_key, long long int old_key);	// test
 // --------------------------------------------------------------------------------------------------
 
 /// @brief
@@ -120,10 +137,10 @@ void hpc_refinement(){
 			ycoord_new[1] = ((temp -> ycoords[0]) + (temp -> ycoords[1])) / 2.0;
 			
 			// current key
-			int old_key = Get_key_fun(temp->index[0], temp->index[1], temp->index[2]);
+			long long int old_key = Get_key_fun(temp->index[0], temp->index[1], temp->index[2]);
 		
 			// previous key between 4 children	
-			int pre_key{};
+			long long int pre_key{};
 
 			// create 4 unit in hash table
 			for(int i = 0; i < 4; ++i){
@@ -134,7 +151,7 @@ void hpc_refinement(){
 				int index_new[3]{};
 				Gen_index(position, temp->index, index_new);
 				
-				int new_key = Get_key_fun(index_new[0], index_new[1], index_new[2]);
+				long long int new_key = Get_key_fun(index_new[0], index_new[1], index_new[2]);
 
 				// create unit
 				local::Hash_elem[new_key] = new Unit();
@@ -186,7 +203,7 @@ void hpc_refinement(){
 				
 			}	
 			// form then external interfaces between 4 children and updates their neighbour's faces			
-			std::array<int, 4> children;	// four siblings' keys
+			std::array<long long int, 4> children;	// four siblings' keys
 			Non_sibling_interfaces(temp2, old_key, children);
 			// interpolate solution to four children
 			Solutions_to_children(children, old_key);
@@ -222,7 +239,7 @@ void hpc_refinement(){
 				bool first = First_child(temp);
 
 				if(first){
-					std::array<int, 4> four_keys;
+					std::array<long long int, 4> four_keys;
 					bool pass; 	
 					Coarsen_criteria(temp, pass, four_keys);
 
@@ -232,7 +249,7 @@ void hpc_refinement(){
 						decrement += 3;	
 	
 						// generate parent's key
-						int key_p = Get_key_fun((temp->index[0]) / 2, 
+						long long int key_p = Get_key_fun((temp->index[0]) / 2, 
 								(temp->index[1]) / 2, temp->index[2] - 1);
 						
 						local::Hash_elem[key_p] = new Unit();	// create parent
@@ -338,7 +355,7 @@ void hpc_refinement(){
 /// Generate the reference boundary coordinate in x direciton.
 /// @param key current child's key.
 /// @param temp pointer to the parent element.
-void Ref_coods_x(int key, int position, Unit* temp){
+void Ref_coods_x(long long int key, int position, Unit* temp){
 
 	assert(position >= 0 && position <= 3 && "position should be inside [0, 3]");
 
@@ -362,7 +379,7 @@ void Ref_coods_x(int key, int position, Unit* temp){
 /// Generate the reference boundary coordinate in y direciton.
 /// @param key current child's key.
 /// @param temp pointer to the parent element.
-void Ref_coods_y(int key, int position, Unit* temp){
+void Ref_coods_y(long long int key, int position, Unit* temp){
 
 	assert(position >= 0 && position <= 3 && "position should be inside [0, 3]");
 
@@ -386,7 +403,7 @@ void Ref_coods_y(int key, int position, Unit* temp){
 /// Record the neighbours info of new parent (4 sides). 
 /// @param four_keys An array which stores the keys of four siblings in the sequence of relative posiiton. 
 /// @param p_key the key of parent. 
-void Form_parent_faces(std::array<int, 4>& four_keys, int p_key){
+void Form_parent_faces(std::array<long long int, 4>& four_keys, long long int p_key){
 
 	// south
 	Inherit_from_children(four_keys[0], four_keys[3], p_key, 0);
@@ -433,7 +450,7 @@ bool First_child(Unit* temp){
 /// @param c2 key of the 2st element of the corresponding direction. 
 /// @param p_key parent's key. 
 /// @param facen face direction (0, 1, 2, 3).
-void Inherit_from_children(int c1, int c2, int p_key, int facen){
+void Inherit_from_children(long long int c1, long long int c2, long long int p_key, long long int facen){
 
 	if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'B'){	// if on the physical boundary
 
@@ -482,7 +499,7 @@ void Inherit_from_children(int c1, int c2, int p_key, int facen){
 /// @param c1 Key of child.
 /// @param facen Children's facen number. 
 /// @param p_key Parent's key.
-void Change_neighbour_coasen_case1(int c1, int facen, int p_key){
+void Change_neighbour_coasen_case1(long long int c1, long long int facen, long long int p_key){
 
 	int n_dir = Opposite_dir(facen);	// neighbour face direction
 
@@ -491,7 +508,7 @@ void Change_neighbour_coasen_case1(int c1, int facen, int p_key){
 
 		if(it -> face_type == 'L'){
 
-			int n_key = it -> key;
+			long long int n_key = it -> key;
 
 			--local::Hash_elem[n_key] -> facen[n_dir].front().hlevel;	// hlevel - 1
 		
@@ -518,11 +535,11 @@ void Change_neighbour_coasen_case1(int c1, int facen, int p_key){
 /// @param c2 Key of child 2.
 /// @param facen Children's facen number. 
 /// @param p_key Parent's key.
-void Change_neighbour_coarsen_case2(int c1, int c2, int facen, int p_key){
+void Change_neighbour_coarsen_case2(long long int c1, long long int c2, int facen, long long int p_key){
 
 	int n_dir = Opposite_dir(facen);	// neighbour face direction
 
-	int n_key = local::Hash_elem[c1] -> facen[facen].front().key;
+	long long int n_key = local::Hash_elem[c1] -> facen[facen].front().key;
 
 	for(auto it = local::Hash_elem[n_key] -> facen[n_dir].begin(); 
 		it != local::Hash_elem[n_key] -> facen[n_dir].end(); ){
@@ -577,7 +594,7 @@ int Parent_position(int i, int j){
 /// @param temp unit pointer to the current element.
 /// @param pass boolean variable. If true then coarse the grid. 
 /// @param four_keys array that stores the four siblings key (in relative position order 0 1 2 3).
-void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
+void Coarsen_criteria(Unit* temp, bool& pass, std::array<long long int, 4>& four_keys){
 
 	assert(temp -> child_position == 0 || temp -> child_position == 2 && "children position prob");
 
@@ -619,7 +636,7 @@ void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 		}
 		
 		// check the last sibling
-		int north_key = temp -> facen[1].front().key;
+		long long int north_key = temp -> facen[1].front().key;
 		if(local::Hash_elem[north_key] -> facen[3].front().face_type != 'L'){
 			pass = false;
 			return;
@@ -673,7 +690,7 @@ void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 		}
 		
 		// check the last sibling
-		int south_key = temp -> facen[0].front().key;
+		long long int south_key = temp -> facen[0].front().key;
 		if(local::Hash_elem[south_key] -> facen[2].front().face_type != 'L'){
 			pass = false;
 			return;
@@ -706,7 +723,7 @@ void Coarsen_criteria(Unit* temp, bool& pass, std::array<int, 4>& four_keys){
 /// @param last pointer to the 3th child.
 /// @param parent parent key.
 /// @param children four children's keys. 
-void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children){
+void Non_sibling_interfaces(Unit* last, long long int parent, std::array<long long int, 4>& children){
 
 	// get four children's keys
 	Four_children(last -> child_position, last -> index[0], last -> index[1], last -> index[2], children);
@@ -731,7 +748,7 @@ void Non_sibling_interfaces(Unit* last, int parent, std::array<int, 4>& children
 /// @param local_key child's key.
 /// @parem facen face number.
 /// @param neighbours vector of the possible neighbours.
-void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& neighbours){
+void Match_neighbours(long long int parent, long long int local_key, int facen, std::vector<long long int>& neighbours){
 
 	int l_tol{};
 	int local_length = Elem_length(local::Hash_elem[local_key] -> index[2]);
@@ -749,7 +766,7 @@ void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& ne
 			if(it -> face_type == 'L'){	// only local element
 				
 				int n_dir = Opposite_dir(facen);	// neighbour face direction
-				int n_key = it -> key;	// neighbour's key
+				long long int n_key = it -> key;	// neighbour's key
 
 				// erase parent info, if exist
 				for(auto it_nf = local::Hash_elem[n_key] -> facen[n_dir].begin();
@@ -789,7 +806,7 @@ void Match_neighbours(int parent, int local_key, int facen, std::vector<int>& ne
 /// @param key2 2nd child's key (two children in index i/j ascending mode).
 /// @param parent parent's key.
 /// @param facen face direction. 
-void Form_one_direction(int key1, int key2, int parent, int facen){
+void Form_one_direction(long long int key1, long long int key2, long long int parent, int facen){
 	
 	// if on the physical boundary, only inherit. 
 	if(local::Hash_elem[parent] -> facen[facen].front().face_type == 'B'){
@@ -803,9 +820,9 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 		return; 
 	}
 
-	std::array<int, 2> two = {key1, key2};
+	std::array<long long int, 2> two = {key1, key2};
 	
-	std::unordered_map<int, std::vector<int>> neighbours;
+	std::unordered_map<long long int, std::vector<long long int>> neighbours;
 
 	// not on the physical boundary, form possible nieghbour list and search
 	if(facen == 0){	// south
@@ -884,7 +901,7 @@ void Form_one_direction(int key1, int key2, int parent, int facen){
 /// @param j integer coordinate in y direction.
 /// @param level element hlevel.
 /// @param children children key array. 
-void Four_children(int ith, int i, int j, int level, std::array<int, 4>& children){
+void Four_children(int ith, int i, int j, int level, std::array<long long int, 4>& children){
 
 	assert((ith == 1 || ith == 3) && "Child_position must be 1 or 3");
 
@@ -912,7 +929,7 @@ void Four_children(int ith, int i, int j, int level, std::array<int, 4>& childre
 /// Build faces between siblngs. Each element has two faces adjecant to siblings. 
 /// @param new_key current child element's key
 /// @param position ith child. 
-void Two_siblings(int new_key, int position){
+void Two_siblings(long long int new_key, int position){
 	
 	// four faces
 	for(int i = 0; i < 4; ++i){
@@ -1076,7 +1093,7 @@ void Get_coordinates(int ith, double* xcoord, double* ycoord){
 /// Print out the interpolants
 /// @parma new_key child's key
 /// @param old_key parent's key
-void Print_inter(int new_key, int old_key){
+void Print_inter(long long int new_key, long long int old_key){
 
 	Unit* temp_p = local::Hash_elem[old_key];
 	Unit* temp_c = local::Hash_elem[new_key];
@@ -1087,16 +1104,13 @@ void Print_inter(int new_key, int old_key){
 
 		for(int j = 0; j <= (temp_p -> m); ++j){
 
-			int index = Get_single_index(i, j, temp_p -> m + 1);
+			long long int index = Get_single_index(i, j, temp_p -> m + 1);
 
 			std::cout<< i << " " << j <<" " <<temp_p -> solution[1][index] 
 				<< " "<< temp_c -> solution[1][index]<< "\n" ;
 
 		}
 	}
-
-
-	
 
 }
 

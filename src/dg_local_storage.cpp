@@ -32,7 +32,7 @@ namespace local{
 
 	Unit* head = nullptr; // head ptr points to the first element
 
-	std::unordered_map<int, Unit*> Hash_elem;	// hash table element
+	std::unordered_map<long long int, Unit*> Hash_elem;	// hash table element
 
 };
 
@@ -40,7 +40,7 @@ namespace local{
 
 /// @brief
 /// The variables that will be used in h-refinement
-/// @param north north mpi table.
+/// @param north north mpi table. <target_rank, neighbour_keys>
 /// @param south south mpi table.
 /// @param west west mpi table.
 /// @param east east mpi table.
@@ -55,10 +55,10 @@ namespace hrefinement{
 	std::unordered_map<int, std::vector<mpi_table>> west;
 	std::unordered_map<int, std::vector<mpi_table>> east;
 
-	std::unordered_map<int, std::vector<int>> neighbours_north;
-	std::unordered_map<int, std::vector<int>> neighbours_south;
-	std::unordered_map<int, std::vector<int>> neighbours_east;
-	std::unordered_map<int, std::vector<int>> neighbours_west;
+	std::unordered_map<long long int, std::vector<long long int>> neighbours_north;
+	std::unordered_map<long long int, std::vector<long long int>> neighbours_south;
+	std::unordered_map<long long int, std::vector<long long int>> neighbours_east;
+	std::unordered_map<long long int, std::vector<long long int>> neighbours_west;
 };
 
 

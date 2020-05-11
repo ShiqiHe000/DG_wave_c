@@ -1,0 +1,7 @@
+dg_proc_mapping.cpp:209:			auto it = local::Hash_elem[key] -> facen[facei].begin();
+dg_proc_mapping.cpp:212:			for(; it != local::Hash_elem[key] -> facen[facei].end(); ++it){
+dg_proc_mapping.cpp:261:			auto it = local::Hash_elem[key] -> facen[facei].begin();
+dg_proc_mapping.cpp:264:			for(; it != local::Hash_elem[key] -> facen[facei].end(); ++it){
+dg_proc_mapping.cpp:306:	for(auto it = local::Hash_elem[n_key] -> facen[oface].begin(); it != local::Hash_elem[n_key] -> facen[oface].end(); ++it){
+dg_proc_mapping.cpp:463:		for(auto it_face = local::Hash_elem[ito -> local_key] -> facen[facei].begin();
+dg_proc_mapping.cpp:464:			it_face != local::Hash_elem[ito -> local_key] -> facen[facei].end(); ++it_face){

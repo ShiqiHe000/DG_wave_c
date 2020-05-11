@@ -21,24 +21,25 @@ void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_
 
 void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south, 
 					std::unordered_map<int, std::vector<mpi_table>>& north, int update_dir, 
-					std::unordered_map<int, std::vector<int>>& neighbours_north);
+					std::unordered_map<long long int, std::vector<long long int>>& neighbours_north);
 
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen,
-				std::unordered_map<int, std::vector<int>>& neighbours_north,
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_north,
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces, 
-				std::unordered_map<int, std::vector<int>>& neighbours_south);
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_south);
 
 void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
-			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours);
+			int facei, int num, int target_rank, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours);
 
 void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_map<int, std::vector<mpi_table>>& my_table);
 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
-				std::unordered_map<int, std::vector<int>>& neighbours_north, 
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_north, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south, 
-				std::unordered_map<int, std::vector<int>>& neighbours_south);
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_south);
 
-void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& neighbours, int facen);
+void Possible_neighbours(Unit* temp, std::unordered_map<long long int, std::vector<long long int>>& neighbours, int facen);
 
 void Clear_tables();
 
@@ -105,9 +106,9 @@ void Record_length(int my_hlevel, int n_hlevel, int target_rank, std::unordered_
 /// @param temp Pointer to the current unit element. 
 /// @param neighbours The hash table to store the possible neighbours.
 /// @param facen Face number.
-void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& neighbours, int facen){
+void Possible_neighbours(Unit* temp, std::unordered_map<long long int, std::vector<long long int>>& neighbours, int facen){
 
-	int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+	long long int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 	if(neighbours.count(local_key) != 0){	// if already record
 		
@@ -149,9 +150,9 @@ void Possible_neighbours(Unit* temp, std::unordered_map<int, std::vector<int>>& 
 /// @param face_south The face direction of the second MPI boundary table. 
 /// @param neighbours_south Hash table to store all the possible neighbours (direction south). 
 void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north, int face_north, 
-				std::unordered_map<int, std::vector<int>>& neighbours_north, 
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_north, 
 				std::unordered_map<int, std::vector<mpi_table>>& south, int face_south, 
-				std::unordered_map<int, std::vector<int>>& neighbours_south){
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_south){
 	Unit* temp = local::head;
 
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -218,9 +219,9 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 /// @param faces Face direction of the second table. 
 /// @param neighbours_south Hash table to store all the possible neighbours (direction south). 
 void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& north, int facen,
-				std::unordered_map<int, std::vector<int>>& neighbours_north,
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_north,
 				std::unordered_map<int, std::vector<mpi_table>>& south, int faces, 
-				std::unordered_map<int, std::vector<int>>& neighbours_south){
+				std::unordered_map<long long int, std::vector<long long int>>& neighbours_south){
 
 	// south send, north recv
 	Sender_recver(south, north, facen, neighbours_north);
@@ -237,7 +238,7 @@ void Update_mpi_boundaries(std::unordered_map<int, std::vector<mpi_table>>& nort
 /// @param neighbours_north Hash table of recver's all possible neighbours. 
 void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south, 
 					std::unordered_map<int, std::vector<mpi_table>>& north, int update_dir, 
-					std::unordered_map<int, std::vector<int>>& neighbours_north){
+					std::unordered_map<long long int, std::vector<long long int>>& neighbours_north){
 	int s = south.size();	// number of pairs in the hash table
 	int n = north.size();	// number of pairs in the hash table
 
@@ -313,7 +314,8 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 /// @param target_rank The rank number of the info sender.
 /// @param neighbours possible neighbours hash table. 
 void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 
-			int facei, int num, int target_rank, std::unordered_map<int, std::vector<int>>& neighbours){
+			int facei, int num, int target_rank, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours){
 	
 	for(auto it = table[target_rank].begin(); it != table[target_rank].end(); ++it){
 

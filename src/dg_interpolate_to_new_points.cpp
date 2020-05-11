@@ -15,20 +15,20 @@
 // forward declaration------------------------------------------------------------------------------------------
 void Polynomial_interpolate_matrix(std::vector<double>& x, std::vector<double>& xi, std::vector<double>& T);
 
-void Solutions_to_children(std::array<int, 4>& keys, int p_key);
+void Solution_back_to_parent(std::array<long long int, 4>& keys, long long int p_key);
+
+void Solutions_to_children(std::array<long long int, 4>& keys, long long int p_key);
 
 void Interpolate_to_new_points(int m, int n, std::vector<double>& T, 
 				std::vector<double>& f, std::vector<double>& new_f, int start_old, int start_new, int interval);
 
 void Form_new_set_of_points(int m, int start, std::vector<double>& y);
 
-void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m);
+void Two_dir_inter(long long int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m);
 
 void Mortar_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
 
 void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
-
-void Solution_back_to_parent(std::array<int, 4>& keys, int p_key);
 
 void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<double>& Tx, double b);
 //--------------------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ void Lagrange_inter_back_transpose(Unit* c, Unit* p, std::vector<double>& Ty, st
 /// @param keys four children key. Sequence: SW -- NW -- NE -- SE
 /// @parma p_key parent's key. 
 /// @node this function can take care of different polynomial order in x and y direction. 
-void Solutions_to_children(std::array<int, 4>& keys, int p_key){
+void Solutions_to_children(std::array<long long int, 4>& keys, long long int p_key){
 
 
 	// pointers to the four children
@@ -111,7 +111,7 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 	int n = p -> n;
 	int m = n;
 
-	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix. 
+	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix. <function_num, solutions>
 	std::unordered_map<int, std::vector<double>> middle2;	// intermidiate matrix. 
 
 	// y direction
@@ -167,7 +167,7 @@ void Lagrange_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<
 /// @param keys four children key. Sequence: SW -- NW -- NE -- SE
 /// @parma p_key parent's key. 
 /// @note polynomial order should be identical in x and y direction. 
-void Solution_back_to_parent(std::array<int, 4>& keys, int p_key){
+void Solution_back_to_parent(std::array<long long int, 4>& keys, long long int p_key){
 
 	// pointers to the four children
 	Unit* c0 = local::Hash_elem[keys[0]];
@@ -367,7 +367,7 @@ void Mortar_inter_back(Unit* c, Unit* p, std::vector<double>& Ty, std::vector<do
 /// @param T_y interpolation matrix in y direction.
 /// @param n polynomial order in x direction.
 /// @param m polynomial order in y direction.
-void Two_dir_inter(int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m){
+void Two_dir_inter(long long int p_key, Unit* c, std::vector<double>& T_x, std::vector<double>& T_y, int n, int m){
 
 	std::unordered_map<int, std::vector<double>> middle;	// intermidiate matrix. 
 

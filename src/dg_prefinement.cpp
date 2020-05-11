@@ -308,7 +308,7 @@ void p_coarsening_interpolate(Unit* temp){
 /// @param temp Pointer to the current element.
 void Update_neighbours_facen(Unit* temp){
 
-	int my_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+	long long int my_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 	// loop through four faces
 	for(int i = 0; i < 4; ++i){

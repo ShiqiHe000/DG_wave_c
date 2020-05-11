@@ -38,11 +38,11 @@ void MPI_boundary_construct(){
 		else{	// No, search south neighbour
 			int ni = temp -> index[0] - 1;
 			int nj = temp -> index[1];
-			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
+			long long int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 
 			temp -> facen[0].push_back(Unit::Face());
 
-			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
+			std::unordered_map<long long int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
 			
@@ -82,9 +82,9 @@ void MPI_boundary_construct(){
 		else{	// no
 			int ni = temp -> index[0] + 1;
 			int nj = temp -> index[1];
-			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
+			long long int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
+			std::unordered_map<long long int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
 
@@ -124,9 +124,9 @@ void MPI_boundary_construct(){
 		else{	// no
 			int ni = temp -> index[0];
 			int nj = temp -> index[1] - 1;
-			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
+			long long int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
+			std::unordered_map<long long int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
 				
@@ -163,9 +163,9 @@ void MPI_boundary_construct(){
 		else{	// no
 			int ni = temp -> index[0];
 			int nj = temp -> index[1] + 1;
-			int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
+			long long int nkey = Get_key_fun(ni, nj, 0); 	// before adapt
 			
-			std::unordered_map<int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
+			std::unordered_map<long long int, Unit*>::const_iterator got = local::Hash_elem.find(nkey);
 			// not found, so on the MPI boundary
 			if(got == local::Hash_elem.end()){
 				

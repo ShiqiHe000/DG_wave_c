@@ -32,7 +32,7 @@ Unit::Face::Face() : hlevel{}, porderx{}, pordery{}, key{}, rank{}
 }
 
 // constructor2
-Unit::Face::Face(char c, int h, int nx, int ny, int k, int r, double* ref1, double* ref2)
+Unit::Face::Face(char c, int h, int nx, int ny, long long int k, int r, double* ref1, double* ref2)
 	: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
 {
 
@@ -41,7 +41,7 @@ Unit::Face::Face(char c, int h, int nx, int ny, int k, int r, double* ref1, doub
 }
 
 // constructor3
-Unit::Face::Face(char c, int h, int nx, int ny, int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
+Unit::Face::Face(char c, int h, int nx, int ny, long long int k, int r, std::vector<double>& ref1, std::vector<double>& ref2)
 	: face_type(c), hlevel(h), porderx(nx), pordery(ny), key(k), rank(r)
 {
 

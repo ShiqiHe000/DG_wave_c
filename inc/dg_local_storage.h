@@ -20,7 +20,7 @@ namespace local{
 
 	extern Unit* head;
 	
-	extern std::unordered_map<int, Unit*> Hash_elem;
+	extern std::unordered_map<long long int, Unit*> Hash_elem;
 	
 };
 
@@ -33,10 +33,10 @@ namespace hrefinement{
 	extern std::unordered_map<int, std::vector<mpi_table>> east;
 
 	
-	extern std::unordered_map<int, std::vector<int>> neighbours_north;
-	extern std::unordered_map<int, std::vector<int>> neighbours_south;
-	extern std::unordered_map<int, std::vector<int>> neighbours_east;
-	extern std::unordered_map<int, std::vector<int>> neighbours_west;
+	extern std::unordered_map<long long int, std::vector<long long int>> neighbours_north;
+	extern std::unordered_map<long long int, std::vector<long long int>> neighbours_south;
+	extern std::unordered_map<long long int, std::vector<long long int>> neighbours_east;
+	extern std::unordered_map<long long int, std::vector<long long int>> neighbours_west;
 };
 
 namespace LB{

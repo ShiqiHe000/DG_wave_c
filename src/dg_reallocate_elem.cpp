@@ -304,7 +304,7 @@ void Write_send(int kt, std::vector<info_pack>& send_elem, int num_n, int target
 //	int num{};
 	for(auto& v : send_elem){
 
-		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
+		long long int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
 
 		myfile << key << " ";
 
@@ -350,7 +350,7 @@ void Write_recv(int kt, std::vector<info_pack>& recv_elem, int num_n, int target
 //	int num{};
 	for(auto& v : recv_elem){
 
-		int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
+		long long int key = Get_key_fun(v.index[0], v.index[1], v.index[2]);
 
 		myfile << key << " status " << v.status<< " c position "<< v.child_position<< " x p "<< v.xcoords[0]
 			<< " " << v.xcoords[1] << " y "<< v.ycoords[0]<< v.ycoords[1] 
@@ -378,12 +378,12 @@ void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv, std
 	assert((dir == 'p' || dir == 'n') && "The sendign direction can only be 'p' or 'n'.");
 
 	Unit* temp_head = nullptr;	// head pointer to the recved linked list 
-	int pre_key;
+	long long int pre_key;
 	int nodei{};
 
 	for(auto it = recv_info.begin(); it != recv_info.end(); ++it){
 
-		int key = Get_key_fun((*it).index[0], (*it).index[1], (*it).index[2]);
+		long long int key = Get_key_fun((*it).index[0], (*it).index[1], (*it).index[2]);
 
 		local::Hash_elem[key] = new Unit();
 

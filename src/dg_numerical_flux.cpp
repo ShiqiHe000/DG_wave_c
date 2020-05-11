@@ -43,7 +43,7 @@ void Numerical_flux_x(double t){
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
-				int n_key = it_face -> key;	// neighbour's key
+				long long int n_key = it_face -> key;	// neighbour's key
 
 				int size_n = (it_face -> pordery + 1) * dg_fun::num_of_equation; // left element interface
 
@@ -126,7 +126,7 @@ void Numerical_flux_x(double t){
 			}
 			else{	// mpi boundary
 
-				int n_key = it_face -> key;
+				long long int n_key = it_face -> key;
 				
 				Form_mortar_x(temp, it_face); // allocate space on the mortar
 
@@ -414,7 +414,7 @@ void Numerical_flux_y(double t){
 
 			if(it_face -> face_type == 'L'){	// local neighbour
 				
-				int n_key = it_face -> key;	// neighbour's key
+				long long int n_key = it_face -> key;	// neighbour's key
 
 				int size_n = (it_face -> pordery + 1) * dg_fun::num_of_equation; // left element interface
 
@@ -494,7 +494,7 @@ void Numerical_flux_y(double t){
 			}
 			else{	// mpi boundary
 
-				int n_key = it_face -> key;
+				long long int n_key = it_face -> key;
 
 				Form_mortar_y(temp, it_face); // allocate space on the mortar
 				std::vector<double> Tl;

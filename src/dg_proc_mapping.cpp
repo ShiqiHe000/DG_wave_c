@@ -21,7 +21,7 @@ void Build_mapping_table();
 
 void Update_neighbours();
 
-void Neighbour_change(int facei, int n_key, int my_key, int rank);
+void Neighbour_change(int facei, long long int n_key, long long int my_key, int rank);
 
 void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable);
 
@@ -101,7 +101,7 @@ void Build_mapping_table(){
 		
 		// form sending_envelope
 		if(pmapping < mpi::rank){	// need to be moved to the former proc
-			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+			long long int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			LB::Send.pre.push_back(key);
 
@@ -109,7 +109,7 @@ void Build_mapping_table(){
 		}
 		else if(pmapping > mpi::rank){
 
-			int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+			long long int key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 			LB::Send.next.push_back(key);
 		}
@@ -298,7 +298,7 @@ void Update_neighbours(){
 /// @param n_key neighbour's key. 
 /// @param my_key current element's key. 
 /// @param rank Rank number that the current element will reside on. 
-void Neighbour_change(int facei, int n_key, int my_key, int rank){
+void Neighbour_change(int facei, long long int n_key, long long int my_key, int rank){
 
 	// neighbour's face direction.
 	int oface = Opposite_dir(facei);

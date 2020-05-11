@@ -17,7 +17,7 @@ void Create_hash(){
 	
 	// create hash table
 
-	int key_pre{};
+	long long int key_pre{};
 	int solution_num = (grid::nmin + 1) * (grid::nmin + 1);
 
 	// build each unit
@@ -27,7 +27,7 @@ void Create_hash(){
 		int g_index = Index_local_to_global(mpi::rank, k);
 		int ii, jj;
 		d2xy(grid::exp_x, g_index, jj, ii );
-		int key = Get_key_fun(ii, jj, 0);
+		long long int key = Get_key_fun(ii, jj, 0);
 		
 		// create a unit
 		local::Hash_elem[key] = new Unit();
