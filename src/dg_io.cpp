@@ -102,7 +102,7 @@ void Write_mesh(double t, int pre_elem){
 
 	//	myfile << std::fixed;
 	//	myfile << std::setprecision(5);
-		int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		long long int key_now = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
 			<< "  " << mpi::rank << "  " << temp -> index[2]

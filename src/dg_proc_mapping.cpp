@@ -201,7 +201,7 @@ void Build_mapping_table(){
 /// Updates the element neighbours based on the Send struct.
 void Update_neighbours(){
 	
-	// first updates the Send pre list --------------------------------------------------------------------------------------------------
+	// first updates the Send pre list ----------------------------------------------------------------------------------
 	for(auto& key : LB::Send.pre){
 
 		for(int facei = 0; facei < 4; ++facei){
@@ -214,7 +214,7 @@ void Update_neighbours(){
 				// skip 'M' and 'B'
 				if(it -> face_type == 'L'){
 
-					int n_key = it -> key;	// neighbour's key
+					long long int n_key = it -> key;	// neighbour's key
 					
 					// find n_key in pre list
 					if(std::find(LB::Send.pre.begin(), LB::Send.pre.end(), n_key) == LB::Send.pre.end()){	// if not find
@@ -266,7 +266,7 @@ void Update_neighbours(){
 				// skip 'M' and 'B'
 				if(it -> face_type == 'L'){
 
-					int n_key = it -> key;	// neighbour's key
+					long long int n_key = it -> key;	// neighbour's key
 
 					// find n_key in the next list
 					if(std::find(LB::Send.next.begin(), LB::Send.next.end(), n_key) == LB::Send.next.end()){	// if not find

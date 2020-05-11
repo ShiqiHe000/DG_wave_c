@@ -8,7 +8,7 @@
 /// @param owners_rank The rank of the owner of this element after repartitioning. 
 struct mpi_table{
 
-	int local_key;
+	long long int local_key;
 
 	int mpi_length;
 

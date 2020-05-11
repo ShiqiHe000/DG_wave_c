@@ -49,9 +49,9 @@ void Inherit_from_children(long long int c1, long long int c2, long long int p_k
 
 void Form_parent_faces(std::array<long long int, 4>& four_keys, long long int p_key);
 
-void Change_neighbour_coasen_case1(long long int c1, long long int facen, long long int p_key);
+void Change_neighbour_coasen_case1(long long int c1, int facen, long long int p_key);
 
-void Change_neighbour_coarsen_case2(long long int c1, long long int c2, long long int facen, long long int p_key);
+void Change_neighbour_coarsen_case2(long long int c1, long long int c2, int facen, long long int p_key);
 
 bool First_child(Unit* temp);
 
@@ -450,7 +450,7 @@ bool First_child(Unit* temp){
 /// @param c2 key of the 2st element of the corresponding direction. 
 /// @param p_key parent's key. 
 /// @param facen face direction (0, 1, 2, 3).
-void Inherit_from_children(long long int c1, long long int c2, long long int p_key, long long int facen){
+void Inherit_from_children(long long int c1, long long int c2, long long int p_key, int facen){
 
 	if(local::Hash_elem[c1] -> facen[facen].front().face_type == 'B'){	// if on the physical boundary
 
@@ -499,7 +499,7 @@ void Inherit_from_children(long long int c1, long long int c2, long long int p_k
 /// @param c1 Key of child.
 /// @param facen Children's facen number. 
 /// @param p_key Parent's key.
-void Change_neighbour_coasen_case1(long long int c1, long long int facen, long long int p_key){
+void Change_neighbour_coasen_case1(long long int c1, int facen, long long int p_key){
 
 	int n_dir = Opposite_dir(facen);	// neighbour face direction
 

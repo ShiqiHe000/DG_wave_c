@@ -20,14 +20,14 @@ void Put_in_mpi_table(Unit* temp, std::vector<Unit::Face>::iterator& facen_it,
 
 		table[facen_it -> rank] = std::vector<mpi_table>();
 
-		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		long long int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		// mpi_length and owners_rank will be recorded later
 		table[facen_it -> rank].push_back({local_key, 0, 0});
 	}
 	else{ // this rank is already been record
 
-		int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+		long long int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
 
 		// avoid duplication
 		auto it = std::find_if(table[facen_it -> rank].begin(), table[facen_it -> rank].end(),

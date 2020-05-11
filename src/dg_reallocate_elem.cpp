@@ -12,21 +12,21 @@
 // forward declaration-------------------------------------------------------------------
 void Reallocate_elem(int kt);
 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, int& solu_num);
+void Send_pack(std::vector<info_pack>& send_info, std::vector<long long int>::iterator& it, int& solu_num);
 
 void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& count);
 
 void Enlarge_hash(std::vector<info_pack>& recv_info, char dir, int num_recv, std::vector<double>& solu);
 
-void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& num);
+void Face_pack(std::vector<face_pack>& face_info, std::vector<long long int>& send, int& num);
 
 void Recv_face(int source, int tag, std::vector<face_pack>& recv_face);
 
 void Fill_facen(std::vector<face_pack>& face_info);
 
-void Erase_elem_old(std::vector<int>& send, char dir, int num);
+void Erase_elem_old(std::vector<long long int>& send, char dir, int num);
 
-void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double>& solu_packed);
+void Solution_pack(std::vector<long long int>& send_list, int solu_num, std::vector<double>& solu_packed);
 
 void Recv_solu(int source, int tag, std::vector<double>& solu);
 
@@ -562,7 +562,7 @@ void Recv_face(int source, int tag, std::vector<face_pack>& recv_face){
 /// @param send_list the list of element to be send.
 /// @param solu_num solution number, obtained by the Send_pack() function. 
 /// @param solu_packed Pack up the solutions of all the sending elements together.  
-void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double>& solu_packed){
+void Solution_pack(std::vector<long long int>& send_list, int solu_num, std::vector<double>& solu_packed){
 
 	// allocate solution package. 
 	solu_packed = std::vector<double>(solu_num);
@@ -587,7 +587,7 @@ void Solution_pack(std::vector<int>& send_list, int solu_num, std::vector<double
 /// @param send_info The sending vector.
 /// @param it iterator at the beginning of Sending list (pre or next). 
 /// @param solu_num solution number. For next step to transfer the solutions. 
-void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it, int& solu_num){
+void Send_pack(std::vector<info_pack>& send_info, std::vector<long long int>::iterator& it, int& solu_num){
 
 	for(auto& v : send_info){
 		
@@ -623,7 +623,7 @@ void Send_pack(std::vector<info_pack>& send_info, std::vector<int>::iterator& it
 /// @param face_info Store all the face neighbours in a vector.
 /// @param send Sending list. 
 /// @param num Number of neighbour. 
-void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& num){
+void Face_pack(std::vector<face_pack>& face_info, std::vector<long long int>& send, int& num){
 
 	for(auto& v : send){	// traverse the sending list
 
@@ -660,7 +660,7 @@ void Face_pack(std::vector<face_pack>& face_info, std::vector<int>& send, int& n
 /// @param send Sending list.
 /// @param dir Sending direction (pre: 'p', next: 'n').
 /// @parma num number of element to be send. 
-void Erase_elem_old(std::vector<int>& send, char dir, int num){
+void Erase_elem_old(std::vector<long long int>& send, char dir, int num){
 
 	assert((dir == 'p' || dir == 'n') && "The sendign direction can only be 'p' or 'n'.");
 
@@ -676,7 +676,7 @@ void Erase_elem_old(std::vector<int>& send, char dir, int num){
 
 		if(dir == 'p'){
 
-			int last = send.back();
+			long long int last = send.back();
 			local::head = local::Hash_elem[last] -> next;
 		}
 		else{	// 'n'

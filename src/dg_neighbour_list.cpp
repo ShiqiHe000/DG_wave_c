@@ -8,11 +8,11 @@
 // forward declaration-----------------------------------------------------
 void Total_neighbours(int level_now, int& all, int& my_position);
 
-void Neighbours_array_x(int i, int j, int k, int local_key, int facen, 
-			std::unordered_map<int, std::vector<int>>& neighbours);
+void Neighbours_array_x(int i, int j, int k, long long int local_key, int facen, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours);
 
-void Neighbours_array_y(int i, int j, int k, int local_key, int facen, 
-			std::unordered_map<int, std::vector<int>>& neighbours);
+void Neighbours_array_y(int i, int j, int k, long long int local_key, int facen, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours);
 //-------------------------------------------------------------------------
 
 
@@ -50,8 +50,8 @@ void Total_neighbours(int level_now, int& all, int& my_position){
 /// @param local_key the key of the current element.
 /// @param facen facen face number. 
 /// @param neighbours neighbours list. 
-void Neighbours_array_x(int i, int j, int k, int local_key, int facen, 
-			std::unordered_map<int, std::vector<int>>& neighbours){
+void Neighbours_array_x(int i, int j, int k, long long int local_key, int facen, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours){
 
 	int x{}; 
 	
@@ -64,7 +64,7 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 
 	Total_neighbours(k, total_n, same_size);
 
-	neighbours[local_key] = std::vector<int>(total_n);	// allocate space
+	neighbours[local_key] = std::vector<long long int>(total_n);	// allocate space
 
 	// same size neighbour
 	neighbours[local_key][same_size] = Get_key_fun(i, j, k);
@@ -82,7 +82,7 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 		pre_level[2]++;
 
 		for(int n = layer_elem - 1; n >= 0; --n){
-			int key = Get_key_fun(pre_level[0], pre_level[1] + n, pre_level[2]);				
+			long long int key = Get_key_fun(pre_level[0], pre_level[1] + n, pre_level[2]);				
 			
 			neighbours[local_key][elem] = key;
 
@@ -98,7 +98,7 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 
 	for(int m = k - 1; m >= 0; --m){
 
-		int key = Get_key_fun(pre_level[0], pre_level[1], pre_level[2]);
+		long long int key = Get_key_fun(pre_level[0], pre_level[1], pre_level[2]);
 
 		neighbours[local_key][elem] = key;
 
@@ -120,8 +120,8 @@ void Neighbours_array_x(int i, int j, int k, int local_key, int facen,
 /// @param local_key the key of the current element.
 /// @param facen facen face number. 
 /// @param neighbours neighbours list. 
-void Neighbours_array_y(int i, int j, int k, int local_key, int facen, 
-			std::unordered_map<int, std::vector<int>>& neighbours){
+void Neighbours_array_y(int i, int j, int k, long long int local_key, int facen, 
+			std::unordered_map<long long int, std::vector<long long int>>& neighbours){
 
 	int y{};
 	if(facen == 2){
@@ -133,7 +133,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen,
 
 	Total_neighbours(k, total_n, same_size);
 
-	neighbours[local_key] = std::vector<int>(total_n);	// allocate space
+	neighbours[local_key] = std::vector<long long int>(total_n);	// allocate space
 
 	// same size neighbour
 	neighbours[local_key][same_size] = Get_key_fun(i, j, k);
@@ -151,7 +151,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen,
 		pre_level[2]++;
 
 		for(int n = layer_elem - 1; n >= 0; --n){
-			int key = Get_key_fun(pre_level[0] + n, pre_level[1], pre_level[2]);				
+			long long int key = Get_key_fun(pre_level[0] + n, pre_level[1], pre_level[2]);				
 			
 			neighbours[local_key][elem] = key;
 
@@ -167,7 +167,7 @@ void Neighbours_array_y(int i, int j, int k, int local_key, int facen,
 
 	for(int m = k - 1; m >= 0; --m){
 
-		int key = Get_key_fun(pre_level[0], pre_level[1], pre_level[2]);
+		long long int key = Get_key_fun(pre_level[0], pre_level[1], pre_level[2]);
 
 		neighbours[local_key][elem] = key;
 

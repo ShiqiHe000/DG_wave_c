@@ -9,7 +9,7 @@
 /// Use after hp-refinement. 
 struct facen_pack{
 
-	int local_key;	// neighbour element's key
+	long long int local_key;	// neighbour element's key
 
 	int hlevel;
 
@@ -53,7 +53,7 @@ struct info_pack{
 /// @param facei face direction (0, 1, 2, 3). 
 struct face_pack{
 
-	int owners_key;	// the key of the owner element
+	long long int owners_key;	// the key of the owner element
 
 	int facei; 	// face direction (0, 1, 2, 3)
 	
@@ -65,7 +65,7 @@ struct face_pack{
 
 	int pordery; 
 
-	int key;
+	long long int key;
 
 	int rank;
 

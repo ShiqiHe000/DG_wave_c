@@ -21,28 +21,11 @@ struct pmap{
 /// @param next elements whose destination is the next proc. The vector stores the key of the atrget elements. 
 struct sending_envelope{
 
-	std::vector<int> pre;
+	std::vector<long long int> pre;
 
-	std::vector<int> next;
+	std::vector<long long int> next;
 
 };
-
-/// @brief
-/// Data Structure to support to form the ownership table.
-/// @param local_key key of local element who is on the MPI boundary.
-/// @param owner_rank the destination rank this element will be after repatitioning. 
-/// @param hlevel current element's h-refinement level. 
-/// @param target_rank sender's rank, inherit from MPI boundary table. 
-//struct ownership{
-//
-//	int local_key;
-//	
-//	int owner_rank;
-//
-//	int hlevel;
-//
-//	int target_rank;
-//};
 
 
 #endif

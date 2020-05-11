@@ -60,9 +60,9 @@ void MPI_Facen_type(){
 
 	int num = 3;
 
-	int elem_blocklength[num]{5, 2, 2};
+	int elem_blocklength[num]{1, 4, 2};
 
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_DOUBLE, MPI_DOUBLE};
+	MPI_Datatype array_of_types[num]{MPI_LONG_LONG_INT, MPI_INT, MPI_DOUBLE};
 	
 	MPI_Aint array_of_offsets[num];
 	MPI_Aint baseadd, add1, add2;
@@ -70,8 +70,8 @@ void MPI_Facen_type(){
 	std::vector<facen_pack> myface(1);
 
 	MPI_Get_address(&(myface[0].local_key), &baseadd);
-	MPI_Get_address(&(myface[0].ref_x[0]), &add1);
-	MPI_Get_address(&(myface[0].ref_y[0]), &add2);
+	MPI_Get_address(&(myface[0].hlevel), &add1);
+	MPI_Get_address(&(myface[0].ref_x[0]), &add2);
 
 	array_of_offsets[0] = 0;
 	array_of_offsets[1] = add1 - baseadd;
@@ -96,26 +96,32 @@ void MPI_Facen_type(){
 /// Construct Face_type for sending info of element neighbours.  
 void MPI_Face_type(){
 
-	int num = 4;
+	int num = 7;
 
-	int elem_blocklength[num]{2, 1, 5, 4};
+	int elem_blocklength[num]{1, 1, 1, 3, 1, 1, 4};
 
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_CHAR, MPI_INT, MPI_DOUBLE};
+	MPI_Datatype array_of_types[num]{MPI_LONG_LONG_INT, MPI_INT, MPI_CHAR, MPI_INT, MPI_LONG_LONG_INT, MPI_INT, MPI_DOUBLE};
 	
 	MPI_Aint array_of_offsets[num];
-	MPI_Aint baseadd, add1, add2, add3;
+	MPI_Aint baseadd, add1, add2, add3, add4, add5, add6;
 	
 	std::vector<face_pack> myface(1);
 
 	MPI_Get_address(&(myface[0].owners_key), &baseadd);
-	MPI_Get_address(&(myface[0].face_type), &add1);
-	MPI_Get_address(&(myface[0].hlevel), &add2);
-	MPI_Get_address(&(myface[0].ref_x[0]), &add3);
+	MPI_Get_address(&(myface[0].facei), &add1);
+	MPI_Get_address(&(myface[0].face_type), &add2);
+	MPI_Get_address(&(myface[0].hlevel), &add3);
+	MPI_Get_address(&(myface[0].key), &add4);
+	MPI_Get_address(&(myface[0].rank), &add5);
+	MPI_Get_address(&(myface[0].ref_x[0]), &add6);
 
 	array_of_offsets[0] = 0;
 	array_of_offsets[1] = add1 - baseadd;
 	array_of_offsets[2] = add2 - baseadd;
 	array_of_offsets[3] = add3 - baseadd;
+	array_of_offsets[4] = add4 - baseadd;
+	array_of_offsets[5] = add5 - baseadd;
+	array_of_offsets[6] = add6 - baseadd;
 
 	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Face_type);	
 
