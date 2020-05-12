@@ -17,9 +17,16 @@
 void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
 			std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir);
 
+void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
+				std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir);
+
 void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s, int face_r);
 
 void Pack_send_info(std::vector<double>& send_info, std::vector<double>& source);
+
+void Recv_pairs(int target_rank, int tag, std::vector<neighbour_pair>& recv_pairs);
+
+void Recv_solu_int(int target_rank, int tag, std::vector<double>& recv_solu);
 //--------------------------------------------------------------------------------------
 
 
@@ -47,16 +54,12 @@ void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sen
 				
 				if(it_face -> face_type == 'M' && it_face -> rank == target_rank){ // send
 				
-//					int count = (temp -> solution_int_r).size();
-
 					// record neighbours' key
 					neighbours.emplace_back(local_key, it_face -> key);
 
 					// pack solution
 					Pack_send_info(solu_send, temp -> solution_int_r);
 
-//					MPI_Send(&(temp -> solution_int_r)[0], count, MPI_DOUBLE, 
-//							target_rank, local_key, MPI_COMM_WORLD);
 				}
 			}
 			
@@ -71,11 +74,152 @@ void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sen
 		int count2 = solu_send.size();
 		MPI_Send(&solu_send[0], count2, MPI_DOUBLE, target_rank, mpi::rank + mpi::num_proc, MPI_COMM_WORLD);
 		
-
-		
 	}
 
+	// recver
+	if(dir == 'x'){
+
+		for(auto& v : recver){
+
+			int target_rank = v.first;
+
+			std::vector<neighbour_pair> recv_pairs;	// for adjecent pairs
+
+			// recv neighbour pairs
+			Recv_pairs(target_rank, target_rank, recv_pairs);
+
+			// recv solutions on the boundary
+			std::vector<double> recv_solu;
+			Recv_solu_int(target_rank, target_rank + mpi::num_proc, recv_solu);
+
+			int solui{};
+
+			// match the solution_int with the corresponding elements. 
+			for(auto& pair : recv_pairs){
+
+				Unit* temp = local::Hash_elem[pair.recver_key];
+	
+				// go to this element, and loop through its facen[face_r]
+				for(auto it_face = temp -> facen[face_r].begin();
+					it_face != temp -> facen[face_r].end(); ++it_face){
+				
+					if(it_face -> key == pair.sender_key){ // find
+					
+						// recv info from target rank
+						int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
+						temp -> ghost[it_face -> key] = std::vector<double>(recv_size);
+					
+						for(int s = 0; s < recv_size; ++s){
+
+							temp -> ghost[it_face -> key][s] = recv_solu[solui];
+
+							++solui;
+						}
+						
+						break;	
+					}
+				}
+
+			}
+
+		}
+	}
+	else{	// y dir
+
+		for(auto& v : recver){
+
+			int target_rank = v.first;
+
+			std::vector<neighbour_pair> recv_pairs;	// for adjecent pairs
+
+			// recv neighbour pairs
+			Recv_pairs(target_rank, target_rank, recv_pairs);
+
+			// recv solutions on the boundary
+			std::vector<double> recv_solu;
+			Recv_solu_int(target_rank, target_rank + mpi::num_proc, recv_solu);
+
+			int solui{};
+
+			// match the solution_int with the corresponding elements. 
+			for(auto& pair : recv_pairs){
+
+				Unit* temp = local::Hash_elem[pair.recver_key];
+	
+				// go to this element, and loop through its facen[face_r]
+				for(auto it_face = temp -> facen[face_r].begin();
+					it_face != temp -> facen[face_r].end(); ++it_face){
+				
+					if(it_face -> key == pair.sender_key){ // find
+					
+						// recv info from target rank
+						int recv_size = dg_fun::num_of_equation * (it_face -> porderx + 1);
+						temp -> ghost[it_face -> key] = std::vector<double>(recv_size);
+					
+						for(int s = 0; s < recv_size; ++s){
+
+							temp -> ghost[it_face -> key][s] = recv_solu[solui];
+
+							++solui;
+						}
+						
+						break;	
+					}
+				}
+
+			}
+
+		}
+
+
+	}
 }
+
+/// @brief
+/// Finction to receive neighbours' solution on the boundary.  
+/// @param target_rank Sender's rank number. 
+/// @param tag message tag. 
+/// @param recv_solu vector to store the message. 
+void Recv_solu_int(int target_rank, int tag, std::vector<double>& recv_solu){
+
+	MPI_Status status1, status2;
+
+	MPI_Probe(target_rank, tag, MPI_COMM_WORLD, &status1);
+
+	int count{};
+
+	MPI_Get_count(&status1, MPI_DOUBLE, &count);
+
+	// allocate space
+	recv_solu = std::vector<double>(count);
+
+	MPI_Recv(&recv_solu[0], count, MPI_DOUBLE, target_rank, tag, MPI_COMM_WORLD, &status2);	
+}
+
+
+/// @brief
+/// Finction to receive neighbour pairs. 
+/// @param target_rank Sender's rank number. 
+/// @param tag message tag. 
+/// @param recv_pairs vector to store the message. 
+void Recv_pairs(int target_rank, int tag, std::vector<neighbour_pair>& recv_pairs){
+
+	MPI_Status status1, status2;
+
+	MPI_Probe(target_rank, tag, MPI_COMM_WORLD, &status1);
+
+	int count{};
+
+	MPI_Get_count(&status1, Hash::Adj_pairs, &count);
+
+	// allocate space
+	recv_pairs = std::vector<neighbour_pair>(count);
+
+	// recv adjecent pairs
+	MPI_Recv(&recv_pairs[0], count, Hash::Adj_pairs, target_rank, tag, MPI_COMM_WORLD, &status2);	
+
+}
+
 
 /// @brief
 /// Pack all the solutions in a large vector and send.
@@ -186,17 +330,6 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 						MPI_Status status;
 						MPI_Recv(&(temp -> ghost[it_face -> key])[0], recv_size, MPI_DOUBLE, 
 							target_rank, it_face -> key, MPI_COMM_WORLD, &status );
-//if(mpi::rank == 3){
-//
-//	std::cout<< "from " << target_rank << " key " << it_face -> key << " size " << recv_size << "\n";
-//	
-//	for(auto& solu : temp -> ghost[it_face -> key]){
-//
-//		std::cout<< solu << " ";
-//	}
-//	std::cout << "\n";
-//
-//}
 	
 					}
 				}

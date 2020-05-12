@@ -48,9 +48,10 @@ public:
 
 	std::vector<double> solution_int_l;	// solution on the element left interface (porder + 1)
 	std::vector<double> solution_int_r;	// solution on the element right interface
-
-	std::unordered_map<int, std::vector<double>> ghost; // ghost space to store the neighbours' solutions on the interface
-							    // hash <neighbour's key, solution_int>
+	
+	// ghost space to store the neighbours' solutions on the interface
+	// hash <neighbour's key, solution_int>
+	std::unordered_map<long long int, std::vector<double>> ghost; 
 
 	std::vector<double> nflux_l;	// numerical flux on the left interface
 	std::vector<double> nflux_r;	// numerical flux on the right interface

@@ -26,7 +26,8 @@ void DG_time_der(double t){
 
 
 	// exchange solution on the mpi boundaries
-	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');
+//	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');
+	Exchange_solution_pack(hrefinement::north, 1, hrefinement::south, 0, 'x');
 
 	// compute the numberical flux
 	Numerical_flux_x(t);
@@ -50,7 +51,8 @@ void DG_time_der(double t){
 	}
 
 	// exchange solution on the mpi boundaries
-	Exchange_solution(hrefinement::east, 3, hrefinement::west, 2, 'y');
+//	Exchange_solution(hrefinement::east, 3, hrefinement::west, 2, 'y');
+	Exchange_solution_pack(hrefinement::east, 3, hrefinement::west, 2, 'y');
 
 	// compute the numberical flux
 	Numerical_flux_y(t);
