@@ -32,9 +32,9 @@ void DG_time_der(double t){
 	// compute the numberical flux
 	Numerical_flux_x(t);
 
-
 	// exchange numerical flux on the mpi boundaries
-	Exchange_flux(hrefinement::south, 0, 1);
+//	Exchange_flux(hrefinement::south, 0, 1);
+	Exchange_flux_pack(hrefinement::south, hrefinement::north, 0, 1, 'x');
 
 	// spatial derivative
 	A_times_spatial_derivative_x();
@@ -58,7 +58,8 @@ void DG_time_der(double t){
 	Numerical_flux_y(t);
 	
 	// exchange numerical flux on the mpi boundaries
-	Exchange_flux(hrefinement::west, 2, 3);
+//	Exchange_flux(hrefinement::west, 2, 3);
+	Exchange_flux_pack(hrefinement::west, hrefinement::east, 2, 3, 'y');
 	
 	// spatial derivative
 	A_times_spatial_derivative_y();
