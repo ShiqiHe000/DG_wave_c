@@ -33,7 +33,7 @@ void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sen
 		int target_rank = v.first;
 		auto it_local = v.second.begin();	// point to the members in vector
 
-		std::vector<long long int> neighbours;	// neighbours' key
+		std::vector<neighbour_pair> neighbours;	// neighbours' key
 		std::vector<double> solu_send;	// pack all the sending info together
 
 		for(; it_local != v.second.end(); ++it_local){
@@ -65,7 +65,7 @@ void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sen
 		// send out the info together 
 		// adjacent element pairs. tag = self_rank
 		int count1 = neighbours.size();
-		MPI_Send(&neighbours[0], count1, MPI_, target_rank, mpi::rank, MPI_COMM_WORLD);
+		MPI_Send(&neighbours[0], count1, Hash::Adj_pairs, target_rank, mpi::rank, MPI_COMM_WORLD);
 
 		// solution_int. tag = self_rank + num of proc
 		int count2 = solu_send.size();

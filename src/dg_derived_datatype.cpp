@@ -32,12 +32,15 @@ namespace Hash{
 	MPI_Datatype Elem_type;
 
 	MPI_Datatype Face_type;
+
+	MPI_Datatype Adj_pairs;
 };
 
 // forward declaration-----------------------------------------
 void MPI_Elem_type();
 void MPI_Face_type();
 void MPI_Facen_type();
+void MPI_Adj_pairs_type();
 //--------------------------------------------------------------
 
 /// @brief 
@@ -49,9 +52,41 @@ void Construct_data_type(){
 	MPI_Elem_type();
 
 	MPI_Face_type();
-
+	
+	MPI_Adj_pairs_type();
 }
 
+/// @brief
+/// Construct 
+void MPI_Adj_pairs_type(){
+
+	int num = 1;
+
+	int elem_blocklength[num]{2};
+
+	MPI_Datatype array_of_types[num]{MPI_LONG_LONG_INT};
+	
+	MPI_Aint array_of_offsets[num];
+	MPI_Aint baseadd;
+	
+	std::vector<neighbour_pair> my_pair(1);
+
+	array_of_offsets[0] = 0;
+
+	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Adj_pairs);	
+
+	// check that the extent is correct
+	MPI_Aint lb, extent;
+	MPI_Type_get_extent(Hash::Adj_pairs, &lb, &extent);	
+	if(extent != sizeof(my_pair[0])){
+		MPI_Datatype old = Hash::Adj_pairs;
+		MPI_Type_create_resized(old, 0, sizeof(my_pair[0]), &Hash::Adj_pairs);
+		MPI_Type_free(&old);
+	}
+	MPI_Type_commit(&Hash::Adj_pairs);
+
+
+}
 
 
 /// @brief
@@ -181,5 +216,7 @@ void Free_type(){
 	MPI_Type_free(&Hash::Elem_type);	
 
 	MPI_Type_free(&Hash::Face_type);	
+
+	MPI_Type_free(&Hash::Adj_pairs);	
 
 }

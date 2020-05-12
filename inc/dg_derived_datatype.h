@@ -13,6 +13,12 @@ struct neighbour_pair{
 	long long int sender_key;
 	
 	long long int recver_key;
+
+	// constructor
+	neighbour_pair(long long int a = 0, long long int b = 0) :
+			sender_key{a}, recver_key{b}
+	{}
+
 };
 
 
@@ -95,6 +101,8 @@ namespace Hash{
 	extern MPI_Datatype Elem_type;
 	
 	extern MPI_Datatype Face_type;
+
+	extern MPI_Datatype Adj_pairs;
 };
 
 
