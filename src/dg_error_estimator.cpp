@@ -196,11 +196,6 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 		double sum = std::sqrt(std::pow(ap[equ].back(), 2) 
 				+ C * C / (2.0 * sigma[equ]) * std::exp(- 2.0 * sigma[equ] * (porder.back() + 1)));
 		
-//if(mpi::rank == 0){
-//
-//	std::cout<< "tol " << tol_min << " err_sum " << sum << "\n";
-//
-//}
 //		double sum = ap[equ].back();	// sum of the last spectrum
 
 		if(sum > tol_min){	// need refine

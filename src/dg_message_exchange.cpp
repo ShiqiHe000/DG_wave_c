@@ -425,10 +425,9 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 					if(it_face -> key == pair.sender_key){ // find
 					
 						// recv info from target rank
-						//int recv_size = dg_fun::num_of_equation * (it_face -> pordery + 1);
-				
+						// recv_size should use local, 
+						// neighbour already project the flux to the conforming 
 						int recv_size = (temp -> nflux_r).size();
-
 						std::vector<double> inter(recv_size);
 		
 						for(int s = 0; s < recv_size; ++s){
@@ -477,8 +476,6 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 					if(it_face -> key == pair.sender_key){ // find
 					
 						// recv info from target rank
-						//int recv_size = dg_fun::num_of_equation * (it_face -> porderx + 1);
-				
 						int recv_size = (temp -> nflux_r).size();
 						std::vector<double> inter(recv_size);
 		
