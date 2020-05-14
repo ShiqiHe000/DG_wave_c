@@ -244,9 +244,6 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 	if(s > 0){	
 		
-		MPI_Request s_request[s];	// for mpi_waitall
-		MPI_Status  s_status[s];		// mpi_waitall
-
 		int i{};
 		for(auto& v : south){	
 	
@@ -270,11 +267,11 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 				++it;
 			}
-			MPI_Isend(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
-					mpi::rank, MPI_COMM_WORLD, &s_request[i]); 
+
+			MPI_Send(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
+					mpi::rank, MPI_COMM_WORLD); 
 			++i;
 		}
-		MPI_Waitall(s, s_request, s_status);
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------

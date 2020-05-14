@@ -396,6 +396,29 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 	}
 
 
+	// North interface get numerical flux from neighbours
+//	Unit* temp = local::head;
+//	for(int k = 0; k < local::local_elem_num; ++k){
+//
+//		long long int local_key = Get_key_fun(temp -> index[0], temp -> index[1], temp -> index[2]);
+//
+//		// loop north interface
+//		for(auto it_face = temp -> facen[face_r].begin(); 
+//			it_face != temp -> facen[face_r].end(); ++it_face){
+//
+//			if(it_face -> face_type == 'L'){	// local neighbour
+//
+//				long long int n_key = it_face -> key;
+//
+//				// numerical flux -= neighbours numerical flux
+//				Vector_minus(local::Hash_elem[n_key] -> ghost[local_key], temp -> nflux_r);
+//			}	// skip 'M' and 'B'
+//		}
+//
+//
+//		temp = temp -> next;
+//	}
+
 	// recv
 	if(dir == 'x'){
 		for(auto& v : recver){
@@ -498,7 +521,6 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 
 
 	}
-
 
 	// North interface get numerical flux from neighbours
 	Unit* temp = local::head;

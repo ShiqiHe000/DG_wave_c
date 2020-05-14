@@ -128,7 +128,7 @@ void Build_mapping_table(){
 	if(mpi::rank != (mpi::num_proc - 1)){
 	
 		int last_rank = LB::proc_mapping_table.back().irank;
-		MPI_Isend(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD, &request);// tag == recver's rank
+		MPI_Send(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);// tag == recver's rank
 
 	}
 	
@@ -149,13 +149,6 @@ void Build_mapping_table(){
 
 	}
 	
-	// wait
-	if(mpi::rank != (mpi::num_proc - 1)){
-	
-		MPI_Status status2;
-		MPI_Wait(&request, &status2);
-	}
-
 	// call allgather to gather the size of the mapping table on each proc
 	int sizet = LB::proc_mapping_table.size();
 	std::vector<int> sizea(mpi::num_proc);	// vector to store the sizet
@@ -390,8 +383,6 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 	
 	// sender
 	if(size_s > 0){	// there is something to send
-		MPI_Request s_request[size_s];
-		MPI_Status s_status[size_s];
 
 		int i{};
 		for(auto& v : sendo){
@@ -407,13 +398,13 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 				send_info[2 * k + 1] = it -> owners_rank;
 				++it;
 			}
-			MPI_Isend(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD, &s_request[i]);
+
+			MPI_Send(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD);
 
 			++i;
 
 		}
 
-		MPI_Waitall(size_s, s_request, s_status);
 	}
 
 
@@ -433,14 +424,8 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 			std::vector<int> recv_info(num);
 
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
-//if(mpi::rank == 1){
-//	for(int m = 0; m < num / 4; ++m){
-//		std::cout<< "key "<< recv_info[4 * m]<< " owner "<< recv_info[4 * m + 3]<< " ";
-//	}
-//	std::cout<< "\n";
-//}			
+
 			Update_mpib(recv_info, recvo, facei, num, v.first);
-//std::cout<< "rank "<< mpi::rank << "\n";
 		}
 
 	}
