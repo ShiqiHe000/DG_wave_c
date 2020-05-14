@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 100;
+	const double t_total = 1.0e-5 * 1000;
 //	const double t_total = 0.5;
 
-	const int nt = 100;
+	const int nt = 1000;
 
 };
 
@@ -78,7 +78,7 @@ namespace dg_refine{
 
 	const bool adapt = true;
 
-	const int refine_frequency = 10;	// every time step refine once
+	const int refine_frequency = 50;	// every time step refine once
 
 	const int fit_point_num = 4;
 
@@ -96,7 +96,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 10;
+	const int output_frequency = 50;
 };
 
 
