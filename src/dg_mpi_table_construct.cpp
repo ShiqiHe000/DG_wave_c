@@ -57,6 +57,27 @@ void MPI_table_rebuild(){
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);
 	
+if(mpi::rank == 0){
+
+
+	for(auto& v : hrefinement::north){
+
+		int target_rank = v.first;
+
+		std::cout << "target_rank " << target_rank << "\n";
+
+		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+
+			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
+
+
+		}
+
+	}
+	std::cout << "===========================\n";
+}
+
+
 	// y direction
 	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
 				 hrefinement::west, 2, hrefinement::neighbours_west);
@@ -244,7 +265,6 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 	if(s > 0){	
 		
-		int i{};
 		for(auto& v : south){	
 	
 			int target_rank = v.first;
@@ -270,7 +290,6 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 			MPI_Send(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
 					mpi::rank, MPI_COMM_WORLD); 
-			++i;
 		}
 	}
 
@@ -307,7 +326,7 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 /// @param recv_info recieved information vector.
 /// @param table MPI direction table.
 /// @param facei element ith face to be updates
-/// @param num1 recieved element number * 5.
+/// @param num recieved element number
 /// @param target_rank The rank number of the info sender.
 /// @param neighbours possible neighbours hash table. 
 void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& table, 

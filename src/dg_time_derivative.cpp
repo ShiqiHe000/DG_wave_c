@@ -29,6 +29,8 @@ void DG_time_der(double t){
 //	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange element by element
 	Exchange_solution_pack(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchaneg together
 
+//std::cout<< "rank " << mpi::rank << " t " << t << "\n";
+
 	// compute the numberical flux
 	Numerical_flux_x(t);
 

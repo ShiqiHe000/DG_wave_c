@@ -42,6 +42,8 @@ void DG_step_by_RK3(double tn, double delta_t){
 
 		// time derivative at current time step
 		DG_time_der(t);
+
+//std::cout<< "rank " << mpi::rank << " time " << t << "\n";
 		
 		temp = local::head;
 		for(int elem_k = 0; elem_k < local::local_elem_num; ++elem_k){
