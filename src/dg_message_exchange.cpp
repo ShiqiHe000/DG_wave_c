@@ -42,7 +42,7 @@ void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>
 	assert(dir == 'x' || dir == 'y' && "Direction can only be 'x' or 'y'.");
 
 	std::unordered_map<int, std::vector<neighbour_pair>> neighbours;	// neighbours' key, <t_rank, neighbour_pairs>
-	std::vector<int, std::vector<double>> solu_send;	// pack all the sending info together
+	std::unordered_map<int, std::vector<double>> solu_send;	// pack all the sending info together
 
 	int num_send = sender.size();	// number of send
 
@@ -57,7 +57,7 @@ void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>
 		auto it_local = v.second.begin();	// point to the members in vector
 
 		neighbours[target_rank] = std::vector<neighbour_pair>();
-//		solu_send[target_rank] = std::vector<double>();
+		solu_send[target_rank] = std::vector<double>();
 
 		for(; it_local != v.second.end(); ++it_local){
 	
@@ -74,12 +74,6 @@ void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>
 					neighbours[target_rank].emplace_back(local_key, it_face -> key);
 
 					// pack solution
-	
-//					int sizei = (temp -> solution_int_r).size();
-//
-//					solu_send[target_rank] = std::vector<double>(sizei);
-
-
 					Pack_send_info(solu_send[target_rank], temp -> solution_int_r);
 
 				}
@@ -91,8 +85,7 @@ void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>
 		// adjacent element pairs. tag = self_rank
 		int count1 = neighbours[target_rank].size();
 //		MPI_Send(&neighbours[0], count1, Hash::Adj_pairs, target_rank, mpi::rank, MPI_COMM_WORLD);
-
-		int MPI_Isend(&neighbours[target_rank][0], count1, Hash::Adj_pairs, target_rank, mpi::rank, 
+		MPI_Isend(&neighbours[target_rank][0], count1, Hash::Adj_pairs, target_rank, mpi::rank, 
 				MPI_COMM_WORLD, &send_request1[isend]);
 
 		// solution_int. tag = self_rank + num of proc
@@ -100,7 +93,6 @@ void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>
 //		MPI_Send(&solu_send[0], count2, MPI_DOUBLE, target_rank, mpi::rank + mpi::num_proc, MPI_COMM_WORLD);
 		MPI_Isend(&solu_send[target_rank][0], count2, MPI_DOUBLE, target_rank, 
 				mpi::rank + mpi::num_proc, MPI_COMM_WORLD, &send_request2[isend]);
-
 
 		++isend;
 	}
