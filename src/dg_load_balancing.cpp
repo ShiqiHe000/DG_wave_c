@@ -21,7 +21,7 @@ void Load_balancing(int kt){
 
 	Clear_mapping_tables();
 
-	MPI_table_rebuild();	// rebuild mpi tables
+	MPI_table_rebuild(kt);	// rebuild mpi tables
 }
 
 void Clear_mapping_tables(){

@@ -43,13 +43,13 @@ void Possible_neighbours(Unit* temp, std::unordered_map<long long int, std::vect
 
 void Clear_tables();
 
-void MPI_table_rebuild();
+void MPI_table_rebuild(int kt);
 //---------------------------------------------------------------------------------------
 
 
 /// @breif
 /// Rebuild MPI table. 
-void MPI_table_rebuild(){
+void MPI_table_rebuild(int kt){
 
 	Clear_tables();
 
@@ -57,25 +57,25 @@ void MPI_table_rebuild(){
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);
 	
-if(mpi::rank == 0){
-
-
-	for(auto& v : hrefinement::north){
-
-		int target_rank = v.first;
-
-		std::cout << "target_rank " << target_rank << "\n";
-
-		for(auto it = v.second.begin(); it != v.second.end(); ++it){
-
-			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
-
-
-		}
-
-	}
-	std::cout << "===========================\n";
-}
+//if(mpi::rank == 0){
+//
+//	std::cout << "time step "<< kt << "\n";
+//	for(auto& v : hrefinement::north){
+//
+//		int target_rank = v.first;
+//
+//		std::cout << "target_rank " << target_rank << "\n";
+//
+//		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+//
+//			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
+//
+//
+//		}
+//
+//	}
+//	std::cout << "===========================\n";
+//}
 
 
 	// y direction
