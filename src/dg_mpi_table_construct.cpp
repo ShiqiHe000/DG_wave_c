@@ -14,6 +14,7 @@
 #include "dg_derived_datatype.h"
 #include <cassert>	// test
 #include <iostream>	// test
+#include "dg_write_mpi_table.h"	//test
 
 // forward declaration ------------------------------------------------------------------
 void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_table>::iterator& it, 
@@ -57,24 +58,10 @@ void MPI_table_rebuild(int kt){
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);
 	
-//if(mpi::rank == 0){
+//if(mpi::rank == 2){
 //
-//	std::cout << "time step "<< kt << "\n";
-//	for(auto& v : hrefinement::north){
+//	Write_mpi_table(hrefinement::south);
 //
-//		int target_rank = v.first;
-//
-//		std::cout << "target_rank " << target_rank << "\n";
-//
-//		for(auto it = v.second.begin(); it != v.second.end(); ++it){
-//
-//			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
-//
-//
-//		}
-//
-//	}
-//	std::cout << "===========================\n";
 //}
 
 

@@ -5,6 +5,7 @@
 #include "dg_error_estimator.h"
 #include <iostream>	//test
 #include "dg_param.h"	//test
+#include "dg_write_mpi_table.h"
 
 void Adapt(int kt){
 
@@ -23,6 +24,13 @@ void Adapt(int kt){
 	// x direction
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);
+
+//if(mpi::rank == 0){
+//
+//	Write_mpi_table(hrefinement::north);
+//
+//}
+
 
 	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::neighbours_north,
 				hrefinement::south, 0, hrefinement::neighbours_south);	

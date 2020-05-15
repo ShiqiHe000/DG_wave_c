@@ -10,11 +10,14 @@ void Exchange_solution(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 
 
 void Exchange_solution_pack(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
-				std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir);
+				std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir, double t);
 
 void Exchange_flux(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s, int face_r);
 
 void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender, 
 			std::unordered_map<int, std::vector<mpi_table>>& recver, 
 			int face_s, int face_r, char dir);
+
+void Exchange_solution_pack_isend(std::unordered_map<int, std::vector<mpi_table>>& sender, int face_s,
+				std::unordered_map<int, std::vector<mpi_table>>& recver, int face_r, char dir, double t);
 #endif
