@@ -40,12 +40,12 @@ void Driver_for_DG_approximation(){
 	Serial_io(tn);		
 
 	Construct_data_type();
-
+	
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 
 		DG_step_by_RK3(tn, delta_t);
-
+		
 		// output control
 		if((k + 1) % dg_io::output_frequency == 0){
      			Serial_io(tn);		
