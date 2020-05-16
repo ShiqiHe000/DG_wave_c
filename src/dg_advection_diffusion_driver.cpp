@@ -66,7 +66,7 @@ void Driver_for_DG_approximation(){
 					Load_balancing(k);
 				//	Write_faces_all();
 					//-------------------------------------------------------------
-     					Serial_io(tn);		
+//     					Serial_io(tn);		
 				}
 //				Write_faces_all();
 			}
