@@ -68,7 +68,7 @@ void Driver_for_DG_approximation(){
 					//-------------------------------------------------------------
      					Serial_io(tn);		
 				}
-				Write_faces_all();
+//				Write_faces_all();
 			}
 		}
 

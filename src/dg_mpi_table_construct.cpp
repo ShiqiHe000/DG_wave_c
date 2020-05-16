@@ -57,13 +57,6 @@ void MPI_table_rebuild(int kt){
 	// x direction
 	Construct_mpi_table(hrefinement::north, 1, hrefinement::neighbours_north,
 				 hrefinement::south, 0, hrefinement::neighbours_south);
-	
-//if(mpi::rank == 2){
-//
-//	Write_mpi_table(hrefinement::south);
-//
-//}
-
 
 	// y direction
 	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
