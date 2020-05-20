@@ -43,7 +43,7 @@ void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::i
 void Build_mapping_table(){
 	
 	Unit* temp = local::head;
-	
+
 	std::vector<double> lprefix_load(local::local_elem_num);
 	int pmapping;
 

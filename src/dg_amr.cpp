@@ -121,11 +121,6 @@ void hpc_refinement(){
 	
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "p-refinement " << temp -> prefine << " coarsening " << temp -> coarsen << "\n";
-//}
-
 		if(temp -> hrefine){	// h - refine======================================================================
 			
 			increment += 3; 

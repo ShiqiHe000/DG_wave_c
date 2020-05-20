@@ -12,9 +12,9 @@
 #include "dg_boundary_table.h"
 #include "dg_put_into_mpi_table.h"
 #include "dg_derived_datatype.h"
-#include <cassert>	// test
+//#include <cassert>	// test
 #include <iostream>	// test
-#include "dg_write_mpi_table.h"	//test
+	//#include "dg_write_mpi_table.h"	//test
 
 // forward declaration ------------------------------------------------------------------
 void Erase_old_face(std::vector<Unit::Face>::iterator& it_face, std::vector<mpi_table>::iterator& it, 

@@ -44,9 +44,6 @@ int main(int argc, char *argv[]){
 	// start the game
 	Driver_for_DG_approximation();
 
-	// testing	
-//	Test();
-
 	// verification
 	Get_error();
 
