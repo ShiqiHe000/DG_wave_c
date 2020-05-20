@@ -9,7 +9,7 @@
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
 //	const std::string fileplace = "../gmsh_files/4_elem_small_domain.msh";
-	const std::string fileplace = "../gmsh_files/64_elements.msh";
+	const std::string fileplace = "../gmsh_files/16_elements.msh";
 }
 
 /// @brief Domain size
@@ -23,8 +23,8 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 3; 
-	const int exp_y = 3; 
+	const int exp_x = 2; 
+	const int exp_y = 2; 
 	
 	const double gx_l = 0.0;
 	const double gx_r = 1.0; 
@@ -34,7 +34,7 @@ namespace grid{
 	const int nmin = 6;	
 	const int nmax = 16;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 2;	
 };
 //---------------------------------------------------------------------
 
