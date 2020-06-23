@@ -44,13 +44,13 @@ void Possible_neighbours(Unit* temp, std::unordered_map<long long int, std::vect
 
 void Clear_tables();
 
-void MPI_table_rebuild(int kt);
+void MPI_table_rebuild();
 //---------------------------------------------------------------------------------------
 
 
 /// @breif
 /// Rebuild MPI table. 
-void MPI_table_rebuild(int kt){
+void MPI_table_rebuild(){
 
 	Clear_tables();
 

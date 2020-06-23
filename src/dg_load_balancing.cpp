@@ -15,13 +15,13 @@ void Clear_mapping_tables();
 void Load_balancing(int kt){
 	Build_mapping_table();
 
-	Update_mpi_boundary(kt);
+	Update_mpi_boundary();
 
 	Reallocate_elem(kt);
 
 	Clear_mapping_tables();
 
-	MPI_table_rebuild(kt);	// rebuild mpi tables
+	MPI_table_rebuild();	// rebuild mpi tables
 }
 
 void Clear_mapping_tables(){

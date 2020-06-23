@@ -31,7 +31,7 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 void Update_mpib(std::vector<int>& recv_info, std::unordered_map<int, std::vector<mpi_table>>& otable, 
 		int facei, int num1, int target_rank);
 
-void Update_mpi_boundary(int kt);
+void Update_mpi_boundary();
 
 void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::iterator& ito, 
 			std::vector<Unit::Face>::iterator& it_face);
@@ -340,7 +340,7 @@ void Ownership_one_dir(std::unordered_map<int, std::vector<mpi_table>>& mtable){
 
 /// @brief
 /// Updates the MPI boundaries before repartitioning. 
-void Update_mpi_boundary(int kt){
+void Update_mpi_boundary(){
 
 	// form the element future ownership----------------------------------------------
 	Ownership_one_dir(hrefinement::north);
