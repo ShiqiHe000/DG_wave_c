@@ -230,94 +230,99 @@ void hpc_refinement(){
 			}
 			else{	// h-coasrening
 
-				// only flaged element at the child posiiton 0 or 2 can croasen
-				bool first = First_child(temp);
+				if(temp -> index[2] > 0){	// only non-root element can be coarsen. 
 
-				if(first){
-					std::array<long long int, 4> four_keys;
-					bool pass; 	
-					Coarsen_criteria(temp, pass, four_keys);
-
-//					Coarsen_results(temp, pass);
-
-					if(pass){ // if four siblings all want to coarse
-						decrement += 3;	
+					// only flaged element at the child posiiton 0 or 2 can croasen
+					bool first = First_child(temp);
 	
-						// generate parent's key
-						long long int key_p = Get_key_fun((temp->index[0]) / 2, 
-								(temp->index[1]) / 2, temp->index[2] - 1);
+					if(first){
+						std::array<long long int, 4> four_keys;
+						bool pass; 	
+						Coarsen_criteria(temp, pass, four_keys);
+	
+	//					Coarsen_results(temp, pass);
+	
+						if(pass){ // if four siblings all want to coarse
+							decrement += 3;	
+		
+							// generate parent's key
+							long long int key_p = Get_key_fun((temp->index[0]) / 2, 
+									(temp->index[1]) / 2, temp->index[2] - 1);
+							
+							local::Hash_elem[key_p] = new Unit();	// create parent
 						
-						local::Hash_elem[key_p] = new Unit();	// create parent
-					
-						// index	
-						local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
-						local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
-						local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
+							// index	
+							local::Hash_elem[key_p] -> index[0] = (temp -> index[0]) / 2;
+							local::Hash_elem[key_p] -> index[1] = (temp -> index[1]) / 2;
+							local::Hash_elem[key_p] -> index[2] = (temp -> index[2]) - 1;
+		
+							// status
+							local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
 	
-						// status
-						local::Hash_elem[key_p] -> status = Go_back_to_parent(temp -> status);
-
-						// coordinates (inherit from elements at position 0 and 2)
-						local::Hash_elem[key_p]	-> xcoords[0] = 
+							// coordinates (inherit from elements at position 0 and 2)
+							local::Hash_elem[key_p]	-> xcoords[0] = 
 										local::Hash_elem[four_keys[0]] -> xcoords[0];
-
-						local::Hash_elem[key_p]	-> ycoords[0] = 
+	
+							local::Hash_elem[key_p]	-> ycoords[0] = 
 										local::Hash_elem[four_keys[0]] -> ycoords[0];
-
-						local::Hash_elem[key_p]	-> xcoords[1] = 
+	
+							local::Hash_elem[key_p]	-> xcoords[1] = 
 										local::Hash_elem[four_keys[2]] -> xcoords[1];
-
-						local::Hash_elem[key_p]	-> ycoords[1] = 
+	
+							local::Hash_elem[key_p]	-> ycoords[1] = 
 										local::Hash_elem[four_keys[2]] -> ycoords[1];
-
-						// relative position
-						local::Hash_elem[key_p] -> child_position = 
+	
+							// relative position
+							local::Hash_elem[key_p] -> child_position = 
 									Parent_position(local::Hash_elem[key_p] -> index[0],
-										local::Hash_elem[key_p] -> index[1]);
-						// poly orders
-						local::Hash_elem[key_p] -> n = temp -> n; // the sibling should share same n, m
-						local::Hash_elem[key_p] -> m = temp -> m; 
+											local::Hash_elem[key_p] -> index[1]);
+							// poly orders
+							local::Hash_elem[key_p] -> n = temp -> n; // the sibling should share same n, m
+							local::Hash_elem[key_p] -> m = temp -> m; 
+	
+	
+							// element boundary in reference space
+							local::Hash_elem[key_p] -> ref_x[0] = 
+										local::Hash_elem[four_keys[0]] -> ref_x[0];
 
+							local::Hash_elem[key_p] -> ref_x[1] = 
+										local::Hash_elem[four_keys[1]] -> ref_x[1];
+	
+							local::Hash_elem[key_p] -> ref_y[0] = 
+										local::Hash_elem[four_keys[0]] -> ref_y[0];
 
-						// element boundary in reference space
-						local::Hash_elem[key_p] -> ref_x[0] = local::Hash_elem[four_keys[0]] -> ref_x[0];
-						local::Hash_elem[key_p] -> ref_x[1] = local::Hash_elem[four_keys[1]] -> ref_x[1];
-
-						local::Hash_elem[key_p] -> ref_y[0] = local::Hash_elem[four_keys[0]] -> ref_y[0];
-						local::Hash_elem[key_p] -> ref_y[1] = local::Hash_elem[four_keys[3]] -> ref_y[1];
-
-						// adjust linked list
-						if(k == 0){	// first elem
-							local::head = local::Hash_elem[key_p];	
-						}
-						else{
-
-							temp2 -> next = local::Hash_elem[key_p];
-						}
-						Unit* temp3 = temp;
-						for(int m = 0; m < 3; ++m){	// rearch last sibling
-
-							temp3 = temp3 -> next;
-						}
-						local::Hash_elem[key_p] -> next = temp3 -> next;
+							local::Hash_elem[key_p] -> ref_y[1] = 
+										local::Hash_elem[four_keys[3]] -> ref_y[1];
+	
+							// adjust linked list
+							if(k == 0){	// first elem
+								local::head = local::Hash_elem[key_p];	
+							}
+							else{
+	
+								temp2 -> next = local::Hash_elem[key_p];
+							}
+							Unit* temp3 = temp;
+							for(int m = 0; m < 3; ++m){	// rearch last sibling
+	
+								temp3 = temp3 -> next;
+							}
+							local::Hash_elem[key_p] -> next = temp3 -> next;
+							
+							temp = local::Hash_elem[key_p];	// move pointer to the last 
 						
-						temp = local::Hash_elem[key_p];	// move pointer to the last 
-					
-						k += 3;	// skip other siblings 
-
-						// L2 project back to parent 						
-						Solution_back_to_parent(four_keys, key_p);
-
-//if(mpi::rank == 0){
-//
-//	std::cout << "check \n";
-//}
-						// form the face info + change neighbours faces
-						Form_parent_faces(four_keys, key_p);
-
-						// erase four siblings
-						for(int i = 0; i < 4; ++i){
-							local::Hash_elem.erase(four_keys[i]);
+							k += 3;	// skip other siblings 
+	
+							// L2 project back to parent 						
+							Solution_back_to_parent(four_keys, key_p);
+	
+							// form the face info + change neighbours faces
+							Form_parent_faces(four_keys, key_p);
+	
+							// erase four siblings
+							for(int i = 0; i < 4; ++i){
+								local::Hash_elem.erase(four_keys[i]);
+							}
 						}
 					}
 				}
