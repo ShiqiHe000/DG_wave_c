@@ -86,7 +86,7 @@ namespace dg_refine{
 
 	const double tolerance_max = 1.0e-14;
 
-	const bool load_balancing = true;
+	const bool load_balancing = false;
 };
 
 //----------------------------------------------------------------------
