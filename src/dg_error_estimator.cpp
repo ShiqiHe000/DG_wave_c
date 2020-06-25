@@ -52,6 +52,8 @@ void Refinement_flag(){
 		else if(flag_coarsen.front()){
 
 			temp -> coarsen = true;	// coarsening
+			// test no coarsening 
+//			temp -> coarsen = false;	
 
 		}
 		//-------------------------------------------------
