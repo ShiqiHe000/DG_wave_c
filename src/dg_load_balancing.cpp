@@ -5,6 +5,7 @@
 #include "dg_local_storage.h"
 #include "dg_param.h"	// test
 #include <iostream>
+//#include <TAU.h>	// tau profiling memory
 
 // forward declaration--------------------------------
 void Clear_mapping_tables();
@@ -13,6 +14,12 @@ void Clear_mapping_tables();
 /// @brief
 /// Whole procedure of load balancing   
 void Load_balancing(int kt){
+	
+//	TAU_PROFILE("load_balancing()", " ", TAU_DEFAULT);
+//	TAU_PROFILE_SET_NODE(0);
+
+//	TAU_TRACK_MEMORY_HERE();
+
 	Build_mapping_table();
 
 	Update_mpi_boundary();
@@ -22,6 +29,8 @@ void Load_balancing(int kt){
 	Clear_mapping_tables();
 
 	MPI_table_rebuild();	// rebuild mpi tables
+
+//	TAU_TRACK_MEMORY_HERE();
 }
 
 void Clear_mapping_tables(){
