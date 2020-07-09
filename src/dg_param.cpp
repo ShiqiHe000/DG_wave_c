@@ -8,8 +8,8 @@
 /// @param fileplace The path of mesh file and mesh file name
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-	const std::string fileplace = "../gmsh_files/64_elements.msh";
-//	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
+//	const std::string fileplace = "../gmsh_files/64_elements.msh";
+	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
 }
 
 /// @brief Domain size
@@ -23,18 +23,18 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 3; 
-	const int exp_y = 3; 
+	const int exp_x = 7; 
+	const int exp_y = 7; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 1.0; 
+	const double gx_r = 16.0; 
 	const double gy_l = 0.0;
-	const double gy_r = 1.0; 
+	const double gy_r = 16.0; 
 
 	const int nmin = 6;	
 	const int nmax = 16;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 5;	
 };
 //---------------------------------------------------------------------
 
@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 10;
+	const double t_total = 1.0e-5 * 100;
 //	const double t_total = 0.5;
 
-	const int nt = 10;
+	const int nt = 100;
 
 };
 
@@ -78,7 +78,7 @@ namespace dg_refine{
 
 	const bool adapt = true;
 
-	const int refine_frequency = 1;	// every time step refine once
+	const int refine_frequency = 10;	// every time step refine once
 
 	const int fit_point_num = 4;
 

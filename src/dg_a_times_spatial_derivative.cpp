@@ -60,18 +60,7 @@ void A_times_spatial_derivative_x(){
 			}
 
 		}
-//if(mpi::rank == 0){
-//
-//	std::cout << temp -> index[0] << " " << temp -> index[1] << "\n";
-//	std::cout.precision(17);
-//	for(auto& v : temp -> solution_time_der[0]){
-//
-//		std::cout<< std::fixed<<v << "\n";
-//		
-//	}
-//	std::cout << "\n";
-//
-//}
+
 		// deallocate solutions on the element boundaries
 		(temp -> solution_int_l).clear();
 		(temp -> solution_int_r).clear();
