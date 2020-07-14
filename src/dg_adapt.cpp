@@ -9,9 +9,9 @@
 
 void Adapt(int kt){
 
-//	Flag_elem(kt);
+	Flag_elem(kt);
 
-	Refinement_flag();
+//	Refinement_flag();
 	
 	hpc_refinement();
 

@@ -1,3 +1,5 @@
+// Rewrite the solution on the mesh to be the exact solution. 
+
 #include "dg_local_storage.h"
 #include "dg_unit.h"
 #include "dg_param.h"
@@ -9,8 +11,8 @@
 #include <iostream>	// test
 
 /// @brief
-/// Initialization all local elements based on the initial conditions.
-void DG_init(){
+/// @param t current time step
+void DG_reinit(double t){
 	
 	Unit* temp = local::head;
 
@@ -21,22 +23,22 @@ void DG_init(){
 		double del_x = (temp -> xcoords[1]) - (temp -> xcoords[0]);
 		double del_y = (temp -> ycoords[1]) - (temp -> ycoords[0]);
 
-		for(int j = 0; j <= grid::nmin; ++j){
+		for(int j = 0; j <= temp -> m; ++j){
 			
 			// map reference location to physical localtion
-			double gl_p_y = nodal::gl_points[grid::nmin][j];
+			double gl_p_y = nodal::gl_points[temp -> m][j];
 			double y = Affine_mapping(gl_p_y, temp -> ycoords[0], del_y);
 			
-			for(int i = 0; i <= grid::nmin; ++i){
+			for(int i = 0; i <= temp -> n; ++i){
 	
-				double gl_p_x = nodal::gl_points[grid::nmin][i];
+				double gl_p_x = nodal::gl_points[temp -> n][i];
 				double x = Affine_mapping(gl_p_x, temp -> xcoords[0], del_x);
 			
-				int num_p = Get_single_index(i, j, grid::nmin + 1);
+				int num_p = Get_single_index(i, j, temp -> m + 1);
 
 				// wave --------------------------------------------------------------------------------	
 				double inter = exp( - std::pow((user::kx * (x - user::xx0) + 
-							user::ky * (y - user::yy0)), 2) / std::pow(user::D, 2));
+							user::ky * (y - user::yy0) - dg_fun::C * t), 2) / std::pow(user::D, 2));
       			
 				temp -> solution[0][num_p] = inter;
 				temp -> solution[1][num_p] = user::kx / dg_fun::C * inter;
