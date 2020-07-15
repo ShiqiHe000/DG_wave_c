@@ -44,10 +44,13 @@ void Driver_for_DG_approximation(){
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
 if(mpi::rank == 0){
-std::cout<< "solve " << k << "\n";
+std::cout<< "solve starts" << k << "\n";
 }
 		DG_step_by_RK3(tn, delta_t);
 		
+if(mpi::rank == 0){
+std::cout<< "solve finished" << k << "\n";
+}
 		// output control
 		if((k + 1) % dg_io::output_frequency == 0){
      			Serial_io(tn);		
@@ -57,21 +60,27 @@ std::cout<< "solve " << k << "\n";
 
 			if((k + 1) % dg_refine::refine_frequency == 0){
 if(mpi::rank == 0){
-std::cout<< "adapt "<< k << "\n";
+std::cout<< "adapt starts "<< k << "\n";
 }
 				// hp-adaptive --------------------------------------------
 				Adapt(k);
 				// --------------------------------------------------------
+if(mpi::rank == 0){
+std::cout<< "adapt finished "<< k << "\n";
+}
 
      				Serial_io(tn);		
 if(mpi::rank == 0){
-std::cout<< "LB "<< k << "\n";
+std::cout<< "LB starts "<< k << "\n";
 }
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
 					Load_balancing(k);
 				//	Write_faces_all();
 					//-------------------------------------------------------------
+if(mpi::rank == 0){
+std::cout<< "LB finished "<< k << "\n";
+}
      					Serial_io(tn);		
 				}
 //				Write_faces_all();

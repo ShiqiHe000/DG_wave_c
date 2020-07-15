@@ -243,6 +243,11 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 	int s = south.size();	// number of pairs in the hash table
 	int n = north.size();	// number of pairs in the hash table
 
+	std::unordered_map<int, std::vector<facen_pack>> send_info;	// sender's buffer <target_rank, mpi elements info>
+
+	MPI_Request send_request[s];
+	int isend{};
+
 	if(s > 0){	
 		
 		for(auto& v : south){	
@@ -252,24 +257,28 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 
 			auto it = v.second.begin();
 
-			std::vector<facen_pack> send_info(num_elem);
+			// allocate space in hash
+			send_info[target_rank] = std::vector<facen_pack>(num_elem);
 
 			// pack the sending info
 			for(int k = 0; k < num_elem; ++k){
 	
-				send_info[k].local_key = it -> local_key;	// key
-				send_info[k].hlevel = local::Hash_elem[it -> local_key] -> index[2];	// hlevel
-				send_info[k].porderx = local::Hash_elem[it -> local_key] -> n;	// porderx
-				send_info[k].pordery = local::Hash_elem[it -> local_key] -> m;	// pordery
-				send_info[k].mpi_length = it -> mpi_length;
-				send_info[k].Copy_ref(local::Hash_elem[it -> local_key] -> ref_x, 
+				send_info[target_rank][k].local_key = it -> local_key;	// key
+				send_info[target_rank][k].hlevel = local::Hash_elem[it -> local_key] -> index[2];	// hlevel
+				send_info[target_rank][k].porderx = local::Hash_elem[it -> local_key] -> n;	// porderx
+				send_info[target_rank][k].pordery = local::Hash_elem[it -> local_key] -> m;	// pordery
+				send_info[target_rank][k].mpi_length = it -> mpi_length;
+				send_info[target_rank][k].Copy_ref(local::Hash_elem[it -> local_key] -> ref_x, 
 							local::Hash_elem[it -> local_key] -> ref_y);
 
 				++it;
 			}
+			
+			MPI_Isend(&send_info[target_rank][0], num_elem, Hash::Facen_type, target_rank,
+				    mpi::rank, MPI_COMM_WORLD, &send_request[isend]);
 
-			MPI_Send(&send_info[0], num_elem, Hash::Facen_type, target_rank, 
-					mpi::rank, MPI_COMM_WORLD); 
+			++isend;
+
 		}
 	}
 
@@ -298,6 +307,15 @@ void Sender_recver(std::unordered_map<int, std::vector<mpi_table>>& south,
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------
+
+
+	// wait for isend
+	if(s > 0){
+
+		MPI_Status status1[s];
+
+		MPI_Waitall(s, send_request, status1);
+	}
 
 }
 
