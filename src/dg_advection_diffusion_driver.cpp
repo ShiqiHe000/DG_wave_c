@@ -43,7 +43,9 @@ void Driver_for_DG_approximation(){
 	
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
-
+if(mpi::rank == 0){
+std::cout<< "solve " << k << "\n";
+}
 		DG_step_by_RK3(tn, delta_t);
 		
 		// output control
@@ -54,13 +56,17 @@ void Driver_for_DG_approximation(){
 		if(dg_refine::adapt){	// hp-refinement
 
 			if((k + 1) % dg_refine::refine_frequency == 0){
-				
+if(mpi::rank == 0){
+std::cout<< "adapt "<< k << "\n";
+}
 				// hp-adaptive --------------------------------------------
 				Adapt(k);
 				// --------------------------------------------------------
 
      				Serial_io(tn);		
-		
+if(mpi::rank == 0){
+std::cout<< "LB "<< k << "\n";
+}
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
 					Load_balancing(k);
