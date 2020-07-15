@@ -43,14 +43,14 @@ void Driver_for_DG_approximation(){
 	
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
-//if(mpi::rank == 0){
-//std::cout<< "solve starts" << k << "\n";
-//}
+if(mpi::rank == 0){
+std::cout<< "solve starts" << k << "\n";
+}
 		DG_step_by_RK3(tn, delta_t);
 		
-//if(mpi::rank == 0){
-//std::cout<< "solve finished" << k << "\n";
-//}
+if(mpi::rank == 0){
+std::cout<< "solve finished" << k << "\n";
+}
 		// output control
 		if((k + 1) % dg_io::output_frequency == 0){
      			Serial_io(tn);		

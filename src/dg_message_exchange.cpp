@@ -407,7 +407,7 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 
 	int isend{};
 
-	for(auto& v : sender){	// North send
+	for(auto& v : sender){	// sender
 
 		int target_rank = v.first;
 		auto it_local = v.second.begin();	// point to the members in vector
@@ -452,7 +452,10 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 		++isend;
 	}
 
+if(mpi::rank == 0){
 
+	std::cout<<"send fluxes out \n";
+}
 	// recv
 	if(dir == 'x'){
 		for(auto& v : recver){
@@ -555,6 +558,11 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 
 
 	}
+
+if(mpi::rank == 0){
+
+	std::cout<< "recv flux OK \n";
+}
 
 	if(num_send > 0){
 

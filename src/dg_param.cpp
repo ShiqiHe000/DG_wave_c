@@ -6,12 +6,13 @@
 
 /// @brief mesh file information
 /// @param fileplace The path of mesh file and mesh file name
+/// @param output_place output directory. 
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
 //	const std::string fileplace = "../gmsh_files/256_elements.msh";
 	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
 
-	const std::string output_place = "../output2/";
+	const std::string output_place = "../outputs/";
 
 }
 

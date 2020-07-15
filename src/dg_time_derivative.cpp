@@ -23,19 +23,36 @@ void DG_time_der(double t){
 
 		temp = temp -> next;
 	}
+if(mpi::rank == 0){
 
+	std::cout<< "exchange solu s (x) \n";
+}
 
 	// exchange solution on the mpi boundaries
 //	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange element by element
 	Exchange_solution_pack(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange together
 
+if(mpi::rank == 0){
+
+	std::cout<< "exchange solu e (x) \n";
+	std::cout<< "compute flux s (x) \n";
+}
 	// compute the numberical flux
 	Numerical_flux_x(t);
 
+if(mpi::rank == 0){
+
+	std::cout<< "compute flux e (x) \n";
+	std::cout<< "exchange flux s (x) \n";
+}
 	// exchange numerical flux on the mpi boundaries
 //	Exchange_flux(hrefinement::south, 0, 1);
 	Exchange_flux_pack(hrefinement::south, hrefinement::north, 0, 1, 'x');
 
+if(mpi::rank == 0){
+
+	std::cout<< "exchange flux e (x) \n";
+}
 	// spatial derivative
 	A_times_spatial_derivative_x();
 
@@ -50,6 +67,10 @@ void DG_time_der(double t){
 		temp = temp -> next;
 	}
 
+if(mpi::rank == 0){
+
+	std::cout<< "exchange solu s (y) \n";
+}
 	// exchange solution on the mpi boundaries
 //	Exchange_solution(hrefinement::east, 3, hrefinement::west, 2, 'y');
 	Exchange_solution_pack(hrefinement::east, 3, hrefinement::west, 2, 'y');
@@ -61,6 +82,10 @@ void DG_time_der(double t){
 //	Exchange_flux(hrefinement::west, 2, 3);
 	Exchange_flux_pack(hrefinement::west, hrefinement::east, 2, 3, 'y');
 	
+if(mpi::rank == 0){
+
+	std::cout<< "exchange solu e (y) \n";
+}
 	// spatial derivative
 	A_times_spatial_derivative_y();
 	//===============================================================================================
