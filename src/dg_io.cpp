@@ -59,7 +59,7 @@ void Write_mesh(double t, int pre_elem){
 
 	// generate the file name
 	std::stringstream ss;
-	ss << "../outputs/output" << std::setfill('0') << std::setw(5) << file_num << ".dat";
+	ss << fileinfo::output_place <<"output" << std::setfill('0') << std::setw(5) << file_num << ".dat";
 	std::string filename = 	ss.str();
 	std::ofstream myfile; 	// stream class to write on files	
 

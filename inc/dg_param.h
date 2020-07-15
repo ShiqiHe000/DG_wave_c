@@ -6,6 +6,7 @@
 // mesh file----------------------------------------
 namespace fileinfo{
 	extern const std::string fileplace;
+	extern const std::string output_place;
 }
 // -------------------------------------------------
 

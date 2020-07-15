@@ -10,6 +10,9 @@ namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
 //	const std::string fileplace = "../gmsh_files/256_elements.msh";
 	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
+
+	const std::string output_place = "../output2/";
+
 }
 
 /// @brief Domain size
