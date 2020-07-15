@@ -89,7 +89,7 @@ void Write_mesh(double t, int pre_elem){
 		myfile << std::setprecision(5);
 //		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"" << "  " 
 //			<<"I=2, J=2"<< "  " << "DATAPACKING = POINT"<< "\n";
-		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(6) << elem << "\"," << "  " 
+		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(7) << elem << "\"," << "  " 
 			<<"I=2, J=2, "<< "SOLUTIONTIME=" << t <<", DATAPACKING = POINT" << "\n";
 		
 		++elem;
