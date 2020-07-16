@@ -380,28 +380,42 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 	
 	int size_s = sendo.size();
 	int size_r = recvo.size();
+
+	std::unordered_map<int, std::vector<int>> send_info;
+
+	MPI_Request send_request[size_s];
+	int isend{};
 	
 	// sender
 	if(size_s > 0){	// there is something to send
 
-		int i{};
+//		int i{};
 		for(auto& v : sendo){
 
+			int target_rank = v.first;
+
 			int num_elem = v.second.size();	
-			std::vector<int> send_info(num_elem * 2);
+//			std::vector<int> send_info(num_elem * 2);
+
+			send_info[target_rank] = std::vector<int>(num_elem * 2);
+
 			auto it = v.second.begin();
 	
 			// serialization the struct
 			for(int k = 0; k < num_elem; ++k){
 
-				send_info[2 * k] = it -> local_key;	
-				send_info[2 * k + 1] = it -> owners_rank;
+				send_info[target_rank][2 * k] = it -> local_key;	
+				send_info[target_rank][2 * k + 1] = it -> owners_rank;
 				++it;
 			}
 
-			MPI_Send(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD);
+//			MPI_Send(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD);
 
-			++i;
+			MPI_Isend(&send_info[target_rank][0], num_elem * 2, MPI_INT, target_rank,
+				    mpi::rank, MPI_COMM_WORLD, &send_request[isend]);
+
+			++isend;
+//			++i;
 
 		}
 
@@ -429,6 +443,15 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 		}
 
 	}
+
+	// wait for isend
+	if(size_s > 0){
+		MPI_Status status1[size_s];
+
+		MPI_Waitall(size_s, send_request, status1);
+
+	}
+
 
 }
 

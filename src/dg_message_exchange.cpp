@@ -452,10 +452,10 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 		++isend;
 	}
 
-if(mpi::rank == 0){
-
-	std::cout<<"send fluxes out \n";
-}
+//if(mpi::rank == 0){
+//
+//	std::cout<<"send fluxes out \n";
+//}
 	// recv
 	if(dir == 'x'){
 		for(auto& v : recver){
@@ -559,10 +559,10 @@ if(mpi::rank == 0){
 
 	}
 
-if(mpi::rank == 0){
-
-	std::cout<< "recv flux OK \n";
-}
+//if(mpi::rank == 0){
+//
+//	std::cout<< "recv flux OK \n";
+//}
 
 	if(num_send > 0){
 

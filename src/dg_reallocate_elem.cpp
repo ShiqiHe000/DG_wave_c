@@ -46,22 +46,39 @@ void Reallocate_elem(int kt){
 	int num_pre = LB::Send.pre.size();
 	int num_next = LB::Send.next.size();
 
+	// send to pre -----------------------------------------------------------
+	std::vector<info_pack> send_elem_p(num_pre);	// element info
+
+	std::vector<double> solu_packed_p;	// element solution
+
+	std::vector<face_pack> face_info_p;	// face info
+	// -----------------------------------------------------------------------
+
+	// send to next ----------------------------------------------------------
+	std::vector<info_pack> send_elem_n(num_next);	// element info
+
+	std::vector<double> solu_packed_n;	// element solution
+
+	std::vector<face_pack> face_info_n;	// face info
+	//------------------------------------------------------------------------
+
+	MPI_Request request_elem_pre, request_elem_next;
+	MPI_Request request_solu_pre, request_solu_next;
+	MPI_Request request_face_pre, request_face_next;
+
+
 	if(num_pre > 0){	// something to send
-		std::vector<info_pack> send_elem(num_pre);
 
 		auto it = LB::Send.pre.begin();
 
-		std::vector<face_pack> face_info;
-
 		// pack info to send
 		int solu_num{};
-		Send_pack(send_elem, it, solu_num);	// element info
+		Send_pack(send_elem_p, it, solu_num);	// element info
 
-		std::vector<double> solu_packed;
-		Solution_pack(LB::Send.pre, solu_num, solu_packed);	// solutions
+		Solution_pack(LB::Send.pre, solu_num, solu_packed_p);	// solutions
 
 		int num_n{};
-		Face_pack(face_info, LB::Send.pre, num_n);	// face info
+		Face_pack(face_info_p, LB::Send.pre, num_n);	// face info
 		
 		// test--------------------------------------------------------------
 //		Write_send(kt, send_elem, num_pre, mpi::rank - 1); 	// test
@@ -69,36 +86,44 @@ void Reallocate_elem(int kt){
 		//----------------------------------------------------------------------
 
 		// ready to send 
-		MPI_Send(&send_elem[0], num_pre, Hash::Elem_type, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD);	// tag = rank
 
-		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank - 1, mpi::rank + 3, MPI_COMM_WORLD);
+		MPI_Isend(&send_elem_p[0], num_pre, Hash::Elem_type, mpi::rank - 1, 
+				mpi::rank, MPI_COMM_WORLD, &request_elem_pre);	// tag = rank
 
-		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank - 1, mpi::rank + 1, MPI_COMM_WORLD);
+		MPI_Isend(&solu_packed_p[0], solu_num, MPI_DOUBLE, mpi::rank - 1, 
+				mpi::rank + 3, MPI_COMM_WORLD, &request_solu_pre);
+
+		MPI_Isend(&face_info_p[0], num_n, Hash::Face_type, mpi::rank - 1, 
+				mpi::rank + 1, MPI_COMM_WORLD, &request_face_pre);
 
 		Erase_elem_old(LB::Send.pre, 'p', num_pre);
 	}
 	if(num_next > 0){	
 
-		std::vector<info_pack> send_elem(num_next);
 
 		auto it = LB::Send.next.begin();
-		std::vector<face_pack> face_info;
 
 		int solu_num{};
-		Send_pack(send_elem, it, solu_num);
+		Send_pack(send_elem_n, it, solu_num);
 
-		std::vector<double> solu_packed;
-		Solution_pack(LB::Send.next, solu_num, solu_packed);	// solutions
+		Solution_pack(LB::Send.next, solu_num, solu_packed_n);	// solutions
 		int num_n{};
-		Face_pack(face_info, LB::Send.next, num_n);
+		Face_pack(face_info_n, LB::Send.next, num_n);
 
 		// test		
 //		Write_send(kt, send_elem, num_next, mpi::rank + 1); 	// test
 //		Write_send_face(kt, face_info, mpi::rank + 1);
 
-		MPI_Send(&send_elem[0], num_next, Hash::Elem_type, mpi::rank + 1, mpi::rank, MPI_COMM_WORLD);
-		MPI_Send(&solu_packed[0], solu_num, MPI_DOUBLE, mpi::rank + 1, mpi::rank + 4, MPI_COMM_WORLD);
-		MPI_Send(&face_info[0], num_n, Hash::Face_type, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);
+		// non-blocking ----------------------------------------------------------------------------------
+		MPI_Isend(&send_elem_n[0], num_next, Hash::Elem_type, mpi::rank + 1, 
+				mpi::rank, MPI_COMM_WORLD, &request_elem_next);
+
+		MPI_Isend(&solu_packed_n[0], solu_num, MPI_DOUBLE, mpi::rank + 1, 
+				mpi::rank + 4, MPI_COMM_WORLD, &request_solu_next);
+
+		MPI_Isend(&face_info_n[0], num_n, Hash::Face_type, mpi::rank + 1, 
+				mpi::rank + 1, MPI_COMM_WORLD, &request_face_next);
+		// -----------------------------------------------------------------------------------------------
 
 		Erase_elem_old(LB::Send.next, 'n', num_next);
 	}
@@ -150,24 +175,6 @@ void Reallocate_elem(int kt){
 
 	}
 	else{	// proc in between
-		if(LB::proc_mapping_table[mpi::rank + 1].gnum - 1 > last){	// recv from next
-
-			std::vector<info_pack> recv_info;
-			std::vector<face_pack> recv_face;
-			std::vector<double> solu;
-
-			int recv_num{};	
-			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
-			
-			Recv_solu(mpi::rank + 1, mpi::rank + 4, solu);
-
-			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
-
-//			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
-
-			Enlarge_hash(recv_info, 'n', recv_num, solu);
-			Fill_facen(recv_face);
-		}
 
 		if(LB::proc_mapping_table[mpi::rank].gnum < start){	// recv from pre
 			std::vector<info_pack> recv_info;
@@ -190,8 +197,45 @@ void Reallocate_elem(int kt){
 			Fill_facen(recv_face);
 		}
 		
+		if(LB::proc_mapping_table[mpi::rank + 1].gnum - 1 > last){	// recv from next
+
+			std::vector<info_pack> recv_info;
+			std::vector<face_pack> recv_face;
+			std::vector<double> solu;
+
+			int recv_num{};	
+			Recv_elem(mpi::rank + 1, mpi::rank + 1, recv_info, recv_num);
+			
+			Recv_solu(mpi::rank + 1, mpi::rank + 4, solu);
+
+			Recv_face(mpi::rank + 1, mpi::rank + 2, recv_face);
+
+//			Write_recv_face(kt, recv_face, mpi::rank + 1);	// test
+
+			Enlarge_hash(recv_info, 'n', recv_num, solu);
+			Fill_facen(recv_face);
+		}
 	}
 	
+	// wait
+	if(num_pre > 0){
+
+		MPI_Status s_elem_pre, s_solu_pre, s_face_pre;
+
+		MPI_Wait(&request_elem_pre, &s_elem_pre);
+		MPI_Wait(&request_solu_pre, &s_solu_pre);
+		MPI_Wait(&request_face_pre, &s_face_pre);
+	}
+
+	if(num_next > 0){
+
+		MPI_Status s_elem_next, s_solu_next, s_face_next;
+
+		MPI_Wait(&request_elem_next, &s_elem_next);
+		MPI_Wait(&request_solu_next, &s_solu_next);
+		MPI_Wait(&request_face_next, &s_face_next);
+	}
+
 
 }
 
