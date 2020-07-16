@@ -23,7 +23,7 @@ void DG_time_der(double t){
 
 		temp = temp -> next;
 	}
-if(mpi::rank == 31){
+if(mpi::rank == 16){
 
 	std::cout<< "exchange solu s (x) \n";
 }
@@ -32,7 +32,7 @@ if(mpi::rank == 31){
 //	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange element by element
 	Exchange_solution_pack(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange together
 
-if(mpi::rank == 31){
+if(mpi::rank == 16){
 
 	std::cout<< "exchange solu e (x) \n";
 	std::cout<< "compute flux s (x) \n";
@@ -40,7 +40,7 @@ if(mpi::rank == 31){
 	// compute the numberical flux
 	Numerical_flux_x(t);
 
-if(mpi::rank == 31){
+if(mpi::rank == 16){
 
 	std::cout<< "compute flux e (x) \n";
 	std::cout<< "exchange flux s (x) \n";
@@ -49,7 +49,7 @@ if(mpi::rank == 31){
 //	Exchange_flux(hrefinement::south, 0, 1);
 	Exchange_flux_pack(hrefinement::south, hrefinement::north, 0, 1, 'x');
 
-if(mpi::rank == 31){
+if(mpi::rank == 16){
 
 	std::cout<< "exchange flux e (x) \n";
 }
