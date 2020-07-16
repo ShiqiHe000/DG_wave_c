@@ -31,7 +31,7 @@ namespace grid{
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
-	const int nmin = 14;	
+	const int nmin = 8;	
 	const int nmax = 16;
 
 	const int hlevel_max = 5;	
@@ -47,10 +47,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 10;
+	const double t_total = 1.0e-5 * 100000;
 //	const double t_total = 0.5;
 
-	const int nt = 10;
+	const int nt = 100000;
 
 };
 
