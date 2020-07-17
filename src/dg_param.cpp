@@ -38,7 +38,7 @@ namespace grid{
 	const int nmin = 6;	
 	const int nmax = 16;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 5;	
 };
 //---------------------------------------------------------------------
 

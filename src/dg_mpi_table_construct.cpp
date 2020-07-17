@@ -158,7 +158,6 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 	for(int k = 0; k < local::local_elem_num; ++k){
 
-		int pre_rank = -1;
 	
 		// south
 		// interate through face 0
@@ -166,39 +165,32 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
 
-				if(it -> rank != pre_rank){
 
-					Put_in_mpi_table(temp, it, south);
-					
-					Possible_neighbours(temp, neighbours_south, face_south);
-				}
+				Put_in_mpi_table(temp, it, south);
+				
+				Possible_neighbours(temp, neighbours_south, face_south);
 
 				Record_length(temp -> index[2], it -> hlevel, it -> rank, south);
 
 			}
 
-			pre_rank = it -> rank;
  		
 		}
 
-		pre_rank = - 1;
 
 		// north
 		// iterate through face 1
 		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[face_north].end(); ++it){
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
-				if(it -> rank != pre_rank){
 
-					Put_in_mpi_table(temp, it, north);
-					Possible_neighbours(temp, neighbours_north, face_north);
-				}
+				Put_in_mpi_table(temp, it, north);
+				Possible_neighbours(temp, neighbours_north, face_north);
 
 				Record_length(temp -> index[2], it -> hlevel, it -> rank, north);
 
 			}
 
-			pre_rank = it -> rank;
 		
 		}
 		
