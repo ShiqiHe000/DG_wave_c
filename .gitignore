@@ -1,6 +1,6 @@
 # ignore cmake, the directory is build
 build/
-outputs/
+output*/
 tests/
 send_info/
 recv_info/
