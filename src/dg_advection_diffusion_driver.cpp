@@ -12,6 +12,7 @@
 #include "dg_step_by_RK3.h"
 #include "dg_test.h"	// test
 #include <iostream>	// test
+#include "dg_reinit.h"	// test
 
 /// @brief
 /// Driver for DG approxiation. Algorithm 51. 
@@ -43,14 +44,18 @@ void Driver_for_DG_approximation(){
 	
 	// time integration
 	for(int k = 0; k < dg_time::nt; ++k){
-//if(mpi::rank == 16){
-//std::cout<< "solve starts" << k << "\n";
-//}
+
 		DG_step_by_RK3(tn, delta_t);
-		
-//if(mpi::rank == 16){
-//std::cout<< "solve finished" << k << "\n";
-//}
+
+		tn = (k + 1) * delta_t;
+
+		//===============================		
+//		if(k == 0){
+//	
+//			DG_reinit(tn);
+//		}
+		// ==============================
+
 		// output control
 		if((k + 1) % dg_io::output_frequency == 0){
      			Serial_io(tn);		
@@ -59,28 +64,24 @@ void Driver_for_DG_approximation(){
 		if(dg_refine::adapt){	// hp-refinement
 
 			if((k + 1) % dg_refine::refine_frequency == 0){
-//if(mpi::rank == 16){
-//std::cout<< "adapt starts "<< k << "\n";
-//}
 				// hp-adaptive --------------------------------------------
 				Adapt(k);
 				// --------------------------------------------------------
-//if(mpi::rank == 16){
-//std::cout<< "adapt finished "<< k << "\n";
-//}
 
      				Serial_io(tn);		
-//if(mpi::rank == 16){
-//std::cout<< "LB starts "<< k << "\n";
-//}
+
+				if(k == 0){
+
+					DG_reinit(tn);
+				}
+
+     				Serial_io(tn);		
+		
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
 					Load_balancing(k);
 				//	Write_faces_all();
 					//-------------------------------------------------------------
-//if(mpi::rank == 16){
-//std::cout<< "LB finished "<< k << "\n";
-//}
      					Serial_io(tn);		
 				}
 //				Write_faces_all();
@@ -93,7 +94,7 @@ void Driver_for_DG_approximation(){
 //		Simple_test(k);
 
       	//	Serial_io(tn);		
-		tn = (k + 1) * delta_t;
+//		tn = (k + 1) * delta_t;
 
 	}
 

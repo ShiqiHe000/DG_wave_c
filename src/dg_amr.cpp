@@ -122,7 +122,7 @@ void hpc_refinement(){
 	for(int k = 0; k < local::local_elem_num; ++k){
 
 		if(temp -> hrefine){	// h - refine======================================================================
-			
+//std::cout<< "check \n";
 			increment += 3; 
 			
 			// new coordinates
