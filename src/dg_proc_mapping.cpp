@@ -286,7 +286,7 @@ void Update_neighbours(){
 }
 
 /// @brief
-/// Change neighbour's corresponding face. The neighbour element should store locally. 
+/// Change neighbour's corresponding face. 
 /// @param facei current face direction. 
 /// @param n_key neighbour's key. 
 /// @param my_key current element's key. 
@@ -389,13 +389,11 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 	// sender
 	if(size_s > 0){	// there is something to send
 
-//		int i{};
 		for(auto& v : sendo){
 
 			int target_rank = v.first;
 
 			int num_elem = v.second.size();	
-//			std::vector<int> send_info(num_elem * 2);
 
 			send_info[target_rank] = std::vector<int>(num_elem * 2);
 
@@ -409,13 +407,10 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 				++it;
 			}
 
-//			MPI_Send(&send_info[0], num_elem * 2, MPI_INT, v.first, mpi::rank, MPI_COMM_WORLD);
-
 			MPI_Isend(&send_info[target_rank][0], num_elem * 2, MPI_INT, target_rank,
 				    mpi::rank, MPI_COMM_WORLD, &send_request[isend]);
 
 			++isend;
-//			++i;
 
 		}
 

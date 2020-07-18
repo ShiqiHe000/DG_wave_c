@@ -12,7 +12,7 @@
 #include "dg_boundary_table.h"
 #include "dg_put_into_mpi_table.h"
 #include "dg_derived_datatype.h"
-//#include <cassert>	// test
+#include <cassert>	// test
 #include <iostream>	// test
 	//#include "dg_write_mpi_table.h"	//test
 
@@ -160,11 +160,9 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 	
 		// south
-		// interate through face 0
 		for(auto it = temp -> facen[face_south].begin(); it != temp -> facen[face_south].end(); ++it){
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
-
 
 				Put_in_mpi_table(temp, it, south);
 				
@@ -179,7 +177,6 @@ void Construct_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& north,
 
 
 		// north
-		// iterate through face 1
 		for(auto it = temp -> facen[face_north].begin(); it != temp -> facen[face_north].end(); ++it){
 
 			if(it -> face_type == 'M'){	// if mpi boundary and rank changes, record
@@ -354,6 +351,9 @@ void Update_hash(std::vector<facen_pack>& recv_info, std::unordered_map<int, std
 			if(l_tol >= (it -> mpi_length)){break;}
 		}
 
+		// check ==============================================
+		assert(l_tol > 0 && "Does not find a neighbour. Error!\n");
+		// ====================================================
 			
 	}
 
