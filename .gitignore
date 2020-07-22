@@ -1,5 +1,5 @@
 # ignore cmake, the directory is build
-build/
+build*/
 output*/
 tests/
 send_info/
@@ -7,4 +7,5 @@ recv_info/
 recv_face_info/
 send_face_info/
 *.swp
-
+job.*
+table/
