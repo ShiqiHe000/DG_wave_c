@@ -22,27 +22,11 @@ void Load_balancing(int kt){
 
 	Build_mapping_table();
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< kt << "LB update mpi_b starts \n";
-//
-//}
 
 	Update_mpi_boundary();
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< kt << "LB update mpi_b f \n";
-//	std::cout<< kt << "LB reallocate elements s \n";
-//
-//}
 	Reallocate_elem(kt);
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< kt << "LB reallocate elements f \n";
-//
-//}
 	Clear_mapping_tables();
 
 	MPI_table_rebuild();	// rebuild mpi tables
