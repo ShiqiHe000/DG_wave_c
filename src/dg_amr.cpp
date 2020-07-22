@@ -203,10 +203,6 @@ void hpc_refinement(){
 			// interpolate solution to four children
 			Solutions_to_children(children, old_key);
 
-//for(int h = 0; h < 4; ++h){
-//      Print_inter(children[h], old_key);
-////      std::cout<< children[h] << "\n";
-//}
 			temp2 -> next = temp -> next;
 
 			// erase the parent
@@ -742,7 +738,7 @@ void Non_sibling_interfaces(Unit* last, long long int parent, std::array<long lo
 }
 
 /// @brief
-/// Loop through parent's face and sign out the nieghbours to the two children on one face.
+/// Loop through parent's face and select out the nieghbours to the two children on one face.
 /// Plus update the neighbours face info.
 /// @param parent parent's key.
 /// @param local_key child's key.

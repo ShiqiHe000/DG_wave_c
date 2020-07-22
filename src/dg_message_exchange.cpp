@@ -261,10 +261,16 @@ void Recv_pairs(int target_rank, int tag, std::vector<neighbour_pair>& recv_pair
 	// recv adjecent pairs
 	MPI_Recv(&recv_pairs[0], count, Hash::Adj_pairs, target_rank, tag, MPI_COMM_WORLD, &status2);	
 
-//if(mpi::rank == 4){
+	// check recv finishes or not
+//	MPI_Request request;
+//	int flag{};
+//	MPI_Status status_test;
+//	MPI_Test(&request, &flag, &status_test);
+//	if(! flag){
 //
-//	std::cout << "from " << target_rank << " count " << count << "\n";
-//}
+//		std::cout<< "Neighbour pairs does not recv from rank  "<< target_rank << " self_rank = "<< mpi::rank << "\n";
+//	}
+
 }
 
 

@@ -23,20 +23,11 @@ void DG_time_der(double t){
 
 		temp = temp -> next;
 	}
-//if(mpi::rank == 16){
-//
-//	std::cout<< "exchange solu s (x) \n";
-//}
 
 	// exchange solution on the mpi boundaries
 //	Exchange_solution(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange element by element
 	Exchange_solution_pack(hrefinement::north, 1, hrefinement::south, 0, 'x');	// exchange together
 
-//if(mpi::rank == 16){
-//
-//	std::cout<< "exchange solu e (x) \n";
-//	std::cout<< "compute flux s (x) \n";
-//}
 	// compute the numberical flux
 	Numerical_flux_x(t);
 

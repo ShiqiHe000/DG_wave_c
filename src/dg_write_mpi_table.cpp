@@ -2,24 +2,111 @@
 #include <vector>
 #include <unordered_map>
 #include "dg_boundary_table.h"
+#include <sstream>
+#include <fstream>
+#include <iomanip>
 #include "dg_write_mpi_table.h"
+#include "dg_param.h"
+#include <mpi.h>
 
-void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table){
+int file_table = 1;
+//-------------------------------------------------------------------------------
+void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1, 
+			std::unordered_map<int, std::vector<mpi_table>>& table2);
 
-	for(auto& v : table){
+void Write_table_all(std::unordered_map<int, std::vector<mpi_table>>& table1, 
+			std::unordered_map<int, std::vector<mpi_table>>& table2);
+// ------------------------------------------------------------------------------
 
-		int target_rank = v.first;
+void Write_table_all(std::unordered_map<int, std::vector<mpi_table>>& table1, 
+			std::unordered_map<int, std::vector<mpi_table>>& table2){
 
-		std::cout << "target_rank " << target_rank << "\n";
+	for(int i = 0; i < mpi::num_proc; ++i){
 
-		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+		if(mpi::rank == i){
+			Write_mpi_table(table1, table2);
 
-			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
+		}
+		else{
 
+			MPI_Barrier(MPI_COMM_WORLD);
 		}
 
 	}
-	std::cout << "===========================\n";
-		
+
+}
+
+void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1, 
+			std::unordered_map<int, std::vector<mpi_table>>& table2){
+
+//	for(auto& v : table){
+//
+//		int target_rank = v.first;
+//
+//		std::cout << "target_rank " << target_rank << "\n";
+//
+//		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+//
+//			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
+//
+//		}
+//
+//	}
+//	std::cout << "===========================\n";
+//		
+
+		// generate the file name
+	std::stringstream ss;
+	ss << "../table/table" << std::setfill('0') << std::setw(5) << file_table << ".dat";
+	std::string filename = 	ss.str();
+	std::ofstream myfile; 	// stream class to write on files	
+
+	if(mpi::rank == 0){
+		myfile.open(filename, std::ios::trunc); // truncate the old file
+	}
+	else{
+		myfile.open(filename, std::ios::app);
+
+	}
+
+	myfile<< "===============" << mpi::rank << "==============================="<< "\n";
+	myfile << "*********** table 1 *************************************** \n";
+
+	for(auto& v : table1){
+
+		int target_rank = v.first;
+					
+		myfile<<"target_rank " << target_rank << " ----------------------------------" << "\n";
+	
+		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+
+			myfile << "local_key " << it -> local_key << " m_length " << it -> mpi_length <<
+				" owner " << it -> owners_rank << "\n";
+
+		}
+				
+
+	}	
+
+	myfile << "*********** table 2 *************************************** \n";
+	for(auto& v : table2){
+
+		int target_rank = v.first;
+					
+		myfile<<"target_rank " << target_rank << " ----------------------------------" << "\n";
+	
+		for(auto it = v.second.begin(); it != v.second.end(); ++it){
+
+			myfile << "local_key " << it -> local_key << " m_length " << it -> mpi_length <<
+				" owner " << it -> owners_rank << "\n";
+
+		}
+				
+
+	}	
+
+	myfile.close();
+	file_table++;
+	
 }
 

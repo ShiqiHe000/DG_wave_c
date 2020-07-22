@@ -58,7 +58,7 @@ void Driver_for_DG_approximation(){
 				Adapt(k);
 				// --------------------------------------------------------
 
-     				Serial_io(tn);		
+     	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
 					Load_balancing(k);

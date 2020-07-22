@@ -18,9 +18,6 @@ void Adapt(int kt){
 	Refinement_flag();
 	
 	hpc_refinement();
-//if(mpi::rank == 0){
-//std::cout<< kt<< " hpc_refinement finished. \n";
-//}
 
 
 //	h_refinement();
@@ -37,11 +34,6 @@ void Adapt(int kt){
 	Update_mpi_boundaries(hrefinement::north, 1, hrefinement::neighbours_north,
 				hrefinement::south, 0, hrefinement::neighbours_south);	
 
-//if(mpi::rank == 0){
-//std::cout<< kt<< " adapt update mpi-b (x) finished. \n";
-//}
-
-
 	// y direction
 	Construct_mpi_table(hrefinement::east, 3, hrefinement::neighbours_east,
 				 hrefinement::west, 2, hrefinement::neighbours_west);
@@ -49,9 +41,6 @@ void Adapt(int kt){
 	Update_mpi_boundaries(hrefinement::east, 3, hrefinement::neighbours_east,
 				hrefinement::west, 2, hrefinement::neighbours_west);	
 
-//if(mpi::rank == 0){
-//std::cout<< kt<< " adapt update mpi-b (y) finished. \n";
-//}
 
 }
 
