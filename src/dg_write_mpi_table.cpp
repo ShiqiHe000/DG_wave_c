@@ -39,25 +39,10 @@ void Write_table_all(std::unordered_map<int, std::vector<mpi_table>>& table1,
 void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1, 
 			std::unordered_map<int, std::vector<mpi_table>>& table2){
 
-//	for(auto& v : table){
-//
-//		int target_rank = v.first;
-//
-//		std::cout << "target_rank " << target_rank << "\n";
-//
-//		for(auto it = v.second.begin(); it != v.second.end(); ++it){
-//
-//			std::cout<< "local_key " << it -> local_key << " m_length " << it -> mpi_length << "\n";
-//
-//		}
-//
-//	}
-//	std::cout << "===========================\n";
-//		
 
 		// generate the file name
 	std::stringstream ss;
-	ss << "../table/table" << std::setfill('0') << std::setw(5) << file_table << ".dat";
+	ss << "../table_owner/table" << std::setfill('0') << std::setw(5) << file_table << ".dat";
 	std::string filename = 	ss.str();
 	std::ofstream myfile; 	// stream class to write on files	
 
@@ -72,7 +57,11 @@ void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1,
 	myfile<< "===============" << mpi::rank << "==============================="<< "\n";
 	myfile << "*********** table 1 *************************************** \n";
 
+	int tol_length{};
+
 	for(auto& v : table1){
+
+		tol_length = 0;
 
 		int target_rank = v.first;
 					
@@ -83,14 +72,18 @@ void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1,
 			myfile << "local_key " << it -> local_key << " m_length " << it -> mpi_length <<
 				" owner " << it -> owners_rank << "\n";
 
+			tol_length += it -> mpi_length;
 		}
 				
-
+		myfile<< "tol_length = "<< tol_length << "\n";
 	}	
+
 
 	myfile << "*********** table 2 *************************************** \n";
 	for(auto& v : table2){
 
+		tol_length = 0;
+
 		int target_rank = v.first;
 					
 		myfile<<"target_rank " << target_rank << " ----------------------------------" << "\n";
@@ -100,8 +93,10 @@ void Write_mpi_table(std::unordered_map<int, std::vector<mpi_table>>& table1,
 			myfile << "local_key " << it -> local_key << " m_length " << it -> mpi_length <<
 				" owner " << it -> owners_rank << "\n";
 
+			tol_length += it -> mpi_length;
 		}
 				
+		myfile<< "tol_length = "<< tol_length << "\n";
 
 	}	
 

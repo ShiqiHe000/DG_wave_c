@@ -13,6 +13,8 @@
 #include "dg_boundary_table.h"
 #include <cassert>
 #include <iostream>	//test
+#include "dg_write_mpi_table.h"	//test
+#include "dg_write_send_list.h"	//test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
@@ -187,7 +189,9 @@ void Build_mapping_table(){
 	// Updates local facen based on the Sending list
 	Update_neighbours();
 
-
+	//----------------------
+//	Write_send_list_all();
+	//-----------------------
 }
 
 /// @brief
@@ -345,6 +349,8 @@ void Update_mpi_boundary(){
 	// form the element future ownership----------------------------------------------
 	Ownership_one_dir(hrefinement::north);
 	Ownership_one_dir(hrefinement::south);
+
+//	Write_table_all(hrefinement::south, hrefinement::north);
 	
 	Ownership_one_dir(hrefinement::west);
 	Ownership_one_dir(hrefinement::east);
@@ -358,6 +364,7 @@ void Update_mpi_boundary(){
 	Send_recv_ownership(hrefinement::south, hrefinement::north, 1);
 	//-----------------------------------------------------------------------------------------------
 
+//	Write_table_all(hrefinement::south, hrefinement::north);
 	// y direction-----------------------------------------------------------------------------------
 	
 	// west send and east recv
@@ -401,7 +408,10 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 	
 			// serialization the struct
 			for(int k = 0; k < num_elem; ++k){
-
+//if(mpi::rank == 2 && it -> local_key == 4253191876){
+//
+//	std::cout<< "rank2 send out to " << target_rank << " owner "<<it -> owners_rank << "\n";
+//}
 				send_info[target_rank][2 * k] = it -> local_key;	
 				send_info[target_rank][2 * k + 1] = it -> owners_rank;
 				++it;
@@ -433,6 +443,19 @@ void Send_recv_ownership(std::unordered_map<int, std::vector<mpi_table>>& sendo,
 			std::vector<int> recv_info(num);
 
 			MPI_Recv(&recv_info[0], num, MPI_INT, v.first, v.first, MPI_COMM_WORLD, &status2);
+
+if(mpi::rank == 3 && v.first == 2){
+
+	for(int i = 0; i < num / 2; ++i){
+
+		if(recv_info[i * 2] == 4253191876){
+
+			std::cout<< "r3 recved the elem. \n";
+			std::cout<< recv_info[i * 2 + 1] << "\n";
+		}
+	}
+
+}
 
 			Update_mpib(recv_info, recvo, facei, num, v.first);
 		}
@@ -489,6 +512,11 @@ void Change_face(int num, std::vector<int>& recv_info, std::vector<mpi_table>::i
 	for(int k = 0; k < num; ++k){	// loop to find the neighbour
 
 		if(recv_info[2 * k] == it_face -> key){	// find it
+
+//if(mpi::rank == 3 && recv_info[2 * k] == 4253191876){
+//
+//	std::cout << "find it ! \n";
+//}
 
 			if(recv_info[2 * k + 1] == (ito -> owners_rank)){	// if will be in the same rank
 				

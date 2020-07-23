@@ -59,7 +59,7 @@ void MPI_table_rebuild(){
 				 hrefinement::south, 0, hrefinement::neighbours_south);
 
 	// test ---------------------------------------------------------------------
-	Write_table_all(hrefinement::south, hrefinement::north);
+//	Write_table_all(hrefinement::south, hrefinement::north);
 	// ---------------------------------------------------------------------------
 
 

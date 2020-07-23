@@ -34,6 +34,8 @@ namespace Hash{
 	MPI_Datatype Face_type;
 
 	MPI_Datatype Adj_pairs;
+
+	MPI_Datatype Owner_type;
 };
 
 // forward declaration-----------------------------------------
@@ -41,6 +43,7 @@ void MPI_Elem_type();
 void MPI_Face_type();
 void MPI_Facen_type();
 void MPI_Adj_pairs_type();
+void MPI_Owner_type();
 //--------------------------------------------------------------
 
 /// @brief 
@@ -54,10 +57,50 @@ void Construct_data_type(){
 	MPI_Face_type();
 	
 	MPI_Adj_pairs_type();
+
+	MPI_Owner_type();
 }
 
 /// @brief
-/// Construct 
+/// Construct a customized data type for exchange element ownership on the mpi boundaries. 
+/// <long long int, int>
+void MPI_Owner_type(){
+
+	int num = 2;
+
+	int elem_blocklength[num]{1, 1};
+
+	MPI_Datatype array_of_types[num]{MPI_LONG_LONG_INT, MPI_INT};
+	
+	MPI_Aint array_of_offsets[num];
+	MPI_Aint baseadd, add1;
+	
+	std::vector<owner_struct> my_owner(1);
+
+	MPI_Get_address(&(my_owner[0].local_key), &baseadd);
+	MPI_Get_address(&(my_owner[0].owners_rank), &add1);
+
+	array_of_offsets[0] = 0;
+	array_of_offsets[1] = add1 - baseadd;
+
+	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Owner_type);	
+
+	// check that the extent is correct
+	MPI_Aint lb, extent;
+	MPI_Type_get_extent(Hash::Owner_type, &lb, &extent);	
+	if(extent != sizeof(my_owner[0])){
+
+		MPI_Datatype old = Hash::Owner_type;
+		MPI_Type_create_resized(old, 0, sizeof(my_owner[0]), &Hash::Owner_type);
+		MPI_Type_free(&old);
+	}
+	MPI_Type_commit(&Hash::Owner_type);
+
+
+}
+
+/// @brief
+/// Construct neighbour pairs.  
 void MPI_Adj_pairs_type(){
 
 	int num = 1;
