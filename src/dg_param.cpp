@@ -9,8 +9,8 @@
 /// @param output_place output directory. 
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-//	const std::string fileplace = "../gmsh_files/4_elements.msh";
-	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
+//	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
+	const std::string fileplace = "../gmsh_files/weak/256_256_mesh.msh";
 
 	const std::string output_place = "../outputs/";
 
