@@ -89,7 +89,6 @@ void MPI_Owner_type(){
 	MPI_Aint lb, extent;
 	MPI_Type_get_extent(Hash::Owner_type, &lb, &extent);	
 	if(extent != sizeof(my_owner[0])){
-
 		MPI_Datatype old = Hash::Owner_type;
 		MPI_Type_create_resized(old, 0, sizeof(my_owner[0]), &Hash::Owner_type);
 		MPI_Type_free(&old);
@@ -261,5 +260,7 @@ void Free_type(){
 	MPI_Type_free(&Hash::Face_type);	
 
 	MPI_Type_free(&Hash::Adj_pairs);	
+
+	MPI_Type_free(&Hash::Owner_type);	
 
 }

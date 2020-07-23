@@ -2,10 +2,9 @@
 build*/
 output*/
 tests/
-send_info/
+send*/
 recv_info/
 recv_face_info/
-send_face_info/
 *.swp
 job.*
-table/
+table*/

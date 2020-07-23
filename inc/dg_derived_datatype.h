@@ -5,6 +5,18 @@
 #include <vector>
 
 /// @brief
+/// Use this struct when updating mpi boundaries before reallocate elements. 
+/// @param local_key MPI boundary element's key. 
+/// @param owners_rank the future's rank of this element. 
+struct owner_struct{
+
+	long long int local_key;
+
+	int owners_rank;
+};
+
+
+/// @brief
 /// Neighbour pair. Use this structure to exchaneg boundary solutions. 
 /// @param sender_key Sender's key. 
 /// @param recver_key Recver's key. 
@@ -103,6 +115,8 @@ namespace Hash{
 	extern MPI_Datatype Face_type;
 
 	extern MPI_Datatype Adj_pairs;
+
+	extern MPI_Datatype Owner_type;
 };
 
 

@@ -9,7 +9,7 @@
 /// @param output_place output directory. 
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-//	const std::string fileplace = "../gmsh_files/256_elements.msh";
+//	const std::string fileplace = "../gmsh_files/4_elements.msh";
 	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
 
 	const std::string output_place = "../outputs/";
@@ -51,10 +51,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 2;
+	const double t_total = 1.0e-5 * 20;
 //	const double t_total = 0.5;
 
-	const int nt = 2;
+	const int nt = 20;
 
 };
 
