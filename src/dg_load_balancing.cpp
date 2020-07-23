@@ -22,7 +22,6 @@ void Load_balancing(int kt){
 
 	Build_mapping_table();
 
-
 	Update_mpi_boundary();
 
 	Reallocate_elem(kt);
