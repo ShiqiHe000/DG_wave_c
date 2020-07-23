@@ -14,8 +14,8 @@
 #include "dg_derived_datatype.h"
 #include <cassert>
 #include <iostream>	//test
-#include "dg_write_mpi_table.h"	//test
-#include "dg_write_send_list.h"	//test
+//#include "dg_write_mpi_table.h"	//test
+//#include "dg_write_send_list.h"	//test
 
 // forward declaration -----------------------------------------
 double Elem_load(int porder);
