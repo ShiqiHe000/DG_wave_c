@@ -22,7 +22,7 @@ void Load_balancing(int kt){
 
 	Build_mapping_table();
 
-	TAU_TRACK_MEMORY_HERE();
+//	TAU_TRACK_MEMORY_HERE();
 
 	Update_mpi_boundary();
 
@@ -32,7 +32,7 @@ void Load_balancing(int kt){
 
 	MPI_table_rebuild();	// rebuild mpi tables
 
-//	TAU_TRACK_MEMORY_HERE();
+	TAU_TRACK_MEMORY_HERE();
 }
 
 void Clear_mapping_tables(){
