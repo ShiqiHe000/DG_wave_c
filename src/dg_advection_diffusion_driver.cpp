@@ -60,9 +60,9 @@ void Driver_for_DG_approximation(){
 			if((k + 1) % dg_refine::refine_frequency == 0){
 				// hp-adaptive --------------------------------------------
 				Adapt(k);
+				LB_efficiency(tn);
 				// --------------------------------------------------------
 
-				LB_efficiency(tn);
      	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
