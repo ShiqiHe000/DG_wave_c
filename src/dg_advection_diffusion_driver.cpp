@@ -10,6 +10,7 @@
 #include "dg_load_balancing.h"
 #include "dg_derived_datatype.h"
 #include "dg_step_by_RK3.h"
+#include "dg_LB_quality.h"	// LB quality
 #include "dg_test.h"	// test
 #include <iostream>	// test
 
@@ -37,7 +38,9 @@ void Driver_for_DG_approximation(){
 	// Initialization
 	DG_init();	
 	
-	Serial_io(tn);		
+//	Serial_io(tn);		
+
+	LB_efficiency(tn);
 
 	Construct_data_type();
 	
@@ -46,6 +49,7 @@ void Driver_for_DG_approximation(){
 
 		DG_step_by_RK3(tn, delta_t);
 		
+		tn = (k + 1) * delta_t;
 		// output control
 //		if((k + 1) % dg_io::output_frequency == 0){
 //     			Serial_io(tn);		
@@ -58,10 +62,13 @@ void Driver_for_DG_approximation(){
 				Adapt(k);
 				// --------------------------------------------------------
 
+				LB_efficiency(tn);
      	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 					// load_balancing----------------------------------------------	
 					Load_balancing(k);
+					
+					LB_efficiency(tn);
 				//	Write_faces_all();
 					//-------------------------------------------------------------
 //     					Serial_io(tn);		
@@ -74,7 +81,7 @@ void Driver_for_DG_approximation(){
 //		Write_faces_all();
 
       	//	Serial_io(tn);		
-		tn = (k + 1) * delta_t;
+//		tn = (k + 1) * delta_t;
 
 	}
 

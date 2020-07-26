@@ -9,10 +9,12 @@
 /// @param output_place output directory. 
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/sin_256.msh";
-//	const std::string fileplace = "../gmsh_files/4_elements.msh";
-	const std::string fileplace = "../gmsh_files/strong/1024.msh";
+	const std::string fileplace = "../gmsh_files/16_elements.msh";
+//	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
 	const std::string output_place = "../outputs/";
+
+	const std::string eff_filename = "../efficiency/eff_LB";
 
 }
 
@@ -27,13 +29,13 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 10; 
-	const int exp_y = 10; 
+	const int exp_x = 2; 
+	const int exp_y = 2; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 128.0; 
+	const double gx_r = 1.0; 
 	const double gy_l = 0.0;
-	const double gy_r = 128.0; 
+	const double gy_r = 1.0; 
 
 	const int nmin = 6;	
 	const int nmax = 16;
@@ -51,10 +53,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 2;
+	const double t_total = 1.0e-5 * 5;
 //	const double t_total = 0.5;
 
-	const int nt = 2;
+	const int nt = 5;
 
 };
 
