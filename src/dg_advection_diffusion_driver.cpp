@@ -73,8 +73,6 @@ void Driver_for_DG_approximation(){
 
 //		Write_faces_all();
 
-//		Simple_test(k);
-
       	//	Serial_io(tn);		
 		tn = (k + 1) * delta_t;
 
