@@ -14,6 +14,7 @@
 #include "dg_derived_datatype.h"
 #include "dg_element_load.h"
 #include <cassert>
+#include <algorithm>
 #include <iostream>	//test
 //#include "dg_write_mpi_table.h"	//test
 //#include "dg_write_send_list.h"	//test
@@ -22,6 +23,7 @@
 //double Elem_load(int porder);
 
 void Build_mapping_table();
+void Build_mapping_table_quality();
 
 void Update_neighbours();
 
@@ -84,6 +86,9 @@ void Build_mapping_table_quality(){
 	temp = local::head;
 	LB::my_rank_first = local::head;
 	int proc_pre = - 1;
+
+	std::vector<double> table_prefix_sum; 	// global prefix sum of the elements in the table
+
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
 		lprefix_load[k] += exscan_sum;
@@ -96,7 +101,9 @@ void Build_mapping_table_quality(){
 		if(pmapping != proc_pre){
 
 			LB::proc_mapping_table.push_back({pmapping, k + LB::elem_accum});
-			
+		
+			table_prefix_sum.push_back(lprefix_load[k]);	// global prefix sum 
+	
 			proc_pre = pmapping;
 		}	
 		
@@ -146,6 +153,7 @@ void Build_mapping_table_quality(){
 		if(first_rank == pre_rank){	// if equal than erase the first column
 
 			LB::proc_mapping_table.erase(LB::proc_mapping_table.begin());
+			table_prefix_sum.erase(table_prefix_sum.begin());	 
 		}
 
 	}
@@ -157,12 +165,16 @@ void Build_mapping_table_quality(){
 
 	// prepare to build the whole mapping table
 	std::vector<int> recvcounts(mpi::num_proc);
+	std::vector<int> recvcounts_prefix(mpi::num_proc);
 	std::vector<int> displs(mpi::num_proc);
+	std::vector<int> displs_prefix(mpi::num_proc);
 	for(int i = 0; i < mpi::num_proc; ++i){
 		recvcounts[i] = sizea[i] * 2;
+		recvcounts_prefix[i] = sizea[i];
 		if(i > 0){
 	
 			displs[i] = displs[i - 1] + recvcounts[i - 1];
+			displs_prefix[i] = displs_prefix[i - 1] + recvcounts_prefix[i - 1];
 		}
 
 	}
@@ -176,6 +188,23 @@ void Build_mapping_table_quality(){
 	// form the complete mapping table
 	std::vector<int> recv_buff(mpi::num_proc * 2);
 	MPI_Allgatherv(&senda[0], sizet * 2, MPI_INT, &recv_buff[0], &recvcounts[0], &displs[0], MPI_INT, MPI_COMM_WORLD);
+
+	// ========================================================================================================
+	// recv the global prefix sum of the first element in the new partition
+	std::vector<double> recv_prefix_sum(mpi::num_proc);
+	MPI_Allgatherv(&table_prefix_sum[0], sizet, MPI_DOUBLE, &recv_prefix_sum[0], &recvcounts_prefix[0],
+	    		&displs_prefix[0], MPI_DOUBLE, MPI_COMM_WORLD);
+
+	// get the optimal bottle neck
+	for(int i = 1; i < mpi::num_proc; ++i){
+
+		double neck = recv_prefix_sum[i] - recv_prefix_sum[i - 1];
+
+		LB::opt_bottleneck = std::max(neck, LB::opt_bottleneck);
+		   
+	}
+	// ========================================================================================================
+
 
 	// rebuild the mapping table
 	LB::proc_mapping_table.clear();	// clear all the elements

@@ -67,6 +67,8 @@ namespace LB{
 	
 	std::vector<pmap> proc_mapping_table;
 
+	double opt_bottleneck{};	// optimal bottleneck of the load balancing 
+
 	int elem_accum{}; 	// elem prefix sum of former processor
 
 	struct sending_envelope Send;	// record what to send
