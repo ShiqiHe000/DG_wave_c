@@ -14,7 +14,7 @@ namespace fileinfo{
 
 	const std::string output_place = "../outputs/";
 
-	const std::string eff_filename = "../efficiency/eff_no_LB";
+	const std::string eff_filename = "../efficiency/eff_LB";
 
 }
 
@@ -92,7 +92,7 @@ namespace dg_refine{
 
 	const double tolerance_max = 1.0e-14;
 
-	const bool load_balancing = false;
+	const bool load_balancing = true;
 };
 
 //----------------------------------------------------------------------

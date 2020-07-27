@@ -5,6 +5,22 @@
 #include <vector>
 
 /// @brief
+/// This structure assist to form the processor mapping table. 
+/// The last variable prefix_sum is used to evaluate the optimal bottleneck. 
+/// @param iproc Process's rank number.
+/// @param gnum first element's global number.
+/// @param prefix_sum the prefix sum of this element. 
+struct pmap_quality{
+
+	int irank;	
+
+	int gnum;
+
+	double prefix_sum;
+
+};
+
+/// @brief
 /// Use this struct when updating mpi boundaries before reallocate elements. 
 /// @param local_key MPI boundary element's key. 
 /// @param owners_rank the future's rank of this element. 
@@ -117,6 +133,8 @@ namespace Hash{
 	extern MPI_Datatype Adj_pairs;
 
 	extern MPI_Datatype Owner_type;
+
+	extern MPI_Datatype Pmap_type;
 };
 
 
