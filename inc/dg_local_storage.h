@@ -42,7 +42,6 @@ namespace hrefinement{
 namespace LB{
 
 	extern std::vector<pmap> proc_mapping_table;
-	extern std::vector<pmap_quality> proc_mapping_table_quality;	// add one more row to record the prefix sum. 
 
 	extern int elem_accum;
 

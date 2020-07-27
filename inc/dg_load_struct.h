@@ -3,21 +3,6 @@
 
 #include <vector>
 
-/// @brief
-/// This structure assist to form the processor mapping table. 
-/// The last variable prefix_sum is used to evaluate the optimal bottleneck. 
-/// @param iproc Process's rank number.
-/// @param gnum first element's global number.
-/// @param prefix_sum the prefix sum of this element. 
-//struct pmap_quality{
-//
-//	int irank;	
-//
-//	int gnum;
-//
-//	double prefix_sum;
-//
-//};
 
 /// @brief
 /// This structure assist to form the processor mapping table.

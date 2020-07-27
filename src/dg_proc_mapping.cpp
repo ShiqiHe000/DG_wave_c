@@ -86,7 +86,7 @@ void Build_mapping_table_quality(){
 	int proc_pre = - 1;
 	for(int k = 0; k < local::local_elem_num; ++k){
 		
-		lprefix_load[k] += exscan_sum;	// compute the global prefix sum
+		lprefix_load[k] += exscan_sum;
 
 		pmapping = std::floor((lprefix_load[k] - 0.01) / load_avg);
 
@@ -95,8 +95,7 @@ void Build_mapping_table_quality(){
 		// form partial mapping table
 		if(pmapping != proc_pre){
 
-//			LB::proc_mapping_table.push_back({pmapping, k + LB::elem_accum});
-			LB::proc_mapping_table_quality.push_back({pmapping, k + LB::elem_accum, lprefix_load[k]});
+			LB::proc_mapping_table.push_back({pmapping, k + LB::elem_accum});
 			
 			proc_pre = pmapping;
 		}	
@@ -129,7 +128,7 @@ void Build_mapping_table_quality(){
 	MPI_Request request;
 	if(mpi::rank != (mpi::num_proc - 1)){
 	
-		int last_rank = LB::proc_mapping_table_quality.back().irank;
+		int last_rank = LB::proc_mapping_table.back().irank;
 		MPI_Send(&last_rank, 1, MPI_INT, mpi::rank + 1, mpi::rank + 1, MPI_COMM_WORLD);// tag == recver's rank
 
 	}
@@ -142,17 +141,17 @@ void Build_mapping_table_quality(){
 
 		MPI_Recv(&pre_rank, 1, MPI_INT, mpi::rank - 1, mpi::rank, MPI_COMM_WORLD, &status1);
 
-		int first_rank = LB::proc_mapping_table_quality.front().irank;
+		int first_rank = LB::proc_mapping_table.front().irank;
 
 		if(first_rank == pre_rank){	// if equal than erase the first column
 
-			LB::proc_mapping_table_quality.erase(LB::proc_mapping_table_quality.begin());
+			LB::proc_mapping_table.erase(LB::proc_mapping_table.begin());
 		}
 
 	}
 	
 	// call allgather to gather the size of the mapping table on each proc
-	int sizet = LB::proc_mapping_table_quality.size();
+	int sizet = LB::proc_mapping_table.size();
 	std::vector<int> sizea(mpi::num_proc);	// vector to store the sizet
 	MPI_Allgather(&sizet, 1, MPI_INT, &sizea[0], 1, MPI_INT, MPI_COMM_WORLD);
 
@@ -189,9 +188,6 @@ void Build_mapping_table_quality(){
 	// Updates local facen based on the Sending list
 	Update_neighbours();
 
-	//----------------------
-//	Write_send_list_all();
-	//-----------------------
 }
 
 

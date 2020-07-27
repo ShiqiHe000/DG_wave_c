@@ -37,7 +37,6 @@ namespace Hash{
 
 	MPI_Datatype Owner_type;
 
-	MPI_Datatype Pmap_type;
 };
 
 // forward declaration-----------------------------------------
@@ -46,7 +45,6 @@ void MPI_Face_type();
 void MPI_Facen_type();
 void MPI_Adj_pairs_type();
 void MPI_Owner_type();
-void MPI_Pmap_type();
 //--------------------------------------------------------------
 
 /// @brief 
@@ -63,47 +61,8 @@ void Construct_data_type(){
 
 	MPI_Owner_type();
 
-	MPI_Pmap_type();
 }
 
-/// @brief
-/// Construct a customized data type for exchange element ownership on the mpi boundaries. 
-/// <long long int, int>
-void MPI_Pmap_type(){
-
-	int num = 2;
-
-	int elem_blocklength[num]{2, 1};
-
-	MPI_Datatype array_of_types[num]{MPI_INT, MPI_DOUBLE};
-	
-	MPI_Aint array_of_offsets[num];
-	MPI_Aint baseadd, add1;
-	
-	std::vector<pmap_quality> my_map(1);
-
-	MPI_Get_address(&(my_map[0].irank), &baseadd);
-	MPI_Get_address(&(my_map[0].prefix_sum), &add1);
-
-	array_of_offsets[0] = 0;
-	array_of_offsets[1] = add1 - baseadd;
-
-	MPI_Type_create_struct(num, elem_blocklength, array_of_offsets, array_of_types, &Hash::Pmap_type);	
-
-	// check that the extent is correct
-	MPI_Aint lb, extent;
-	MPI_Type_get_extent(Hash::Pmap_type, &lb, &extent);	
-	if(extent != sizeof(my_map[0])){
-
-std::cout<< "wrong" << "\n";
-		MPI_Datatype old = Hash::Pmap_type;
-		MPI_Type_create_resized(old, 0, sizeof(my_map[0]), &Hash::Pmap_type);
-		MPI_Type_free(&old);
-	}
-	MPI_Type_commit(&Hash::Pmap_type);
-
-
-}
 
 /// @brief
 /// Construct a customized data type for exchange element ownership on the mpi boundaries. 
@@ -306,7 +265,5 @@ void Free_type(){
 	MPI_Type_free(&Hash::Adj_pairs);	
 
 	MPI_Type_free(&Hash::Owner_type);	
-
-	MPI_Type_free(&Hash::Pmap_type);	
 
 }

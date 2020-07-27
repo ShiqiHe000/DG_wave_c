@@ -66,7 +66,6 @@ namespace hrefinement{
 namespace LB{
 	
 	std::vector<pmap> proc_mapping_table;
-	std::vector<pmap_quality> proc_mapping_table_quality;	// add one more row to record the prefix sum. 
 
 	int elem_accum{}; 	// elem prefix sum of former processor
 
