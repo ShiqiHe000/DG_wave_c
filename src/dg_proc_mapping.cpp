@@ -62,7 +62,8 @@ void Build_mapping_table_quality(){
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
-	
+
+
 	// Global prefix sum of load
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	

@@ -31,7 +31,10 @@ void LB_efficiency(double t){
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
-	
+//if(mpi::rank == 0){
+//
+//	std::cout<< "LB quality: local load sum "<< local_load_sum << "\n";
+//}
 	// Global prefix sum of load
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	
@@ -52,11 +55,26 @@ void LB_efficiency(double t){
 	// rank 0 get the max local workload 
 	double max_local_load{};
 	MPI_Reduce(&local_load_sum, &max_local_load, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+//	MPI_Allreduce(&local_load_sum, &max_local_load, 1,
+//                  	MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+//if(local_load_sum == max_local_load){
+//
+//	std::cout<< "time "<< t << " rank " << mpi::rank << "\n";
+//}
+
 
 	// compute the efficiency
 	if(mpi::rank == 0){
 	
 		double eff = load_avg / max_local_load * 100.0;
+
+		double opt_balance{};
+
+		if(LB::opt_bottleneck > 0){
+			opt_balance = load_avg / LB::opt_bottleneck * 100.0;
+
+		}
 
 		std::stringstream ss;
 		ss << fileinfo::eff_filename << ".csv";
@@ -67,7 +85,7 @@ void LB_efficiency(double t){
 		if(t == 0){	// first time step
 			eff_file.open(filename, std::ios::trunc);
 
-			eff_file << "Time(s) Efficiency(%) \n";
+			eff_file << "Time(s) Efficiency(%) Optimal_balance\n";
 		}
 		else{
 
@@ -75,10 +93,12 @@ void LB_efficiency(double t){
 
 		}
 
-		eff_file << t << " " << eff << "\n";
+		eff_file << t << " " << eff << " " << opt_balance << "\n";
+
 	
 		eff_file.close();
 			
 	}
 
+	LB::opt_bottleneck = 0.0;
 }

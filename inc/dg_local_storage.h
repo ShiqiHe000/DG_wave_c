@@ -42,6 +42,8 @@ namespace hrefinement{
 namespace LB{
 
 	extern std::vector<pmap> proc_mapping_table;
+	
+	extern double opt_bottleneck;
 
 	extern int elem_accum;
 

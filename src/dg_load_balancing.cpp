@@ -20,7 +20,8 @@ void Load_balancing(int kt){
 
 //	TAU_TRACK_MEMORY_HERE();
 
-	Build_mapping_table();
+//	Build_mapping_table();
+	Build_mapping_table_quality();
 
 //	TAU_TRACK_MEMORY_HERE();
 
@@ -46,7 +47,5 @@ void Clear_mapping_tables(){
 	LB::my_rank_last = nullptr;
 	LB::my_rank_first = nullptr;
 
-	LB::opt_bottleneck = 0.0;
-	
 }
 
