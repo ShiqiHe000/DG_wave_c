@@ -196,6 +196,7 @@ void Build_mapping_table_quality(){
 	    		&displs_prefix[0], MPI_DOUBLE, MPI_COMM_WORLD);
 
 	// get the optimal bottle neck
+	assert(mpi::num_proc > 1 && "The processor number should be at least 2. \n");
 	for(int i = 1; i < mpi::num_proc; ++i){
 
 		double neck = recv_prefix_sum[i] - recv_prefix_sum[i - 1];

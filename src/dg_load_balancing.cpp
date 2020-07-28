@@ -45,5 +45,8 @@ void Clear_mapping_tables(){
 
 	LB::my_rank_last = nullptr;
 	LB::my_rank_first = nullptr;
+
+	LB::opt_bottleneck = 0.0;
+	
 }
 
