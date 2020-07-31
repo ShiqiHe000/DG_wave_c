@@ -75,6 +75,12 @@ namespace LB{
 	
 	Unit* my_rank_last = nullptr;	// pointer who points to the last element who stays in my rank. 
 	Unit* my_rank_first = nullptr;	// pointer who points to the first element who stays in my rank. 
+
+	bool first = true;	// first time evaluate the LB quality
+
+	bool high_eff = false;	// repartitioning get 80% of the optimal efficiency
+	
+	double load_average{};	// ideal workload among processors (mean workload)
 };
 
 /// @brief

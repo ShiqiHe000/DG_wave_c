@@ -7,13 +7,56 @@
 #include <fstream>	// io
 #include <iomanip>	// std::setw
 #include <sstream>
+#include <cassert>
 #include <iostream>	// test
 
+// forward declaration -----------------------------------
+void LB_efficiency_evaluate();
+
+void LB_efficiency_write(double t);
+//--------------------------------------------------------
+
+void LB_efficiency_evaluate(){
+
+	Unit* temp = local::head;
+
+	std::vector<double> lprefix_load(local::local_elem_num);
+
+	// local prefix sum of load
+	lprefix_load[0] = Elem_load(temp -> n);
+	temp = temp -> next;
+	for(int k = 1; k < local::local_elem_num; ++k){
+		lprefix_load[k] = Elem_load(temp -> n) + lprefix_load[k - 1];
+		
+		temp = temp -> next;
+
+	}	
+	
+	double local_load_sum = lprefix_load.back();	// local computational load sum
+
+	// ranks get the max local workload 
+	double max_local_load{};
+	MPI_Allreduce(&local_load_sum, &max_local_load, 1,
+                  	MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+	double eff = LB::load_average / max_local_load;
+	assert(LB::opt_bottleneck > 0.0 && "The optimal bottleneck is not computed! \n");
+	double opt_eff = LB::load_average / LB::opt_bottleneck;
+
+	// the efficiency is high enough
+	if(eff >= 0.8 * opt_eff){
+
+		LB::high_eff = true;
+
+	}
+
+
+}
 
 /// @brief
 /// Evaluate the workload balancing efficiecy of the current time. 
 /// @param t current time step 
-void LB_efficiency(double t){
+void LB_efficiency_write(double t){
 
 	Unit* temp = local::head;
 

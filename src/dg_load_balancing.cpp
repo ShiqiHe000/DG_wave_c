@@ -9,6 +9,8 @@
 
 // forward declaration--------------------------------
 void Clear_mapping_tables();
+void LB_set_back();
+void Load_balancing(int kt);
 //----------------------------------------------------
 
 /// @brief
@@ -20,10 +22,14 @@ void Load_balancing(int kt){
 
 //	TAU_TRACK_MEMORY_HERE();
 
-//	Build_mapping_table();
-	Build_mapping_table_quality();
 
-//	TAU_TRACK_MEMORY_HERE();
+	if(LB::first){	// first time evaluate the LB quality
+		Build_mapping_table_quality();
+
+	}
+	else{
+		Build_mapping_table();
+	}
 
 	Update_mpi_boundary();
 
@@ -36,6 +42,8 @@ void Load_balancing(int kt){
 //	TAU_TRACK_MEMORY_HERE();
 }
 
+/// @brief
+/// Clean up processor mapping tables
 void Clear_mapping_tables(){
 
 	LB::proc_mapping_table.clear();	// proc mapping table
@@ -49,3 +57,16 @@ void Clear_mapping_tables(){
 
 }
 
+/// @brief
+/// Set some the parameters in LB algorithm back to original. 
+void LB_set_back(){
+
+	LB::first = true;
+
+	LB::high_eff = false;
+
+	LB::load_average = 0.0;
+
+	LB::opt_bottleneck = 0.0;
+
+}

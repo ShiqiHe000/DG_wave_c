@@ -51,6 +51,12 @@ namespace LB{
 	
 	extern Unit* my_rank_last;
 	extern Unit* my_rank_first;
+	
+	extern bool first;
+
+	extern bool high_eff;
+	
+	extern double load_average;
 };
 
 namespace result{

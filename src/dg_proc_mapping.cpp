@@ -68,17 +68,16 @@ void Build_mapping_table_quality(){
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	
 	// calculate for the average load
-	double load_avg{};
 	if(mpi::rank == (mpi::num_proc - 1)){ // last proc does the job
 
 		double load_tol = exscan_sum + local_load_sum;
 
-		load_avg = load_tol / mpi::num_proc;
+		LB::load_average = load_tol / mpi::num_proc;
 
 	}
 	
 	// broadcast average load
-	MPI_Bcast(&load_avg, 1, MPI_DOUBLE, mpi::num_proc - 1, MPI_COMM_WORLD);
+	MPI_Bcast(&LB::load_average, 1, MPI_DOUBLE, mpi::num_proc - 1, MPI_COMM_WORLD);
 	
 	// Global element number
 	MPI_Exscan(&local::local_elem_num, &LB::elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
@@ -94,7 +93,7 @@ void Build_mapping_table_quality(){
 		
 		lprefix_load[k] += exscan_sum;
 
-		pmapping = std::floor((lprefix_load[k] - 0.01) / load_avg);
+		pmapping = std::floor((lprefix_load[k] - 0.01) / LB::load_average);
 
 		assert(pmapping >= 0 && "processor mapping is smaller than 0.");	// check
 
@@ -218,7 +217,9 @@ void Build_mapping_table_quality(){
 
 	// Updates local facen based on the Sending list
 	Update_neighbours();
-
+	
+	// get the opt bottleneck now turn off the switch to use this function.
+	LB::first = false;
 }
 
 
