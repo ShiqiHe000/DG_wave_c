@@ -67,6 +67,6 @@ void LB_set_back(){
 
 	LB::load_average = 0.0;
 
-	LB::opt_bottleneck = 0.0;
+//	LB::opt_bottleneck = 0.0;
 
 }
