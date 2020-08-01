@@ -247,19 +247,6 @@ void Build_mapping_table(){
 	// Global prefix sum of load
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	
-	// calculate for the average load
-	double load_avg{};
-	if(mpi::rank == (mpi::num_proc - 1)){ // last proc does the job
-
-		double load_tol = exscan_sum + local_load_sum;
-
-		load_avg = load_tol / mpi::num_proc;
-
-	}
-	
-	// broadcast average load
-	MPI_Bcast(&load_avg, 1, MPI_DOUBLE, mpi::num_proc - 1, MPI_COMM_WORLD);
-	
 	// Global element number
 	MPI_Exscan(&local::local_elem_num, &LB::elem_accum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
@@ -271,7 +258,7 @@ void Build_mapping_table(){
 		
 		lprefix_load[k] += exscan_sum;
 
-		pmapping = std::floor((lprefix_load[k] - 0.01) / load_avg);
+		pmapping = std::floor((lprefix_load[k] - 0.01) / LB::load_average);
 
 		assert(pmapping >= 0 && "processor mapping is smaller than 0.");	// check
 

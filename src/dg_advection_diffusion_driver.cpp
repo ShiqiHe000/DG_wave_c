@@ -40,7 +40,7 @@ void Driver_for_DG_approximation(){
 	
 //	Serial_io(tn);		
 
-	LB_efficiency_write(tn);
+//	LB_efficiency_write(tn);
 
 	Construct_data_type();
 	
@@ -60,7 +60,7 @@ void Driver_for_DG_approximation(){
 			if((k + 1) % dg_refine::refine_frequency == 0){
 				// hp-adaptive --------------------------------------------
 				Adapt(k);
-				LB_efficiency_write(tn);
+//				LB_efficiency_write(tn);
 				// --------------------------------------------------------
 
      	//			Serial_io(tn);		
@@ -85,7 +85,7 @@ void Driver_for_DG_approximation(){
 
 					LB_set_back();
 
-					LB_efficiency_write(tn);
+//					LB_efficiency_write(tn);
 //     					Serial_io(tn);		
 				}
 //				Write_faces_all();

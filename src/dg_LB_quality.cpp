@@ -16,6 +16,9 @@ void LB_efficiency_evaluate();
 void LB_efficiency_write(double t);
 //--------------------------------------------------------
 
+/// @brief 
+/// Evaluate the workload efficiency. 
+/// Note that use this function after Build_mapping_table_quality() since we need to the optimal load. 
 void LB_efficiency_evaluate(){
 
 	Unit* temp = local::head;
