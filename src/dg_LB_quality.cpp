@@ -44,7 +44,7 @@ void LB_efficiency_evaluate(){
 	double opt_eff = LB::load_average / LB::opt_bottleneck;
 
 	// the efficiency is high enough
-	if(eff >= 0.8 * opt_eff){
+	if(eff > 0.9 * opt_eff){
 
 		LB::high_eff = true;
 
@@ -74,10 +74,7 @@ void LB_efficiency_write(double t){
 	
 	double local_load_sum = lprefix_load.back();	// local computational load sum
 	double exscan_sum{};	// the load of former processor
-//if(mpi::rank == 0){
-//
-//	std::cout<< "LB quality: local load sum "<< local_load_sum << "\n";
-//}
+
 	// Global prefix sum of load
 	MPI_Exscan(&local_load_sum, &exscan_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 	
@@ -101,10 +98,6 @@ void LB_efficiency_write(double t){
 //	MPI_Allreduce(&local_load_sum, &max_local_load, 1,
 //                  	MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
-//if(local_load_sum == max_local_load){
-//
-//	std::cout<< "time "<< t << " rank " << mpi::rank << "\n";
-//}
 
 
 	// compute the efficiency
