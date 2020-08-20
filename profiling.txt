@@ -1,0 +1,4 @@
+#tell tau to profile these functions
+BEGIN_INSTRUMENT_SECTION
+memory file="dg_load_balancing.cpp" routine="INIT"
+END_INSTRUMENT_SECTION

@@ -4,6 +4,9 @@
 #include "dg_nodal_2d_storage.h"
 #include "dg_local_storage.h"
 #include "dg_distribute_elements.h"
+#include <cmath>	// pow
+#include <vector>
+#include <iostream>	//test
 
 /// @brief
 /// After reading the mesh file, we spread the elements between processors 
@@ -23,7 +26,7 @@ void Distribute_elem(){
 	// allocate one more unit for the offset
 	local::elem_range = new int[mpi::num_proc + 1]{};
 	local::elem_range[0] = -1;
-	
+	       
 	// distribute elements
 	int local_elem_number[mpi::num_proc]{}; 
 	
@@ -36,8 +39,6 @@ void Distribute_elem(){
 	// process 1 compute the average load
 	if(mpi::rank == 0){
 		
-		local::original_elem_num = SortMesh::num_of_element;
-
 		// if element number < processor number
 		if(SortMesh::num_of_element < mpi::num_proc){
 			
@@ -49,6 +50,7 @@ void Distribute_elem(){
 				local::elem_range[1] = 0;
 		}
 		else{	// element number >= processor number
+//std::cout<< "num_elem "<< SortMesh::num_of_element<< "\n";
 			average = SortMesh::num_of_element / mpi::num_proc;
 			last = SortMesh::num_of_element - (mpi::num_proc -1) * average;
 
@@ -73,15 +75,11 @@ void Distribute_elem(){
 			local::elem_range[i+1] = local::elem_range[i] + local_elem_number[i];
 		}
 
-
 	}
 	
 	// scatter local element number
 	MPI_Scatter(&local_elem_number[0], 1, MPI_INT, &local::local_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);	
 	
-	// broadcast total element numebr
-	MPI_Bcast(&local::original_elem_num, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
 	// allocate local storage
 	local::x_local = new double[2 * local::local_elem_num ];
 	local::y_local = new double[2 * local::local_elem_num ];
@@ -90,19 +88,19 @@ void Distribute_elem(){
 	// scatter data
 	MPI_Scatterv(SortMesh::x_hilbert, sendcouts, displs, MPI_DOUBLE, local::x_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Scatterv(SortMesh::y_hilbert, sendcouts, displs, MPI_DOUBLE, local::y_local, local::local_elem_num * 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Scatterv(SortMesh::status, sendcouts_status, displs_status, MPI_CHAR, local::status, local::local_elem_num, MPI_CHAR, 0, MPI_COMM_WORLD);
+	MPI_Scatterv(&SortMesh::status[0], sendcouts_status, displs_status, MPI_CHAR, local::status, local::local_elem_num, MPI_CHAR, 0, MPI_COMM_WORLD);
 	MPI_Bcast(local::elem_range, mpi::num_proc + 1, MPI_INT, 0, MPI_COMM_WORLD);
-
 
 	
 	// deallocate
 	if(mpi::rank == 0){
 		delete[] SortMesh::x_hilbert;
 		delete[] SortMesh::y_hilbert;
-		delete[] SortMesh::status;
+		//delete[] SortMesh::status;
+		SortMesh::status.clear();
 
 		SortMesh::x_hilbert = nullptr;
 		SortMesh::y_hilbert = nullptr;
-		SortMesh::status = nullptr;
+		//SortMesh::status = nullptr;
 	}
 }

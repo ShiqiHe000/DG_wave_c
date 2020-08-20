@@ -4,10 +4,11 @@
 #include "dg_status_table.h"
 #include "dg_param.h"
 #include "dg_nodal_2d_storage.h"
+#include <vector>
 #include <iostream>	// test
 
 // forward declaration----------------------------------------------
-void Gen_status(int n, char* status);
+void Gen_status(int n, std::vector<char>& status);
 //-------------------------------------------------------------------
 
 
@@ -16,11 +17,9 @@ void Gen_status(int n, char* status);
 void Gen_status_all(){
 	
 	// allocate memory
-	SortMesh::status = new char[SortMesh::num_of_element]{};
+	SortMesh::status = std::vector<char>(SortMesh::num_of_element);
 
 	Gen_status(grid::exp_x, SortMesh::status);
-	
-
 
 }
 
@@ -30,7 +29,7 @@ void Gen_status_all(){
 /// Restriction: square domain
 /// @param n pow(2, n) : element number on each boundary in exponential form.
 /// @param status element status array.
-void Gen_status(int n, char* status){
+void Gen_status(int n, std::vector<char>& status){
 	
 	// make sure element number is valid.
 	assert(n >= 0 && "n must >= 0");
@@ -38,53 +37,44 @@ void Gen_status(int n, char* status){
 	
 
 	// total element number
-	const int total_elem = pow(2, 2 * n);
-	
-	const char four[]{'A', 'H', 'H', 'B', '\0'};
-	
-	// 3 situation, depending on the element number
-	if(n > 1){	// more than 4 elem
+	std::vector<char> pre{'A', 'H', 'H', 'B'};
+
+	if(n > 1){
 		
-		int* find = new int[n-1]{};	// record path
+		for(int k = 2; k <= n; ++k){
 
-		for(int k = 0; k < total_elem; ++k){
-			int div = total_elem / 4;
-			unsigned int mid{};
-			int s{};
-			for(s = 0; s < n-1; ++s){
-				mid = k % div;
-				find[s] = k / div;
-				div /= 4;	
-			}
-			--s;
-			status[k] = four[find[s]];
-			--s;
+			int now_num = (int)std::pow(2, 2 * k);
+			std::vector<char> inter(now_num);
 
-			for(s; s >= 0; --s){
-				
-				status[k] = Status_table(status[k], find[s]);
+			auto it = inter.begin();
 
+			for(auto& v: pre){
+
+				for(int i = 0; i < 4; ++i){
+					*(it) = Status_table(v, i);
+					++it;
+				}
 			}
 			
-			status[k] = Status_table(status[k], mid);
+			pre.clear();
+			pre = inter;
 
 		}
-	
-		// free find[]
-		delete[] find;		
+		status = pre;
 		return;
-	}
-	else if(n == 1){	// 4 elem
-		for(int k = 0; k < total_elem; ++k){
-			status[k] = four[k];
 
-		}
+	}
+	else if(n == 1){
+
+		status = pre;
+
 		return;
 	}
-	else{	// 1 elem
+	else{	// n == 0
 
 		status[0] = 'H';
 		return;
+
 	}
 
 

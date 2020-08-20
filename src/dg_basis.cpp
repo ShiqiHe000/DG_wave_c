@@ -1,14 +1,35 @@
 #include <iostream>
+#include <vector>
 #include <limits>	// epsilon
 #include <cmath>	// sqrt
 #include "dg_single_index.h"
+<<<<<<< HEAD
 #include <cblas.h>
+=======
+#include <cassert>
+>>>>>>> performance
 
 
 const double pi = 4.0 * atan(1.0); 
 
 // forward declaration----------------------------
 bool Almost_equal(double a, double b);
+
+void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
+						std::vector<double>& bary);
+
+void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w);
+
+void BARW(int n, std::vector<double>& x, std::vector<double>& bary);
+
+void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<double>& x, std::vector<double>& bary,
+					 std::vector<double>& lag );
+
+void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq);
+
+double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag);
+
+void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out);
 //------------------------------------------------
 
 /// @brief 
@@ -17,14 +38,22 @@ bool Almost_equal(double a, double b);
 /// @param n polynomial order
 /// @param d coefficient martrix (usually derivative matrix), d[n * n].
 /// @param f vector, f[n].
-/// @param der output. (usually the derivative of interpolation), der[n].
-void Matrix_vector_multiplication(int n, double* d, double* f, double* der ){
+/// @param out output. (usually the derivative of interpolation).
+void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out){
 
-//	for(){
-//	
-//
-//
-//	}
+	for(int i = 0; i <= n; ++i){
+	
+		double t{};	// intermediate variable
+
+		for(int j = 0; j <= n; ++j){
+
+			int m = Get_single_index(i, j, n + 1);
+
+			t += d[m] * f[j];
+		}
+		
+		out[i] = t;
+	}
 
 }
 
@@ -51,7 +80,8 @@ void Matrix_vector_multiplication_blas(int n, double* d, double* f, double* der)
 /// @param x GL points
 /// @param q Legendre polynomial of degree k
 /// @param dq Derivative of Legendre polynomial  
-void Legendre_polynomial_and_derivative(int n, double& x, double& q, double& dq){
+void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq){
+
 	if(n == 0){
 		q = 1.0;
 		dq = 0.0;
@@ -86,7 +116,7 @@ void Legendre_polynomial_and_derivative(int n, double& x, double& q, double& dq)
 /// @param n polynomial order
 /// @param gl_p GL points
 /// @param gl_w GL weigths
-void GL(int n, double* gl_p, double* gl_w){
+void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w){
 
 	double delta;
 	double q, dq, tol;
@@ -153,7 +183,7 @@ void GL(int n, double* gl_p, double* gl_w){
 /// @param n polynomial order
 /// @param x spectral points
 /// @param bary barycentric weights
-void BARW(int n, double* x, double* bary){
+void BARW(int n, std::vector<double>& x, std::vector<double>& bary){
 	
 	for(int i = 0; i <= n; ++i){
 		bary[i] = 1.0;
@@ -184,7 +214,8 @@ void BARW(int n, double* x, double* bary){
 /// @param x GL points
 /// @param bary barycentric points
 /// @param lag lagrange interpolating values at target point. 
-void Lagrange_interpolating_polynomial(int n, double target_p, double* x, double* bary, double* lag ){
+void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<double>& x, std::vector<double>& bary,
+					 std::vector<double>& lag ){
 
 	double s = 0.0;
 	bool match = false;
@@ -227,11 +258,12 @@ void Lagrange_interpolating_polynomial(int n, double target_p, double* x, double
 /// @param mth_der m-th order polynomial derivative
 /// @param x spectral points
 /// @param der m-th order derivative matrix
-void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, double* der){
+/// @param bary Barycentric weights. 
+void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
+						std::vector<double>& bary){
 	
-	double* bary = new double[n+1];
-
-	BARW(n, x, bary);
+	assert(mth_der == 1 && "Now the Mth_order_poynomial_derivative_maxtri() function can only compute the 1st"  
+					" order derivative. ");
 
 	// mth-order == 1
 	for(int i = 0; i <= n; ++i){
@@ -254,11 +286,9 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, double* x, doubl
 	
 
 	if(mth_der == 1){
-		delete[] bary;
 		return;
 	}
 
-std::cout << "please implement mth_order_derivative_matrix function"	<< "\n";
 	// mth_order > 1
 	//------------
 //	aux = der
@@ -288,8 +318,6 @@ std::cout << "please implement mth_order_derivative_matrix function"	<< "\n";
 //
 //	}
 	
-	// free memory
-	delete[] bary;
 
 }
 
@@ -306,6 +334,26 @@ double Interpolate_to_boundary_blas(int n, double* q, double* lag){
 	return inter;
 }
 
+
+
+/// @brief
+/// Interpolate the interior solution to the element boundary/interface.
+/// @param n polynomial order.
+/// @param q solution array. 
+/// @param lag Lagrange interpolation polynomial.
+double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag){
+
+	double inter{};
+
+	for(int j = 0; j < n + 1; ++j){
+
+		inter += lag[j] * q[j];
+
+	}
+
+	return inter;
+
+}
 
 
 /// @brief

@@ -6,6 +6,8 @@
 // mesh file----------------------------------------
 namespace fileinfo{
 	extern const std::string fileplace;
+	extern const std::string output_place;
+	extern const std::string eff_filename;
 }
 // -------------------------------------------------
 
@@ -21,6 +23,8 @@ namespace grid{
 	
 	extern const int nmin;
 	extern const int nmax;
+
+	extern const int hlevel_max;
 };
 //--------------------------------------------------
 
@@ -44,7 +48,29 @@ namespace dg_fun{
 
 //---------------------------------------------------
 
+// refinemnt ----------------------------------------
+namespace dg_refine{
 
+	extern const bool adapt;
+
+	extern const int refine_frequency;
+
+	extern const int fit_point_num;
+	
+	extern const double tolerance_min;
+
+	extern const double tolerance_max;
+
+	extern const bool load_balancing;
+};
+//---------------------------------------------------
+
+// output variables --------------------------------
+namespace dg_io{
+
+	extern const int output_frequency;
+};
+//--------------------------------------------------
 
 // mpi variables-------------------------------------
 namespace mpi{

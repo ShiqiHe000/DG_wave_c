@@ -1,16 +1,11 @@
-#include <mpi.h>
+#include <vector>
 #include "dg_nodal_2d_storage.h"
 #include "dg_param.h"
 #include "dg_basis.h"
-#include "dg_poly_level_and_order.h"
 #include "dg_basis_storage.h"
+#include "dg_single_index.h"
+#include <iostream>	// test
 
-
-// forward declaration----------------------------------------------------------------------------
-void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der);
-
-void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** lag_r, double** gl_p);
-//------------------------------------------------------------------------------------------------
 
 /// @brief
 /// Processor's local storages.
@@ -21,74 +16,90 @@ void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** la
 /// re-generate the basis information, or store duplicated data. 
 void Construct_basis_storage(){
 
-	// generate gl_p and gl_w
-	int level_max = Poly_order_to_level(grid::nmin, grid::nmax);
-
-	nodal::gl_p = new double*[level_max + 1]{};	// level starts with 0
-	nodal::gl_w = new double*[level_max + 1]{};
-
-	// first derivative matrix
-	nodal::first_der = new double*[level_max + 1]{};
-
-	// lagrange interpolating polynomial
-	nodal::lagrange_l = new double*[level_max + 1]{};
-	nodal::lagrange_r = new double*[level_max + 1]{};
 
 	// generate the 2d storages
-	for(int k = 0; k <= level_max; ++k ){
+	for(int n = grid::nmin; n <= grid::nmax; n+=2){	// k = poly order
 		
-		int porder = Poly_level_to_order(grid::nmin, k);
-		
-		Get_nodal_2d_storage_basis(porder, k, nodal::gl_p, nodal::gl_w, nodal::first_der);
+		// allocate space	
+		nodal::gl_points[n] = std::vector<double>(n + 1);
+		nodal::gl_weights[n] = std::vector<double>(n + 1);
+	
+		int der_size = (n + 1) * (n + 1);
+		nodal::first_der[n] = std::vector<double>(der_size);
+		nodal::mfirst_der[n] = std::vector<double>(der_size);
+	
+		// generate current gl_p, gl_w
+		GL(n, nodal::gl_points[n], nodal::gl_weights[n]);
+	
+		std::vector<double> bary(n + 1);
+	
+		BARW(n, nodal::gl_points[n], bary);
+	
+		// first order derivative matrix
+		Mth_order_polynomial_derivative_matrix(n, 1, nodal::gl_points[n], nodal::first_der[n], bary);
 
-		Get_nodal_2d_storage_extends(porder, k, nodal::lagrange_l, nodal::lagrange_r, nodal::gl_p);
+		// Modify first derivative
+		for(int j = 0; j <= n; ++j){
 
+			for(int i = 0; i <= n; ++i){
+
+				int index1 = Get_single_index(i, j, n + 1);
+				int index2 = Get_single_index(j, i, n + 1);
+
+				nodal::mfirst_der[n][index1] = - nodal::first_der[n][index2] * nodal::gl_weights[n][j] / 
+								nodal::gl_weights[n][i];
+
+			}
+
+		}
+
+		// first der matrix is not needed anymore.
+		nodal::first_der.clear();
+
+		// Lagrange interpolates on the boundaries. 
+		nodal::lagrange_l[n] = std::vector<double>(n + 1);
+		nodal::lagrange_r[n] = std::vector<double>(n + 1);
+		Lagrange_interpolating_polynomial(n, -1.0, nodal::gl_points[n], bary, nodal::lagrange_l[n]);
+		Lagrange_interpolating_polynomial(n,  1.0, nodal::gl_points[n], bary, nodal::lagrange_r[n]);
 
 	}
-	
+
+	// if we apply refinement, we need the value of Legendre polynomial 
+//	if(dg_refine::adapt){
+//
+//		for(int n = grid::nmin; n <= grid::nmax; n+=2){	// k = poly order
+//			
+//			nodal::legendre[n] = std::vector<double>(n + 1);	// legendre polynomial for error estimator
+//
+//			// Legendre polynomial value at GL points
+//			for(int i = 0; i <= n; ++i ){
+//				double dq{}; 	// legendre poly derivative, useless here.
+//				Legendre_polynomial_and_derivative(n, nodal::gl_points[n][i], nodal::legendre[n][i], dq);
+//			}
+//		}
+//
+//
+//		int n = grid::nmin - 2;
+//
+//		for(; n >= 1; n-=2 ){
+//
+//			// allocate space	
+//			nodal::gl_points[n] = std::vector<double>(n + 1);
+//			nodal::gl_weights[n] = std::vector<double>(n + 1);
+//
+//			nodal::legendre[n] = std::vector<double>(n + 1);	// legendre polynomial for error estimator
+//
+//			// generate current gl_p, gl_w
+//			GL(n, nodal::gl_points[n], nodal::gl_weights[n]);
+//
+//			for(int i = 0; i <= n; ++i ){
+//				double dq{}; 	// legendre poly derivative, useless here.
+//				Legendre_polynomial_and_derivative(n, nodal::gl_points[n][i], nodal::legendre[n][i], dq);
+//			}
+//		}
+//
+//	}
+
+
 }
 
-
-/// @brief
-/// GL points and weights, first order derivative matrix
-/// @param n polynomial order
-/// @param k polynomial level
-/// @param gl_p GL points
-/// @param gl_weight GL weights
-/// @param first_der first order derivative matrix
-void Get_nodal_2d_storage_basis(int n, int k, double** gl_p, double** gl_weight, double** first_der){
-	
-	gl_p[k] = new double[n + 1];
-	gl_weight[k] = new double[n + 1];
-	int der_size = (n + 1) * (n + 1);
-	first_der[k] = new double[der_size];
-	
-	// generate current gl_p, gl_w, and first_der-----------------
-	GL(n, gl_p[k], gl_weight[k]);
-
-	Mth_order_polynomial_derivative_matrix(n, 1, gl_p[k], first_der[k]);
-	//--------------------------------------------------------------	
-}
-
-/// @brief
-/// Lagrange interpolates on the boundaries. Alorithm 89.
-/// @param n polynomial order
-/// @param plevel polynomial level.
-/// @param lag_l Lagrange interpolates on the left boundary.
-/// @param lag_r Lagrange interpolates on the right boundary.
-/// @param gl_p GL points.
-void Get_nodal_2d_storage_extends(int n, int plevel, double** lag_l, double** lag_r, double** gl_p){
-
-	double* bary = new double[n + 1];
-
-	BARW(n, gl_p[plevel], bary);
-
-	lag_l[plevel] = new double[n + 1];
-	lag_r[plevel] = new double[n + 1];
-
-
-	Lagrange_interpolating_polynomial(n, -1.0, gl_p[plevel], bary, lag_l[plevel]);
-	Lagrange_interpolating_polynomial(n,  1.0, gl_p[plevel], bary, lag_r[plevel]);
-	
-	delete[] bary;
-}

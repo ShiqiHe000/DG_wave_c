@@ -1,14 +1,11 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.9)
 
 # name of the project + language
 project(2d_wave CXX)
 
-# set cpp standard
-set(CMAKE_CXX_STANDARD 11)  # C++ 11
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)	# initialize the POSITION_INDEPENDENT_CODE property on all target/libraries. 
-
-# have unit tets
-enable_testing()
+# specify the c++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Bring the headers
 include_directories(inc)
@@ -19,6 +16,7 @@ file(GLOB SOURCES "src/*.cpp")
 # executable file
 add_executable(main ${SOURCES})
 
+<<<<<<< HEAD
 # OpenBLAS--------------------------------------------------------------------------------------
 #include_directories(/opt/OpenBLAS/include)
 #find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
@@ -26,6 +24,13 @@ add_executable(main ${SOURCES})
 #	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
 #endif(BLAS_NOTFOUND)
 #-----------------------------------------------------------------------------------------------
+=======
+# set compiler warning flag
+set(GCC_COMPILER_FLAGS "-Wall -Wpedantic -O3 -pg")
+
+# set cmake compiler
+#set(CMAKE_CXX_COMPILER /home/travis/build/ShiqiHe000/DG_wave_c/openmpi-4.0.2/bin/mpicxx)
+>>>>>>> performance
 
 # MPI---------------------------------------------------------------------------------------
 
@@ -34,10 +39,29 @@ find_package(MPI REQUIRED)
 if(MPI_NOFOUND)
 	message(ERROR "MPI is not found. Please check FindMPI.")
 endif(MPI_NOFOUND)
-
 #-----------------------------------------------------------------------------------------------
 
 # libraires links
+<<<<<<< HEAD
 target_link_libraries(main PUBLIC MPI::MPI_CXX)
 #target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
+=======
+target_link_libraries(main PUBLIC MPI::MPI_CXX ${GCC_COMPILER_FLAGS})
+#target_link_libraries(main PUBLIC MPI::MPI_CXX ${BLAS})
+
+# OpenBLAS--------------------------------------------------------------------------------------
+#include_directories(/opt/OpenBLAS/include)
+#find_library(BLAS NAMES openblas HINTS /opt/OpenBLAS/lib)
+#if(BLAS_NOTFOUND)	
+#	message(ERROR "openblas is not found. Please check the openblas path in CMakeLists.txt")
+#endif(BLAS_NOTFOUND)
+#-----------------------------------------------------------------------------------------------
+
+# silo
+#include_directories(/home/shiqihe/local/silo/silo-4.10.2/include)
+#find_library(SILO NAMES silo HINTS /home/shiqihe/local/silo/silo-4.10.2/lib)
+#if(SILO_NOTFOUND)
+#	message(ERROR "silo not found.")
+#endif(SILO_NOTFOUND)
+>>>>>>> performance
 

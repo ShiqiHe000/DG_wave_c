@@ -19,7 +19,7 @@ char Status_table( char input, int i){
 				 {'R', {'B', 'R', 'R', 'A', '\0'}},
 				 {'B', {'R', 'B', 'B', 'H', '\0'}}};
 	
-	// check i
+	// check 
 	assert( i >= 0 && i <= 3 && "column number should between 0~3." );
 	
 	std::array<char, 5> m = status_lookup[input];
@@ -27,4 +27,93 @@ char Status_table( char input, int i){
 
 	return out;	
 	
+}
+
+/// @brief
+/// Input first child's status, output the parent's status. 
+/// @brief child First child's (among the four) status. 
+char Go_back_to_parent(char child){
+
+	static std::unordered_map<char, char> parent_hash = {
+								{'A', {'H'}},
+								{'H', {'A'}},
+								{'R', {'B'}},
+								{'B', {'R'}}
+								};
+
+	return parent_hash[child];
+}
+
+/// @brief
+/// Hilbert curve generation table. Input element status, output ith sibling position.
+/// \verbatim
+///  Sibling positions
+///	--------------    
+///     |      |      |
+///     |   1  |  2   |
+///     |------|------|
+///     |      |      |
+///     |   0  |  3   |
+///	--------------    
+/// \endverbatim
+int Sibling_position(char input, int i){
+
+	static std::unordered_map<char, std::array<int, 4>> Sib_lookup = 
+				{{'H', {0, 1, 2, 3}},
+				 {'A', {0, 3, 2, 1}},
+				 {'R', {2, 3, 0, 1}},
+				 {'B', {2, 1, 0, 3}}
+				};
+
+	// check 
+	assert( i >= 0 && i <= 3 && "column number should between 0~3." );
+
+	std::array<int, 4> a = Sib_lookup[input];
+	int out = a[i];
+
+	return out;
+
+}
+
+/// @brief
+/// Check ith child nth face neighbour situation. 
+/// Output boolean operator to indicate nth face adjecent to a sibling or not.
+/// @param ith ith child.
+/// @param facen nth face. 
+bool Sibling_table(int ith, int facen){
+
+	static std::unordered_map<int, std::array<bool, 4>> Face_sib_lookup = 
+				{{0, {false, true, false, true}},
+				 {1, {true, false, false, true}},
+				 {2, {true, false, true, false}},
+				 {3, {false, true, true, false}}
+				};
+
+	
+	assert( facen >= 0 && facen <= 3 && "face number should between 0~3." );
+	assert( ith >= 0 && ith <= 3 && "child number should between 0~3." );
+
+	std::array<bool, 4> a = Face_sib_lookup[ith];
+	bool out = a[facen];
+
+	return out;
+
+}
+
+/// @brief
+/// Input the current face direction. output the opposit direction.
+/// @param dir current face direction.
+int Opposite_dir(int dir){
+
+	static std::unordered_map<int, int> Dir_table_lookup = {
+								{0, 1}, 
+								{1, 0},
+								{2, 3},
+								{3, 2}
+								};
+
+	assert(dir >= 0 && dir <=3 && "Face direction should between 0 to 3.");
+
+
+	return (Dir_table_lookup[dir]);
 }

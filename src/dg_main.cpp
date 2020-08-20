@@ -24,33 +24,32 @@
 #include "dg_start_parallel.h"
 #include "dg_advection_diffusion_driver.h"
 #include "dg_verification.h"
-#include "dg_end_game.h"
+#include <ctime>        // time()
+#include <cstdlib>      // random numbe
+#include "dg_test.h"	//test
 
 int main(int argc, char *argv[]){
-	
-	char** a = argv;	
-	
-	// initialize mpi
-	Start_mpi(&argc, a);
-	
-	// prepare Hilbert curve
-	Hilber_numbering();
 
+	// initialize mpi
+	Start_mpi(argc, argv);
+	
+	srand(time(NULL) + mpi::rank * mpi::num_proc);
+
+	// prepare Hilbert curve
+	Hilbert_numbering();
+	
 	// start parallel process
 	Start_parallel();
 
 	// start the game
 	Driver_for_DG_approximation();
-	// testing
-	
+
 	// verification
 	Get_error();
 
-	// Free memory on the heap
-	Free_local();
 
 	// terminate mpi
-        int ierr = MPI_Finalize();	
+        MPI_Finalize();	
 	
 }
 

@@ -1,6 +1,19 @@
 # ignore cmake, the directory is build
+<<<<<<< HEAD
 build/
 outputs/
 tests/
 openmpi/
 openmpi-4.0.2/
+=======
+build*/
+output*/
+tests/
+send*/
+recv_info/
+recv_face_info/
+*.swp
+job.*
+table*/
+efficiency*/
+>>>>>>> performance

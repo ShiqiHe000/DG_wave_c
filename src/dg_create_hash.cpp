@@ -7,6 +7,7 @@
 #include "dg_cantor_pairing.h"
 #include "dg_param.h"
 #include "dg_index_local_global.h"
+#include <vector>
 
 /// @brief
 /// Create the hash table <key, unit_elem>.
@@ -15,10 +16,9 @@
 void Create_hash(){
 	
 	// create hash table
-//	std::unordered_map<int, Unit*> Hash_elem;
 
-	int key_pre{};
-	int solution_num = dg_fun::num_of_equation * (grid::nmin + 1) * (grid::nmin + 1);
+	long long int key_pre{};
+	int solution_num = (grid::nmin + 1) * (grid::nmin + 1);
 
 	// build each unit
 	for(int k = 0; k < local::local_elem_num; ++k){
@@ -27,8 +27,7 @@ void Create_hash(){
 		int g_index = Index_local_to_global(mpi::rank, k);
 		int ii, jj;
 		d2xy(grid::exp_x, g_index, jj, ii );
-
-		int key = Get_key_fun(ii, jj, 0);
+		long long int key = Get_key_fun(ii, jj, 0);
 		
 		// create a unit
 		local::Hash_elem[key] = new Unit();
@@ -54,8 +53,10 @@ void Create_hash(){
 		}
 
 
-		// solution
-		local::Hash_elem[key] -> solution = new double[solution_num]{};
+		// solution allocate the space
+		for(int i = 0; i < dg_fun::num_of_equation; ++i){
+			local::Hash_elem[key] -> solution[i] = std::vector<double>(solution_num);
+		}
 	
 		// previous unit should point to current unit
 		if(k > 0){
@@ -68,4 +69,5 @@ void Create_hash(){
 	// free memory
 	delete[] local::x_local;
 	delete[] local::y_local;
+	delete[] local::status;
 }
