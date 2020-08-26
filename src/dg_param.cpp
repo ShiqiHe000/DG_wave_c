@@ -8,8 +8,7 @@
 /// @param fileplace The path of mesh file and mesh file name
 /// @param output_place output directory. 
 namespace fileinfo{
-//	const std::string fileplace = "../gmsh_files/sin_256.msh";
-	const std::string fileplace = "../gmsh_files/128_128_mesh.msh";
+	const std::string fileplace = "../gmsh_files/32_32_mesh.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
 	const std::string output_place = "../outputs/";
@@ -29,18 +28,18 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 7; 
-	const int exp_y = 7; 
+	const int exp_x = 5; 
+	const int exp_y = 5; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 16.0; 
+	const double gx_r = 4.0; 
 	const double gy_l = 0.0;
-	const double gy_r = 16.0; 
+	const double gy_r = 4.0; 
 
 	const int nmin = 6;	
 	const int nmax = 16;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 1;	
 };
 //---------------------------------------------------------------------
 
@@ -84,7 +83,7 @@ namespace dg_refine{
 
 	const bool adapt = true;
 
-	const int refine_frequency = 20;	// every time step refine once
+	const int refine_frequency = 100;	// every time step refine once
 
 	const int fit_point_num = 4;
 
@@ -103,7 +102,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 1;
+	const int output_frequency = 100;
 };
 
 

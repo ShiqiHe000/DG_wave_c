@@ -38,7 +38,7 @@ void Driver_for_DG_approximation(){
 	// Initialization
 	DG_init();	
 	
-//	Serial_io(tn);		
+	Serial_io(tn);		
 
 //	LB_efficiency_write(tn);
 
@@ -51,9 +51,9 @@ void Driver_for_DG_approximation(){
 		
 		tn = (k + 1) * delta_t;
 		// output control
-//		if((k + 1) % dg_io::output_frequency == 0){
-//     			Serial_io(tn);		
-//		}
+		if((k + 1) % dg_io::output_frequency == 0){
+     			Serial_io(tn);		
+		}
 
 		if(dg_refine::adapt){	// hp-refinement
 
@@ -63,7 +63,7 @@ void Driver_for_DG_approximation(){
 //				LB_efficiency_write(tn);
 				// --------------------------------------------------------
 
-     	//			Serial_io(tn);		
+     				Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 
 					
@@ -86,16 +86,11 @@ void Driver_for_DG_approximation(){
 					LB_set_back();
 
 //					LB_efficiency_write(tn);
-//     					Serial_io(tn);		
+     					Serial_io(tn);		
 				}
 //				Write_faces_all();
 			}
 		}
-
-
-//		Write_faces_all();
-
-      	//	Serial_io(tn);		
 
 	}
 
