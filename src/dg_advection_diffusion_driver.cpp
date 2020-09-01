@@ -63,7 +63,7 @@ void Driver_for_DG_approximation(){
 //				LB_efficiency_write(tn);
 				// --------------------------------------------------------
 
-     				Serial_io(tn);		
+     	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 
 					
