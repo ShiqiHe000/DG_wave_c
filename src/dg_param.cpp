@@ -39,7 +39,7 @@ namespace grid{
 	const int nmin = 6;	
 	const int nmax = 12;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 2;	
 };
 //---------------------------------------------------------------------
 
@@ -52,10 +52,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 5000;
+	const double t_total = 1.0e-5 * 60000;
 //	const double t_total = 0.5;
 
-	const int nt = 5000;
+	const int nt = 60000;
 
 };
 
@@ -81,7 +81,7 @@ namespace dg_fun{
 /// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
-	const bool adapt = true;
+	const bool adapt = false;
 
 	const int refine_frequency = 100;	// every time step refine once
 
@@ -102,7 +102,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 100;
+	const int output_frequency = 500;
 };
 
 

@@ -23,6 +23,22 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 	q_ext[index[2]] = user::ky / dg_fun::C * inter;
 }
 
+/// @brief
+/// Reflect boundary conditions. 
+void External_state_reflect(std::vector<double>& q_int, std::vector<double>& q_ext, 
+				std::vector<int>& index, std::vector<double> vec){
+
+	q_ext[index[0]] = q_int[index[0]];
+
+	q_ext[index[1]] = q_int[index[1]] * (vec[1] - vec[0]);
+
+	q_ext[index[2]] = q_int[index[2]] * (vec[0] - vec[1]);
+	
+
+}
+
+
+
 // test
 void External_state_sin_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
 

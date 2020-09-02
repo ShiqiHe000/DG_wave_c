@@ -202,8 +202,13 @@ void Numerical_flux_x(double t){
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				//External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
+
+				// reflection boundary conditions------------------------------------------------------
+				External_state_reflect(temp -> solution_int_r, solution_ext, index, {1.0, 0.0});
+				// ----------------------------------------------------------------------------------
+
 	
 				// Riemann solver
 				Riemann_solver_x(temp -> solution_int_r, solution_ext,
@@ -528,8 +533,12 @@ void Numerical_flux_y(double t){
 				//------------------------------------------------------------------------------------
 
 				// impose boundary conditions --------------------------------------------------------
-				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+//				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
+
+				// reflection boundary conditions------------------------------------------------------
+				External_state_reflect(temp -> solution_int_r, solution_ext, index, {0.0, 1.0});
+				// ----------------------------------------------------------------------------------
 
 				// Riemann solver
 				Riemann_solver_y(temp -> solution_int_r, solution_ext, 

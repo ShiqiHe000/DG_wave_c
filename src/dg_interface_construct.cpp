@@ -35,20 +35,6 @@ void Construct_interface_x(Unit* temp){
 
 				s_array[i] = temp -> solution[equ][nodei];
 			}
-//if(mpi::rank == 0){
-//
-//	if(equ == 0){
-//		std::cout << temp -> index[0] << temp -> index[1] << "\n";
-//
-//		std::cout.precision(17);	
-//		for(auto& p : s_array){
-//
-//			std::cout<< p << " ";
-//		}
-//		std::cout << "\n";
-//	}
-//
-//}
 			temp -> solution_int_l[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_l[n]);
 			temp -> solution_int_r[now] = Interpolate_to_boundary(n, s_array, nodal::lagrange_r[n]);
 
@@ -58,20 +44,6 @@ void Construct_interface_x(Unit* temp){
 
 	}
 
-//if(mpi::rank == 1){
-//
-//		std::cout << temp -> index[0] << temp -> index[1]<< "\n";
-//		std::cout.precision(17);
-//
-//		for(auto& solu : temp -> solution_int_l){
-//
-//			std::cout<< std::fixed<< solu << "\n";
-////			std::cout<<solu << " ";
-//
-//		}
-//		std::cout<< "\n";
-//
-//}
 
 }
 
@@ -106,22 +78,6 @@ void Construct_interface_y(Unit* temp){
 			++num;	
 		}
 
-//if(mpi::rank == 0){
-////std::cout << "equ " << equ << "\n";
-//	if(equ == 2){
-////		std::cout<< "i = "<< i << " nodei " << num << " " << temp -> solution_int_l[num] << " "
-////				<< temp -> solution_int_r[num] << "\n";
-//
-//		std::cout << "i " << temp -> index[0] << " j "<< temp -> index[1]<< "\n";
-//		for(auto& v : temp -> solution_int_r){
-//
-//			std::cout<< v << " ";
-//
-//		}
-//		std::cout << "\n";
-//	}
-//
-//}
 	}
 
 

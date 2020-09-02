@@ -232,10 +232,6 @@ void Recv_solu_int(int target_rank, int tag, std::vector<double>& recv_solu){
 
 	MPI_Recv(&recv_solu[0], count, MPI_DOUBLE, target_rank, tag, MPI_COMM_WORLD, &status2);	
 
-//if(mpi::rank == 4){
-//
-//	std::cout << "from " << target_rank << " count " << count << "\n";
-//}
 
 }
 
@@ -261,15 +257,6 @@ void Recv_pairs(int target_rank, int tag, std::vector<neighbour_pair>& recv_pair
 	// recv adjecent pairs
 	MPI_Recv(&recv_pairs[0], count, Hash::Adj_pairs, target_rank, tag, MPI_COMM_WORLD, &status2);	
 
-	// check recv finishes or not
-//	MPI_Request request;
-//	int flag{};
-//	MPI_Status status_test;
-//	MPI_Test(&request, &flag, &status_test);
-//	if(! flag){
-//
-//		std::cout<< "Neighbour pairs does not recv from rank  "<< target_rank << " self_rank = "<< mpi::rank << "\n";
-//	}
 
 }
 
@@ -458,10 +445,6 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 		++isend;
 	}
 
-//if(mpi::rank == 0){
-//
-//	std::cout<<"send fluxes out \n";
-//}
 	// recv
 	if(dir == 'x'){
 		for(auto& v : recver){
@@ -565,10 +548,6 @@ void Exchange_flux_pack(std::unordered_map<int, std::vector<mpi_table>>& sender,
 
 	}
 
-//if(mpi::rank == 0){
-//
-//	std::cout<< "recv flux OK \n";
-//}
 
 	if(num_send > 0){
 
