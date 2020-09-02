@@ -4,6 +4,18 @@
 #include <cmath>
 #include "dg_param.h"
 
+// forward declaration -------------------------------------------------------------------------------------------------
+void External_state_Gaussian_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
+
+void External_state_reflect_x(std::vector<double>& q_int, std::vector<double>& q_ext, 
+				std::vector<int>& index);
+
+void External_state_reflect_y(std::vector<double>& q_int, std::vector<double>& q_ext, 
+				std::vector<int>& index);
+
+void External_state_sin_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
+//---------------------------------------------------------------------------------------------------------------------
+
 /// @brief
 /// Boundary conditions. User defined.
 /// @param t current time.
@@ -25,18 +37,32 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 
 /// @brief
 /// Reflect boundary conditions. 
-void External_state_reflect(std::vector<double>& q_int, std::vector<double>& q_ext, 
-				std::vector<int>& index, std::vector<double> vec){
+void External_state_reflect_x(std::vector<double>& q_int, std::vector<double>& q_ext, 
+				std::vector<int>& index){
 
 	q_ext[index[0]] = q_int[index[0]];
 
-	q_ext[index[1]] = q_int[index[1]] * (vec[1] - vec[0]);
-
-	q_ext[index[2]] = q_int[index[2]] * (vec[0] - vec[1]);
+//	q_ext[index[1]] = q_int[index[1]] * (vec[1] - vec[0]);
+//
+//	q_ext[index[2]] = q_int[index[2]] * (vec[0] - vec[1]);
 	
+	q_ext[index[1]] = (2.0 * q_int[index[0]] + dg_fun::C * q_int[index[1]]) / dg_fun::C;
+
+	q_ext[index[2]] = 0.0;
 
 }
 
+void External_state_reflect_y(std::vector<double>& q_int, std::vector<double>& q_ext, 
+				std::vector<int>& index){
+
+	q_ext[index[0]] = q_int[index[0]];
+
+	q_ext[index[1]] = 0.0;
+
+	q_ext[index[2]] = (2.0 * q_int[index[0]] + dg_fun::C * q_int[index[2]]) / dg_fun::C;
+
+
+}
 
 
 // test
