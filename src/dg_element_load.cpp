@@ -1,6 +1,7 @@
 #include "dg_param.h"
 #include "dg_element_load.h"
 #include <cmath>
+#include <cassert>
 
 /// @brief 
 /// Element computational load. The load on each element due to fluid computations is O(N**4),
@@ -11,8 +12,19 @@ double Elem_load(int porder){
 
 	static const double load_min = std::pow((double)(grid::nmin + 1), 4);
 	static const double load_max = std::pow((double)(grid::nmax + 1), 4);
-	
-	double load = (std::pow(porder + 1, 4) - load_min) / (load_max - load_min) + 1.0;
+
+	assert(load_min <= load_max && "Error: min poly order should be no less than max poly order. \n");
+		
+	double load{};
+
+	if(load_min < load_max){
+		load = (std::pow(porder + 1, 4) - load_min) / (load_max - load_min) + 1.0;
+	}
+	else{	// load_min == load_max, i.e., max poly order == min poly order
+
+		load = 1.0;
+	}
+
 
 	return load;
 
