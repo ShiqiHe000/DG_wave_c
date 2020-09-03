@@ -6,6 +6,7 @@
 #include "dg_distribute_elements.h"
 #include <cmath>	// pow
 #include <vector>
+#include <cassert>
 #include <iostream>	//test
 
 /// @brief
@@ -40,8 +41,12 @@ void Distribute_elem(){
 	if(mpi::rank == 0){
 		
 		// if element number < processor number
+		// note that the program does not support this situation now. (future work)
 		if(SortMesh::num_of_element < mpi::num_proc){
 			
+			assert(SortMesh::num_of_element >= mpi::num_proc 
+				&& "The element number should not be less than processor number. \n");
+
 			for(int ii = 0; ii < SortMesh::num_of_element; ++ii){
 				local_elem_number[ii] = 1;
 				sendcouts[ii] = 1 * 2;	// for each element we record two diagnoal points
@@ -50,7 +55,7 @@ void Distribute_elem(){
 				local::elem_range[1] = 0;
 		}
 		else{	// element number >= processor number
-//std::cout<< "num_elem "<< SortMesh::num_of_element<< "\n";
+
 			average = SortMesh::num_of_element / mpi::num_proc;
 			last = SortMesh::num_of_element - (mpi::num_proc -1) * average;
 
