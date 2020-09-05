@@ -36,7 +36,8 @@ void Driver_for_DG_approximation(){
 	double tn{};
 	
 	// Initialization
-	DG_init();	
+//	DG_init();	// init with exact solution
+	DG_init_new();	// init with other value;
 	
 	Serial_io(tn);		
 
@@ -74,12 +75,20 @@ void Driver_for_DG_approximation(){
 				//	Write_faces_all();
 					//-------------------------------------------------------------
 
+					int LB_times{};
+
 					while(!LB::high_eff){
 
+						++LB_times;
+				
 						Load_balancing(k);
 						
 						LB_efficiency_evaluate();
 
+						if(LB_times > 3){	// avoid deadlock
+
+							break;	
+						}
 
 					}
 

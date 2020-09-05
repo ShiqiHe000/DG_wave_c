@@ -3,5 +3,7 @@
 
 void DG_init();
 
+void DG_init_new();
+
 
 #endif

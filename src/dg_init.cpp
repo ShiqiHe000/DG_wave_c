@@ -8,6 +8,13 @@
 #include "dg_user_defined.h"
 #include <iostream>	// test
 
+
+// forward declaration--------------------------------
+void DG_init();
+
+void DG_init_new();
+//----------------------------------------------------
+
 /// @brief
 /// Initialization all local elements based on the initial conditions.
 void DG_init(){
@@ -53,6 +60,37 @@ void DG_init(){
 //				temp -> solution[2][num_p] = inter2;
 //				
 				//----------------------------------------------------------------------------------------
+
+			}
+		}
+	
+		temp = temp -> next;		
+
+	}
+
+
+}
+
+
+/// @brief
+/// Initialize the domain. Not using the exact solutions. Uniformly 0. 
+void DG_init_new(){
+	
+	Unit* temp = local::head;
+
+	// traverse the linked list
+	for(int k = 0; k < local::local_elem_num; ++k){
+
+		for(int j = 0; j <= grid::nmin; ++j){
+			
+			
+			for(int i = 0; i <= grid::nmin; ++i){
+			
+				int num_p = Get_single_index(i, j, grid::nmin + 1);
+
+				temp -> solution[0][num_p] = 1.0;
+				temp -> solution[1][num_p] = 1.0;
+				temp -> solution[2][num_p] = 1.0;
 
 			}
 		}
