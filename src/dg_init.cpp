@@ -88,9 +88,9 @@ void DG_init_new(){
 			
 				int num_p = Get_single_index(i, j, grid::nmin + 1);
 
-				temp -> solution[0][num_p] = 1.0;
-				temp -> solution[1][num_p] = 1.0;
-				temp -> solution[2][num_p] = 1.0;
+				temp -> solution[0][num_p] = 0.1;
+				temp -> solution[1][num_p] = 0.1;
+				temp -> solution[2][num_p] = 0.1;
 
 			}
 		}

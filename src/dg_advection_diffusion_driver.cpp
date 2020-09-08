@@ -36,8 +36,8 @@ void Driver_for_DG_approximation(){
 	double tn{};
 	
 	// Initialization
-//	DG_init();	// init with exact solution
-	DG_init_new();	// init with other value;
+	DG_init();	// init with exact solution
+//	DG_init_new();	// init with other value;
 	
 	Serial_io(tn);		
 
@@ -64,7 +64,7 @@ void Driver_for_DG_approximation(){
 //				LB_efficiency_write(tn);
 				// --------------------------------------------------------
 
-     				Serial_io(tn);		
+     	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 
 					
@@ -95,7 +95,7 @@ void Driver_for_DG_approximation(){
 					LB_set_back();
 
 //					LB_efficiency_write(tn);
-     					Serial_io(tn);		
+     	//				Serial_io(tn);		
 				}
 //				Write_faces_all();
 			}

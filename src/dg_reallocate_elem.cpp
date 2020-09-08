@@ -547,11 +547,7 @@ void Recv_solu(int source, int tag, std::vector<double>& solu){
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, MPI_DOUBLE, &count);
-//if(mpi::rank == 1){
-//
-//	std::cout<< count << "\n";
-//
-//}
+
 	solu = std::vector<double>(count);
 
 	MPI_Recv(&solu[0], count, MPI_DOUBLE, source, tag, MPI_COMM_WORLD, &status2);
@@ -570,13 +566,7 @@ void Recv_elem(int source, int tag, std::vector<info_pack>& recv_info, int& coun
 	MPI_Probe(source, tag, MPI_COMM_WORLD, &status1);
 
 	MPI_Get_count(&status1, Hash::Elem_type, &count);
-//if(mpi::rank == 1){
-//
-//	std::cout << "source " << source << " tag "<< tag << "\n";
-//	
-//	std::cout << "======================= " << count << "\n";
-//
-//}
+
 	recv_info = std::vector<info_pack>(count);
 
 	MPI_Recv(&recv_info[0], count, Hash::Elem_type, source, tag, MPI_COMM_WORLD, &status2);
