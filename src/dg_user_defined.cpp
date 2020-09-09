@@ -12,8 +12,8 @@ namespace user{
 	const double kx = sqrt(2.0) / 2.0; 
 	const double ky = sqrt(2.0) / 2.0; 
 	const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-	const double xx0 = 0.75;
-	const double yy0 = 0.75; 
+	const double xx0 = 1.5;
+	const double yy0 = 0.5; 
 
 	const double pi = 4.0 * std::atan(1.0);	// testing
 
@@ -43,7 +43,7 @@ void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 
 			double x = Affine_mapping(nodal::gl_points[n][i], x_l, del_x);
 
-			double inter = exp( - pow((user::kx * (x - user::xx0) + 
+			double inter = exp( - pow((user::kx * ( x - user::xx0) + 
 						user::ky * (y - user::yy0) - dg_fun::C * t), 2) / (user::D * user::D) );
 		
 			int nodei = Get_single_index(i, j, m + 1);

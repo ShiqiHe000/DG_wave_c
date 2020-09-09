@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 	Driver_for_DG_approximation();
 
 	// verification
-//	Get_error();
+	Get_error();
 
 
 	// terminate mpi

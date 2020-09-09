@@ -202,11 +202,11 @@ void Numerical_flux_x(double t){
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-				//External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// reflection boundary conditions------------------------------------------------------
-				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
+//				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 	
