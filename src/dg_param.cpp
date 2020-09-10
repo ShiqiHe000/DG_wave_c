@@ -8,10 +8,10 @@
 /// @param fileplace The path of mesh file and mesh file name
 /// @param output_place output directory. 
 namespace fileinfo{
-	const std::string fileplace = "../gmsh_files/64_mesh_reflect.msh";
-//	const std::string fileplace = "../gmsh_files/strong/1024.msh";
+//	const std::string fileplace = "../gmsh_files/64_mesh_reflect.msh";
+	const std::string fileplace = "../gmsh_files/64_elements.msh";
 
-	const std::string output_place = "../outputs/";
+	const std::string output_place = "../output3/";
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";
 
@@ -31,8 +31,8 @@ namespace grid{
 	const int exp_x = 3; 
 	const int exp_y = 3; 
 	
-	const double gx_l = 1.0;
-	const double gx_r = 2.0; 
+	const double gx_l = 0.0;
+	const double gx_r = 1.0; 
 	const double gy_l = 0.0;
 	const double gy_r = 1.0; 
 
@@ -52,10 +52,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-8 * 0;
+	const double t_total = 1.0e-5 * 50000;
 //	const double t_total = 0.5;
 
-	const int nt = 0;
+	const int nt = 50000;
 
 };
 
@@ -102,7 +102,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 1;
+	const int output_frequency = 1000;
 };
 
 

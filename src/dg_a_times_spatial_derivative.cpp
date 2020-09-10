@@ -73,7 +73,7 @@ void A_times_spatial_derivative_x(){
 }
 
 /// @brief
-/// Compute spactial derivetive in x direction. 
+/// Compute spactial derivetive in y direction. 
 /// Here we compute the coefficient matrix A times spatial derivative together. 
 void A_times_spatial_derivative_y(){
 

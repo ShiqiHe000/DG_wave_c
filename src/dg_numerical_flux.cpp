@@ -22,7 +22,7 @@ void Gen_a_and_b(double zd, double zu, double sd, double su, double& a, double& 
 //------------------------------------------------------------------------
 
 
-	/// @brief
+/// @brief
 /// Compute the numerical fluxes on the x direction interfaces for all the elements.  
 /// @param t time.
 void Numerical_flux_x(double t){
@@ -202,11 +202,11 @@ void Numerical_flux_x(double t){
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+//				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// reflection boundary conditions------------------------------------------------------
-//				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
+				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 	
@@ -452,6 +452,10 @@ void Numerical_flux_y(double t){
 					// impose boundary conditions-------------------------------------------------------
 					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
+
+					// B.C. Mirror image solutions----------------------------------------------	
+//					External_mirror_y_left(t, x, (temp -> ycoords[0]), solution_ext, index);
+					// -------------------------------------------------------------------------
 
 					// Riemann solver
 					Riemann_solver_y(solution_ext, temp -> solution_int_l, 
