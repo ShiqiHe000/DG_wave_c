@@ -4,6 +4,7 @@
 #include <cmath>
 #include "dg_param.h"
 
+
 // forward declaration -------------------------------------------------------------------------------------------------
 void External_state_Gaussian_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
 
@@ -41,6 +42,7 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 /// @brief
 /// External state at bottom boundary comes from the mirror image wave.
 /// Note that the domain should be [0, 1] * [0, 1]. 
+/// The mirror image comes from [1, 2] * [0, 1]
 /// @param t current time.
 /// @param x x coordinate (physical). 
 /// @param y y coordinate (physical). 
@@ -48,20 +50,15 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 /// @param index the index of three variables. 
 void External_mirror_y_left(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
 
-	static const double kx = - sqrt(2.0) / 2.0;
-	static const double ky =   sqrt(2.0) / 2.0;
-	static const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-	static const double x0 = 1.5;
-	static const double y0 = 0.5;	
 
-	double inter = exp( - pow((kx * (x - x0) + 
-			ky * (y - y0) - dg_fun::C * t), 2) / (D * D) );
+	double inter = exp( - pow((mirror::kx * (x - mirror::x0) + 
+			mirror::ky * (y - mirror::y0) - dg_fun::C * t), 2) / (mirror::D * mirror::D) );
 
-	q_ext[index[0]] = inter;
+	q_ext[index[0]] += inter;
 
-	q_ext[index[1]] = kx / dg_fun::C * inter;
+	q_ext[index[1]] += mirror::kx / dg_fun::C * inter;
 
-	q_ext[index[2]] = ky / dg_fun::C * inter;
+	q_ext[index[2]] += mirror::ky / dg_fun::C * inter;
 
 }
 

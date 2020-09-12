@@ -110,7 +110,10 @@ void Numerical_flux_x(double t){
 					// impose boundary conditions (wave) ------------------------------------------------
 					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
-
+					
+					// impose mirror image solutions ---------------------------------------------------
+					External_mirror_y_left(t, temp -> xcoords[0], y, solution_ext, index);
+					// ----------------------------------------------------------------------------------
 
 					// test -----------------------------------------------------------------------------
 					//External_state_sin_exact(t, temp -> xcoords[0], y, solution_ext, index);
@@ -202,13 +205,14 @@ void Numerical_flux_x(double t){
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-//				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// reflection boundary conditions------------------------------------------------------
-				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
+//				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
+				External_mirror_y_left(t, temp -> xcoords[1], y, solution_ext, index);
 	
 				// Riemann solver
 				Riemann_solver_x(temp -> solution_int_r, solution_ext,
@@ -454,7 +458,7 @@ void Numerical_flux_y(double t){
 					// ----------------------------------------------------------------------------------
 
 					// B.C. Mirror image solutions----------------------------------------------	
-//					External_mirror_y_left(t, x, (temp -> ycoords[0]), solution_ext, index);
+					External_mirror_y_left(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// -------------------------------------------------------------------------
 
 					// Riemann solver
@@ -539,6 +543,10 @@ void Numerical_flux_y(double t){
 				// impose boundary conditions --------------------------------------------------------
 				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
+
+				// impose mirror image solutions ---------------------------------------------------
+				External_mirror_y_left(t, x, (temp -> ycoords[1]), solution_ext, index);
+				// ----------------------------------------------------------------------------------
 
 				// reflection boundary conditions------------------------------------------------------
 //				External_state_reflect_y(temp -> solution_int_r, solution_ext, index);

@@ -9,9 +9,9 @@
 /// @param output_place output directory. 
 namespace fileinfo{
 //	const std::string fileplace = "../gmsh_files/64_mesh_reflect.msh";
-	const std::string fileplace = "../gmsh_files/64_elements.msh";
+	const std::string fileplace = "../gmsh_files/256_elements.msh";
 
-	const std::string output_place = "../output3/";
+	const std::string output_place = "../outputs/";
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";
 
@@ -28,8 +28,8 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 3; 
-	const int exp_y = 3; 
+	const int exp_x = 4; 
+	const int exp_y = 4; 
 	
 	const double gx_l = 0.0;
 	const double gx_r = 1.0; 
@@ -39,7 +39,7 @@ namespace grid{
 	const int nmin = 6;	
 	const int nmax = 14;
 
-	const int hlevel_max = 3;	
+	const int hlevel_max = 1;	
 };
 //---------------------------------------------------------------------
 
@@ -81,9 +81,9 @@ namespace dg_fun{
 /// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
-	const bool adapt = false;
+	const bool adapt = true;
 
-	const int refine_frequency = 100;	// every time step refine once
+	const int refine_frequency = 200;	// every time step refine once
 
 	const int fit_point_num = 4;
 
