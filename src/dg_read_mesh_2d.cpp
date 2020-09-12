@@ -8,6 +8,7 @@
 #include "dg_read_mesh_2d.h"
 #include "dg_nodal_2d_storage.h"
 #include "dg_single_index.h"
+#include <cstdlib>
 
 // forward declaration----------------------------------------------------------------------------
 void Sort_node_ordering(int &total_node, int &total_quad, int*& quad_node, double*& node_xy);
@@ -72,6 +73,7 @@ void Read_mesh_2d(){
 		// check if we are at the target position
 		if(string1 != "$Nodes"){
 			std::cout<< "Problem in .msh file. Please use Legency ASCII2 format." << "\n";
+			std::exit(EXIT_FAILURE);
 		}
 		
 		// get the total node number

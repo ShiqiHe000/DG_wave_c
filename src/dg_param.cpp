@@ -8,7 +8,7 @@
 /// @param fileplace The path of mesh file and mesh file name
 /// @param output_place output directory. 
 namespace fileinfo{
-	const std::string fileplace = "../gmsh_files/16_elements.msh";
+	const std::string fileplace = "../gmsh_files/64_elements.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
 	const std::string output_place = "../output3/";
@@ -28,8 +28,8 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 2; 
-	const int exp_y = 2; 
+	const int exp_x = 3; 
+	const int exp_y = 3; 
 	
 	const double gx_l = 0.0;
 	const double gx_r = 1.0; 
@@ -52,10 +52,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-6 *1000000;
+	const double t_total = 1.0e-5 *50000;
 //	const double t_total = 0.5;
 
-	const int nt = 1000000;
+	const int nt = 50000;
 
 };
 
@@ -81,7 +81,7 @@ namespace dg_fun{
 /// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
-	const bool adapt = true;
+	const bool adapt = false;
 
 	const int refine_frequency = 1000;	// every time step refine once
 
@@ -102,7 +102,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 2000;
+	const int output_frequency = 1000;
 };
 
 
