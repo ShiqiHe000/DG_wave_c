@@ -18,6 +18,9 @@ void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w);
 
 void BARW(int n, std::vector<double>& x, std::vector<double>& bary);
 
+double Lagrange_interpolation(int n, double x, std::vector<double>& xi, 
+				std::vector<double>& f, std::vector<double>& w, std::vector<int>& index);
+
 void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<double>& x, std::vector<double>& bary,
 					 std::vector<double>& lag );
 
@@ -204,7 +207,39 @@ void BARW(int n, std::vector<double>& x, std::vector<double>& bary){
 }
 
 /// @brief
+/// Lagrange interpolant from Barycentric form. Algorithm 31.  
+/// @param n polynomial order. 
+/// @param x solution at the target point x (on reference space).
+/// @param xi GL points. 
+/// @param f solution set.
+/// @param w barycentric weights. 
+/// @param index solution indices. 
+double Lagrange_interpolation(int n, double x, std::vector<double>& xi, 
+				std::vector<double>& f, std::vector<double>& w, std::vector<int>& index){
+		
+	double numerator{};
+	double denominator{};
+
+	for(int j = 0; j <= n; ++j){
+
+		if(Almost_equal(x, xi[j])){	// on GL point
+			return f[index[j]];
+		}
+
+		double t = w[j] / (x - xi[j]);
+
+		numerator += t * f[index[j]];
+
+		denominator += t;
+	}
+
+	return numerator / denominator;
+}
+
+
+/// @brief
 /// Lagrange interpolating polynoimial value at target point. Algorithm 34.
+/// Return the interpolation value on point x. 
 /// @param n polynomial order
 /// @param target_p target point 
 /// @param x GL points

@@ -12,6 +12,9 @@ void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w);
 
 void BARW(int n, std::vector<double>& x, std::vector<double>& bary);
 
+double Lagrange_interpolation(int n, double x, std::vector<double>& xi, 
+				std::vector<double>& f, std::vector<double>& w, std::vector<int>& index);
+
 void Lagrange_interpolating_polynomial(int n, double target_p, std::vector<double>& x, std::vector<double>& bary,
 					 std::vector<double>& lag );
 

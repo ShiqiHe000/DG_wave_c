@@ -36,8 +36,8 @@ void Driver_for_DG_approximation(){
 	double tn{};
 	
 	// Initialization
-//	DG_init();	// init with exact solution
-	DG_init2();	// init with exact solution
+	DG_init();	// init with exact solution
+//	DG_init2();	// init with exact solution
 //	DG_init_new();	// init with other value;
 	
 	Serial_io(tn);		

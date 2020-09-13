@@ -26,7 +26,9 @@
 #include "dg_verification.h"
 #include <ctime>        // time()
 #include <cstdlib>      // random numbe
-#include "dg_test.h"	//test
+#include "dg_cross_section.h"
+//#include "dg_test.h"	//test
+
 
 int main(int argc, char *argv[]){
 
@@ -46,6 +48,9 @@ int main(int argc, char *argv[]){
 
 	// verification
 	Get_error();
+
+	// output cross section data
+	Solution_cross_section(0.0);
 
 
 	// terminate mpi

@@ -11,9 +11,11 @@ namespace fileinfo{
 	const std::string fileplace = "../gmsh_files/256_elements.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
-	const std::string output_place = "../output3/";
+	const std::string output_place = "../output2/";
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";
+
+	const std::string crosssection_filename = "../cross_section/cross_section.csv";
 
 }
 
@@ -52,10 +54,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 50000;
+	const double t_total = 1.0e-5 * 5;
 //	const double t_total = 0.5;
 
-	const int nt = 50000;
+	const int nt = 5;
 
 };
 
@@ -81,7 +83,7 @@ namespace dg_fun{
 /// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
-	const bool adapt = true;
+	const bool adapt = false;
 
 	const int refine_frequency = 1000;	// every time step refine once
 
@@ -102,7 +104,7 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const int output_frequency = 2000;
+	const int output_frequency = 1;
 };
 
 
