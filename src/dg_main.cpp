@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 	Get_error();
 
 	// output cross section data
-	Solution_cross_section(0.0);
+	Solution_cross_section(0.1);
 
 
 	// terminate mpi

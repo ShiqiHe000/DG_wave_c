@@ -69,6 +69,8 @@ namespace dg_refine{
 // output variables --------------------------------
 namespace dg_io{
 
+	extern const bool io;
+
 	extern const int output_frequency;
 };
 //--------------------------------------------------

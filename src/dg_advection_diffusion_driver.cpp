@@ -52,9 +52,12 @@ void Driver_for_DG_approximation(){
 		DG_step_by_RK3(tn, delta_t);
 		
 		tn = (k + 1) * delta_t;
+
 		// output control
-		if((k + 1) % dg_io::output_frequency == 0){
-     			Serial_io(tn);		
+		if(dg_io::io){
+			if((k + 1) % dg_io::output_frequency == 0){
+	     			Serial_io(tn);		
+			}
 		}
 
 		if(dg_refine::adapt){	// hp-refinement
