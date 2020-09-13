@@ -3,6 +3,7 @@
 #include "dg_user_defined.h"
 #include <cmath>
 #include "dg_param.h"
+#include "dg_kx_ky.h"
 
 /// @brief
 /// Boundary conditions. User defined.
@@ -21,6 +22,24 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 	q_ext[index[1]] = user::kx / dg_fun::C * inter;
 
 	q_ext[index[2]] = user::ky / dg_fun::C * inter;
+}
+
+void External_state_Gaussian_exact2(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
+
+
+	
+	double kx{}, ky{};
+
+	Get_kx_ky(kx, ky, t);
+
+	double inter = exp( - pow((kx * (x - user::xx0) + 
+			ky * (y - user::yy0) - dg_fun::C * t), 2) / (user::D * user::D) );
+
+	q_ext[index[0]] = inter;
+
+	q_ext[index[1]] = kx / dg_fun::C * inter;
+
+	q_ext[index[2]] = ky / dg_fun::C * inter;
 }
 
 // test

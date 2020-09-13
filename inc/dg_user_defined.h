@@ -19,6 +19,9 @@ namespace user{
 void Exact_solution_Gaussian(int n, int m, double x_l, double y_d,
 				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t);
 
+void Exact_solution_Gaussian2(int n, int m, double x_l, double y_d,
+				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t);
+
 void Exact_solution_sin(int n, int m, double x_l, double y_d,
 				double del_x, double del_y, std::unordered_map<int, std::vector<double>>& e, double t);
 #endif

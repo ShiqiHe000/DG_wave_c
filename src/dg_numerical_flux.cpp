@@ -108,7 +108,8 @@ void Numerical_flux_x(double t){
 					double y = Affine_mapping(nodal::gl_points[pordery][s], (temp -> ycoords[0]), del_y);
 
 					// impose boundary conditions (wave) ------------------------------------------------
-					External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
+					//External_state_Gaussian_exact(t, temp -> xcoords[0], y, solution_ext, index);
+					External_state_Gaussian_exact2(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 
@@ -202,7 +203,8 @@ void Numerical_flux_x(double t){
 				// ----------------------------------------------------------------------------------
 
 				// impose boundary conditions--------------------------------------------------------
-				External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				//External_state_Gaussian_exact(t, temp -> xcoords[1], y, solution_ext, index);
+				External_state_Gaussian_exact2(t, temp -> xcoords[1], y, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 	
 				// Riemann solver
@@ -445,7 +447,8 @@ void Numerical_flux_y(double t){
 					// ----------------------------------------------------------------------------------
 
 					// impose boundary conditions-------------------------------------------------------
-					External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					//External_state_Gaussian_exact(t, x, (temp -> ycoords[0]), solution_ext, index);
+					External_state_Gaussian_exact2(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// Riemann solver
@@ -528,7 +531,8 @@ void Numerical_flux_y(double t){
 				//------------------------------------------------------------------------------------
 
 				// impose boundary conditions --------------------------------------------------------
-				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+//				External_state_Gaussian_exact(t, x, (temp -> ycoords[1]), solution_ext, index);
+				External_state_Gaussian_exact2(t, x, (temp -> ycoords[1]), solution_ext, index);
 				//------------------------------------------------------------------------------------
 
 				// Riemann solver

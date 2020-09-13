@@ -3,6 +3,8 @@
 
 void DG_init();
 
+void DG_init2();
+
 void DG_init_new();
 
 
