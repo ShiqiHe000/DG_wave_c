@@ -17,7 +17,7 @@
 
 // forward declaration -------------------------------------
 void Solution_cross_section(double x);
-void Write_cross_section(double x_fixed, int& elem);
+void Write_cross_section(double x_fixed);
 // ---------------------------------------------------------
 
 
@@ -28,13 +28,11 @@ void Solution_cross_section(double x){
 
 	assert(x <= grid::gx_r && x >= 0.0 && "The cross-section is out of the bound.\n");
 
-	int elem{};
-
 	for(int k = 0; k < mpi::num_proc; ++k){
 
 		if(mpi::rank == k){
 
-			Write_cross_section(x, elem);
+			Write_cross_section(x);
 
 		}
 		else{
@@ -44,14 +42,13 @@ void Solution_cross_section(double x){
 
 	}
 	
-	std::cout << "There are "<< elem << " on the cross-section. \n";
 }
 
 /// @brief
 /// Interpolate the solutions to the cross-section and write to the file. 
 /// @param x_fixed x coordinate (cross-section is perpendicular to x axis). 
 /// @param elem element number on the cross section. 
-void Write_cross_section(double x_fixed, int& elem){
+void Write_cross_section(double x_fixed){
 
 	// generate the file name
 	std::string filename = fileinfo::crosssection_filename;
@@ -78,7 +75,7 @@ void Write_cross_section(double x_fixed, int& elem){
 	for(int iel = 0; iel < local::local_elem_num; ++iel){
 
 		// cross-section passes this element
-		if(temp -> xcoords[0] < x_fixed && temp -> xcoords[1] >= x_fixed){
+		if(temp -> xcoords[0] <= x_fixed && temp -> xcoords[1] > x_fixed){
 			
 			double del_x = temp -> xcoords[1] - temp -> xcoords[0];
 			double del_y = temp -> ycoords[1] - temp -> ycoords[0];
@@ -108,7 +105,6 @@ void Write_cross_section(double x_fixed, int& elem){
 	
 			}
 
-			++elem;
 		}
 	
 		temp = temp -> next;
