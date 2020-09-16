@@ -3,4 +3,6 @@
 
 void Get_error();
 
+void Write_error();
+
 #endif

@@ -9,6 +9,7 @@ namespace fileinfo{
 	extern const std::string output_place;
 	extern const std::string eff_filename;
 	extern const std::string crosssection_filename;
+	extern const std::string exact_error_filename;
 }
 // -------------------------------------------------
 

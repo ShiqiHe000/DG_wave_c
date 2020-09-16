@@ -6,7 +6,22 @@
 #include "dg_verification.h"
 #include <mpi.h>
 #include <vector>
+#include <string>
+#include <iostream>
+#include <sstream>	// std::stringstream
+#include <fstream>	// read and write to file
+#include <iomanip>	// std::setfill
 #include <iostream>	// test
+
+// global elem -----------------
+int g_elem{};
+// ----------------------------
+
+// ----------------------------------------------
+void Get_error();
+void Write_error();
+void Write_error_each_proc(double t);
+// ----------------------------------------------
 
 /// @brief
 /// Verfies your results. Now assume uniform grids. 
@@ -78,3 +93,145 @@ void Get_error(){
 
 }
 
+/// @brief
+/// Serial write exact error to file. 
+void Write_error(){
+
+	for(int k = 0; k < mpi::num_proc; ++k){
+
+		if(mpi::rank == k){
+			Write_error_each_proc(dg_time::t_total);
+
+		}
+		else{
+
+			MPI_Barrier(MPI_COMM_WORLD);		
+		
+		}
+		
+
+	}
+	
+
+}
+
+/// @brief
+/// Write error to files. L2 norm per element. 
+void Write_error_each_proc(double t){
+
+	// generate the file name
+	std::string filename = 	fileinfo::exact_error_filename;
+	std::ofstream myfile; 	// stream class to write on files	
+
+
+	// processor open file
+	if(mpi::rank == 0){
+		
+		myfile.open(filename, std::ios::trunc);	// truncate the old file
+
+		// headers
+		myfile<< "TITLE = \"EXACT ERROR\" \n";
+		myfile<< "VARIABLES = \"X\", \"Y\", \"RANK\", \"HLEVEL\", \"PORDER\"," 
+				"\"ERR_P\",\"ERR_U\", \"ERR_V\", \n";
+		
+	}
+	else{
+
+		myfile.open(filename, std::ios::app);	// All output operations are performed at the end of the file
+	}
+
+
+	std::unordered_map<int, std::vector<double>> exact;
+	std::unordered_map<int, std::vector<double>> error;
+	std::vector<double> L2_norm;
+
+	// temperary pointer
+	Unit* temp = local::head;
+
+	// traverse the linked list
+	for(int k = 0; k < local::local_elem_num; ++k){
+		
+		// allocate
+		int size_plane =(temp -> n + 1) * (temp -> m + 1);
+		for(int i = 0; i < dg_fun::num_of_equation; ++i){
+	
+			error[i] = std::vector<double>(size_plane);
+			exact[i] = std::vector<double>(size_plane);
+		}
+
+		// element size
+		double del_x = (temp -> xcoords[1]) - (temp -> xcoords[0]); 
+		double del_y = (temp -> ycoords[1]) - (temp -> ycoords[0]);  
+
+		// wave ---------------------------------------------------------------------------------------		
+		Exact_solution_Gaussian(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
+					del_x, del_y, exact, dg_time::t_total);
+//		Exact_solution_Gaussian2(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
+//					del_x, del_y, result::exact, dg_time::t_total);
+		// --------------------------------------------------------------------------------------------
+
+		// test ---------------------------------------------------------------------------------------
+//		Exact_solution_sin(temp -> n, temp -> m, temp -> xcoords[0], temp -> ycoords[0], 
+//					del_x, del_y, result::exact, dg_time::t_total);
+		//----------------------------------------------------------------------------------------------
+
+		// get the L2 norm of the current element ----------------------------------------------------
+		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
+	
+			L2_norm.push_back(0.0);
+
+			for(int i = 0; i < size_plane; ++i){
+		
+				error[equ][i] = std::abs(exact[equ][i] - temp -> solution[equ][i]);
+
+				L2_norm[equ] += error[equ][i] * error[equ][i];
+				
+			}
+
+			L2_norm[equ] = sqrt(L2_norm[equ]);
+
+		}
+		// --------------------------------------------------------------------------------------------
+
+
+		// write result to file --------------------------------------------------
+		myfile << std::fixed;
+		myfile << std::setprecision(5);
+		myfile << "ZONE T= " << "\"" << "IEL" << std::setw(8) << g_elem << "\"," << "  " 
+			<<"I=2, J=2, "<< "SOLUTIONTIME=" << t <<", DATAPACKING = POINT" << "\n";
+		
+		++g_elem;
+		
+
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[0] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]
+			<< "  "<< temp -> n << "  " << L2_norm[0] << "  " << L2_norm[1] << "  "<< L2_norm[2] <<"\n";
+
+
+		myfile << temp -> xcoords[0] << "  " << temp -> ycoords[1] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]
+			<< "  "<< temp -> n << "  " << L2_norm[0] << "  " << L2_norm[1] << "  "<< L2_norm[2] <<"\n";
+
+
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[0] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]
+			<< "  "<< temp -> n << "  " << L2_norm[0] << "  " << L2_norm[1] << "  "<< L2_norm[2] <<"\n";
+
+
+		myfile << temp -> xcoords[1] << "  " << temp -> ycoords[1] 
+			<< "  " << mpi::rank << "  " << temp -> index[2]
+			<< "  "<< temp -> n << "  " << L2_norm[0] << "  " << L2_norm[1] << "  "<< L2_norm[2] <<"\n";
+		
+		//-----------------------------------------------------------------------
+
+
+		error.clear();
+		exact.clear();
+		L2_norm.clear();
+
+		temp = temp -> next;	
+
+	}
+
+	myfile.close();
+}
