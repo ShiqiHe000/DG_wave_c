@@ -11,13 +11,13 @@ namespace fileinfo{
 	const std::string fileplace = "../gmsh_files/4_elements.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
-	const std::string output_place = "../output2/";
+	const std::string output_place = "../outputs/";
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";	// efficiency output
 
-	const std::string crosssection_filename = "../cross_section/cs_4elem.csv";	// write the result on the cross-setion
+	const std::string crosssection_filename = "../cross_section/cs_4elem_refine1.csv";	// write the result on the cross-setion
 
-	const std::string exact_error_filename = "../exact_error/exact_error_amr.dat";	// exact error 
+	const std::string exact_error_filename = "../exact_error/error_refine1.dat";	// exact error 
 }
 
 /// @brief Domain size

@@ -48,10 +48,10 @@ int main(int argc, char *argv[]){
 
 	// verification
 	Get_error();
-	Write_error();
+	Write_error();	// write element-wise error to file
 
 	// output cross section data
-//	Solution_cross_section(0.55);
+	Solution_cross_section(0.55);
 
 
 	// terminate mpi

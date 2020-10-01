@@ -183,12 +183,22 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 	// refinment criteria: if exceed the acceptable level then flag as needed refinement. 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
-		// L2 norm of the current element 
+		// L2 norm of the current element =====================================================
 		double u_norm = Solution_l2_norm(equ, temp);
 
 		double tol_min = u_norm * dg_refine::tolerance_min;	// the threshold for refinement 
 		
 		double tol_max = u_norm * dg_refine::tolerance_max;	// the threshold for coarening		
+		// ====================================================================================
+
+
+		// use threshold as the refinement criterion =========================================
+//
+//		double tol_min = dg_refine::tolerance_min;	// the threshold for refinement 
+//		
+//		double tol_max = dg_refine::tolerance_max;	// the threshold for coarening		
+
+		// ===================================================================================
 
 		double C{};	// the const: C*exp(-sigma * n)
 

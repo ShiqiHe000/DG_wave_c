@@ -194,13 +194,13 @@ void Write_error_each_proc(double t){
 
 			int nodei{};
 
-			for(int i = 0; i < temp -> n; ++i){
+			for(int i = 0; i <= temp -> n; ++i){
 		
 				double weight_x = nodal::gl_weights[temp -> n][i];
 
-				for(int j = 0; j < temp -> m; ++j){
+				for(int j = 0; j <= temp -> m; ++j){
 	
-					error[equ][i] = std::abs(exact[equ][nodei] - 
+					error[equ][nodei] = std::abs(exact[equ][nodei] - 
 								temp -> solution[equ][nodei]);
 
 					L2_norm[equ] += error[equ][nodei] * error[equ][nodei] 
