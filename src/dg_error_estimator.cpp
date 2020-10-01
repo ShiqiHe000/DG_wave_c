@@ -243,9 +243,11 @@ double Solution_l2_norm(int equ, Unit* temp){
 
 	for(int i = 0; i <= temp -> n; ++i){
 
+		double weight_x = nodal::gl_weights[temp -> n][i];
+
 		for(int j = 0; j <= temp -> m; ++j){
 
-			norm += std::pow(temp -> solution[equ][nodei], 2);
+			norm += std::pow(temp -> solution[equ][nodei], 2) * nodal::gl_weights[temp -> m][j] * weight_x;
 			++nodei;
 		}
 

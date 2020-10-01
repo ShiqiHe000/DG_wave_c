@@ -1,4 +1,5 @@
 #include "dg_local_storage.h"
+#include "dg_nodal_2d_storage.h"
 #include "dg_param.h"
 #include "dg_unit.h"
 #include "dg_user_defined.h"
@@ -60,13 +61,24 @@ void Get_error(){
 		//----------------------------------------------------------------------------------------------
 
 		for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
-	
-			for(int i = 0; i < size_plane; ++i){
-		
-				result::error[equ][i] = std::abs(result::exact[equ][i] - temp -> solution[equ][i]);
 
-				result::L2_norm[equ] += result::error[equ][i] * result::error[equ][i];
-				
+			int nodei{};
+	
+			for(int i = 0; i <= temp -> n; ++i){
+		
+				double weight_x = nodal::gl_weights[temp -> n][i];
+
+				for(int j = 0; j <= temp -> m; ++j){
+
+					result::error[equ][nodei] = std::abs(result::exact[equ][nodei] 
+									- temp -> solution[equ][nodei]);
+	
+					result::L2_norm[equ] += result::error[equ][nodei] * result::error[equ][nodei]
+								* nodal::gl_weights[temp -> m][j] * weight_x;
+
+
+					++nodei;
+				}
 			}
 
 		}
@@ -180,12 +192,22 @@ void Write_error_each_proc(double t){
 	
 			L2_norm.push_back(0.0);
 
-			for(int i = 0; i < size_plane; ++i){
-		
-				error[equ][i] = std::abs(exact[equ][i] - temp -> solution[equ][i]);
+			int nodei{};
 
-				L2_norm[equ] += error[equ][i] * error[equ][i];
-				
+			for(int i = 0; i < temp -> n; ++i){
+		
+				double weight_x = nodal::gl_weights[temp -> n][i];
+
+				for(int j = 0; j < temp -> m; ++j){
+	
+					error[equ][i] = std::abs(exact[equ][nodei] - 
+								temp -> solution[equ][nodei]);
+
+					L2_norm[equ] += error[equ][nodei] * error[equ][nodei] 
+							* nodal::gl_weights[temp -> m][j] * weight_x;
+
+					++nodei;
+				}
 			}
 
 			L2_norm[equ] = sqrt(L2_norm[equ]);
