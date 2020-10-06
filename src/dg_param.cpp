@@ -11,7 +11,7 @@ namespace fileinfo{
 	const std::string fileplace = "../gmsh_files/4_elements.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
-	const std::string output_place = "../output2/";
+	const std::string output_place = "../outputs/";
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";	// efficiency output
 
@@ -42,7 +42,7 @@ namespace grid{
 	const int nmin = 6;	
 	const int nmax = 14;
 
-	const int hlevel_max = 2;	
+	const int hlevel_max = 3;	
 };
 //---------------------------------------------------------------------
 
@@ -55,10 +55,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-5 * 50000;
+	const double t_total = 1.0e-8 * 5000;
 //	const double t_total = 0.5;
 
-	const int nt = 50000;
+	const int nt = 5000;
 
 };
 
@@ -105,9 +105,9 @@ namespace dg_refine{
 /// @param
 namespace dg_io{
 
-	const bool io = false;
+	const bool io = true;
 
-	const int output_frequency = 5000;
+	const int output_frequency = 500;
 };
 
 

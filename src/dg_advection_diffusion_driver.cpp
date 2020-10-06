@@ -10,6 +10,7 @@
 #include "dg_load_balancing.h"
 #include "dg_derived_datatype.h"
 #include "dg_step_by_RK3.h"
+#include "dg_CFL.h"
 #include "dg_LB_quality.h"	// LB quality
 #include "dg_test.h"	// test
 #include <iostream>	// test
@@ -20,6 +21,9 @@
 /// Then marches by each time step. Using explicit 3rd order Runge-Kutta methods.
 void Driver_for_DG_approximation(){
 	
+	// check CFL condition
+	Check_CFL();
+
 	// construct basis
 	Construct_basis_storage();
 
