@@ -74,7 +74,8 @@ void Get_error(){
 									- temp -> solution[equ][nodei]);
 	
 					result::L2_norm[equ] += result::error[equ][nodei] * result::error[equ][nodei]
-								* nodal::gl_weights[temp -> m][j] * weight_x;
+								* nodal::gl_weights[temp -> m][j] * weight_x
+								* del_x * del_y / 4.0;
 
 
 					++nodei;
@@ -204,7 +205,8 @@ void Write_error_each_proc(double t){
 								temp -> solution[equ][nodei]);
 
 					L2_norm[equ] += error[equ][nodei] * error[equ][nodei] 
-							* nodal::gl_weights[temp -> m][j] * weight_x;
+							* nodal::gl_weights[temp -> m][j] * weight_x
+							* del_x * del_y / 4.0;
 
 					++nodei;
 				}

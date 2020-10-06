@@ -184,19 +184,19 @@ void Error_indicator(Unit* temp, std::vector<double>& sigma, std::vector<bool>& 
 	for(int equ = 0; equ < dg_fun::num_of_equation; ++equ){
 
 		// L2 norm of the current element =====================================================
-		double u_norm = Solution_l2_norm(equ, temp);
-
-		double tol_min = u_norm * dg_refine::tolerance_min;	// the threshold for refinement 
-		
-		double tol_max = u_norm * dg_refine::tolerance_max;	// the threshold for coarening		
+//		double u_norm = Solution_l2_norm(equ, temp);
+//
+//		double tol_min = u_norm * dg_refine::tolerance_min;	// the threshold for refinement 
+//		
+//		double tol_max = u_norm * dg_refine::tolerance_max;	// the threshold for coarening		
 		// ====================================================================================
 
 
 		// use threshold as the refinement criterion =========================================
-//
-//		double tol_min = dg_refine::tolerance_min;	// the threshold for refinement 
-//		
-//		double tol_max = dg_refine::tolerance_max;	// the threshold for coarening		
+
+		double tol_min = dg_refine::tolerance_min;	// the threshold for refinement 
+		
+		double tol_max = dg_refine::tolerance_max;	// the threshold for coarening		
 
 		// ===================================================================================
 
@@ -251,13 +251,17 @@ double Solution_l2_norm(int equ, Unit* temp){
 
 	int nodei{};
 
+	double del_x = (temp -> xcoords[1]) - (temp -> xcoords[0]); 
+	double del_y = (temp -> ycoords[1]) - (temp -> ycoords[0]);  
+
 	for(int i = 0; i <= temp -> n; ++i){
 
 		double weight_x = nodal::gl_weights[temp -> n][i];
 
 		for(int j = 0; j <= temp -> m; ++j){
 
-			norm += std::pow(temp -> solution[equ][nodei], 2) * nodal::gl_weights[temp -> m][j] * weight_x;
+			norm += std::pow(temp -> solution[equ][nodei], 2) * nodal::gl_weights[temp -> m][j] * weight_x
+				* del_x * del_y / 4.0;
 			++nodei;
 		}
 
