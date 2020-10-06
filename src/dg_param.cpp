@@ -15,9 +15,9 @@ namespace fileinfo{
 
 	const std::string eff_filename = "../efficiency/eff_no_LB";	// efficiency output
 
-	const std::string crosssection_filename = "../cross_section/cs_4elem_refine2.csv";	// write the result on the cross-setion
+	const std::string crosssection_filename = "../cross_section/cs_4elem_hp.csv";	// write the result on the cross-setion
 
-	const std::string exact_error_filename = "../exact_error/error_no_refine.dat";	// exact error 
+	const std::string exact_error_filename = "../exact_error/error_refine.dat";	// exact error 
 }
 
 /// @brief Domain size
@@ -84,7 +84,7 @@ namespace dg_fun{
 /// @param load_balaning Repartitioning switch. 
 namespace dg_refine{
 
-	const bool adapt = false;
+	const bool adapt = true;
 
 	const int refine_frequency = 500;	// every time step refine once
 
