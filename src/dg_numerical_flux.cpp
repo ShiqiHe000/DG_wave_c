@@ -112,7 +112,7 @@ void Numerical_flux_x(double t){
 					// ----------------------------------------------------------------------------------
 					
 					// impose mirror image solutions ---------------------------------------------------
-					External_mirror_y_left(t, temp -> xcoords[0], y, solution_ext, index);
+					External_mirror_right_boundary(t, temp -> xcoords[0], y, solution_ext, index);
 					// ----------------------------------------------------------------------------------
 
 					// test -----------------------------------------------------------------------------
@@ -212,7 +212,7 @@ void Numerical_flux_x(double t){
 //				External_state_reflect_x(temp -> solution_int_r, solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
-				External_mirror_y_left(t, temp -> xcoords[1], y, solution_ext, index);
+				External_mirror_right_boundary(t, temp -> xcoords[1], y, solution_ext, index);
 	
 				// Riemann solver
 				Riemann_solver_x(temp -> solution_int_r, solution_ext,
@@ -458,7 +458,7 @@ void Numerical_flux_y(double t){
 					// ----------------------------------------------------------------------------------
 
 					// B.C. Mirror image solutions----------------------------------------------	
-					External_mirror_y_left(t, x, (temp -> ycoords[0]), solution_ext, index);
+					External_mirror_right_boundary(t, x, (temp -> ycoords[0]), solution_ext, index);
 					// -------------------------------------------------------------------------
 
 					// Riemann solver
@@ -545,7 +545,7 @@ void Numerical_flux_y(double t){
 				//------------------------------------------------------------------------------------
 
 				// impose mirror image solutions ---------------------------------------------------
-				External_mirror_y_left(t, x, (temp -> ycoords[1]), solution_ext, index);
+				External_mirror_right_boundary(t, x, (temp -> ycoords[1]), solution_ext, index);
 				// ----------------------------------------------------------------------------------
 
 				// reflection boundary conditions------------------------------------------------------

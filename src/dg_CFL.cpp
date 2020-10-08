@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+/// @brief
+/// Check CFL condition. t <= 1.73 * del_x / c.  
 void Check_CFL(){
 
 	double d_length = grid::gx_r - grid::gx_l;

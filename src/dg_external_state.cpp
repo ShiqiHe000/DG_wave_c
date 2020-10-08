@@ -14,7 +14,7 @@ void External_state_reflect_x(std::vector<double>& q_int, std::vector<double>& q
 void External_state_reflect_y(std::vector<double>& q_int, std::vector<double>& q_ext, 
 				std::vector<int>& index);
 
-void External_mirror_y_left(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
+void External_mirror_right_boundary(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
 
 void External_state_sin_exact(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index);
 //---------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 }
 
 /// @brief
-/// External state at bottom boundary comes from the mirror image wave.
+/// External state applied as a mirror image wave starts from the right boundary. 
 /// Note that the domain should be [0, 1] * [0, 1]. 
 /// The mirror image comes from [1, 2] * [0, 1]
 /// @param t current time.
@@ -48,7 +48,7 @@ void External_state_Gaussian_exact(double t, double x, double y, std::vector<dou
 /// @param y y coordinate (physical). 
 /// @param q_ext exrernal solutions (outputs). 
 /// @param index the index of three variables. 
-void External_mirror_y_left(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
+void External_mirror_right_boundary(double t, double x, double y, std::vector<double>& q_ext, std::vector<int>& index){
 
 
 	double inter = exp( - pow((mirror::kx * (x - mirror::x0) + 
