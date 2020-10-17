@@ -4,6 +4,7 @@
 #include "dg_basis.h"
 #include "dg_basis_storage.h"
 #include "dg_single_index.h"
+#include "dg_write_first_der_matrix.h"
 #include <iostream>	// test
 
 
@@ -37,6 +38,10 @@ void Construct_basis_storage(){
 	
 		// first order derivative matrix
 		Mth_order_polynomial_derivative_matrix(n, 1, nodal::gl_points[n], nodal::first_der[n], bary);
+
+		// output the first der matrix to file --------------------
+		Write_first_der_matrix(n);
+		// -------------------------------------------------------
 
 		// Modify first derivative
 		for(int j = 0; j <= n; ++j){

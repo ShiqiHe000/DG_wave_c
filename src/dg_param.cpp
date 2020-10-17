@@ -18,6 +18,8 @@ namespace fileinfo{
 	const std::string crosssection_filename = "../cross_section/cs_4elem_hp.csv";	// write the result on the cross-setion
 
 	const std::string exact_error_filename = "../exact_error/error_refine.dat";	// exact error 
+
+	const std::string first_der_place = "../first_der_matrix/";	// exact error 
 }
 
 /// @brief Domain size
@@ -55,10 +57,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-8 * 50000;
+	const double t_total = 1.0e-8 * 0;
 //	const double t_total = 0.5;
 
-	const int nt = 50000;
+	const int nt = 0;
 
 };
 
