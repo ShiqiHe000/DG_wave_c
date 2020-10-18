@@ -9,7 +9,9 @@
 /// Polynomial order
 void Check_CFL(){
 
-
+	// zero time step, no need to check CFL condition. 
+	if(dg_time::nt == 0) return;
+	
 	double del_t = 1.73 * 10 / (grid::nmax * grid::nmax);
 
 	double t_user = dg_time::t_total / dg_time::nt;
