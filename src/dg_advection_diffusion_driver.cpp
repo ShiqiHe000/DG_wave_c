@@ -13,6 +13,7 @@
 #include "dg_CFL.h"
 #include "dg_LB_quality.h"	// LB quality
 #include "dg_test.h"	// test
+#include "dg_reinit.h"	// reinit the solution
 #include <iostream>	// test
 
 /// @brief
@@ -71,6 +72,13 @@ void Driver_for_DG_approximation(){
 				Adapt(k);
 //				LB_efficiency_write(tn);
 				// --------------------------------------------------------
+			
+				// reinit solutions---------------------------------------
+				if(k == 0){
+					DG_reinit(tn);
+				}
+				// --------------------------------------------------------
+
 
      	//			Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
@@ -103,7 +111,7 @@ void Driver_for_DG_approximation(){
 					LB_set_back();
 
 //					LB_efficiency_write(tn);
-     	//				Serial_io(tn);		
+     					Serial_io(tn);		
 				}
 //				Write_faces_all();
 			}

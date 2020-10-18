@@ -73,9 +73,10 @@ void Get_error(){
 					result::error[equ][nodei] = std::abs(result::exact[equ][nodei] 
 									- temp -> solution[equ][nodei]);
 	
-					result::L2_norm[equ] += result::error[equ][nodei] * result::error[equ][nodei]
-								* nodal::gl_weights[temp -> m][j] * weight_x
-								* del_x * del_y / 4.0;
+//					result::L2_norm[equ] += result::error[equ][nodei] * result::error[equ][nodei]
+//								* nodal::gl_weights[temp -> m][j] * weight_x
+//								* del_x * del_y / 4.0;
+					result::L2_norm[equ] += result::error[equ][nodei] * result::error[equ][nodei];
 
 
 					++nodei;
