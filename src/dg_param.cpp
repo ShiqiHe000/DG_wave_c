@@ -42,7 +42,7 @@ namespace grid{
 	const double gy_r = 1.0; 
 
 	const int nmin = 6;	
-	const int nmax = 14;
+	const int nmax = 32;
 
 	const int hlevel_max = 3;	
 };
