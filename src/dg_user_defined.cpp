@@ -15,8 +15,8 @@ namespace user{
 //	const double kx = 0.0; 
 //	const double ky = 1.0; 
 	const double D = 0.2 / (2.0 * sqrt(log(2.0)));
-	const double xx0 = 0;
-	const double yy0 = 0; 
+	const double xx0 = 0.25;
+	const double yy0 = 0.25; 
 
 	const double pi = 4.0 * std::atan(1.0);	// testing
 

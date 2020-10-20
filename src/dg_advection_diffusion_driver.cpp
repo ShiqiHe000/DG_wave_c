@@ -58,6 +58,11 @@ void Driver_for_DG_approximation(){
 		
 		tn = (k + 1) * delta_t;
 
+//		if(k == 0){
+//			DG_reinit(tn);
+//		}
+	
+
 		// output control
 		if(dg_io::io){
 			if((k + 1) % dg_io::output_frequency == 0){
@@ -80,7 +85,7 @@ void Driver_for_DG_approximation(){
 				// --------------------------------------------------------
 
 
-     	//			Serial_io(tn);		
+//     				Serial_io(tn);		
 				if(dg_refine::load_balancing){	// repartitioning
 
 					
@@ -111,7 +116,7 @@ void Driver_for_DG_approximation(){
 					LB_set_back();
 
 //					LB_efficiency_write(tn);
-     					Serial_io(tn);		
+//     					Serial_io(tn);		
 				}
 //				Write_faces_all();
 			}
