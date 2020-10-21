@@ -33,6 +33,10 @@ void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq);
 double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double>& lag);
 
 void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out);
+
+void GLL(int n, std::vector<double>& gll_p, std::vector<double>& gll_w);
+
+void q_and_L_evaluation(int n, double x, double& q, double& q_prime, double& L_N);
 //------------------------------------------------
 
 /// @brief 
@@ -175,6 +179,117 @@ void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w){
 
 		gl_p[n/2] = 0.0;
 		gl_w[n/2] = 2.0 / pow(dq, 2.0);
+
+	}
+
+
+}
+
+/// @brief
+/// Compute the interior node q(x) of GLL qudrature, its derivative q'(x), and Legendre polynomial L(x). 
+/// Algorithm 24. 
+/// @param n polynomial order. 
+/// @param x point. 
+void q_and_L_evaluation(int n, double x, double& q, double& q_prime, double& L_N){
+
+	int k = 2;
+	
+	std::vector<double> LN(n + 2);
+	std::vector<double> LN_prime(n + 2);
+
+	LN[k - 2] = 1.0;
+	LN[k - 1] = x;
+
+	LN_prime[k - 2] = 0.0;
+	LN_prime[k - 1] = 1.0;
+
+	for(; k <= n + 1; ++k){
+
+		LN[k] = (double)(2 * k - 1) / k * x * LN[k - 1] - (double)(k - 1) / k * LN[k - 2];
+
+		LN_prime[k] = LN_prime[k - 2] + (double)(2 * k - 1) * LN[k -1];
+
+	}
+
+	L_N = LN[n];
+
+	q = LN[n + 1] - LN[n - 1];
+
+	q_prime = LN_prime[n + 1] - LN_prime[n - 1];
+
+}
+
+/// @brief
+/// Compute the Gauss Lobbato Legendre nodes and weights. Algprithm 25. 
+/// @param n polynomial order
+/// @param gl_p GL points
+/// @param gl_w GL weigths
+void GLL(int n, std::vector<double>& gll_p, std::vector<double>& gll_w){
+
+	double tol = 4.0 * std::numeric_limits<double>::epsilon();
+
+	if(n == 1){
+
+		gll_p[0] = -1.0;
+		gll_p[1] =  1.0;
+
+		gll_w[0] = 1.0;
+		gll_w[1] = 1.0;
+	}
+	else{
+
+		gll_p[0] = -1.0;
+
+		gll_w[0] = 2.0 / ((double)(n + 1) * n);
+
+		gll_p[n] = 1.0;
+
+		gll_w[n] = gll_w[0];
+
+		for(int j = 1; j <= ((n + 1) / 2 - 1); ++j){
+
+			gll_p[j] = cos((j + 0.25) * pi / n 
+					- 3.0 / (8.0 * n * pi) * 1.0 / (j + 0.25));
+
+			double L_N{};
+
+			while(true){
+
+				double q{};
+				double q_prime{};
+	
+				q_and_L_evaluation(n, gll_p[j], q, q_prime, L_N);
+
+				double delta = - q / q_prime;
+
+				gll_p[j] += delta;
+
+				if(std::abs(delta) <= tol * std::abs(gll_p[j])) break;
+			
+			}
+
+			gll_p[n - j] = - gll_p[j];
+
+			gll_w[j] = 2.0 / (n * (n + 1.0) * L_N * L_N);
+
+			gll_w[n - j] = gll_w[j];
+
+		}
+
+	}
+	
+	if(n % 2 == 0){
+
+		
+       		double q{};
+       		double q_prime{};
+		double L_N{};
+
+		q_and_L_evaluation(n, 0.0, q, q_prime, L_N);
+		
+		gll_p[n / 2] = 0.0;
+
+		gll_w[n / 2] = 2.0 / (n * (n + 1.0) * L_N * L_N);
 
 	}
 

@@ -44,7 +44,7 @@ namespace grid{
 	const double gy_r = 1.0; 
 
 	const int nmin = 6;	
-	const int nmax = 32;
+	const int nmax = 6;
 
 	const int hlevel_max = 3;	
 };
@@ -76,6 +76,8 @@ namespace dg_fun{
 
 	const double C = 1.0;
 //	const double C =  1.0 / (4.0 * std::atan(1.0));
+
+	const double pi = 4.0 * std::atan(1.0);
 };
 
 /// @brief

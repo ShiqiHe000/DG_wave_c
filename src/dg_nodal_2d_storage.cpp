@@ -37,6 +37,8 @@ namespace SortMesh{
 /// @param lagrange_l Lagrange interpolating polynomial on the left boundary. Key: poynomial order.
 /// @param lagrange_r Lagrange interpolating polynomial on the right boundary. Key: poynomial order.
 /// @param legendre Legendre polynomial value at GL points. Key: polynomial order. 
+/// @param gll_points Hash table for Gauss Lobbato points. Key: polynoial order, value: vector of guass points.
+/// @param gll_weights Hash table for Gauss Lobbato weights. Key: polynoliam order, value: Gauss weigths. 
 namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> gl_points;
@@ -50,4 +52,6 @@ namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> legendre;	// useless
 
+	std::unordered_map<int, std::vector<double>> gll_points;
+	std::unordered_map<int, std::vector<double>> gll_weights;
 }

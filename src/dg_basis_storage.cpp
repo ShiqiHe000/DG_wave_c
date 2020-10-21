@@ -33,6 +33,19 @@ void Construct_basis_storage(){
 		// generate current gl_p, gl_w
 		GL(n, nodal::gl_points[n], nodal::gl_weights[n]);
 	
+		// compute GLL points, weights--------------------------------
+		nodal::gll_points[n] = std::vector<double>(n + 1);
+		nodal::gll_weights[n] = std::vector<double>(n + 1);
+		GLL(n, nodal::gll_points[n], nodal::gll_weights[n]);
+		//------------------------------------------------------------
+	
+		if(n == 6){
+			for(auto& v : nodal::gll_points[n]){
+
+				std::cout<< v << "\n";
+			}
+		}
+
 		std::vector<double> bary(n + 1);
 	
 		BARW(n, nodal::gl_points[n], bary);
@@ -45,7 +58,7 @@ void Construct_basis_storage(){
 		// ==================================================================================================
 
 		// compute eigenvalues of the first derivative matrix and output to files -------------------------
-		Compute_eigs_plus_output(n);
+//		Compute_eigs_plus_output(n);
 		//-------------------------------------------------------------------------------------------------
 
 		// output the first der matrix to file --------------------
