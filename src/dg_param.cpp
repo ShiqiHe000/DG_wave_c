@@ -20,6 +20,8 @@ namespace fileinfo{
 	const std::string exact_error_filename = "../exact_error/error_refine.dat";	// exact error 
 
 	const std::string first_der_place = "../first_der_matrix/";	// exact error 
+
+	const std::string eigenvalues_place = "../eigenvalue/";	// exact error 
 }
 
 /// @brief Domain size

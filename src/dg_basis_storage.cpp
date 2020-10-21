@@ -5,6 +5,7 @@
 #include "dg_basis_storage.h"
 #include "dg_single_index.h"
 #include "dg_write_first_der_matrix.h"
+#include "dg_eigenvalues.h"
 #include <iostream>	// test
 
 
@@ -43,8 +44,12 @@ void Construct_basis_storage(){
 		First_order_polynomial_derivative_matrix(n, nodal::gl_points[n], nodal::first_der[n], bary);
 		// ==================================================================================================
 
+		// compute eigenvalues of the first derivative matrix and output to files -------------------------
+		Compute_eigs_plus_output(n);
+		//-------------------------------------------------------------------------------------------------
+
 		// output the first der matrix to file --------------------
-		Write_first_der_matrix(n);
+		//Write_first_der_matrix(n);
 		// -------------------------------------------------------
 
 		// Modify first derivative
