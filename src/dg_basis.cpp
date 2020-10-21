@@ -4,6 +4,7 @@
 #include <cmath>	// sqrt
 #include "dg_single_index.h"
 #include <cassert>
+#include <algorithm>
 
 
 const double pi = 4.0 * atan(1.0); 
@@ -12,6 +13,9 @@ const double pi = 4.0 * atan(1.0);
 bool Almost_equal(double a, double b);
 
 void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<double>& x, std::vector<double>& der, 
+						std::vector<double>& bary);
+
+void First_order_polynomial_derivative_matrix(int n, std::vector<double>& x, std::vector<double>& der, 
 						std::vector<double>& bary);
 
 void GL(int n, std::vector<double>& gl_p, std::vector<double>& gl_w);
@@ -351,6 +355,54 @@ void Mth_order_polynomial_derivative_matrix(int n, int mth_der, std::vector<doub
 	
 
 }
+
+/// @brief
+/// First order derivative matrix. Algorithm 37. 
+/// Minimize the effect of the ruond off errors. 
+/// Sort the off-diagonal terms and sum them up from the smallest to the largest (in magnitude). 
+/// @param n polynomial order
+/// @param x spectral points
+/// @param der m-th order derivative matrix
+/// @param bary Barycentric weights. 
+void First_order_polynomial_derivative_matrix(int n, std::vector<double>& x, std::vector<double>& der, 
+						std::vector<double>& bary){
+	
+
+	// mth-order == 1
+	for(int i = 0; i <= n; ++i){
+		int inode = Get_single_index(i, i, n+1);
+		der[inode] = 0.0;
+
+		std::vector<double> off_dia;	// store the off-diagnoal terms, later we will sort them. 
+
+		for(int j = 0; j <= n; ++j){
+
+			if(j != i){
+				int node1 = Get_single_index(i, j, n+1);
+
+				der[node1] = bary[j] / bary[i] / (x[i] - x[j]);
+
+				off_dia.push_back(der[node1]);
+
+
+			}
+
+		}
+
+		// sort off-diagoanl value from small to large in magnitude. 
+		std::sort(off_dia.begin(), off_dia.end(), [](double a, double b){return abs(a) < abs(b);});
+
+		for(auto& v : off_dia){
+
+
+			der[inode] -= v;
+		}
+
+
+	}	
+	
+}
+
 
 /// @brief
 /// Interpolate the interior solution to the element boundary/interface.

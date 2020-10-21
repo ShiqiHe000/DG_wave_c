@@ -36,11 +36,15 @@ void Construct_basis_storage(){
 	
 		BARW(n, nodal::gl_points[n], bary);
 	
-		// first order derivative matrix
-		Mth_order_polynomial_derivative_matrix(n, 1, nodal::gl_points[n], nodal::first_der[n], bary);
+		// first order derivative matrix ====================================================================
+		//Mth_order_polynomial_derivative_matrix(n, 1, nodal::gl_points[n], nodal::first_der[n], bary);
+
+		// minimize the round-off error version
+		First_order_polynomial_derivative_matrix(n, nodal::gl_points[n], nodal::first_der[n], bary);
+		// ==================================================================================================
 
 		// output the first der matrix to file --------------------
-		//Write_first_der_matrix(n);
+		Write_first_der_matrix(n);
 		// -------------------------------------------------------
 
 		// Modify first derivative
@@ -58,7 +62,7 @@ void Construct_basis_storage(){
 
 		}
 		// ---------------------------------
-		Write_mfirst_der_matrix(n);
+		//Write_mfirst_der_matrix(n);
 		// ---------------------------------
 
 		// first der matrix is not needed anymore.

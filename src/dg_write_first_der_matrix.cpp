@@ -27,6 +27,9 @@ void Write_first_der_matrix(int n){
 		// processor open file
 		myfile.open(filename, std::ios::trunc);	// truncate the old file
 
+		myfile<< std::fixed;
+		myfile<< std::setprecision(17);
+
 		int index{};
 
 		for(int i = 0; i <= n; ++i){
