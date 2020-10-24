@@ -33,6 +33,13 @@ namespace nodal{
 	extern std::unordered_map<int, std::vector<double>> lagrange_r;
 
 	extern std::unordered_map<int, std::vector<double>> legendre;
+
+	extern std::unordered_map<int, std::vector<double>> gll_points;
+	extern std::unordered_map<int, std::vector<double>> gll_weights;
+
+	extern std::unordered_map<int, std::vector<double>> cgll_points;
+	extern std::unordered_map<int, std::vector<double>> cgll_weights;
+	extern std::unordered_map<int, std::vector<double>> chebyshev_first_der;
 }
 
 #endif

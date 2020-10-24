@@ -14,6 +14,10 @@
 // formward declaration --------------------------------------------------------------
 void Compute_eigs_plus_output(int n);
 
+void Compute_DG_first_der_eigs_plus_output(int n);
+
+void Eigen_Chebyshev_output(int n);
+
 void First_der_eigens(int n, std::vector<double>& der, 
 			std::vector<double>& eig_real, std::vector<double>& eig_im);
 
@@ -21,7 +25,7 @@ void Write_eigs(int n, std::vector<double>& eig_real, std::vector<double>& eig_i
 // -----------------------------------------------------------------------------------
 
 /// @brief
-/// Compute the first derivative's eigenvalue and output to files. 
+/// Compute the standard first derivative's eigenvalues and output to files. 
 /// @param n polynomial order.
 void Compute_eigs_plus_output(int n){
 
@@ -29,6 +33,32 @@ void Compute_eigs_plus_output(int n){
 	std::vector<double> eig_im;
 
 	First_der_eigens(n, nodal::first_der[n], eig_real, eig_im);
+
+	Write_eigs(n, eig_real, eig_im);
+}
+
+/// @brief
+/// Compute the DG first derivative's eigenvalues and output to files. 
+/// @param n polynomial order.
+void Compute_DG_first_der_eigs_plus_output(int n){
+
+	std::vector<double> eig_real;
+	std::vector<double> eig_im;
+
+	First_der_eigens(n, nodal::mfirst_der[n], eig_real, eig_im);
+
+	Write_eigs(n, eig_real, eig_im);
+}
+
+/// @brief
+/// Compute the Chebyshev first derivative's eigenvalues and output to files. 
+/// @param n polynomial order.
+void Eigen_Chebyshev_output(int n){
+
+	std::vector<double> eig_real;
+	std::vector<double> eig_im;
+
+	First_der_eigens(n, nodal::chebyshev_first_der[n], eig_real, eig_im);
 
 	Write_eigs(n, eig_real, eig_im);
 }
@@ -54,6 +84,9 @@ void First_der_eigens(int n, std::vector<double>& der,
 			m(i, j) = der[nodei];
 		}
 	}
+
+	// matrix transpose
+//	m.transposeInPlace();
 
 	// Solve
 	Eigen::EigenSolver<Eigen::MatrixXd> eig_res(m);

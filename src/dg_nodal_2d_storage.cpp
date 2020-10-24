@@ -39,6 +39,8 @@ namespace SortMesh{
 /// @param legendre Legendre polynomial value at GL points. Key: polynomial order. 
 /// @param gll_points Hash table for Gauss Lobbato points. Key: polynoial order, value: vector of guass points.
 /// @param gll_weights Hash table for Gauss Lobbato weights. Key: polynoliam order, value: Gauss weigths. 
+/// @param cgll_points Hash table for Chebyshev Gauss Lobbato points. Key: polynoial order, value: vector of guass points.
+/// @param cgll_weights Hash table for Chebyshev Gauss Lobbato weights. Key: polynoliam order, value: Gauss weigths. 
 namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> gl_points;
@@ -54,4 +56,8 @@ namespace nodal{
 
 	std::unordered_map<int, std::vector<double>> gll_points;
 	std::unordered_map<int, std::vector<double>> gll_weights;
+
+	std::unordered_map<int, std::vector<double>> cgll_points;
+	std::unordered_map<int, std::vector<double>> cgll_weights;
+	std::unordered_map<int, std::vector<double>> chebyshev_first_der;
 }

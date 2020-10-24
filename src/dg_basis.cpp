@@ -37,6 +37,16 @@ void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<dou
 void GLL(int n, std::vector<double>& gll_p, std::vector<double>& gll_w);
 
 void q_and_L_evaluation(int n, double x, double& q, double& q_prime, double& L_N);
+
+void Chebyshev_GLL_nodes_and_weights(int n, std::vector<double>& cgll_p, std::vector<double>& cgll_w);
+
+void Chebyshev_GLL_first_der_matrix(int n, std::vector<double>& cgll_p, std::vector<double>& cder);
+
+void Chebyshev_first_der_trigonometric(int n, std::vector<double>& cgll_p, std::vector<double>& cder);
+
+double C_fun(int n, int k);
+
+void Chebyshev_GLL_nodes_Baltensperger(int n, std::vector<double>& cgll_p);
 //------------------------------------------------
 
 /// @brief 
@@ -294,6 +304,114 @@ void GLL(int n, std::vector<double>& gll_p, std::vector<double>& gll_w){
 	}
 
 
+}
+
+void Chebyshev_GLL_nodes_Baltensperger(int n, std::vector<double>& cgll_p){
+
+	for(int j = 0; j <= n; ++j){
+
+		cgll_p[j] = cos(pi * (double)j / n);
+	}
+}
+
+/// @brief
+/// Helper function for Chebyshev trigonometric function
+/// @param n polynomial order. 
+/// @param k kth point. 
+double C_fun(int n, int k){
+
+	if(k == 0) return 0.5;
+
+	if(k == n) return std::pow(-1.0, n) / 2.0;
+
+	return std::pow(-1.0, k);
+}
+
+void Chebyshev_first_der_trigonometric(int n, std::vector<double>& cgll_p, std::vector<double>& cder){
+
+	for(int k = 0; k <= n; ++k){
+
+		for(int j = 0; j <= n; ++j){
+
+			int node1 = Get_single_index(k, j, n + 1);
+
+			if(k != j){		
+	
+				cder[node1] = C_fun(n, j) / C_fun(n, k) * 1.0 / 
+						(2.0 * sin((double)(k + j) * pi / (2.0 * n)) 
+						     * sin((double)(k - j) * pi / (2.0 * n)));
+			}
+			else{	// k == j
+
+				if(k == 0 || k == n) continue;
+
+				cder[node1] = - cgll_p[k] * (2.0 * std::pow(sin((double)k * pi / (double)n), 2));
+			}
+		}
+	}
+
+	double inter = (2.0 * std::pow(n, 2) + 1.0) / 6.0;
+
+	cder[0] = inter;
+
+	cder.back() = - inter;
+
+}
+
+/// @brief 
+/// Chebiyshev Gauss Lobbato nodes and weights.
+/// Algorithm 27. 
+/// @param n polynomial order. 
+/// @param cgll_p Chebyshev GLL points. 
+/// @param cgll_w Chebyshev GLL weights. 
+void Chebyshev_GLL_nodes_and_weights(int n, std::vector<double>& cgll_p, std::vector<double>& cgll_w){
+
+	for(int j = 0; j <= n; ++j){
+
+		cgll_p[j] = - cos((double)j / (double)n * pi);
+
+		cgll_w[j] = pi / (double)n;
+	}
+
+	cgll_w[0] /= 2.0;
+
+	cgll_w[n] /= 2.0;
+}
+
+/// @brief
+/// Explicit form of Chebyshev GLL first derivative matrix. 
+void Chebyshev_GLL_first_der_matrix(int n, std::vector<double>& cgll_p, std::vector<double>& cder){
+
+	std::vector<double> c(n + 1);
+
+	std::fill(c.begin(), c.end(), 1.0);
+
+	c[0] = 2.0;
+	c[n] = 2.0;
+
+	for(int i = 0; i <= n; ++i){
+
+		int nodei = Get_single_index(i, i, n + 1);
+
+		if(i == 0 || i == n){
+			cder[nodei] = (2.0 * n * n + 1.0) / 6.0;
+		}
+		else{
+			cder[nodei] = - 0.5 * cgll_p[nodei] / (std::pow(sin(pi * i / n), 2));
+
+		}
+
+		for(int j = 0; j <= n; ++j){
+
+			if(i != j){
+
+				int nodej = Get_single_index(i, j, n + 1);
+
+				cder[nodej] = - 0.5 * c[i] / c[j] * std::pow(- 1.0, i + j) / 
+						(sin((i + j) * pi / (2.0 * n)) * sin((i - j) * pi / (2.0 * n)));
+			}
+		}
+	}
 }
 
 /// @brief 

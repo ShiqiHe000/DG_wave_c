@@ -48,6 +48,8 @@ namespace dg_fun{
 	extern const int num_of_equation;
 	
 	extern const double C;
+
+	extern const double pi;
 };
 
 //---------------------------------------------------

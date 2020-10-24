@@ -34,17 +34,24 @@ void Construct_basis_storage(){
 		GL(n, nodal::gl_points[n], nodal::gl_weights[n]);
 	
 		// compute GLL points, weights--------------------------------
-		nodal::gll_points[n] = std::vector<double>(n + 1);
-		nodal::gll_weights[n] = std::vector<double>(n + 1);
-		GLL(n, nodal::gll_points[n], nodal::gll_weights[n]);
+//		nodal::gll_points[n] = std::vector<double>(n + 1);
+//		nodal::gll_weights[n] = std::vector<double>(n + 1);
+//		GLL(n, nodal::gll_points[n], nodal::gll_weights[n]);
 		//------------------------------------------------------------
 	
-		if(n == 6){
-			for(auto& v : nodal::gll_points[n]){
+		// compute Chebyshev GLL points, weights--------------------------------
+		nodal::cgll_points[n] = std::vector<double>(n + 1);
+		nodal::cgll_weights[n] = std::vector<double>(n + 1);
+		nodal::chebyshev_first_der[n] = std::vector<double>(der_size);
 
-				std::cout<< v << "\n";
-			}
-		}
+//		Chebyshev_GLL_nodes_and_weights(n, nodal::cgll_points[n], nodal::cgll_weights[n]);
+//		Chebyshev_GLL_first_der_matrix(n, nodal::cgll_points[n], nodal::chebyshev_first_der[n]);
+	
+		Chebyshev_GLL_nodes_Baltensperger(n, nodal::cgll_points[n]);
+		Chebyshev_first_der_trigonometric(n, nodal::cgll_points[n], nodal::chebyshev_first_der[n]);
+
+		Eigen_Chebyshev_output(n);	// compute eigenvalues and output to files. 
+		//------------------------------------------------------------
 
 		std::vector<double> bary(n + 1);
 	
@@ -58,7 +65,7 @@ void Construct_basis_storage(){
 		// ==================================================================================================
 
 		// compute eigenvalues of the first derivative matrix and output to files -------------------------
-//		Compute_eigs_plus_output(n);
+		//Compute_eigs_plus_output(n);
 		//-------------------------------------------------------------------------------------------------
 
 		// output the first der matrix to file --------------------
@@ -82,6 +89,11 @@ void Construct_basis_storage(){
 		// ---------------------------------
 		//Write_mfirst_der_matrix(n);
 		// ---------------------------------
+		
+		// DG first derivative matrix---------
+	//	Compute_DG_first_der_eigs_plus_output(n);
+		// ------------------------------------
+
 
 		// first der matrix is not needed anymore.
 		nodal::first_der.clear();

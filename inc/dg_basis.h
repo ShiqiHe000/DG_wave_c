@@ -26,4 +26,15 @@ double Interpolate_to_boundary(int n, std::vector<double>& q, std::vector<double
 void Matrix_vector_multiplication(int n, std::vector<double>& d, std::vector<double>& f, std::vector<double>& out);
 
 void Legendre_polynomial_and_derivative(int n, double x, double& q, double& dq);
+
+void GLL(int n, std::vector<double>& gll_p, std::vector<double>& gll_w);
+
+void Chebyshev_GLL_nodes_and_weights(int n, std::vector<double>& cgll_p, std::vector<double>& cgll_w);
+
+void Chebyshev_GLL_first_der_matrix(int n, std::vector<double>& cgll_p, std::vector<double>& cder);
+
+void Chebyshev_first_der_trigonometric(int n, std::vector<double>& cgll_p, std::vector<double>& cder);
+
+void Chebyshev_GLL_nodes_Baltensperger(int n, std::vector<double>& cgll_p);
+
 #endif
