@@ -27,6 +27,7 @@
 #include <ctime>        // time()
 #include <cstdlib>      // random numbe
 #include "dg_cross_section.h"
+#include "dg_total_element_num.h"
 //#include "dg_test.h"	//test
 
 
@@ -53,6 +54,8 @@ int main(int argc, char *argv[]){
 	// output cross section data
 //	Solution_cross_section(0.55);
 
+	// get total element num
+	Total_element_num(dg_time::t_total);
 
 	// terminate mpi
         MPI_Finalize();	
