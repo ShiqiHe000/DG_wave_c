@@ -5,6 +5,8 @@
 ## Documentation
 A detailed documentation an be found at 
 
+[![Documentation Status](https://readthedocs.org/projects/2d-advection/badge/?version=latest)](https://2d-advection.readthedocs.io/en/latest/?badge=latest)
+
 ## Documentation from the source code
 [Source code documentation]( https://shiqihe000.github.io/DG_wave_c/doxygen/html/index.html)
 
