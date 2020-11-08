@@ -2,10 +2,10 @@
 
 [![Build Status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)](https://travis-ci.com/ShiqiHe000/DG_wave_c)
 
-## Documentation
-A detailed documentation an be found at 
-
 [![Documentation Status](https://readthedocs.org/projects/2d-advection/badge/?version=latest)](https://2d-advection.readthedocs.io/en/latest/?badge=latest)
+
+## Documentation
+A detailed documentation an be found at [https://2d-advection.readthedocs.io/en/latest/]
 
 ## Documentation from the source code
 [Source code documentation]( https://shiqihe000.github.io/DG_wave_c/doxygen/html/index.html)
