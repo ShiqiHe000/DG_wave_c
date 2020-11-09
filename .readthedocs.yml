@@ -13,4 +13,7 @@ sphinx:
 python:
   version: 3.7
   install:
-    - requirements: docs/sphinx/requirements.txt
+    - method: pip
+      extra_requirements:
+	- sphinxcontrib-bibtex
+#    - requirements: docs/sphinx/requirements.txt
