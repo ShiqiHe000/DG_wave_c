@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)](https://travis-ci.com/ShiqiHe000/DG_wave_c)
 
-[![Documentation Status](https://readthedocs.org/projects/2d-advection/badge/?version=latest)](https://2d-advection.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
 
 ## Documentation
 A detailed documentation an be found at [https://2d-advection.readthedocs.io/en/latest/]
