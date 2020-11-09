@@ -22,12 +22,11 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "Discontinuous Galerkin Wave Equation", "index.html", [
-    [ "Quardtree AMR Discontinuous Galerkin Wave equation", "index.html", [
+  [ "DG-SEM + AMR + Dynamic Load Balancing Wave Equation Solver", "index.html", [
+    [ "A Hash Table AMR Discontinuous Galerkin Spectral Element Wave Equation Solver with Space-Filling Curve Repartitioning Algorithm.", "index.html", [
       [ "Introduction", "index.html#intro_sec", null ],
       [ "Compilation", "index.html#compile_sec", [
-        [ "Prerequisite", "index.html#prerequiste", null ],
-        [ "cmake", "index.html#cmake", null ]
+        [ "Prerequisite", "index.html#prerequiste", null ]
       ] ]
     ] ],
     [ "Namespaces", "namespaces.html", [

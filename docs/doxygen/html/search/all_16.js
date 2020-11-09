@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['x_5fhilbert_354',['x_hilbert',['../namespaceSortMesh.html#a5af2fbf018a15a38020f9dd54396b44a',1,'SortMesh']]],
-  ['x_5flocal_355',['x_local',['../namespacelocal.html#a4a12222ecf4532e1dd03098b0057ee13',1,'local']]],
-  ['xcoord_5fnew_356',['xcoord_new',['../dg__amr_8cpp.html#a20fb80cc06c8cc305dfa3e3830db1e0c',1,'dg_amr.cpp']]],
-  ['xflux_357',['xflux',['../dg__flux__vector_8cpp.html#a2a4db48c51194833e60de1c7280fbd4c',1,'dg_flux_vector.cpp']]],
-  ['xx0_358',['xx0',['../namespaceuser.html#a4f235b39f7d1cdfc2badb0f3606efb0e',1,'user']]],
-  ['xy2d_359',['xy2d',['../dg__hilbert__curve_8cpp.html#ad104e74ebdd6eb2876d51ea586522ead',1,'dg_hilbert_curve.cpp']]]
+  ['y_5fhilbert_360',['y_hilbert',['../namespaceSortMesh.html#ab45390a2b5dfdc1ae01e8ed0466a351c',1,'SortMesh']]],
+  ['y_5flocal_361',['y_local',['../namespacelocal.html#a14561a4f632b6a5b63792d78ca4f68ca',1,'local']]],
+  ['ycoord_5fnew_362',['ycoord_new',['../dg__amr_8cpp.html#a370b4b4698a63bb52e472a72ecdf399b',1,'dg_amr.cpp']]],
+  ['yflux_363',['yflux',['../dg__flux__vector_8cpp.html#a46e51590af3219e8eaee3e9b3ed7b42f',1,'dg_flux_vector.cpp']]],
+  ['yy0_364',['yy0',['../namespaceuser.html#a6dd4c4f2a4870151148274b3e7c9c41a',1,'user']]]
 ];

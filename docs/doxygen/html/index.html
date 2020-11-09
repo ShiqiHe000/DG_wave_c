@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: Quardtree AMR Discontinuous Galerkin Wave equation</title>
+<title>DG-SEM + AMR + Dynamic Load Balancing Wave Equation Solver: A Hash Table AMR Discontinuous Galerkin Spectral Element Wave Equation Solver with Space-Filling Curve Repartitioning Algorithm.</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,10 +31,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo1.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Discontinuous Galerkin Wave Equation
+   <div id="projectname">DG-SEM + AMR + Dynamic Load Balancing Wave Equation Solver
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">A Spectral DG Solver with Quardtree Adaptive Mesh Refinment</div>
+   <div id="projectbrief">A hp-adaptive discontinuous Galerkin spectral element wave equation solver with dynamic load balancing.</div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -95,23 +95,24 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Quardtree AMR Discontinuous Galerkin Wave equation </div>  </div>
+<div class="title">A <a class="el" href="namespaceHash.html">Hash</a> Table AMR Discontinuous Galerkin Spectral Element Wave Equation Solver with Space-Filling Curve Repartitioning Algorithm. </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="section author"><dt>Author</dt><dd>Shiqi He </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>1.0</dd></dl>
 <h1><a class="anchor" id="intro_sec"></a>
 Introduction</h1>
-<p>A hp-adaptive parallel Discontinuous Galerkin Spectral Element Solver for wave equation. The solver uses quardtree data structure to achieve AMR. Space-filling curve (HIlbert curve) is invoked for dynamic load-balancing. </p>
+<p>A hp-adaptive parallel Discontinuous Galerkin Spectral Element Solver for an acoustic wave equation. The solver uses hash table data structure to arrange AMR data. A Space-filling curve (the HIlbert curve) is invoked for dynamic load-balancing. </p>
 <h1><a class="anchor" id="compile_sec"></a>
 Compilation</h1>
-<p>Discribe how to compile the code in the future. </p>
+<p>Please generate the Makefile by using cmake. </p>
 <h2><a class="anchor" id="prerequiste"></a>
 Prerequisite</h2>
-<p>e.g. g++ compiler </p>
-<h2><a class="anchor" id="cmake"></a>
-cmake</h2>
-<p>use cmake </p>
+<ul>
+<li>g++ 7.5.0</li>
+<li>cmake minimum requirement: 3.9</li>
+<li>OpenMPI: 4.0.2 </li>
+</ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

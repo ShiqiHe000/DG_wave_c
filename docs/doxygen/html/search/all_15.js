@@ -1,18 +1,9 @@
 var searchData=
 [
-  ['west_339',['west',['../namespacehrefinement.html#ab5860525ddb1d32584815cd13281b26f',1,'hrefinement']]],
-  ['write_5fcross_5fsection_340',['Write_cross_section',['../dg__cross__section_8cpp.html#abecdfeabb028ee04cc089b9441fb3801',1,'dg_cross_section.cpp']]],
-  ['write_5ferror_341',['Write_error',['../dg__verification_8cpp.html#aa91c920135c762d1153640b530c439f0',1,'dg_verification.cpp']]],
-  ['write_5ferror_5feach_5fproc_342',['Write_error_each_proc',['../dg__verification_8cpp.html#ad312a9c0e9a72422fac671bd108e464f',1,'dg_verification.cpp']]],
-  ['write_5ffaces_343',['Write_faces',['../dg__test_8cpp.html#a209475451af8d7e12355d1b9e6bc37fd',1,'dg_test.cpp']]],
-  ['write_5ffaces_5fall_344',['Write_faces_all',['../dg__test_8cpp.html#a88f9c46e505802ff6bd5dea16bf30fd2',1,'dg_test.cpp']]],
-  ['write_5fmesh_345',['Write_mesh',['../dg__io_8cpp.html#a7aee12a05282f7bd73e8353a8777edf8',1,'dg_io.cpp']]],
-  ['write_5fmpi_5ftable_346',['Write_mpi_table',['../dg__write__mpi__table_8cpp.html#aecfb38970734f15a85c905ea0396420f',1,'dg_write_mpi_table.cpp']]],
-  ['write_5frecv_347',['Write_recv',['../dg__reallocate__elem_8cpp.html#aebb70a29c05a5aef08d05021f36acec4',1,'dg_reallocate_elem.cpp']]],
-  ['write_5frecv_5fface_348',['Write_recv_face',['../dg__reallocate__elem_8cpp.html#a18f514f19f40824270d98cef46ab610f',1,'dg_reallocate_elem.cpp']]],
-  ['write_5fsend_349',['Write_send',['../dg__reallocate__elem_8cpp.html#aeda121c1fd3ebee264b3d16d5654bb17',1,'dg_reallocate_elem.cpp']]],
-  ['write_5fsend_5fface_350',['Write_send_face',['../dg__reallocate__elem_8cpp.html#ae0c6e6bb8ef148e365a179e71dc2895c',1,'dg_reallocate_elem.cpp']]],
-  ['write_5fsend_5flist_351',['Write_send_list',['../dg__write__send__list_8cpp.html#a8b0d093fa63d7c2d2475e90a39a950d2',1,'dg_write_send_list.cpp']]],
-  ['write_5fsend_5flist_5fall_352',['Write_send_list_all',['../dg__write__send__list_8cpp.html#aaa287309048696f16854dc9966d07632',1,'dg_write_send_list.cpp']]],
-  ['write_5ftable_5fall_353',['Write_table_all',['../dg__write__mpi__table_8cpp.html#a91659142d4a85cddfad74c264ce8fd1b',1,'dg_write_mpi_table.cpp']]]
+  ['x_5fhilbert_354',['x_hilbert',['../namespaceSortMesh.html#a5af2fbf018a15a38020f9dd54396b44a',1,'SortMesh']]],
+  ['x_5flocal_355',['x_local',['../namespacelocal.html#a4a12222ecf4532e1dd03098b0057ee13',1,'local']]],
+  ['xcoord_5fnew_356',['xcoord_new',['../dg__amr_8cpp.html#a20fb80cc06c8cc305dfa3e3830db1e0c',1,'dg_amr.cpp']]],
+  ['xflux_357',['xflux',['../dg__flux__vector_8cpp.html#a2a4db48c51194833e60de1c7280fbd4c',1,'dg_flux_vector.cpp']]],
+  ['xx0_358',['xx0',['../namespaceuser.html#a4f235b39f7d1cdfc2badb0f3606efb0e',1,'user']]],
+  ['xy2d_359',['xy2d',['../dg__hilbert__curve_8cpp.html#ad104e74ebdd6eb2876d51ea586522ead',1,'dg_hilbert_curve.cpp']]]
 ];

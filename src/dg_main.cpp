@@ -2,18 +2,18 @@
 /**
  * \author Shiqi He
  * \version 1.0
- * \mainpage Quardtree AMR Discontinuous Galerkin Wave equation
+ * \mainpage  A Hash Table AMR Discontinuous Galerkin Spectral Element Wave Equation Solver with Space-Filling Curve Repartitioning Algorithm. 
  * \section intro_sec Introduction 
  * A hp-adaptive parallel Discontinuous Galerkin Spectral Element Solver
- * for wave equation. The solver uses quardtree data structure to 
- * achieve AMR. Space-filling curve (HIlbert curve) is invoked for 
+ * for an acoustic wave equation. The solver uses hash table data structure to 
+ * arrange AMR data. A Space-filling curve (the HIlbert curve) is invoked for 
  * dynamic load-balancing. 
  * \section compile_sec Compilation
- * Discribe how to compile the code in the future. 
+ * Please generate the Makefile by using cmake. 
  * \subsection prerequiste Prerequisite
- * e.g. g++ compiler
- * \subsection cmake cmake
- * use cmake
+ - g++ 7.5.0
+ - cmake minimum requirement: 3.9 
+ - OpenMPI: 4.0.2
  */
  
 #include <iostream>
