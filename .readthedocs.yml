@@ -13,9 +13,15 @@ sphinx:
 python:
   version: 3.7
   install:
-    - method: pip
-      path: docs/sphinx/
-      extra_requirements:
-	- requirements.txt
+    - requirements: docs/sphinx/requirements.txt
+    - requirements: requirements.txt
+    
+
+
+
+#    - method: pip
+#      path: docs/sphinx/
+#      extra_requirements:
+#	- requirements.txt
 
 #    - requirements: docs/sphinx/requirements.txt
