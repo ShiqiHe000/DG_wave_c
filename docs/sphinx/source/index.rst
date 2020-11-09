@@ -60,13 +60,11 @@ which, in the long run, can reduce week-long computational wait-times to a matte
    :caption: Contents:
 
    dg_motivation
-   dg_spectral_approximation
    dg_wave_propagation_2d 
-   dg_numerical_fluxes
+   dg_AMR
+   dg_data_structure
    dg_load_balancing
-   dg_mpi
-   dg_profiling
-   dg_other_features
+   dg_results
    dg_reference
 
 

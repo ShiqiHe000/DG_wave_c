@@ -188,6 +188,3 @@ This makes dynamic communication easier to code in RMA, with the help of `MPI_Pu
 
 
 
-References
-===================================
-.. bibliography:: dg_refs.bib
