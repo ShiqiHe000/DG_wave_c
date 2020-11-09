@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_local_storage.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_local_storage.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -101,12 +101,16 @@ $(document).ready(function(){initNavTree('dg__local__storage_8cpp.html',''); ini
 <div class="title">dg_local_storage.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;mpi.h&gt;</code><br />
-<code>#include &quot;dg_local_storage.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;dg_local_storage.h&quot;</code><br />
+<code>#include &quot;dg_unit.h&quot;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &quot;dg_load_balancing.h&quot;</code><br />
+<code>#include &quot;dg_boundary_table.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_local_storage.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__local__storage_8cpp__incl.svg" width="222" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__local__storage_8cpp__incl.svg" width="806" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -115,23 +119,73 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacelocal"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html">local</a></td></tr>
 <tr class="memdesc:namespacelocal"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local data storage (on each process) <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacehrefinement"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html">hrefinement</a></td></tr>
+<tr class="memdesc:namespacehrefinement"><td class="mdescLeft">&#160;</td><td class="mdescRight">The variables that will be used in h-refinement. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceLB"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html">LB</a></td></tr>
+<tr class="memdesc:namespaceLB"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variables for load balancing. <br  />
+ <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceresult"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceresult.html">result</a></td></tr>
+<tr class="memdesc:namespaceresult"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variables for results verification. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a7fc27739a7899a7b7fe6cc9a58af3829"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a7fc27739a7899a7b7fe6cc9a58af3829">local::local_elem_num</a></td></tr>
 <tr class="separator:a7fc27739a7899a7b7fe6cc9a58af3829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a315a7414beb411a028d4078feb1e16ea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a315a7414beb411a028d4078feb1e16ea">local::original_elem_num</a></td></tr>
-<tr class="separator:a315a7414beb411a028d4078feb1e16ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3a010708bcc60d32e103867301ee6d9"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#ae3a010708bcc60d32e103867301ee6d9">local::elem_range</a></td></tr>
 <tr class="separator:ae3a010708bcc60d32e103867301ee6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a12222ecf4532e1dd03098b0057ee13"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a4a12222ecf4532e1dd03098b0057ee13">local::x_local</a> = nullptr</td></tr>
 <tr class="separator:a4a12222ecf4532e1dd03098b0057ee13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14561a4f632b6a5b63792d78ca4f68ca"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a14561a4f632b6a5b63792d78ca4f68ca">local::y_local</a> = nullptr</td></tr>
 <tr class="separator:a14561a4f632b6a5b63792d78ca4f68ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8cfde7254c810ae240c3cbc6f20ae1"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a8e8cfde7254c810ae240c3cbc6f20ae1">local::plevel_x</a> = nullptr</td></tr>
-<tr class="separator:a8e8cfde7254c810ae240c3cbc6f20ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa26158c583e1016d5435773afacec2ae"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#aa26158c583e1016d5435773afacec2ae">local::plevel_y</a> = nullptr</td></tr>
-<tr class="separator:aa26158c583e1016d5435773afacec2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef2ef58bd050ea700e977613180ff69f"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#aef2ef58bd050ea700e977613180ff69f">local::status</a></td></tr>
+<tr class="separator:aef2ef58bd050ea700e977613180ff69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97b45311d64ef04a96073854a2cde8a8"><td class="memItemLeft" align="right" valign="top">Unit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a97b45311d64ef04a96073854a2cde8a8">local::head</a> = nullptr</td></tr>
+<tr class="separator:a97b45311d64ef04a96073854a2cde8a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e569c5b4ba809739b1b6fc04bd2f096"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, Unit * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a3e569c5b4ba809739b1b6fc04bd2f096">local::Hash_elem</a></td></tr>
+<tr class="separator:a3e569c5b4ba809739b1b6fc04bd2f096"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6d417a844c60dcf62f0e5b6c3a6de9a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; mpi_table &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#ab6d417a844c60dcf62f0e5b6c3a6de9a">hrefinement::north</a></td></tr>
+<tr class="separator:ab6d417a844c60dcf62f0e5b6c3a6de9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09a3f0c760dab7385b9fb37e9ae933d4"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; mpi_table &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#a09a3f0c760dab7385b9fb37e9ae933d4">hrefinement::south</a></td></tr>
+<tr class="separator:a09a3f0c760dab7385b9fb37e9ae933d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5860525ddb1d32584815cd13281b26f"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; mpi_table &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#ab5860525ddb1d32584815cd13281b26f">hrefinement::west</a></td></tr>
+<tr class="separator:ab5860525ddb1d32584815cd13281b26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed6e374df89a0d74f8c5cc1d469586fc"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; mpi_table &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#aed6e374df89a0d74f8c5cc1d469586fc">hrefinement::east</a></td></tr>
+<tr class="separator:aed6e374df89a0d74f8c5cc1d469586fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaedd3192d9b6c86e808d99f682198cd4"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, std::vector&lt; long long int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#aaedd3192d9b6c86e808d99f682198cd4">hrefinement::neighbours_north</a></td></tr>
+<tr class="separator:aaedd3192d9b6c86e808d99f682198cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70f4d2151a544bab69bd289c33e4d4ba"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, std::vector&lt; long long int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#a70f4d2151a544bab69bd289c33e4d4ba">hrefinement::neighbours_south</a></td></tr>
+<tr class="separator:a70f4d2151a544bab69bd289c33e4d4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67e075b6af57b7d82e8c39e933885c22"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, std::vector&lt; long long int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#a67e075b6af57b7d82e8c39e933885c22">hrefinement::neighbours_east</a></td></tr>
+<tr class="separator:a67e075b6af57b7d82e8c39e933885c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90a0013b9d213d8ddc95ad49edbbc12d"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, std::vector&lt; long long int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacehrefinement.html#a90a0013b9d213d8ddc95ad49edbbc12d">hrefinement::neighbours_west</a></td></tr>
+<tr class="separator:a90a0013b9d213d8ddc95ad49edbbc12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfde6f3416978ec34f57ac619e952d84"><td class="memItemLeft" align="right" valign="top">std::vector&lt; pmap &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#acfde6f3416978ec34f57ac619e952d84">LB::proc_mapping_table</a></td></tr>
+<tr class="separator:acfde6f3416978ec34f57ac619e952d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5ae1395c3d159de223eab76a5cfa8e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#a1b5ae1395c3d159de223eab76a5cfa8e">LB::opt_bottleneck</a> {}</td></tr>
+<tr class="separator:a1b5ae1395c3d159de223eab76a5cfa8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac14333b66f6f33b45ffcf9366e300105"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#ac14333b66f6f33b45ffcf9366e300105">LB::elem_accum</a> {}</td></tr>
+<tr class="separator:ac14333b66f6f33b45ffcf9366e300105"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ff9dee01330c98a1af67d265c8ed055"><td class="memItemLeft" align="right" valign="top">struct sending_envelope&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#a7ff9dee01330c98a1af67d265c8ed055">LB::Send</a></td></tr>
+<tr class="separator:a7ff9dee01330c98a1af67d265c8ed055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ef534847ca9376fe3995d9de63ede97"><td class="memItemLeft" align="right" valign="top">Unit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#a4ef534847ca9376fe3995d9de63ede97">LB::my_rank_last</a> = nullptr</td></tr>
+<tr class="separator:a4ef534847ca9376fe3995d9de63ede97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92af8680e540058316c204d97b3d064d"><td class="memItemLeft" align="right" valign="top">Unit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#a92af8680e540058316c204d97b3d064d">LB::my_rank_first</a> = nullptr</td></tr>
+<tr class="separator:a92af8680e540058316c204d97b3d064d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a931e61d10641d246e40cc3134e087e17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#a931e61d10641d246e40cc3134e087e17">LB::first</a> = true</td></tr>
+<tr class="separator:a931e61d10641d246e40cc3134e087e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af315cc9ea893a2da35a3497858c6e270"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#af315cc9ea893a2da35a3497858c6e270">LB::high_eff</a> = false</td></tr>
+<tr class="separator:af315cc9ea893a2da35a3497858c6e270"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd47ebedb4c598b14ffe344f108a9538"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLB.html#afd47ebedb4c598b14ffe344f108a9538">LB::load_average</a> {}</td></tr>
+<tr class="separator:afd47ebedb4c598b14ffe344f108a9538"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bac6a4ac9f672dab9f3d6337fc174fc"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceresult.html#a8bac6a4ac9f672dab9f3d6337fc174fc">result::exact</a></td></tr>
+<tr class="separator:a8bac6a4ac9f672dab9f3d6337fc174fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16298f08109bbc3ca0956a5eccc70411"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceresult.html#a16298f08109bbc3ca0956a5eccc70411">result::error</a></td></tr>
+<tr class="separator:a16298f08109bbc3ca0956a5eccc70411"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a409df4df736d4f930e496abb2716f3ff"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceresult.html#a409df4df736d4f930e496abb2716f3ff">result::L2_norm</a></td></tr>
+<tr class="separator:a409df4df736d4f930e496abb2716f3ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

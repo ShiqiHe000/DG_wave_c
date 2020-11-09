@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['sort_5fnode_5fordering_147',['Sort_node_ordering',['../dg__read__mesh__2d_8cpp.html#a0a2915bf00348950eac067b1d46fe4c9',1,'dg_read_mesh_2d.cpp']]],
-  ['start_5fmpi_148',['Start_mpi',['../dg__mpi_8cpp.html#a70bc6fc62b01ccfcb49bb29bd55c58a4',1,'dg_mpi.cpp']]],
-  ['start_5fparallel_149',['Start_parallel',['../dg__start__parallel_8cpp.html#a424a961e2fa19a898badfbad0a0a9f3c',1,'dg_start_parallel.cpp']]]
+  ['neighbour_5fchange_561',['Neighbour_change',['../dg__proc__mapping_8cpp.html#ae6c163a941326c1f5b87d76e95f23da0',1,'dg_proc_mapping.cpp']]],
+  ['neighbours_5farray_5fx_562',['Neighbours_array_x',['../dg__neighbour__list_8cpp.html#a7667e70f6eb0954bc3bab0a2f632dd0d',1,'dg_neighbour_list.cpp']]],
+  ['neighbours_5farray_5fy_563',['Neighbours_array_y',['../dg__neighbour__list_8cpp.html#aa63d6ee63c24f94aac51373534894edf',1,'dg_neighbour_list.cpp']]],
+  ['non_5fsibling_5finterfaces_564',['Non_sibling_interfaces',['../dg__amr_8cpp.html#a3a5f91d2f6130c37cea7110b4050b62a',1,'dg_amr.cpp']]],
+  ['numerical_5fflux_5fx_565',['Numerical_flux_x',['../dg__numerical__flux_8cpp.html#a7d315be790c4676045c1e6adc9a19d27',1,'dg_numerical_flux.cpp']]],
+  ['numerical_5fflux_5fy_566',['Numerical_flux_y',['../dg__numerical__flux_8cpp.html#ad34bd5ef66c1accf74e9df1232634b44',1,'dg_numerical_flux.cpp']]]
 ];

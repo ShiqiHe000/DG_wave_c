@@ -108,30 +108,34 @@ $(document).ready(function(){initNavTree('namespacelocal.html',''); initResizabl
 Variables</h2></td></tr>
 <tr class="memitem:a7fc27739a7899a7b7fe6cc9a58af3829"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a7fc27739a7899a7b7fe6cc9a58af3829">local_elem_num</a></td></tr>
 <tr class="separator:a7fc27739a7899a7b7fe6cc9a58af3829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a315a7414beb411a028d4078feb1e16ea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a315a7414beb411a028d4078feb1e16ea">original_elem_num</a></td></tr>
-<tr class="separator:a315a7414beb411a028d4078feb1e16ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3a010708bcc60d32e103867301ee6d9"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#ae3a010708bcc60d32e103867301ee6d9">elem_range</a></td></tr>
 <tr class="separator:ae3a010708bcc60d32e103867301ee6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a12222ecf4532e1dd03098b0057ee13"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a4a12222ecf4532e1dd03098b0057ee13">x_local</a> = nullptr</td></tr>
 <tr class="separator:a4a12222ecf4532e1dd03098b0057ee13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14561a4f632b6a5b63792d78ca4f68ca"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a14561a4f632b6a5b63792d78ca4f68ca">y_local</a> = nullptr</td></tr>
 <tr class="separator:a14561a4f632b6a5b63792d78ca4f68ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8cfde7254c810ae240c3cbc6f20ae1"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a8e8cfde7254c810ae240c3cbc6f20ae1">plevel_x</a> = nullptr</td></tr>
-<tr class="separator:a8e8cfde7254c810ae240c3cbc6f20ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa26158c583e1016d5435773afacec2ae"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#aa26158c583e1016d5435773afacec2ae">plevel_y</a> = nullptr</td></tr>
-<tr class="separator:aa26158c583e1016d5435773afacec2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef2ef58bd050ea700e977613180ff69f"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#aef2ef58bd050ea700e977613180ff69f">status</a></td></tr>
+<tr class="separator:aef2ef58bd050ea700e977613180ff69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97b45311d64ef04a96073854a2cde8a8"><td class="memItemLeft" align="right" valign="top">Unit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a97b45311d64ef04a96073854a2cde8a8">head</a> = nullptr</td></tr>
+<tr class="separator:a97b45311d64ef04a96073854a2cde8a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e569c5b4ba809739b1b6fc04bd2f096"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; long long int, Unit * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocal.html#a3e569c5b4ba809739b1b6fc04bd2f096">Hash_elem</a></td></tr>
+<tr class="separator:a3e569c5b4ba809739b1b6fc04bd2f096"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Local data storage (on each process) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">local_elem_num</td><td>local element number, start with 1. </td></tr>
-    <tr><td class="paramname">original_elem_num</td><td>total element number before refine. </td></tr>
-    <tr><td class="paramname">elem_range</td><td>the range of element stores on each processor. Stored the last element numebr (start with 0, global index). </td></tr>
+    <tr><td class="paramname">elem_range</td><td>the range of element stores on each processor. Stored the last element numeber (start with 0, global index). </td></tr>
+    <tr><td class="paramname">rank_indicator</td><td>store the last element Hilbert index on the finest level (useful in message exchange process). </td></tr>
     <tr><td class="paramname">x_local</td><td>coordinate, start with 0. </td></tr>
     <tr><td class="paramname">y_local</td><td>y coordinate, start with 0. </td></tr>
     <tr><td class="paramname">plevel_x</td><td>polynomial level in x direction (start with 0) </td></tr>
     <tr><td class="paramname">plevel_y</td><td>polynomial level in y direction (start with 0) </td></tr>
+    <tr><td class="paramname">status</td><td>element Hilbert status. </td></tr>
+    <tr><td class="paramname">head</td><td>head pointer points to the first Unit. </td></tr>
+    <tr><td class="paramname">solution_int_l</td><td>interior solution on the left boundary. </td></tr>
+    <tr><td class="paramname">solution_int_r</td><td>interior solution on the left boundary. </td></tr>
   </table>
   </dd>
 </dl>
@@ -144,6 +148,34 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int* local::elem_range</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3e569c5b4ba809739b1b6fc04bd2f096"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e569c5b4ba809739b1b6fc04bd2f096">&#9670;&nbsp;</a></span>Hash_elem</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;long long int, Unit*&gt; local::Hash_elem</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a97b45311d64ef04a96073854a2cde8a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97b45311d64ef04a96073854a2cde8a8">&#9670;&nbsp;</a></span>head</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Unit* local::head = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -164,42 +196,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a315a7414beb411a028d4078feb1e16ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a315a7414beb411a028d4078feb1e16ea">&#9670;&nbsp;</a></span>original_elem_num</h2>
+<a id="aef2ef58bd050ea700e977613180ff69f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef2ef58bd050ea700e977613180ff69f">&#9670;&nbsp;</a></span>status</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int local::original_elem_num</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8e8cfde7254c810ae240c3cbc6f20ae1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e8cfde7254c810ae240c3cbc6f20ae1">&#9670;&nbsp;</a></span>plevel_x</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int* local::plevel_x = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa26158c583e1016d5435773afacec2ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa26158c583e1016d5435773afacec2ae">&#9670;&nbsp;</a></span>plevel_y</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int* local::plevel_y = nullptr</td>
+          <td class="memname">char* local::status</td>
         </tr>
       </table>
 </div><div class="memdoc">

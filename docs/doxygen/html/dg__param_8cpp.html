@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_param.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_param.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -101,14 +101,14 @@ $(document).ready(function(){initNavTree('dg__param_8cpp.html',''); initResizabl
 <div class="title">dg_param.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;mpi.h&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &quot;dg_param.h&quot;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_param.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__param_8cpp__incl.svg" width="355" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__param_8cpp__incl.svg" width="263" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -119,6 +119,18 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacegrid"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html">grid</a></td></tr>
 <tr class="memdesc:namespacegrid"><td class="mdescLeft">&#160;</td><td class="mdescRight">Domain size. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacedg__time"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__time.html">dg_time</a></td></tr>
+<tr class="memdesc:namespacedg__time"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time related variables. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacedg__fun"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__fun.html">dg_fun</a></td></tr>
+<tr class="memdesc:namespacedg__fun"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function related parameters. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacedg__refine"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html">dg_refine</a></td></tr>
+<tr class="memdesc:namespacedg__refine"><td class="mdescLeft">&#160;</td><td class="mdescRight">refinement (hp) refinement swtich. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacedg__io"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__io.html">dg_io</a></td></tr>
+<tr class="memdesc:namespacedg__io"><td class="mdescLeft">&#160;</td><td class="mdescRight">variable to control the outputs <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacempi"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacempi.html">mpi</a></td></tr>
 <tr class="memdesc:namespacempi"><td class="mdescLeft">&#160;</td><td class="mdescRight">mpi variables <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +139,14 @@ Namespaces</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a75d0cb370b1631832c02866293a1c3a9"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefileinfo.html#a75d0cb370b1631832c02866293a1c3a9">fileinfo::fileplace</a> = &quot;../gmsh_files/4_elements.msh&quot;</td></tr>
 <tr class="separator:a75d0cb370b1631832c02866293a1c3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bc99b78026963b341657d3fd963c2b4"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefileinfo.html#a0bc99b78026963b341657d3fd963c2b4">fileinfo::output_place</a> = &quot;../outputs/&quot;</td></tr>
+<tr class="separator:a0bc99b78026963b341657d3fd963c2b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66248feb45e01d4fa75622918c9584eb"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefileinfo.html#a66248feb45e01d4fa75622918c9584eb">fileinfo::eff_filename</a> = &quot;../efficiency/eff_no_LB&quot;</td></tr>
+<tr class="separator:a66248feb45e01d4fa75622918c9584eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf19d9e56923baa48a179516df54a232"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefileinfo.html#abf19d9e56923baa48a179516df54a232">fileinfo::crosssection_filename</a> = &quot;../cross_section/cs_4elem_hp.csv&quot;</td></tr>
+<tr class="separator:abf19d9e56923baa48a179516df54a232"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eef1f4e004e8109c4a3acf7c8ffc0e4"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefileinfo.html#a1eef1f4e004e8109c4a3acf7c8ffc0e4">fileinfo::exact_error_filename</a> = &quot;../exact_error/error_refine.dat&quot;</td></tr>
+<tr class="separator:a1eef1f4e004e8109c4a3acf7c8ffc0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6199c4fb8cb6f6fe49c08387dd95cb14"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a6199c4fb8cb6f6fe49c08387dd95cb14">grid::exp_x</a> = 1</td></tr>
 <tr class="separator:a6199c4fb8cb6f6fe49c08387dd95cb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ba338f6a49bfc06e9e932e4fc8eab94"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a8ba338f6a49bfc06e9e932e4fc8eab94">grid::exp_y</a> = 1</td></tr>
@@ -141,8 +161,34 @@ Variables</h2></td></tr>
 <tr class="separator:a20a46e735d88ce8c4b1fc9df3aaa8316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8e3d786fa0eed216c7335ccb518e4ca"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#aa8e3d786fa0eed216c7335ccb518e4ca">grid::nmin</a> = 6</td></tr>
 <tr class="separator:aa8e3d786fa0eed216c7335ccb518e4ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75632badf0a07c651e5781cd959379f5"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a75632badf0a07c651e5781cd959379f5">grid::nmax</a> = 6</td></tr>
+<tr class="memitem:a75632badf0a07c651e5781cd959379f5"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a75632badf0a07c651e5781cd959379f5">grid::nmax</a> = 14</td></tr>
 <tr class="separator:a75632badf0a07c651e5781cd959379f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ebe80987587a7756681ab124743e176"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrid.html#a9ebe80987587a7756681ab124743e176">grid::hlevel_max</a> = 1</td></tr>
+<tr class="separator:a9ebe80987587a7756681ab124743e176"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9b22ea27512c41fa21dd810b06c23f3"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__time.html#aa9b22ea27512c41fa21dd810b06c23f3">dg_time::t_total</a> = 1.0e-8 * 5</td></tr>
+<tr class="separator:aa9b22ea27512c41fa21dd810b06c23f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb12c4fcdb584dd9273ab2aba93fc836"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__time.html#afb12c4fcdb584dd9273ab2aba93fc836">dg_time::nt</a> = 5</td></tr>
+<tr class="separator:afb12c4fcdb584dd9273ab2aba93fc836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac87968b8d749d15887d2847c3a92c666"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__fun.html#ac87968b8d749d15887d2847c3a92c666">dg_fun::num_of_equation</a> = 3</td></tr>
+<tr class="separator:ac87968b8d749d15887d2847c3a92c666"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7463048485ed4f467ac1b70fdabf6b3"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__fun.html#ad7463048485ed4f467ac1b70fdabf6b3">dg_fun::C</a> = 1.0</td></tr>
+<tr class="separator:ad7463048485ed4f467ac1b70fdabf6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd888c8bb429cbb5a671b63b547f1b47"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#afd888c8bb429cbb5a671b63b547f1b47">dg_refine::adapt</a> = true</td></tr>
+<tr class="separator:afd888c8bb429cbb5a671b63b547f1b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4326dac535d1d57ff447b830495c2a8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#ae4326dac535d1d57ff447b830495c2a8">dg_refine::refine_frequency</a> = 1000</td></tr>
+<tr class="separator:ae4326dac535d1d57ff447b830495c2a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a277d0f845669a24e04baba574eac60d0"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#a277d0f845669a24e04baba574eac60d0">dg_refine::fit_point_num</a> = 4</td></tr>
+<tr class="separator:a277d0f845669a24e04baba574eac60d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30f645f2b2ae3a1c8d3ba8ed72558867"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#a30f645f2b2ae3a1c8d3ba8ed72558867">dg_refine::tolerance_min</a> = 1.0e-6</td></tr>
+<tr class="separator:a30f645f2b2ae3a1c8d3ba8ed72558867"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb70fda7b333639d55e55461b4c61c9c"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#afb70fda7b333639d55e55461b4c61c9c">dg_refine::tolerance_max</a> = 1.0e-14</td></tr>
+<tr class="separator:afb70fda7b333639d55e55461b4c61c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9efd8cf2f1a00d5348fcb86b7fd29fe1"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__refine.html#a9efd8cf2f1a00d5348fcb86b7fd29fe1">dg_refine::load_balancing</a> = true</td></tr>
+<tr class="separator:a9efd8cf2f1a00d5348fcb86b7fd29fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9446328dcd641b1449ca70d6156c815b"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__io.html#a9446328dcd641b1449ca70d6156c815b">dg_io::io</a> = true</td></tr>
+<tr class="separator:a9446328dcd641b1449ca70d6156c815b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b02016eeab4b67c02b551a64a7a5703"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedg__io.html#a5b02016eeab4b67c02b551a64a7a5703">dg_io::output_frequency</a> = 1000</td></tr>
+<tr class="separator:a5b02016eeab4b67c02b551a64a7a5703"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81dd6f94f107660dc25a1393f0aa5290"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacempi.html#a81dd6f94f107660dc25a1393f0aa5290">mpi::rank</a></td></tr>
 <tr class="separator:a81dd6f94f107660dc25a1393f0aa5290"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2b08cc1b7cb549659d862cfefd6649d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacempi.html#ac2b08cc1b7cb549659d862cfefd6649d">mpi::num_proc</a></td></tr>

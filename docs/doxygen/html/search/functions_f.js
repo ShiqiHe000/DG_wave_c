@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['send_5fpack_593',['Send_pack',['../dg__reallocate__elem_8cpp.html#abf0e7657b78ce82268b662d84f6119f1',1,'dg_reallocate_elem.cpp']]],
+  ['send_5frecv_5fownership_594',['Send_recv_ownership',['../dg__proc__mapping_8cpp.html#a0124298b737b94f6798c9b3ade46b146',1,'dg_proc_mapping.cpp']]],
+  ['sender_5frecver_595',['Sender_recver',['../dg__mpi__table__construct_8cpp.html#a107748533e4ca241acd6942321d813a6',1,'dg_mpi_table_construct.cpp']]],
+  ['serial_5fio_596',['Serial_io',['../dg__io_8cpp.html#a951ea2fe81d1b791570b03437e5c69d4',1,'dg_io.cpp']]],
+  ['sibling_5fposition_597',['Sibling_position',['../dg__status__table_8cpp.html#a6cd3c80abb06f242b9468ecae7f6f75f',1,'dg_status_table.cpp']]],
+  ['sibling_5ftable_598',['Sibling_table',['../dg__status__table_8cpp.html#acbdb783b919c7ffe08b73310c9242397',1,'dg_status_table.cpp']]],
+  ['solution_5fback_5fto_5fparent_599',['Solution_back_to_parent',['../dg__interpolate__to__new__points_8cpp.html#a7470cd349b4312b51f7a57d99da77a75',1,'dg_interpolate_to_new_points.cpp']]],
+  ['solution_5fcross_5fsection_600',['Solution_cross_section',['../dg__cross__section_8cpp.html#a57ad8a02dd190608d2e1f3370296bec0',1,'dg_cross_section.cpp']]],
+  ['solution_5fl2_5fnorm_601',['Solution_l2_norm',['../dg__error__estimator_8cpp.html#a9a974253c4bbad7613aabcaccc239e7c',1,'dg_error_estimator.cpp']]],
+  ['solution_5fpack_602',['Solution_pack',['../dg__reallocate__elem_8cpp.html#a2433f3e0523abc8b7e37bf977d0c3d6d',1,'dg_reallocate_elem.cpp']]],
+  ['solutions_5fto_5fchildren_603',['Solutions_to_children',['../dg__interpolate__to__new__points_8cpp.html#a71855fc82672bfb85f745c7601bccaef',1,'dg_interpolate_to_new_points.cpp']]],
+  ['sort_5fnode_5fordering_604',['Sort_node_ordering',['../dg__read__mesh__2d_8cpp.html#a0a2915bf00348950eac067b1d46fe4c9',1,'dg_read_mesh_2d.cpp']]],
+  ['spatial_5fderivative_605',['Spatial_derivative',['../dg__spatial__derivative_8cpp.html#a2445e33b455ab1ef534b2d8e2ad52aaf',1,'dg_spatial_derivative.cpp']]],
+  ['start_5fmpi_606',['Start_mpi',['../dg__mpi_8cpp.html#abf1bb2fb8b5d69a19b320e6905cd176c',1,'dg_mpi.cpp']]],
+  ['start_5fparallel_607',['Start_parallel',['../dg__start__parallel_8cpp.html#a424a961e2fa19a898badfbad0a0a9f3c',1,'dg_start_parallel.cpp']]],
+  ['status_5ftable_608',['Status_table',['../dg__status__table_8cpp.html#a45acffa1f6a4407865a5d30406622a54',1,'dg_status_table.cpp']]],
+  ['szudzik_609',['Szudzik',['../dg__cantor__pairing_8cpp.html#a00803773f948a1f0a885fc73e8b05176',1,'dg_cantor_pairing.cpp']]]
+];

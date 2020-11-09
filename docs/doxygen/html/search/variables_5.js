@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['nmax_169',['nmax',['../namespacegrid.html#a75632badf0a07c651e5781cd959379f5',1,'grid']]],
-  ['nmin_170',['nmin',['../namespacegrid.html#aa8e3d786fa0eed216c7335ccb518e4ca',1,'grid']]],
-  ['num_5fof_5felement_171',['num_of_element',['../namespaceSortMesh.html#a15e99d3be1d5ac75d5d0a261b02bc88b',1,'SortMesh']]],
-  ['num_5fof_5felement_5fx_172',['num_of_element_x',['../namespaceSortMesh.html#a396fa11d97629af30f744c8a0460fb4b',1,'SortMesh']]],
-  ['num_5fof_5felement_5fy_173',['num_of_element_y',['../namespaceSortMesh.html#ab6410e79cb99613a62d750eb232398a2',1,'SortMesh']]],
-  ['num_5fproc_174',['num_proc',['../namespacempi.html#ac2b08cc1b7cb549659d862cfefd6649d',1,'mpi']]]
+  ['g_5felem_670',['g_elem',['../dg__verification_8cpp.html#aa144a65d92477c3dec0e53a7e69b6afd',1,'dg_verification.cpp']]],
+  ['gl_5fpoints_671',['gl_points',['../namespacenodal.html#a5e2ccce817439d2838fc47ddc20b3d41',1,'nodal']]],
+  ['gl_5fweights_672',['gl_weights',['../namespacenodal.html#aabbb1fe1ce69046f85974573d5fc8a0a',1,'nodal']]],
+  ['gx_5fl_673',['gx_l',['../namespacegrid.html#acd14a32e98f7236ee46107ffb768a1b2',1,'grid']]],
+  ['gx_5fr_674',['gx_r',['../namespacegrid.html#ae038523f31c47671a508a44e00247c8c',1,'grid']]],
+  ['gy_5fl_675',['gy_l',['../namespacegrid.html#a5cf68479539d1ff3ebffe29f269bc771',1,'grid']]],
+  ['gy_5fr_676',['gy_r',['../namespacegrid.html#a20a46e735d88ce8c4b1fc9df3aaa8316',1,'grid']]]
 ];

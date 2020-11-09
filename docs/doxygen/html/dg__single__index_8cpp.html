@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_single_index.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_single_index.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -114,6 +114,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abe859aac916629f39c2691317740efd8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__single__index_8cpp.html#abe859aac916629f39c2691317740efd8">Get_single_index</a> (int row, int col, int total_col)</td></tr>
 <tr class="memdesc:abe859aac916629f39c2691317740efd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert the 2d array index into a single 1d array index  <a href="dg__single__index_8cpp.html#abe859aac916629f39c2691317740efd8">More...</a><br /></td></tr>
 <tr class="separator:abe859aac916629f39c2691317740efd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a731d855c71d6c79fa753811e4d5f3ec5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__single__index_8cpp.html#a731d855c71d6c79fa753811e4d5f3ec5">Get_single_index_3d</a> (int i, int j, int k, int total_row, int total_col)</td></tr>
+<tr class="memdesc:a731d855c71d6c79fa753811e4d5f3ec5"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert the 3d array index (i, j, k) into a single 1d array index  <a href="dg__single__index_8cpp.html#a731d855c71d6c79fa753811e4d5f3ec5">More...</a><br /></td></tr>
+<tr class="separator:a731d855c71d6c79fa753811e4d5f3ec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="abe859aac916629f39c2691317740efd8"></a>
@@ -151,8 +154,66 @@ Functions</h2></td></tr>
 <p>convert the 2d array index into a single 1d array index </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">row</td><td>row number (start with 0) </td></tr>
-    <tr><td class="paramname">col</td><td>column number (start with 0) </td></tr>
+    <tr><td class="paramname">row</td><td>row number (start from 0) </td></tr>
+    <tr><td class="paramname">col</td><td>column number (start from 0) </td></tr>
+    <tr><td class="paramname">total_col</td><td>total number of column (start from 1) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a731d855c71d6c79fa753811e4d5f3ec5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a731d855c71d6c79fa753811e4d5f3ec5">&#9670;&nbsp;</a></span>Get_single_index_3d()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Get_single_index_3d </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>k</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>total_row</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>total_col</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>convert the 3d array index (i, j, k) into a single 1d array index </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>row number (start with 0) </td></tr>
+    <tr><td class="paramname">j</td><td>column number (start with 0) </td></tr>
+    <tr><td class="paramname">k</td><td>thrid coordinate number (start with 0) </td></tr>
+    <tr><td class="paramname">total_row</td><td>total number of row (start with 1) </td></tr>
     <tr><td class="paramname">total_col</td><td>total number of column (start with 1) </td></tr>
   </table>
   </dd>

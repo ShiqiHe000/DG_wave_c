@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['mpi_96',['mpi',['../namespacempi.html',1,'']]]
+  ['hash_371',['Hash',['../namespaceHash.html',1,'']]],
+  ['hrefinement_372',['hrefinement',['../namespacehrefinement.html',1,'']]]
 ];

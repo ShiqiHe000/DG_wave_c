@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_basis.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_basis.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -102,13 +102,15 @@ $(document).ready(function(){initNavTree('dg__basis_8cpp.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &quot;dg_single_index.h&quot;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_basis.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__basis_8cpp__incl.svg" width="394" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__basis_8cpp__incl.svg" width="563" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -117,27 +119,34 @@ Functions</h2></td></tr>
 <tr class="memitem:a84f69d2ad1b0f21348cefb3c169b9369"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a84f69d2ad1b0f21348cefb3c169b9369">Almost_equal</a> (double a, double b)</td></tr>
 <tr class="memdesc:a84f69d2ad1b0f21348cefb3c169b9369"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testing equality of two floating point numbers. Algorithm 139.  <a href="dg__basis_8cpp.html#a84f69d2ad1b0f21348cefb3c169b9369">More...</a><br /></td></tr>
 <tr class="separator:a84f69d2ad1b0f21348cefb3c169b9369"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a109ceb7e26b5ad04ffa3bcc9f1a38f28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a109ceb7e26b5ad04ffa3bcc9f1a38f28">Matrix_vector_multiplication</a> (int n, double *d, double *f, double *der)</td></tr>
-<tr class="memdesc:a109ceb7e26b5ad04ffa3bcc9f1a38f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute matrix vector multiplication. d * f = der. Algorithm 19.  <a href="dg__basis_8cpp.html#a109ceb7e26b5ad04ffa3bcc9f1a38f28">More...</a><br /></td></tr>
-<tr class="separator:a109ceb7e26b5ad04ffa3bcc9f1a38f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4efbf2f7716ead333ac6d1842fb4d881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a4efbf2f7716ead333ac6d1842fb4d881">Mth_order_polynomial_derivative_matrix</a> (int n, int mth_der, std::vector&lt; double &gt; &amp;x, std::vector&lt; double &gt; &amp;der, std::vector&lt; double &gt; &amp;bary)</td></tr>
+<tr class="memdesc:a4efbf2f7716ead333ac6d1842fb4d881"><td class="mdescLeft">&#160;</td><td class="mdescRight">M-th order derivative matrix. Algorithm 36-37.  <a href="dg__basis_8cpp.html#a4efbf2f7716ead333ac6d1842fb4d881">More...</a><br /></td></tr>
+<tr class="separator:a4efbf2f7716ead333ac6d1842fb4d881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a220379698d5c53e01dfc349d4a93df81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a220379698d5c53e01dfc349d4a93df81">GL</a> (int n, std::vector&lt; double &gt; &amp;gl_p, std::vector&lt; double &gt; &amp;gl_w)</td></tr>
+<tr class="memdesc:a220379698d5c53e01dfc349d4a93df81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the Gauss Legendre nodes and weights. Algprithm 23.  <a href="dg__basis_8cpp.html#a220379698d5c53e01dfc349d4a93df81">More...</a><br /></td></tr>
+<tr class="separator:a220379698d5c53e01dfc349d4a93df81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c530174ca7d8d3a30c84a6574f24f10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a2c530174ca7d8d3a30c84a6574f24f10">BARW</a> (int n, std::vector&lt; double &gt; &amp;x, std::vector&lt; double &gt; &amp;bary)</td></tr>
+<tr class="memdesc:a2c530174ca7d8d3a30c84a6574f24f10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Barycentric weights for Lagrange Iterpolation. Algorithm 30.  <a href="dg__basis_8cpp.html#a2c530174ca7d8d3a30c84a6574f24f10">More...</a><br /></td></tr>
+<tr class="separator:a2c530174ca7d8d3a30c84a6574f24f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a228e16cf2c90a0081e590eca42cc3874"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a228e16cf2c90a0081e590eca42cc3874">Lagrange_interpolation</a> (int n, double x, std::vector&lt; double &gt; &amp;xi, std::vector&lt; double &gt; &amp;f, std::vector&lt; double &gt; &amp;w, std::vector&lt; int &gt; &amp;index)</td></tr>
+<tr class="memdesc:a228e16cf2c90a0081e590eca42cc3874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange interpolant from Barycentric form. Algorithm 31. <br  />
+  <a href="dg__basis_8cpp.html#a228e16cf2c90a0081e590eca42cc3874">More...</a><br /></td></tr>
+<tr class="separator:a228e16cf2c90a0081e590eca42cc3874"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c20c64a51ca4b10e4b794f1c356ca22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a1c20c64a51ca4b10e4b794f1c356ca22">Lagrange_interpolating_polynomial</a> (int n, double target_p, std::vector&lt; double &gt; &amp;x, std::vector&lt; double &gt; &amp;bary, std::vector&lt; double &gt; &amp;lag)</td></tr>
+<tr class="memdesc:a1c20c64a51ca4b10e4b794f1c356ca22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange interpolating polynoimial value at target point. Algorithm 34. Return the interpolation value on point x.  <a href="dg__basis_8cpp.html#a1c20c64a51ca4b10e4b794f1c356ca22">More...</a><br /></td></tr>
+<tr class="separator:a1c20c64a51ca4b10e4b794f1c356ca22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf78fc77ca02793f37f141e7c8030f6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#aaf78fc77ca02793f37f141e7c8030f6f">Legendre_polynomial_and_derivative</a> (int n, double x, double &amp;q, double &amp;dq)</td></tr>
+<tr class="memdesc:aaf78fc77ca02793f37f141e7c8030f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Legendre polynomial of degree k and its derivative using the three term recursive. Algorithm 22.  <a href="dg__basis_8cpp.html#aaf78fc77ca02793f37f141e7c8030f6f">More...</a><br /></td></tr>
+<tr class="separator:aaf78fc77ca02793f37f141e7c8030f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a640d847653ff45b8597eaca8ff360a14"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a640d847653ff45b8597eaca8ff360a14">Interpolate_to_boundary</a> (int n, std::vector&lt; double &gt; &amp;q, std::vector&lt; double &gt; &amp;lag)</td></tr>
+<tr class="memdesc:a640d847653ff45b8597eaca8ff360a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interpolate the interior solution to the element boundary/interface.  <a href="dg__basis_8cpp.html#a640d847653ff45b8597eaca8ff360a14">More...</a><br /></td></tr>
+<tr class="separator:a640d847653ff45b8597eaca8ff360a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add7043640858685e79d4dbeaad8da58e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#add7043640858685e79d4dbeaad8da58e">Matrix_vector_multiplication</a> (int n, std::vector&lt; double &gt; &amp;d, std::vector&lt; double &gt; &amp;f, std::vector&lt; double &gt; &amp;out)</td></tr>
+<tr class="memdesc:add7043640858685e79d4dbeaad8da58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute matrix vector multiplication. d * f = der. Algorithm 19.  <a href="dg__basis_8cpp.html#add7043640858685e79d4dbeaad8da58e">More...</a><br /></td></tr>
+<tr class="separator:add7043640858685e79d4dbeaad8da58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16b6d1bc1e5051fe344a62a75d6561fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a16b6d1bc1e5051fe344a62a75d6561fd">Matrix_vector_multiplication_blas</a> (int n, double *d, double *f, double *der)</td></tr>
 <tr class="memdesc:a16b6d1bc1e5051fe344a62a75d6561fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute matrix vector multiplication. d * f = der. Use BLAS library.  <a href="dg__basis_8cpp.html#a16b6d1bc1e5051fe344a62a75d6561fd">More...</a><br /></td></tr>
 <tr class="separator:a16b6d1bc1e5051fe344a62a75d6561fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92cd3b57bad77956d7908c12b63d1ea6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a92cd3b57bad77956d7908c12b63d1ea6">Legendre_polynomial_and_derivative</a> (int n, double &amp;x, double &amp;q, double &amp;dq)</td></tr>
-<tr class="memdesc:a92cd3b57bad77956d7908c12b63d1ea6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Legendre polynomial of degree k and its derivative using the three term recursive. Algorithm 22.  <a href="dg__basis_8cpp.html#a92cd3b57bad77956d7908c12b63d1ea6">More...</a><br /></td></tr>
-<tr class="separator:a92cd3b57bad77956d7908c12b63d1ea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0bdc110d13f7174cf458464b9821b86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#ae0bdc110d13f7174cf458464b9821b86">GL</a> (int n, double *gl_p, double *gl_w)</td></tr>
-<tr class="memdesc:ae0bdc110d13f7174cf458464b9821b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the Gauss Legendre nodes and weights. Algprithm 23.  <a href="dg__basis_8cpp.html#ae0bdc110d13f7174cf458464b9821b86">More...</a><br /></td></tr>
-<tr class="separator:ae0bdc110d13f7174cf458464b9821b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacd8ce839514394ad7ae9c8d316d6535"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#aacd8ce839514394ad7ae9c8d316d6535">BARW</a> (int n, double *x, double *bary)</td></tr>
-<tr class="memdesc:aacd8ce839514394ad7ae9c8d316d6535"><td class="mdescLeft">&#160;</td><td class="mdescRight">Barycentric weights for Lagrange Iterpolation. Algorithm 30.  <a href="dg__basis_8cpp.html#aacd8ce839514394ad7ae9c8d316d6535">More...</a><br /></td></tr>
-<tr class="separator:aacd8ce839514394ad7ae9c8d316d6535"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cae629757bd44004fb7e3b4c870c746"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a3cae629757bd44004fb7e3b4c870c746">Lagrange_interpolating_polynomial</a> (int n, double target_p, double *x, double *bary, double *lag)</td></tr>
-<tr class="memdesc:a3cae629757bd44004fb7e3b4c870c746"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange interpolating polynoimial value at target point. Algorithm 34.  <a href="dg__basis_8cpp.html#a3cae629757bd44004fb7e3b4c870c746">More...</a><br /></td></tr>
-<tr class="separator:a3cae629757bd44004fb7e3b4c870c746"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7df989cf63712fe6bf2a086a9ab0f623"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis_8cpp.html#a7df989cf63712fe6bf2a086a9ab0f623">Mth_order_polynomial_derivative_matrix</a> (int n, int mth_der, double *x, double *der)</td></tr>
-<tr class="memdesc:a7df989cf63712fe6bf2a086a9ab0f623"><td class="mdescLeft">&#160;</td><td class="mdescRight">M-th order derivative matrix. Algorithm 36-37.  <a href="dg__basis_8cpp.html#a7df989cf63712fe6bf2a086a9ab0f623">More...</a><br /></td></tr>
-<tr class="separator:a7df989cf63712fe6bf2a086a9ab0f623"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -182,8 +191,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aacd8ce839514394ad7ae9c8d316d6535"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacd8ce839514394ad7ae9c8d316d6535">&#9670;&nbsp;</a></span>BARW()</h2>
+<a id="a2c530174ca7d8d3a30c84a6574f24f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c530174ca7d8d3a30c84a6574f24f10">&#9670;&nbsp;</a></span>BARW()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,13 +206,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>bary</em>&#160;</td>
         </tr>
         <tr>
@@ -226,8 +235,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ae0bdc110d13f7174cf458464b9821b86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0bdc110d13f7174cf458464b9821b86">&#9670;&nbsp;</a></span>GL()</h2>
+<a id="a220379698d5c53e01dfc349d4a93df81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a220379698d5c53e01dfc349d4a93df81">&#9670;&nbsp;</a></span>GL()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -241,13 +250,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>gl_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>gl_w</em>&#160;</td>
         </tr>
         <tr>
@@ -270,8 +279,52 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a3cae629757bd44004fb7e3b4c870c746"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3cae629757bd44004fb7e3b4c870c746">&#9670;&nbsp;</a></span>Lagrange_interpolating_polynomial()</h2>
+<a id="a640d847653ff45b8597eaca8ff360a14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a640d847653ff45b8597eaca8ff360a14">&#9670;&nbsp;</a></span>Interpolate_to_boundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Interpolate_to_boundary </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>q</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>lag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Interpolate the interior solution to the element boundary/interface. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>polynomial order. </td></tr>
+    <tr><td class="paramname">q</td><td>solution array. </td></tr>
+    <tr><td class="paramname">lag</td><td>Lagrange interpolation polynomial. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1c20c64a51ca4b10e4b794f1c356ca22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c20c64a51ca4b10e4b794f1c356ca22">&#9670;&nbsp;</a></span>Lagrange_interpolating_polynomial()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,19 +344,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>bary</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>lag</em>&#160;</td>
         </tr>
         <tr>
@@ -314,7 +367,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Lagrange interpolating polynoimial value at target point. Algorithm 34. </p>
+<p>Lagrange interpolating polynoimial value at target point. Algorithm 34. Return the interpolation value on point x. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>polynomial order </td></tr>
@@ -329,8 +382,75 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a92cd3b57bad77956d7908c12b63d1ea6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92cd3b57bad77956d7908c12b63d1ea6">&#9670;&nbsp;</a></span>Legendre_polynomial_and_derivative()</h2>
+<a id="a228e16cf2c90a0081e590eca42cc3874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a228e16cf2c90a0081e590eca42cc3874">&#9670;&nbsp;</a></span>Lagrange_interpolation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Lagrange_interpolation </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>xi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Lagrange interpolant from Barycentric form. Algorithm 31. <br  />
+ </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>polynomial order. </td></tr>
+    <tr><td class="paramname">x</td><td>solution at the target point x (on reference space). </td></tr>
+    <tr><td class="paramname">xi</td><td>GL points. </td></tr>
+    <tr><td class="paramname">f</td><td>solution set. </td></tr>
+    <tr><td class="paramname">w</td><td>barycentric weights. </td></tr>
+    <tr><td class="paramname">index</td><td>solution indices. <br  />
+ </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaf78fc77ca02793f37f141e7c8030f6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf78fc77ca02793f37f141e7c8030f6f">&#9670;&nbsp;</a></span>Legendre_polynomial_and_derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -344,7 +464,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
@@ -381,8 +501,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a109ceb7e26b5ad04ffa3bcc9f1a38f28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a109ceb7e26b5ad04ffa3bcc9f1a38f28">&#9670;&nbsp;</a></span>Matrix_vector_multiplication()</h2>
+<a id="add7043640858685e79d4dbeaad8da58e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add7043640858685e79d4dbeaad8da58e">&#9670;&nbsp;</a></span>Matrix_vector_multiplication()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -396,20 +516,20 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>der</em>&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -425,7 +545,7 @@ Variables</h2></td></tr>
     <tr><td class="paramname">n</td><td>polynomial order </td></tr>
     <tr><td class="paramname">d</td><td>coefficient martrix (usually derivative matrix), d[n * n]. </td></tr>
     <tr><td class="paramname">f</td><td>vector, f[n]. </td></tr>
-    <tr><td class="paramname">der</td><td>output. (usually the derivative of interpolation), der[n]. </td></tr>
+    <tr><td class="paramname">out</td><td>output. (usually the derivative of interpolation). </td></tr>
   </table>
   </dd>
 </dl>
@@ -483,8 +603,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7df989cf63712fe6bf2a086a9ab0f623"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7df989cf63712fe6bf2a086a9ab0f623">&#9670;&nbsp;</a></span>Mth_order_polynomial_derivative_matrix()</h2>
+<a id="a4efbf2f7716ead333ac6d1842fb4d881"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4efbf2f7716ead333ac6d1842fb4d881">&#9670;&nbsp;</a></span>Mth_order_polynomial_derivative_matrix()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -504,14 +624,20 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>der</em>&#160;</td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>der</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>bary</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -528,6 +654,8 @@ Variables</h2></td></tr>
     <tr><td class="paramname">mth_der</td><td>m-th order polynomial derivative </td></tr>
     <tr><td class="paramname">x</td><td>spectral points </td></tr>
     <tr><td class="paramname">der</td><td>m-th order derivative matrix </td></tr>
+    <tr><td class="paramname">bary</td><td>Barycentric weights. <br  />
+ </td></tr>
   </table>
   </dd>
 </dl>

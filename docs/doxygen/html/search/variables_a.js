@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['y_5fhilbert_182',['y_hilbert',['../namespaceSortMesh.html#ab45390a2b5dfdc1ae01e8ed0466a351c',1,'SortMesh']]],
-  ['y_5flocal_183',['y_local',['../namespacelocal.html#a14561a4f632b6a5b63792d78ca4f68ca',1,'local']]]
+  ['mfirst_5fder_691',['mfirst_der',['../namespacenodal.html#aa04c8717d34b2b270848d640ee59acf3',1,'nodal']]],
+  ['my_5frank_5ffirst_692',['my_rank_first',['../namespaceLB.html#a92af8680e540058316c204d97b3d064d',1,'LB']]],
+  ['my_5frank_5flast_693',['my_rank_last',['../namespaceLB.html#a4ef534847ca9376fe3995d9de63ede97',1,'LB']]]
 ];

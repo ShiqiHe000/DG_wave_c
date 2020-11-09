@@ -1,11 +1,21 @@
 var searchData=
 [
-  ['gen_5fdual_5fgraph_5f2d_126',['Gen_dual_graph_2d',['../dg__gen__dual__graph_8cpp.html#a8b3335be93331b1f6a780ddf1924f1e9',1,'dg_gen_dual_graph.cpp']]],
-  ['get_5fdual_5fcoord_5f2d_127',['Get_dual_coord_2d',['../dg__get__dual__coord_8cpp.html#afaba6cf4667827a92050d93c8625a1a8',1,'dg_get_dual_coord.cpp']]],
-  ['get_5fnodal_5f2d_5fstorage_5fbasis_128',['Get_nodal_2d_storage_basis',['../dg__basis__storage_8cpp.html#a65cc73bae195fbc966ba1be33ef603bf',1,'dg_basis_storage.cpp']]],
-  ['get_5fnodal_5f2d_5fstorage_5fextends_129',['Get_nodal_2d_storage_extends',['../dg__basis__storage_8cpp.html#a2f507fee14a34c38b8a2180b864d0048',1,'dg_basis_storage.cpp']]],
-  ['get_5fscores_130',['Get_scores',['../dg__read__mesh__2d_8cpp.html#ac10ab05ddf670d9f9e5d9ef25c294873',1,'dg_read_mesh_2d.cpp']]],
-  ['get_5fsingle_5findex_131',['Get_single_index',['../dg__single__index_8cpp.html#abe859aac916629f39c2691317740efd8',1,'dg_single_index.cpp']]],
-  ['get_5fstandard_132',['Get_standard',['../dg__read__mesh__2d_8cpp.html#ab22d42d58cf3072490ec9fdfc1b0a6cb',1,'dg_read_mesh_2d.cpp']]],
-  ['gl_133',['GL',['../dg__basis_8cpp.html#ae0bdc110d13f7174cf458464b9821b86',1,'dg_basis.cpp']]]
+  ['elem_5flength_480',['Elem_length',['../dg__elem__length_8cpp.html#aeed6dfad8ba40239ae5833c339d26cc8',1,'dg_elem_length.cpp']]],
+  ['elem_5fload_481',['Elem_load',['../dg__element__load_8cpp.html#a975a56ae12134e2d215cbb7af35810fa',1,'dg_element_load.cpp']]],
+  ['enlarge_5fhash_482',['Enlarge_hash',['../dg__reallocate__elem_8cpp.html#a88a992a5805a2c6b7564caaae08d1d5c',1,'dg_reallocate_elem.cpp']]],
+  ['erase_5felem_5fold_483',['Erase_elem_old',['../dg__reallocate__elem_8cpp.html#a9a99d25411052aa28434b5192552b3a6',1,'dg_reallocate_elem.cpp']]],
+  ['erase_5fold_5fface_484',['Erase_old_face',['../dg__mpi__table__construct_8cpp.html#ae2b258b753405be4ac1846502d7b16bf',1,'dg_mpi_table_construct.cpp']]],
+  ['error_5findicator_485',['Error_indicator',['../dg__error__estimator_8cpp.html#a23a8e64656ceae3001d4cbf9fdb2809e',1,'dg_error_estimator.cpp']]],
+  ['exact_5fsolution_5fgaussian_486',['Exact_solution_Gaussian',['../dg__user__defined_8cpp.html#a22c9741c8e1d875d78cb5a2a914d12f3',1,'dg_user_defined.cpp']]],
+  ['exact_5fsolution_5fgaussian2_487',['Exact_solution_Gaussian2',['../dg__user__defined_8cpp.html#a4ad8e89bd110d682c501029a027398e0',1,'dg_user_defined.cpp']]],
+  ['exact_5fsolution_5fsin_488',['Exact_solution_sin',['../dg__user__defined_8cpp.html#a8ff15b4dce4339045162320ebcf33c7b',1,'dg_user_defined.cpp']]],
+  ['exchange_5fflux_489',['Exchange_flux',['../dg__message__exchange_8cpp.html#ad765182d6f6e1303fbc5b351ddcbb3c1',1,'dg_message_exchange.cpp']]],
+  ['exchange_5fflux_5fpack_490',['Exchange_flux_pack',['../dg__message__exchange_8cpp.html#a130e3f2c92435fa44f47a104398ebd7c',1,'dg_message_exchange.cpp']]],
+  ['exchange_5fsolution_491',['Exchange_solution',['../dg__message__exchange_8cpp.html#a82044424e9fe739777e67e8f2f962f04',1,'dg_message_exchange.cpp']]],
+  ['exchange_5fsolution_5fpack_492',['Exchange_solution_pack',['../dg__message__exchange_8cpp.html#a456c6fe99fe2d9f0f7fe49211d0b22c1',1,'dg_message_exchange.cpp']]],
+  ['external_5fmirror_5fright_5fboundary_493',['External_mirror_right_boundary',['../dg__external__state_8cpp.html#af8f88e99b4a0dca0c2e25c5c01d5587a',1,'dg_external_state.cpp']]],
+  ['external_5fstate_5fgaussian_5fexact_494',['External_state_Gaussian_exact',['../dg__external__state_8cpp.html#aadfe659139e434ccf2546db8bb55c59e',1,'dg_external_state.cpp']]],
+  ['external_5fstate_5freflect_5fx_495',['External_state_reflect_x',['../dg__external__state_8cpp.html#afb1377b6b70eb3a58d1cdbd5453ce428',1,'dg_external_state.cpp']]],
+  ['external_5fstate_5freflect_5fy_496',['External_state_reflect_y',['../dg__external__state_8cpp.html#aa718a9c7e3d98e0f80ed544d53328693',1,'dg_external_state.cpp']]],
+  ['external_5fstate_5fsin_5fexact_497',['External_state_sin_exact',['../dg__external__state_8cpp.html#a88c83d63d1ed8380a314cd2c356308cc',1,'dg_external_state.cpp']]]
 ];

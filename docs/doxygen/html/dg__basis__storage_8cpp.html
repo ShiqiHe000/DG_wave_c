@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_basis_storage.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_basis_storage.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -100,28 +100,22 @@ $(document).ready(function(){initNavTree('dg__basis__storage_8cpp.html',''); ini
 <div class="title">dg_basis_storage.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;mpi.h&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;dg_nodal_2d_storage.h&quot;</code><br />
 <code>#include &quot;dg_param.h&quot;</code><br />
 <code>#include &quot;dg_basis.h&quot;</code><br />
-<code>#include &quot;dg_poly_level_and_order.h&quot;</code><br />
 <code>#include &quot;dg_basis_storage.h&quot;</code><br />
+<code>#include &quot;dg_single_index.h&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_basis_storage.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__basis__storage_8cpp__incl.svg" width="940" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__basis__storage_8cpp__incl.svg" width="891" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a65cc73bae195fbc966ba1be33ef603bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis__storage_8cpp.html#a65cc73bae195fbc966ba1be33ef603bf">Get_nodal_2d_storage_basis</a> (int n, int k, double **gl_p, double **gl_weight, double **first_der)</td></tr>
-<tr class="memdesc:a65cc73bae195fbc966ba1be33ef603bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">GL points and weights, first order derivative matrix.  <a href="dg__basis__storage_8cpp.html#a65cc73bae195fbc966ba1be33ef603bf">More...</a><br /></td></tr>
-<tr class="separator:a65cc73bae195fbc966ba1be33ef603bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f507fee14a34c38b8a2180b864d0048"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis__storage_8cpp.html#a2f507fee14a34c38b8a2180b864d0048">Get_nodal_2d_storage_extends</a> (int n, double *lag_l, double *lag_r, double *gl_p)</td></tr>
-<tr class="memdesc:a2f507fee14a34c38b8a2180b864d0048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange interpolates on the boundaries. Alorithm 89.  <a href="dg__basis__storage_8cpp.html#a2f507fee14a34c38b8a2180b864d0048">More...</a><br /></td></tr>
-<tr class="separator:a2f507fee14a34c38b8a2180b864d0048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed69e340685857aced1b444c30b7a06d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dg__basis__storage_8cpp.html#aed69e340685857aced1b444c30b7a06d">Construct_basis_storage</a> ()</td></tr>
 <tr class="memdesc:aed69e340685857aced1b444c30b7a06d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processor's local storages. Generate the basis information (GL PIOINTS, WEIGHTS, DERIVATIVE MATRIX, etc.) for all polynomial level at the beginning, and store it in hash tables. Therefore, after refinement start we do not need to re-generate the basis information, or store duplicated data. <br  />
   <a href="dg__basis__storage_8cpp.html#aed69e340685857aced1b444c30b7a06d">More...</a><br /></td></tr>
@@ -145,115 +139,6 @@ Functions</h2></td></tr>
 
 <p>Processor's local storages. Generate the basis information (GL PIOINTS, WEIGHTS, DERIVATIVE MATRIX, etc.) for all polynomial level at the beginning, and store it in hash tables. Therefore, after refinement start we do not need to re-generate the basis information, or store duplicated data. <br  />
  </p>
-
-</div>
-</div>
-<a id="a65cc73bae195fbc966ba1be33ef603bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65cc73bae195fbc966ba1be33ef603bf">&#9670;&nbsp;</a></span>Get_nodal_2d_storage_basis()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Get_nodal_2d_storage_basis </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>k</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double **&#160;</td>
-          <td class="paramname"><em>gl_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double **&#160;</td>
-          <td class="paramname"><em>gl_weight</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double **&#160;</td>
-          <td class="paramname"><em>first_der</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>GL points and weights, first order derivative matrix. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">n</td><td>polynomial order </td></tr>
-    <tr><td class="paramname">k</td><td>polynomial level </td></tr>
-    <tr><td class="paramname">gl_p</td><td>GL points </td></tr>
-    <tr><td class="paramname">gl_weight</td><td>GL weights </td></tr>
-    <tr><td class="paramname">first_der</td><td>first order derivative matrix </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a2f507fee14a34c38b8a2180b864d0048"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f507fee14a34c38b8a2180b864d0048">&#9670;&nbsp;</a></span>Get_nodal_2d_storage_extends()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Get_nodal_2d_storage_extends </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>lag_l</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>lag_r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>gl_p</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Lagrange interpolates on the boundaries. Alorithm 89. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">n</td><td>polynomial order </td></tr>
-    <tr><td class="paramname">lag_l</td><td>Lagrange interpolates on the left boundary. </td></tr>
-    <tr><td class="paramname">lag_r</td><td>Lagrange interpolates on the right boundary. </td></tr>
-    <tr><td class="paramname">gl_p</td><td>GL points. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>

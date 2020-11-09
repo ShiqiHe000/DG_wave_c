@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/DG_wave_c/src/dg_nodal_2d_storage.cpp File Reference</title>
+<title>Discontinuous Galerkin Wave Equation: /home/shiqi/Documents/thesis/new/DG_wave_c/src/dg_nodal_2d_storage.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -101,12 +101,13 @@ $(document).ready(function(){initNavTree('dg__nodal__2d__storage_8cpp.html','');
 <div class="title">dg_nodal_2d_storage.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;mpi.h&gt;</code><br />
-<code>#include &quot;dg_nodal_2d_storage.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;dg_nodal_2d_storage.h&quot;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dg_nodal_2d_storage.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dg__nodal__2d__storage_8cpp__incl.svg" width="251" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dg__nodal__2d__storage_8cpp__incl.svg" width="394" height="147"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -137,16 +138,22 @@ Variables</h2></td></tr>
 <tr class="separator:a5af2fbf018a15a38020f9dd54396b44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab45390a2b5dfdc1ae01e8ed0466a351c"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#ab45390a2b5dfdc1ae01e8ed0466a351c">SortMesh::y_hilbert</a> = nullptr</td></tr>
 <tr class="separator:ab45390a2b5dfdc1ae01e8ed0466a351c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a044ed0ee3c9932a5cf7acbc73fc8ed38"><td class="memItemLeft" align="right" valign="top">double **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a044ed0ee3c9932a5cf7acbc73fc8ed38">nodal::gl_p</a> {}</td></tr>
-<tr class="separator:a044ed0ee3c9932a5cf7acbc73fc8ed38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97354cd3e9cef532e875859558a1d66b"><td class="memItemLeft" align="right" valign="top">double **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a97354cd3e9cef532e875859558a1d66b">nodal::gl_w</a> {}</td></tr>
-<tr class="separator:a97354cd3e9cef532e875859558a1d66b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a333333fb41509e9a3768ed02fd771f63"><td class="memItemLeft" align="right" valign="top">double **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a333333fb41509e9a3768ed02fd771f63">nodal::first_der</a> {}</td></tr>
-<tr class="separator:a333333fb41509e9a3768ed02fd771f63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5751165a99072bcdb03904b5cc117279"><td class="memItemLeft" align="right" valign="top">double **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a5751165a99072bcdb03904b5cc117279">nodal::lagrange_l</a> {}</td></tr>
-<tr class="separator:a5751165a99072bcdb03904b5cc117279"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49b3d6d0883d69da6bf00a8477099e27"><td class="memItemLeft" align="right" valign="top">double **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a49b3d6d0883d69da6bf00a8477099e27">nodal::lagrange_r</a> {}</td></tr>
-<tr class="separator:a49b3d6d0883d69da6bf00a8477099e27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4477eb09622e06e635d9494ad8f8ac53"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSortMesh.html#a4477eb09622e06e635d9494ad8f8ac53">SortMesh::status</a></td></tr>
+<tr class="separator:a4477eb09622e06e635d9494ad8f8ac53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e2ccce817439d2838fc47ddc20b3d41"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a5e2ccce817439d2838fc47ddc20b3d41">nodal::gl_points</a></td></tr>
+<tr class="separator:a5e2ccce817439d2838fc47ddc20b3d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabbb1fe1ce69046f85974573d5fc8a0a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#aabbb1fe1ce69046f85974573d5fc8a0a">nodal::gl_weights</a></td></tr>
+<tr class="separator:aabbb1fe1ce69046f85974573d5fc8a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a27085cbc96eb08ce38e84b2fc13a73"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a7a27085cbc96eb08ce38e84b2fc13a73">nodal::first_der</a></td></tr>
+<tr class="separator:a7a27085cbc96eb08ce38e84b2fc13a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa04c8717d34b2b270848d640ee59acf3"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#aa04c8717d34b2b270848d640ee59acf3">nodal::mfirst_der</a></td></tr>
+<tr class="separator:aa04c8717d34b2b270848d640ee59acf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5d1ab054cbaf6a4cf816335534e950b"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#ac5d1ab054cbaf6a4cf816335534e950b">nodal::lagrange_l</a></td></tr>
+<tr class="separator:ac5d1ab054cbaf6a4cf816335534e950b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f62ad40f4c7df90e4d7bcf4093723a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#af5f62ad40f4c7df90e4d7bcf4093723a">nodal::lagrange_r</a></td></tr>
+<tr class="separator:af5f62ad40f4c7df90e4d7bcf4093723a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a594ab5cc903856e4e73f629a413b0f6c"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenodal.html#a594ab5cc903856e4e73f629a413b0f6c">nodal::legendre</a></td></tr>
+<tr class="separator:a594ab5cc903856e4e73f629a413b0f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

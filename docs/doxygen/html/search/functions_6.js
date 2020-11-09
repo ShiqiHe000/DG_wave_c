@@ -1,4 +1,19 @@
 var searchData=
 [
-  ['i4_5fpower_136',['i4_power',['../dg__hilbert__curve_8cpp.html#a84212c8f2c63fcc355f3a3e2fbf6d8a0',1,'dg_hilbert_curve.cpp']]]
+  ['gen_5fa_5fand_5fb_509',['Gen_a_and_b',['../dg__numerical__flux_8cpp.html#a5e33f07afa6684e937bdafee2d2359a8',1,'dg_numerical_flux.cpp']]],
+  ['gen_5fdual_5fgraph_5f2d_510',['Gen_dual_graph_2d',['../dg__gen__dual__graph_8cpp.html#a8b3335be93331b1f6a780ddf1924f1e9',1,'dg_gen_dual_graph.cpp']]],
+  ['gen_5findex_511',['Gen_index',['../dg__amr_8cpp.html#ac1c73f164be4a5a7182ad2b8a5c099fb',1,'dg_amr.cpp']]],
+  ['gen_5fstatus_512',['Gen_status',['../dg__gen__status_8cpp.html#adabcba8be5697262539ce4307b699d32',1,'dg_gen_status.cpp']]],
+  ['gen_5fstatus_5fall_513',['Gen_status_all',['../dg__gen__status_8cpp.html#acf719895d078934f328aaf43de83c532',1,'dg_gen_status.cpp']]],
+  ['get_5fcoordinates_514',['Get_coordinates',['../dg__amr_8cpp.html#a62f0509629a8ab1d08778b1b37bd123f',1,'dg_amr.cpp']]],
+  ['get_5fdual_5fcoord_5f2d_515',['Get_dual_coord_2d',['../dg__get__dual__coord_8cpp.html#afaba6cf4667827a92050d93c8625a1a8',1,'dg_get_dual_coord.cpp']]],
+  ['get_5ferror_516',['Get_error',['../dg__verification_8cpp.html#ac1202d53389fcb03a807d8545adffd94',1,'dg_verification.cpp']]],
+  ['get_5fkey_5ffun_517',['Get_key_fun',['../dg__cantor__pairing_8cpp.html#aa58437fef88f62426a51dde3dd931daf',1,'dg_cantor_pairing.cpp']]],
+  ['get_5fkx_5fky_518',['Get_kx_ky',['../dg__kx__ky_8cpp.html#a470231076f36b64b6cfb511cb7c750d3',1,'dg_kx_ky.cpp']]],
+  ['get_5fscores_519',['Get_scores',['../dg__read__mesh__2d_8cpp.html#ac10ab05ddf670d9f9e5d9ef25c294873',1,'dg_read_mesh_2d.cpp']]],
+  ['get_5fsingle_5findex_520',['Get_single_index',['../dg__single__index_8cpp.html#abe859aac916629f39c2691317740efd8',1,'dg_single_index.cpp']]],
+  ['get_5fsingle_5findex_5f3d_521',['Get_single_index_3d',['../dg__single__index_8cpp.html#a731d855c71d6c79fa753811e4d5f3ec5',1,'dg_single_index.cpp']]],
+  ['get_5fstandard_522',['Get_standard',['../dg__read__mesh__2d_8cpp.html#ab22d42d58cf3072490ec9fdfc1b0a6cb',1,'dg_read_mesh_2d.cpp']]],
+  ['gl_523',['GL',['../dg__basis_8cpp.html#a220379698d5c53e01dfc349d4a93df81',1,'dg_basis.cpp']]],
+  ['go_5fback_5fto_5fparent_524',['Go_back_to_parent',['../dg__status__table_8cpp.html#a7fb493585b8e7fad7ed3d6668d664a60',1,'dg_status_table.cpp']]]
 ];
