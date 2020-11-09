@@ -1,1 +1,1 @@
-phinxcontrib.bibtex
+pip install sphinxcontrib-bibtex
