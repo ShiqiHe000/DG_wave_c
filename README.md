@@ -1,8 +1,14 @@
-# Discontinuous Galerkin Wave Equation Slover
+# Dynamic Load Balancing for a hp-adaptive Discontinuous Galerkin Wave Equation Solver via Space-Filling Curve and Advanced Data Structure
 
 [![Build Status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)](https://travis-ci.com/ShiqiHe000/DG_wave_c)
 
 [![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
+
+## Introduction
+We combine a high-order method -- the **discontinuous Galerkin [spectral element method](https://en.wikipedia.org/wiki/Spectral_element_method) (DG-SEM)**, 
+with parallel [**adaptive mesh refinement and coarsening (AMR)**](https://en.wikipedia.org/wiki/Adaptive_mesh_refinement) techniques and apply it to a **two-dimensional [wave equation](https://en.wikipedia.org/wiki/Wave_equation) solver**.
+
+Advanced data structures and dynamic load balancing are apllied to the solver to achieve efficient data management and high-level parallelism. 
 
 ## Documentation
 A detailed documentation an be found at [here](https://dg-wave-c.readthedocs.io/en/latest/).
