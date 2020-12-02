@@ -2,6 +2,15 @@
 
 [![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
 
+Table of Contents
+=================
+
+      * [Introduction](#introduction)
+      * [Documentation](#documentation)
+      * [Source Code Documentation](#source-code-documentation)
+      * [Approximation of Wave Equation](#approximation-of-wave-equation)
+
+
 ## Introduction
 We combine a high-order method -- the **discontinuous Galerkin [spectral element method](https://en.wikipedia.org/wiki/Spectral_element_method) (DG-SEM)**, 
 with parallel [**adaptive mesh refinement and coarsening (AMR)**](https://en.wikipedia.org/wiki/Adaptive_mesh_refinement) techniques and apply it to a **two-dimensional [wave equation](https://en.wikipedia.org/wiki/Wave_equation) solver**.
