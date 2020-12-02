@@ -2,6 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
 
+<!--ts-->
 Table of Contents
 =================
 
@@ -10,7 +11,7 @@ Table of Contents
       * [Documentation](#documentation)
       * [Source Code Documentation](#source-code-documentation)
       * [Approximation of Wave Equation](#approximation-of-wave-equation)
-
+<!--te-->
 
 ## Introduction
 We combine a high-order method -- the **discontinuous Galerkin [spectral element method](https://en.wikipedia.org/wiki/Spectral_element_method) (DG-SEM)**, 
