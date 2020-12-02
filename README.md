@@ -5,6 +5,7 @@
 Table of Contents
 =================
 
+   * [Dynamic Load Balancing for a hp-adaptive Discontinuous Galerkin Wave Equation Solver via Space-Filling Curve and Advanced Data Structure](#dynamic-load-balancing-for-a-hp-adaptive-discontinuous-galerkin-wave-equation-solver-via-space-filling-curve-and-advanced-data-structure)
       * [Introduction](#introduction)
       * [Documentation](#documentation)
       * [Source Code Documentation](#source-code-documentation)
