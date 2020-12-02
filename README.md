@@ -1,7 +1,5 @@
 # Dynamic Load Balancing for a hp-adaptive Discontinuous Galerkin Wave Equation Solver via Space-Filling Curve and Advanced Data Structure
 
-[![Build Status](https://travis-ci.com/ShiqiHe000/DG_wave_c.svg?branch=master)](https://travis-ci.com/ShiqiHe000/DG_wave_c)
-
 [![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
 
 ## Introduction
