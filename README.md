@@ -98,3 +98,10 @@ pros:
 cons: 
 * The partitioning boundaries are decided by the trajectry of the space-filling curve. 
 
+[Hilber curve](https://en.wikipedia.org/wiki/Hilbert_curve) is chosen for this work. 
+The figure below shows the first three levels of Hilbert curve. 
+
+<p align="center">
+  <img src="./imgs/Hilbert_curve2.png" width="400" height = "120" >
+</p>
+
