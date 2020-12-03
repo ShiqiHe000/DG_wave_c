@@ -3,24 +3,6 @@
 [![Documentation Status](https://readthedocs.org/projects/dg-wave-c/badge/?version=latest)](https://dg-wave-c.readthedocs.io/en/latest/?badge=latest)
 
 <!--ts-->
-   * [Dynamic Load Balancing for a hp-adaptive Discontinuous Galerkin Wave Equation Solver via Space-Filling Curve and Advanced Data Structure](#dynamic-load-balancing-for-a-hp-adaptive-discontinuous-galerkin-wave-equation-solver-via-space-filling-curve-and-advanced-data-structure)
-      * [Introduction](#introduction)
-      * [Setup](#setup)
-         * [What You Need](#what-you-need)
-         * [Compile and Execute](#compile-and-execute)
-      * [Documentation](#documentation)
-      * [Source Code Documentation](#source-code-documentation)
-      * [Approximation of Wave Equation](#approximation-of-wave-equation)
-      * [AMR Refinement Types: hp-adaptivity](#amr-refinement-types-hp-adaptivity)
-         * [h-refinement](#h-refinement)
-         * [p-refinement](#p-refinement)
-      * [AMR Data Structure: Hash Table](#amr-data-structure-hash-table)
-      * [Dynamic Load Balancing](#dynamic-load-balancing)
-         * [Traditional Way: Graph-based Repartitioning Algorithm](#traditional-way-graph-based-repartitioning-algorithm)
-         * [My Proposal: Space-Filling Curves (SFCs) Based Repartitioning Algorithm](#my-proposal-space-filling-curves-sfcs-based-repartitioning-algorithm)
-
-<!-- Added by: shiqi, at: Wed Dec  2 20:28:38 EST 2020 -->
-
 <!--te-->
 
 ## Introduction
