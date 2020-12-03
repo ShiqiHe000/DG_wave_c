@@ -24,9 +24,9 @@ Advanced data structures and dynamic load balancing are applied to the solver to
 ## Setup
 ### What You Need
 * C++
-* CMake (at least version 3.9)
-* GCC 7.5.0 (GNU Compiler Collection)
-* OpenMPI 4.0.2
+* [CMake](https://cmake.org/) (at least version 3.9)
+* [GCC](https://gcc.gnu.org/) 7.5.0 (GNU Compiler Collection)
+* [OpenMPI](https://www.open-mpi.org/) 4.0.2
 
 ### Compile and Execute
 ```
