@@ -39,9 +39,6 @@ You also can use parallel `make`, *e.g.*, `make -j 16`. 16 threads will be used 
 
 `mpirun -np 4 main` executes the program with 4 processors, you could change the processor number as you want.
 
-
-
-
 ## Documentation
 A detailed documentation an be found at [here](https://dg-wave-c.readthedocs.io/en/latest/).
 
@@ -54,4 +51,10 @@ The basic model of wave propagation is the wave equation:
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{\partial&space;^{2}p}{\partial&space;t^{2}}-c^{2}(p_{xx}&plus;p_{yy})=0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{\partial&space;^{2}p}{\partial&space;t^{2}}-c^{2}(p_{xx}&plus;p_{yy})=0" title="\frac{\partial ^{2}p}{\partial t^{2}}-c^{2}(p_{xx}+p_{yy})=0" /></a>
 
-The variable `p` might represent the acoustic pressure and `c` would be the sound speed. 
+The variable `p` represents the acoustic pressure and `c` is the sound speed. 
+
+## AMR: hp-adaptivity
+Two types of refinements are implemented in this work: h-refinement and p-refinement. 
+### h-refinement
+Subdivide an element into children elements. 
+
