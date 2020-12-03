@@ -121,5 +121,8 @@ The figure below shows the first three levels of Hilbert curve.
 ### Speedup
 
 <p align="center">
-  <img src="./imgs/speedup_factor_cedar.png" width="500" height = "200" >
+  <img src="./imgs/speedup_factor_cedar.png" width="500" height = "300" >
 </p>
+
+The test is done on [Cedar](https://docs.computecanada.ca/wiki/Cedar) with processor number 
+ranging from 32 to 2048. We gained a maximum speedup around 8. 
