@@ -53,15 +53,48 @@ The basic model of wave propagation is the wave equation:
 
 The variable `p` represents the acoustic pressure and `c` is the sound speed. 
 
-## AMR: hp-adaptivity
+## AMR Refinement Types: hp-adaptivity
 Two types of refinements are implemented in this work: h-refinement and p-refinement. 
 ### h-refinement
 <p align="center">
   <img src="./imgs/h_refinement.png" width="100" height = "40" >
 </p>
 Subdivide an element into children elements. 
+
 ### p-refinement
 <p align="center">
   <img src="./imgs/p_refinement.png" width="100" height = "40" >
 </p>
 Raise polynomial orders inside the targeted element. 
+
+## AMR Data Structure: Hash Table
+In stead of using the conventional [tree data structure](https://en.wikipedia.org/wiki/Tree_(data_structure)), 
+[hash table data structure](https://en.wikipedia.org/wiki/Hash_table) is employeed. 
+
+## Dynamic Load Balancing
+The adaptivity of the program introduces **load imbalance** among the processors, causing the program to slow down. 
+In order to achieve high-level parallelism, dynamic load balancing strategy is apllied to balance the workload. 
+
+The workload redistribution problem is an optimization problem with **two main goals**: 
+the workload should be distributed evenly among the processors with small memory overhead and the
+interfacing boundaries between partitions should be as small as possible. The optimization
+problem has been proven to be **NP-hard**.
+
+### Traditional Way: Graph-based Repartitioning Algorithm
+pros:
+* Well-studied.
+* Multiple libraries.
+
+cons:
+* Reached scalability limits (requires "global" graph knowledge). 
+* High memory consumption. 
+### My Proposal: Space-Filling Curves (SFCs) Based Repartitioning Algorithm
+pros:
+* Simplifies a multi-dimensional partitioning problem into a one-dimensional one. 
+* SFCs have good locality and can be generated fast. 
+* Low memory usage. 
+* Favours distributed systems. 
+
+cons: 
+* The partitioning boundaries are decided by the trajectry of the space-filling curve. 
+
