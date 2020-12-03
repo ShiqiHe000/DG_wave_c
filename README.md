@@ -24,9 +24,9 @@ Advanced data structures and dynamic load balancing are applied to the solver to
 ## Setup
 ### What You Need
 * C++
-* CMake (at least version 3.9)
-* GCC 7.5.0 (GNU Compiler Collection)
-* OpenMPI 4.0.2
+* [CMake](https://cmake.org/) (at least version 3.9)
+* [GCC](https://gcc.gnu.org/) 7.5.0 (GNU Compiler Collection)
+* [OpenMPI](https://www.open-mpi.org/) 4.0.2
 
 ### Compile and Execute
 ```
@@ -38,9 +38,6 @@ mpirun -np 4 main
 You also can use parallel `make`, *e.g.*, `make -j 16`. 16 threads will be used to compile the code. 
 
 `mpirun -np 4 main` executes the program with 4 processors, you could change the processor number as you want.
-
-
-
 
 ## Documentation
 A detailed documentation an be found at [here](https://dg-wave-c.readthedocs.io/en/latest/).
@@ -54,4 +51,10 @@ The basic model of wave propagation is the wave equation:
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{\partial&space;^{2}p}{\partial&space;t^{2}}-c^{2}(p_{xx}&plus;p_{yy})=0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{\partial&space;^{2}p}{\partial&space;t^{2}}-c^{2}(p_{xx}&plus;p_{yy})=0" title="\frac{\partial ^{2}p}{\partial t^{2}}-c^{2}(p_{xx}+p_{yy})=0" /></a>
 
-The variable `p` might represent the acoustic pressure and `c` would be the sound speed. 
+The variable `p` represents the acoustic pressure and `c` is the sound speed. 
+
+## AMR: hp-adaptivity
+Two types of refinements are implemented in this work: h-refinement and p-refinement. 
+### h-refinement
+Subdivide an element into children elements. 
+
