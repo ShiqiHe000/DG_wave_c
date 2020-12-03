@@ -18,10 +18,8 @@
       * [Dynamic Load Balancing](#dynamic-load-balancing)
          * [Traditional Way: Graph-based Repartitioning Algorithm](#traditional-way-graph-based-repartitioning-algorithm)
          * [My Proposal: Space-Filling Curves (SFCs) Based Repartitioning Algorithm](#my-proposal-space-filling-curves-sfcs-based-repartitioning-algorithm)
-      * [Program Proformace](#program-proformace)
-         * [Speedup](#speedup)
 
-<!-- Added by: shiqi, at: Wed Dec  2 20:33:38 EST 2020 -->
+<!-- Added by: shiqi, at: Wed Dec  2 20:28:38 EST 2020 -->
 
 <!--te-->
 
