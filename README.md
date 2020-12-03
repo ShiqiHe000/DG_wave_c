@@ -56,5 +56,12 @@ The variable `p` represents the acoustic pressure and `c` is the sound speed.
 ## AMR: hp-adaptivity
 Two types of refinements are implemented in this work: h-refinement and p-refinement. 
 ### h-refinement
+<p align="center">
+  <img src="./imgs/h_refinement.png" width="100" height = "40" >
+</p>
 Subdivide an element into children elements. 
-
+### p-refinement
+<p align="center">
+  <img src="./imgs/p_refinement.png" width="100" height = "40" >
+</p>
+Raise polynomial orders inside the targeted element. 
