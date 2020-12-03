@@ -22,10 +22,24 @@ with parallel [**adaptive mesh refinement and coarsening (AMR)**](https://en.wik
 Advanced data structures and dynamic load balancing are applied to the solver to achieve efficient data management and high-level parallelism. 
 
 ## Setup
+### What You Need
 * C++
-* CMake 3.9
+* CMake (at least version 3.9)
 * GCC 7.5.0 (GNU Compiler Collection)
 * OpenMPI 4.0.2
+
+### Compile and Execute
+```
+mkdir build && cd build
+cmake ..
+make 
+mpirun -np 4 main
+```
+You also can use parallel `make`, *e.g.*, `make -j 16`. 16 threads will be used to compile the code. 
+
+`mpirun -np 4 main` executes the program with 4 processors, you could change the processor number as you want.
+
+
 
 
 ## Documentation
