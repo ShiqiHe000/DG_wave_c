@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
 //	Solution_cross_section(0.55);
 
 	// get total element num
-//	Total_element_num(dg_time::t_total);
+	Total_element_num(dg_time::t_total);
 
 	// terminate mpi
         MPI_Finalize();	

@@ -8,7 +8,7 @@
 /// @param fileplace The path of mesh file and mesh file name
 /// @param output_place output directory. 
 namespace fileinfo{
-	const std::string fileplace = "../gmsh_files/4_elements.msh";
+	const std::string fileplace = "../gmsh_files/1024_elements.msh";
 //	const std::string fileplace = "../gmsh_files/strong/1024.msh";
 
 	const std::string output_place = "../outputs/";
@@ -31,13 +31,13 @@ namespace fileinfo{
 /// @param nmax maximum polynomial degree in x and y direction
 /// @param hlevel_max maximum h-refinement level. 
 namespace grid{
-	const int exp_x = 1; 
-	const int exp_y = 1; 
+	const int exp_x = 5; 
+	const int exp_y = 5; 
 	
 	const double gx_l = 0.0;
-	const double gx_r = 1.0; 
+	const double gx_r = 8.0; 
 	const double gy_l = 0.0;
-	const double gy_r = 1.0; 
+	const double gy_r = 8.0; 
 
 	const int nmin = 6;	
 	const int nmax = 14;
@@ -55,10 +55,10 @@ namespace grid{
 /// @param nt time step number
 namespace dg_time{
 
-	const double t_total = 1.0e-8 * 10;
+	const double t_total = 1.0e-5 * 5;
 //	const double t_total = 0.5;
 
-	const int nt = 10;
+	const int nt = 5;
 
 };
 
